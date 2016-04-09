@@ -8,6 +8,9 @@
 // Command to create the CSV file:
 //   node jsonNotesToCSV.js Jos2721-La_Bernardina.json > Jos2721-La_Bernardina.csv
 //
+// Inspired by source code of the Ribbon visualization found at
+// https://github.com/sul-cidr/ribbon/blob/notes/index.html
+//
 // By Curran Kelleher (curran.kelleher@gmail.com)
 // April 2016
 

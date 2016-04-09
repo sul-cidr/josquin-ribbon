@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
+
+  <!--
+    This program loads note data for a single work in CSV format
+    and renders it using D3.js.
+
+    By Curran Kelleher (curran.kelleher@gmail.com)
+    April 2016
+  -->
   <script src="d3.min.js"></script>
 </head>
 
@@ -9,27 +17,12 @@
 
     var width = 900;
     var height = 150;
-    var jsonPath = "Jos2721-La_Bernardina.json";
+    var fillOpacity = 0.5;
+    var csvPath = "Jos2721-La_Bernardina.csv";
 
     var svg = d3.select("body").append("svg")
       .attr("width", width)
       .attr("height", height);
-
-    d3.json(jsonPath, function (prollData){
-      var allNotes = [];
-      prollData.partdata.forEach(function (part){
-        var voice = prollData.partnames[part.partindex];
-        part.notedata.forEach(function (note){
-          allNotes.push({
-            pitch: note.pitch.b7,
-            time: note.starttime[0],
-            duration: note.duration[0],
-            voice: voice
-          });
-        });
-      });
-      render(allNotes);
-    });
 
     var x = d3.scale.linear();
     var y = d3.scale.linear();
@@ -63,10 +56,20 @@
         .attr("height", noteHeight)
         .attr("fill", function(d){ return color(d.voice); })
         .attr("stroke", function(d){ return color(d.voice); })
-        .attr("fill-opacity", 0.5)
+        .attr("fill-opacity", fillOpacity)
         .attr("rx", roundedCornerSize)
         .attr("ry", roundedCornerSize);
     }
+
+    // Parse strings from CSV data into numbers.
+    function type (d){
+      d.pitch = +d.pitch;
+      d.time = +d.time;
+      d.duration = +d.duration;
+      return d;
+    }
+
+    d3.csv(csvPath, type, render);
 
   </script>
 </body>
