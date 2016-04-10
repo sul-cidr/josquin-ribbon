@@ -6,10 +6,16 @@
     This program loads note data for a single work in CSV format
     and renders it using D3.js.
 
-    By Curran Kelleher (curran.kelleher@gmail.com)
+    By Curran Kelleher <curran.kelleher@gmail.com>
+      & Seemant Kulleen <seemantk@gmail.com>
     April 2016
   -->
-  <script src="d3.min.js"></script>
+
+  <!-- Bootstrap
+    For reset and grid layout.
+    from http://getbootstrap.com/customize/?id=c9c26f4080624c8af8ea9d80a6a64013
+  -->
+  <link rel="stylesheet" href="bootstrap.min.css">
   <style>
       rect {
           transition: opacity 0.5s ease;
@@ -20,13 +26,26 @@
       rect.subdued {
           opacity: 0.1;
       }
+      #legend li {
+          cursor: pointer;
+      }
+      #legend li text {
+          margin-left: 1em;
+      }
   </style>
+  <script src="d3.min.js"></script>
 </head>
 
 <body>
-  <div id="notes"></div>
-  <div id="legend"></div>
-
+  <header class="page-header"></header>
+  <article>
+    <div class="container">
+      <div class="row">
+        <div id="notes" class="col-xs-12 col-lg-10"></div>
+        <div id="legend" class="col-xs-12 col-lg-2"></div>
+      </div><!--.row-->
+    </div><!--.container-->
+  </article>
   <script>
     var width = 900;
     var height = 150;
@@ -38,6 +57,7 @@
             .attr("height", height)
       , legend = d3.select("body #legend")
           .append("ul")
+            .attr("class", "list-unstyled")
     ;
     var x = d3.scale.linear()
       , y = d3.scale.linear()
@@ -88,6 +108,14 @@
               , row = legend.selectAll("li")
                     .data(color.domain())
             ;
+            legend
+                .on("click", function() {
+                    hilite = false;
+                    svg.selectAll("rect")
+                        .classed("subdued", false)
+                    ;
+                  })
+            ;
             row.enter()
               .append("li")
                 .each(function(c) {
@@ -118,6 +146,7 @@
             ;
             row
               .on("click", function(c) {
+                  d3.event.stopPropagation();
                   hilite = hilite === c ? false : c;
                   svg.selectAll("rect.note")
                       .classed("subdued", function(d) {
