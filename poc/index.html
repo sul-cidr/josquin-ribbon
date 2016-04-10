@@ -37,6 +37,13 @@
           background-size: contain;
           background-repeat: no-repeat;
       }
+
+      .brush .extent {
+          stroke: black;
+          fill-opacity: .08;
+          stroke-opacity: .2;
+          shape-rendering: crispEdges;
+      }
   </style>
   <script src="d3.min.js"></script>
 </head>
@@ -85,8 +92,14 @@
               .append("svg")
                 .attr("width", width)
                 .attr("height", height)
+          , notesG = svg.append("g")
           , x = d3.scale.linear()
           , y = d3.scale.linear()
+          , brush = d3.svg.brush()
+              .x(x)
+              .on("brush", brushed)
+          , brushG = svg.append("g")
+              .attr("class", "x brush")
         ;
 
         function render(data){
@@ -100,13 +113,13 @@
                 , d3.max(data, function(d) { return d.pitch; })
               ])
             ;
-            x.range([0, width]);
+            x.range([0, width - 1]);
             y.range([height, 0]);
 
             var noteHeight = height / (y.domain()[1] - y.domain()[0])
               , roundedCornerSize = noteHeight / 2
             ;
-            var rects = svg.selectAll("rect").data(data);
+            var rects = notesG.selectAll("rect").data(data);
             rects.enter().append("rect");
             rects.exit().remove();
             rects
@@ -122,6 +135,12 @@
                 .classed("note", true)
             ;
 
+            brushG
+                .call(brush)
+              .selectAll("rect")
+                .attr("y", 0)
+                .attr("height", height - 1);
+
             var computedProperties = {
                 height: height,
                 noteHeight: noteHeight,
@@ -130,6 +149,11 @@
             };
             return computedProperties;
         } // render()
+
+        function brushed(){
+            console.log("brushed");
+        }
+
         return { render: render };
     }
 
