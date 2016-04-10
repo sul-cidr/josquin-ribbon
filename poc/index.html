@@ -17,13 +17,13 @@
   -->
   <link rel="stylesheet" href="bootstrap.min.css">
   <style>
-      rect {
+      rect, li {
           transition: opacity 0.5s ease;
       }
       rect.note {
           fill-opacity: 0.5;
       }
-      rect.subdued {
+      .subdued {
           opacity: 0.1;
       }
       #legend li {
@@ -151,6 +151,11 @@
                   svg.selectAll("rect.note")
                       .classed("subdued", function(d) {
                           return hilite && d.voice !== c;
+                        })
+                  ;
+                  legend.selectAll("li")
+                      .classed("subdued", function(d) {
+                          return hilite && d !== c;
                         })
                   ;
                 })
