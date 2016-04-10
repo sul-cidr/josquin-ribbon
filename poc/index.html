@@ -10,66 +10,131 @@
     April 2016
   -->
   <script src="d3.min.js"></script>
+  <style>
+      rect {
+          transition: opacity 0.5s ease;
+      }
+      rect.note {
+          fill-opacity: 0.5;
+      }
+      rect.subdued {
+          opacity: 0.1;
+      }
+  </style>
 </head>
 
 <body>
-  <script>
+  <div id="notes"></div>
+  <div id="legend"></div>
 
+  <script>
     var width = 900;
     var height = 150;
-    var fillOpacity = 0.5;
     var csvPath = "Jos2721-La_Bernardina.csv";
 
-    var svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height);
+    var svg = d3.select("body #notes")
+          .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+      , legend = d3.select("body #legend")
+          .append("ul")
+    ;
+    var x = d3.scale.linear()
+      , y = d3.scale.linear()
+      , color = d3.scale.category10()
+    ;
+    var hilite;
+    d3.csv(csvPath, type, chartify);
 
-    var x = d3.scale.linear();
-    var y = d3.scale.linear();
-    var color = d3.scale.category10();
+    function chartify(data){
+        x.domain([
+              d3.min(data, function(d) { return d.time; })
+            , d3.max(data, function(d) { return d.time + d.duration; })
+          ])
+        ;
+        y.domain([
+              d3.min(data, function(d) { return d.pitch - 1; })
+            , d3.max(data, function(d) { return d.pitch; })
+          ])
+        ;
+        x.range([0, width]);
+        y.range([height, 0]);
 
-    function render(data){
+        var noteHeight = height / (y.domain()[1] - y.domain()[0])
+          , roundedCornerSize = noteHeight / 2
+        ;
+        var rects = svg.selectAll("rect").data(data);
+        rects.enter().append("rect");
+        rects.exit().remove();
+        rects
+            .attr("x", function(d) { return x(d.time); })
+            .attr("y", function(d) { return y(d.pitch); })
+            .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
+            .attr("height", noteHeight)
+            .attr("fill", function(d) { return color(d.voice); })
+            .attr("stroke", function(d) { return color(d.voice); })
+            .attr("rx", roundedCornerSize)
+            .attr("ry", roundedCornerSize)
+            .attr("class", function(d) { return d.voice.toLowerCase(); })
+            .classed("note", true)
+        ;
 
-      x.domain([
-        d3.min(data, function (d){ return d.time; }),
-        d3.max(data, function (d){ return d.time + d.duration; })
-      ]);
+        draw_legend();
 
-      y.domain([
-        d3.min(data, function (d){ return d.pitch - 1; }),
-        d3.max(data, function (d){ return d.pitch; })
-      ]);
-
-      x.range([0, width]);
-      y.range([height, 0]);
-
-      var noteHeight = height / (y.domain()[1] - y.domain()[0]);
-      var roundedCornerSize = noteHeight / 2;
-
-      var rects = svg.selectAll("rect").data(data);
-      rects.enter().append("rect");
-      rects.exit().remove();
-      rects
-        .attr("x", function (d){ return x(d.time); })
-        .attr("y", function (d){ return y(d.pitch); })
-        .attr("width", function (d){ return x(d.time + d.duration) - x(d.time); })
-        .attr("height", noteHeight)
-        .attr("fill", function(d){ return color(d.voice); })
-        .attr("stroke", function(d){ return color(d.voice); })
-        .attr("fill-opacity", fillOpacity)
-        .attr("rx", roundedCornerSize)
-        .attr("ry", roundedCornerSize);
-    }
+        function draw_legend() {
+            var y = d3.scale.ordinal()
+                    .domain(color.domain())
+                    .rangeRoundBands([0, height])
+              , row = legend.selectAll("li")
+                    .data(color.domain())
+            ;
+            row.enter()
+              .append("li")
+                .each(function(c) {
+                    var self = d3.select(this);
+                    self
+                      .append("svg")
+                        .attr("x", 0)
+                        .attr("y", noteHeight)
+                        .attr("width", x(9))
+                        .attr("height", noteHeight)
+                      .append("rect")
+                        .attr("class", c.toLowerCase())
+                        .classed("note", true)
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("width", "100%")
+                        .attr("height", "100%")
+                        .attr("fill", color(c))
+                        .attr("stroke", color(c))
+                        .attr("rx", roundedCornerSize)
+                        .attr("ry", roundedCornerSize)
+                    ;
+                    self
+                      .append("text")
+                        .text(c)
+                    ;
+                  })
+            ;
+            row
+              .on("click", function(c) {
+                  hilite = hilite === c ? false : c;
+                  svg.selectAll("rect.note")
+                      .classed("subdued", function(d) {
+                          return hilite && d.voice !== c;
+                        })
+                  ;
+                })
+            ;
+        } // draw_legend()
+    } // chartify()
 
     // Parse strings from CSV data into numbers.
-    function type (d){
-      d.pitch = +d.pitch;
-      d.time = +d.time;
-      d.duration = +d.duration;
-      return d;
+    function type(d){
+        d.pitch = +d.pitch;
+        d.time = +d.time;
+        d.duration = +d.duration;
+        return d;
     }
-
-    d3.csv(csvPath, type, render);
-
   </script>
 </body>
