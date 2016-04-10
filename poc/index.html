@@ -55,26 +55,36 @@
     </div><!--.container-->
   </article>
   <script>
-    var width = 900;
-    var height = 150;
-    var csvPath = "Jos2721-La_Bernardina.csv";
 
-    var svg = d3.select("body #notes")
+    // Variables for notes view.
+    var width = 900
+      , height = 150
+      , svg = d3.select("body #notes")
           .append("svg")
             .attr("width", width)
             .attr("height", height)
-      , legend = d3.select("body #legend")
+      , x = d3.scale.linear()
+      , y = d3.scale.linear()
+    ;
+
+    // Variables for legend.
+    var legend = d3.select("body #legend")
           .append("ul")
             .attr("class", "list-unstyled")
+      , hilite
     ;
-    var x = d3.scale.linear()
-      , y = d3.scale.linear()
+
+    // Variables common to notes view and legend.
+    var csvPath = "Jos2721-La_Bernardina.csv"
       , color = d3.scale.category10()
     ;
-    var hilite;
-    d3.csv(csvPath, type, chartify);
 
-    function chartify(data){
+    d3.csv(csvPath, type, function (data){
+        var computedProperties = drawNotes(data);
+        drawLegend(computedProperties);
+    });
+
+    function drawNotes(data){
         x.domain([
               d3.min(data, function(d) { return d.time; })
             , d3.max(data, function(d) { return d.time + d.duration; })
@@ -107,69 +117,75 @@
             .classed("note", true)
         ;
 
-        draw_legend();
+        return {
+            noteHeight: noteHeight,
+            roundedCornerSize: roundedCornerSize
+        };
 
-        function draw_legend() {
-            var y = d3.scale.ordinal()
-                    .domain(color.domain())
-                    .rangeRoundBands([0, height])
-              , row = legend.selectAll("li")
-                    .data(color.domain())
-            ;
-            legend
-                .on("click", function() {
-                    hilite = false;
-                    svg.selectAll("rect")
-                        .classed("subdued", false)
-                    ;
-                  })
-            ;
-            row.enter()
-              .append("li")
-                .each(function(c) {
-                    var self = d3.select(this);
-                    self
-                      .append("svg")
-                        .attr("x", 0)
-                        .attr("y", noteHeight)
-                        .attr("width", x(9))
-                        .attr("height", noteHeight)
-                      .append("rect")
-                        .attr("class", c.toLowerCase())
-                        .classed("note", true)
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("width", "100%")
-                        .attr("height", "100%")
-                        .attr("fill", color(c))
-                        .attr("stroke", color(c))
-                        .attr("rx", roundedCornerSize)
-                        .attr("ry", roundedCornerSize)
-                    ;
-                    self
-                      .append("text")
-                        .text(c)
-                    ;
-                  })
-            ;
-            row
-              .on("click", function(c) {
-                  d3.event.stopPropagation();
-                  hilite = hilite === c ? false : c;
-                  svg.selectAll("rect.note")
-                      .classed("subdued", function(d) {
-                          return hilite && d.voice !== c;
-                        })
-                  ;
-                  legend.selectAll("li")
-                      .classed("subdued", function(d) {
-                          return hilite && d !== c;
-                        })
-                  ;
-                })
-            ;
-        } // draw_legend()
-    } // chartify()
+    } // drawNotes()
+
+    function drawLegend(computedProperties) {
+        var y = d3.scale.ordinal()
+                .domain(color.domain())
+                .rangeRoundBands([0, height])
+          , row = legend.selectAll("li")
+                .data(color.domain())
+          , noteHeight = computedProperties.noteHeight
+          , roundedCornerSize = computedProperties.roundedCornerSize
+        ;
+        legend
+            .on("click", function() {
+                hilite = false;
+                svg.selectAll("rect")
+                    .classed("subdued", false)
+                ;
+              })
+        ;
+        row.enter()
+          .append("li")
+            .each(function(c) {
+                var self = d3.select(this);
+                self
+                  .append("svg")
+                    .attr("x", 0)
+                    .attr("y", noteHeight)
+                    .attr("width", x(9))
+                    .attr("height", noteHeight)
+                  .append("rect")
+                    .attr("class", c.toLowerCase())
+                    .classed("note", true)
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("width", "100%")
+                    .attr("height", "100%")
+                    .attr("fill", color(c))
+                    .attr("stroke", color(c))
+                    .attr("rx", roundedCornerSize)
+                    .attr("ry", roundedCornerSize)
+                ;
+                self
+                  .append("text")
+                    .text(c)
+                ;
+              })
+        ;
+        row
+          .on("click", function(c) {
+              d3.event.stopPropagation();
+              hilite = hilite === c ? false : c;
+              svg.selectAll("rect.note")
+                  .classed("subdued", function(d) {
+                      return hilite && d.voice !== c;
+                    })
+              ;
+              legend.selectAll("li")
+                  .classed("subdued", function(d) {
+                      return hilite && d !== c;
+                    })
+              ;
+            })
+        ;
+    } // drawLegend()
 
     // Parse strings from CSV data into numbers.
     function type(d){
