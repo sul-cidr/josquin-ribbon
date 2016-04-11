@@ -81,11 +81,21 @@
 
         colorLegend.colorScale(colorScale);
 
-        d3.csv(csvPath, type, function (data){
+        d3.csv(csvPath, type, chartify);
+
+        function type(d){
+            d.pitch = +d.pitch;
+            d.time = +d.time;
+            d.duration = +d.duration;
+            return d;
+        }
+
+        function chartify(data){
 
             d3.select("#notes-svg")
                 .datum(data)
-                .call(notesView);
+                .call(notesView)
+            ;
 
             colorLegend
                 .noteHeight(notesView.noteHeight())
@@ -93,15 +103,8 @@
             ;
 
             colorLegend();
-        });
-
-        // Parse strings from CSV data into numbers.
-        function type(d){
-            d.pitch = +d.pitch;
-            d.time = +d.time;
-            d.duration = +d.duration;
-            return d;
         }
+
     }
 
     function NotesView(){
