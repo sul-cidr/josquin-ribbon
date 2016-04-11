@@ -57,7 +57,6 @@
     <div class="container">
       <div class="row">
         <div id="notes" class="col-xs-12 col-lg-10">
-          <svg id="notes-svg"></svg>
         </div>
         <div id="legend" class="col-xs-12 col-lg-2"></div>
       </div><!--.row-->
@@ -67,16 +66,26 @@
 
     main();
     function main(){
-        var notesView = NotesView()
+        var notesViewContext = NotesView()
+          , notesViewContextSVG = d3.select("#notes").append("svg")
+          , notesViewFocus = NotesView()
+          , notesViewFocusSVG = d3.select("#notes").append("svg")
           , colorLegend = ColorLegend()
           , csvPath = "Jos2721-La_Bernardina.csv"
           , colorScale = d3.scale.category10()
+          , notesViewFocus = NotesView()
         ;
 
-        notesView
+        notesViewContext
             .colorScale(colorScale)
             .width(900)
             .height(150)
+        ;
+
+        notesViewFocus
+            .colorScale(colorScale)
+            .width(notesViewContext.width())
+            .height(notesViewContext.height())
         ;
 
         colorLegend.colorScale(colorScale);
@@ -88,6 +97,7 @@
             //setTimeout(function(){
             //    var differentData = data
             //        .filter(function (d){
+            //            // Remove some entries.
             //            return d.voice !== "Contra";
             //        })
             //        .map(function (d){
@@ -95,6 +105,8 @@
             //                pitch: d.pitch + Math.round(Math.random() * 5),
             //                time: d.time,
             //                duration: d.duration,
+            //
+            //                // Change a voice name.
             //                voice: d.voice === "Tenor" ? "Bassus" : d.voice
             //            };
             //        });
@@ -112,16 +124,23 @@
 
         function chartify(data){
 
-            colorScale.domain(data.map(function (d){ return d.voice; }));
+            colorScale.domain(data.map(function (d){
+                return d.voice;
+            }));
 
-            d3.select("#notes-svg")
+            notesViewContextSVG
                 .datum(data)
-                .call(notesView)
+                .call(notesViewContext)
+            ;
+
+            notesViewFocusSVG
+                .datum(data)
+                .call(notesViewFocus)
             ;
 
             colorLegend
-                .noteHeight(notesView.noteHeight())
-                .roundedCornerSize(notesView.roundedCornerSize())
+                .noteHeight(notesViewContext.noteHeight())
+                .roundedCornerSize(notesViewContext.roundedCornerSize())
             ;
 
             colorLegend();
@@ -144,9 +163,10 @@
 
         function my(selection){
             selection.each(function (data){
+
                 var svg = d3.select(this)
-                      .attr("height", height)
-                      .attr("width", width)
+                    .attr("height", height)
+                    .attr("width", width)
                 ;
 
                 svg.selectAll("g")
@@ -237,7 +257,7 @@
         ;
 
         function my(options) {
-            var svg = d3.select("#notes-svg")
+            var svg = d3.select("#notes").selectAll("svg")
               , row = legend.selectAll("li")
                     .data(colorScale.domain())
             ;

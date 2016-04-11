@@ -11,3 +11,4 @@ Curran
 4/11/16
 .5 hour 11:00 - 11:30 Reusable Charts Refactoring
 .5 hour 12:00 - 12:30 More Reusable Charts Refactoring
+12:30 -  Focus Plus Context
