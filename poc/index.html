@@ -81,7 +81,27 @@
 
         colorLegend.colorScale(colorScale);
 
-        d3.csv(csvPath, type, chartify);
+        d3.csv(csvPath, type, function (data){
+            chartify(data);
+
+            // Test that the chartify function can be called multiple times with different data.
+            //setTimeout(function(){
+            //    var differentData = data
+            //        .filter(function (d){
+            //            return d.voice !== "Contra";
+            //        })
+            //        .map(function (d){
+            //            return {
+            //                pitch: d.pitch + Math.round(Math.random() * 5),
+            //                time: d.time,
+            //                duration: d.duration,
+            //                voice: d.voice === "Tenor" ? "Bassus" : d.voice
+            //            };
+            //        });
+            //    chartify(differentData);
+            //}, 500);
+
+        });
 
         function type(d){
             d.pitch = +d.pitch;
@@ -91,6 +111,8 @@
         }
 
         function chartify(data){
+
+            colorScale.domain(data.map(function (d){ return d.voice; }));
 
             d3.select("#notes-svg")
                 .datum(data)
@@ -125,10 +147,18 @@
                 var svg = d3.select(this)
                       .attr("height", height)
                       .attr("width", width)
-                  , notesG = svg.append("g")
-                  , brushG = svg.append("g")
-                      .attr("class", "x brush")
                 ;
+
+                svg.selectAll("g")
+                    .data(["notes-g", "brush"])
+                    .enter()
+                      .append("g")
+                      .attr("class", function (d){ return d; });
+
+                var notesG = svg.select(".notes-g")
+                  , brushG = svg.select(".brush")
+                ;
+
                 x.domain([
                       d3.min(data, function(d) { return d.time; })
                     , d3.max(data, function(d) { return d.time + d.duration; })
@@ -263,6 +293,7 @@
                   ;
                 })
             ;
+            row.exit().remove();
         } // my()
 
         my.colorScale = function (value){
