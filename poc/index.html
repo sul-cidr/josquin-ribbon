@@ -80,6 +80,7 @@
             .colorScale(colorScale)
             .width(900)
             .height(150)
+            .brushEnabled(true)
         ;
 
         notesViewFocus
@@ -156,6 +157,7 @@
           , brush = d3.svg.brush()
               .x(x)
               .on("brush", brushed)
+          , brushEnabled = false
           , colorScale
           , noteHeight
           , roundedCornerSize
@@ -210,11 +212,13 @@
                     .classed("note", true)
                 ;
 
-                brushG
-                    .call(brush)
-                  .selectAll("rect")
-                    .attr("y", 0)
-                    .attr("height", height - 1);
+                if(brushEnabled){
+                    brushG
+                        .call(brush)
+                      .selectAll("rect")
+                        .attr("y", 0)
+                        .attr("height", height - 1);
+                }
             });
         } // my()
 
@@ -242,6 +246,12 @@
 
         my.noteHeight = function (){ return noteHeight; };
         my.roundedCornerSize = function (){ return roundedCornerSize; };
+
+        my.brushEnabled = function (value){
+            if(arguments.length === 0) return brushEnabled;
+            brushEnabled = value;
+            return my;
+        };
 
         return my;
     }
