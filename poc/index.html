@@ -129,24 +129,39 @@
                 return d.voice;
             }));
 
+            renderNotesViewContext(data);
+            renderNotesViewFocus(data);
+            renderColorLegend(data);
+
+            notesViewContext.onBrush(function (extent){
+                notesViewFocus.xDomain(extent);
+                renderNotesViewFocus(data.filter(function (d){
+                    return d.time > extent[0] && d.time < extent[1];
+                }));
+            });
+        }
+
+        function renderNotesViewContext(data){
             notesViewContextSVG
                 .datum(data)
                 .call(notesViewContext)
             ;
+        }
 
+        function renderNotesViewFocus(data){
             notesViewFocusSVG
                 .datum(data)
                 .call(notesViewFocus)
             ;
+        }
 
+        function renderColorLegend(data){
             colorLegend
                 .noteHeight(notesViewContext.noteHeight())
                 .roundedCornerSize(notesViewContext.roundedCornerSize())
             ;
-
             colorLegend();
         }
-
     }
 
     function NotesView(){
@@ -158,10 +173,22 @@
               .x(x)
               .on("brush", brushed)
           , brushEnabled = false
+          , onBrush
           , colorScale
           , noteHeight
           , roundedCornerSize
+
+          // This is a fixed x domain set from outside,
+          // it overrides the domain computed from the data.
+          // This is set on the focus view based on the brush of the context view.
+          , xDomain
         ;
+
+        function brushed(){
+            if(onBrush){
+                onBrush(brush.empty() ? x.domain() : brush.extent());
+            }
+        }
 
         function my(selection){
             selection.each(function (data){
@@ -181,11 +208,15 @@
                   , brushG = svg.select(".brush")
                 ;
 
-                x.domain([
-                      d3.min(data, function(d) { return d.time; })
-                    , d3.max(data, function(d) { return d.time + d.duration; })
-                  ])
-                ;
+                if(xDomain){
+                    x.domain(xDomain);
+                } else {
+                    x.domain([
+                          d3.min(data, function(d) { return d.time; })
+                        , d3.max(data, function(d) { return d.time + d.duration; })
+                      ])
+                    ;
+                }
                 y.domain([
                       d3.min(data, function(d) { return d.pitch - 1; })
                     , d3.max(data, function(d) { return d.pitch; })
@@ -222,10 +253,6 @@
             });
         } // my()
 
-        function brushed(){
-            console.log("brushed");
-        }
-
         my.colorScale = function (value){
             if(arguments.length === 0) return colorScale;
             colorScale = value;
@@ -251,6 +278,14 @@
             if(arguments.length === 0) return brushEnabled;
             brushEnabled = value;
             return my;
+        };
+
+        my.onBrush = function (callback){
+            onBrush = callback;
+        };
+
+        my.xDomain = function (value){
+            xDomain = value;
         };
 
         return my;
