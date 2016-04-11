@@ -65,15 +65,23 @@
 
     main();
     function main(){
-        var color = d3.scale.category10()
-          , notesView = NotesView(color)
-          , colorLegend = ColorLegend(color)
+        var notesView = NotesView()
+          , colorLegend = ColorLegend()
           , csvPath = "Jos2721-La_Bernardina.csv"
+          , colorScale = d3.scale.category10()
         ;
 
+        notesView
+            .colorScale(colorScale)
+            .width(900)
+            .height(150)
+        ;
+
+        colorLegend.colorScale(colorScale);
+
         d3.csv(csvPath, type, function (data){
-            var computedProperties = notesView.render(data);
-            colorLegend.render(computedProperties);
+            var computedProperties = notesView(data);
+            colorLegend(computedProperties);
         });
 
         // Parse strings from CSV data into numbers.
@@ -85,13 +93,11 @@
         }
     }
 
-    function NotesView(color){
-        var width = 900
-          , height = 150
+    function NotesView(){
+        var width = 500
+          , height = 500
           , svg = d3.select("body #notes")
               .append("svg")
-                .attr("width", width)
-                .attr("height", height)
           , notesG = svg.append("g")
           , x = d3.scale.linear()
           , y = d3.scale.linear()
@@ -100,9 +106,10 @@
               .on("brush", brushed)
           , brushG = svg.append("g")
               .attr("class", "x brush")
+          , colorScale
         ;
 
-        function render(data){
+        function my(data){
             x.domain([
                   d3.min(data, function(d) { return d.time; })
                 , d3.max(data, function(d) { return d.time + d.duration; })
@@ -127,8 +134,8 @@
                 .attr("y", function(d) { return y(d.pitch); })
                 .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
                 .attr("height", noteHeight)
-                .attr("fill", function(d) { return color(d.voice); })
-                .attr("stroke", function(d) { return color(d.voice); })
+                .attr("fill", function(d) { return colorScale(d.voice); })
+                .attr("stroke", function(d) { return colorScale(d.voice); })
                 .attr("rx", roundedCornerSize)
                 .attr("ry", roundedCornerSize)
                 .classed("note", true)
@@ -147,32 +154,53 @@
                 svg: svg
             };
             return computedProperties;
-        } // render()
+        } // my()
 
         function brushed(){
             console.log("brushed");
         }
 
-        return { render: render };
+        my.colorScale = function (value){
+            if(arguments.length === 0) return colorScale;
+            colorScale = value;
+            return my;
+        };
+
+        my.width = function (value){
+            if(arguments.length === 0) return width;
+            width = value;
+            svg.attr("width", width);
+            return my;
+        };
+
+        my.height = function (value){
+            if(arguments.length === 0) return height;
+            height = value;
+            svg.attr("height", height);
+            return my;
+        };
+
+        return my;
     }
 
-    function ColorLegend(color){
+    function ColorLegend(){
         var legend = d3.select("body #legend")
               .append("ul")
                 .attr("class", "list-unstyled")
           , hilite
+          , colorScale
         ;
 
-        function render(options) {
+        function my(options) {
             var noteHeight = options.noteHeight
               , roundedCornerSize = options.roundedCornerSize
               , height = options.height
               , svg = options.svg
               , y = d3.scale.ordinal()
-                    .domain(color.domain())
+                    .domain(colorScale.domain())
                     .rangeRoundBands([0, height])
               , row = legend.selectAll("li")
-                    .data(color.domain())
+                    .data(colorScale.domain())
             ;
             legend
                 .on("click", function() {
@@ -199,8 +227,8 @@
                         .attr("y", 0)
                         .attr("width", "100%")
                         .attr("height", "100%")
-                        .attr("fill", color(c))
-                        .attr("stroke", color(c))
+                        .attr("fill", colorScale(c))
+                        .attr("stroke", colorScale(c))
                         .attr("rx", roundedCornerSize)
                         .attr("ry", roundedCornerSize)
                     ;
@@ -226,8 +254,16 @@
                   ;
                 })
             ;
-        } // render()
-        return { render: render };
+        } // my()
+
+        my.colorScale = function (value){
+            if(arguments.length === 0){
+                return colorScale;
+            }
+            colorScale = value;
+        };
+
+        return my;
     }
   </script>
 </body>
