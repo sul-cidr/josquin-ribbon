@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <!--
+      This program is derived from this bar chart http://bl.ocks.org/curran/d9e60dd20f22e37e34e0 .
+      It shows the number of works in each repertory.
+      By Curran Kelleher <curran.kelleher@gmail.com>
+      April 2016
+    -->
+
+    <title>Repertory Bar Chart</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js"></script>
+    <style>
+    
+      .axis text {
+        font-family: 'Playfair Display', serif;
+        font-size: 12pt;
+      }
+      .axis .label {
+        font-size: 40pt;
+      }
+
+      .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      .y.axis path, .y.axis line {
+        stroke: none;
+      }
+
+      .tooltip {
+        font-family: 'Playfair Display', serif;
+        font-size: 20pt;
+
+        /* This trick adds a heavy white shadow around the text. */
+        text-shadow: 
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white,
+          0px 0px 6px white;
+
+        /* This eliminates the possibility of flickering tooltips. */
+        pointer-events: none;
+      }
+
+    </style>
+  </head>
+  <body>
+    <script>
+
+      var outerWidth = 960;
+      var outerHeight = 500;
+      var margin = { left: 240, top: 0, right: 89, bottom: 101 };
+      var barPadding = 0.2;
+      var barPaddingOuter = 0.1;
+
+      var xColumn = "Works";
+      var yColumn = "Repertory";
+      var xAxisLabelText = "Number of Works";
+      var xAxisLabelOffset = 80;
+
+      var innerWidth  = outerWidth  - margin.left - margin.right;
+      var innerHeight = outerHeight - margin.top  - margin.bottom;
+
+      var svg = d3.select("body").append("svg")
+        .attr("width",  outerWidth)
+        .attr("height", outerHeight);
+      var g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var xAxisG = g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + innerHeight + ")")
+      var xAxisLabel = xAxisG.append("text")
+        .style("text-anchor", "middle")
+        .attr("x", innerWidth / 2)
+        .attr("y", xAxisLabelOffset)
+        .attr("class", "label")
+        .text(xAxisLabelText);
+      var yAxisG = g.append("g")
+        .attr("class", "y axis");
+
+      var tooltip = svg.append("text").attr("class", "tooltip");
+
+      var xScale = d3.scale.linear().range([0, innerWidth]);
+      var yScale = d3.scale.ordinal().rangeRoundBands([0, innerHeight], barPadding, barPaddingOuter);
+
+      // Use D3's number format that generates SI prefixes for the X axis.
+      // See also http://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes
+      var siFormat = d3.format("s");
+      function tickFormat(num){
+        // Replace the confusing G (for Giga) with 
+        // the more recognizable B (for Billion).
+        return siFormat(num).replace("G", "B");
+      }
+
+      var xAxis = d3.svg.axis().scale(xScale).orient("bottom")
+        .ticks(5)
+        .tickFormat(tickFormat)
+        .outerTickSize(0);
+      var yAxis = d3.svg.axis().scale(yScale).orient("left")
+        .outerTickSize(0);
+
+      var tooltipFormat = d3.format(",");
+      function showTooltip(d){
+        tooltip.text(tooltipFormat(d[xColumn]) + " " + xColumn)
+          .attr("x", d3.event.pageX + 20)		
+          .attr("y", d3.event.pageY);	
+      }
+      function hideTooltip(){
+        tooltip.text("");
+      }
+
+      function render(data){
+        data.sort(function (a, b){
+          return a[xColumn] - b[xColumn];
+        });
+
+        xScale.domain([0, d3.max(data, function (d){ return d[xColumn]; })]);
+        yScale.domain(       data.map( function (d){ return d[yColumn]; }));
+
+        xAxisG.call(xAxis);
+        yAxisG.call(yAxis);
+
+        var bars = g.selectAll("rect").data(data);
+        bars.enter().append("rect")
+          .attr("height", yScale.rangeBand())
+          .on("mouseover", showTooltip)
+          .on("mousemove", showTooltip)
+          .on("mouseout", hideTooltip);
+        bars
+          .attr("x", 0)
+          .attr("y",     function (d){ return yScale(d[yColumn]); })
+          .attr("width", function (d){ return xScale(d[xColumn]); });
+        bars.exit().remove();
+      }
+
+      function type(d){
+        d.Works = +d.Works;
+        d.Notes = +d.Notes;
+        return d;
+      }
+
+      d3.csv("repertorySummaries.csv", type, render);
+
+    </script>
+  </body>
+</html>

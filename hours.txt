@@ -11,5 +11,6 @@ Curran
 4/11/16
 1 hour on Reusable Charts Refactoring
 1 hour on Focus Plus Context Zooming
-.5 hour on SoW updates
-2.5 hours total
+.5 hour on Concept Sketch and SoW updates
+.5 on composers bar chart
+3 hours total
