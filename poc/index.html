@@ -56,7 +56,9 @@
   <article>
     <div class="container">
       <div class="row">
-        <div id="notes" class="col-xs-12 col-lg-10"></div>
+        <div id="notes" class="col-xs-12 col-lg-10">
+          <svg id="notes-svg"></svg>
+        </div>
         <div id="legend" class="col-xs-12 col-lg-2"></div>
       </div><!--.row-->
     </div><!--.container-->
@@ -81,18 +83,16 @@
 
         d3.csv(csvPath, type, function (data){
 
-            //d3.select("#notes")
-            //    .datum(data)
-            //    .call(notesView);
-
-            var computedProperties = notesView(data);
+            d3.select("#notes-svg")
+                .datum(data)
+                .call(notesView);
 
             colorLegend
                 .noteHeight(notesView.noteHeight())
                 .roundedCornerSize(notesView.roundedCornerSize())
             ;
 
-            colorLegend(computedProperties);
+            colorLegend();
         });
 
         // Parse strings from CSV data into numbers.
@@ -107,63 +107,62 @@
     function NotesView(){
         var width = 500
           , height = 500
-          , svg = d3.select("body #notes")
-              .append("svg")
-          , notesG = svg.append("g")
           , x = d3.scale.linear()
           , y = d3.scale.linear()
           , brush = d3.svg.brush()
               .x(x)
               .on("brush", brushed)
-          , brushG = svg.append("g")
-              .attr("class", "x brush")
           , colorScale
           , noteHeight
           , roundedCornerSize
         ;
 
-        function my(data){
-            x.domain([
-                  d3.min(data, function(d) { return d.time; })
-                , d3.max(data, function(d) { return d.time + d.duration; })
-              ])
-            ;
-            y.domain([
-                  d3.min(data, function(d) { return d.pitch - 1; })
-                , d3.max(data, function(d) { return d.pitch; })
-              ])
-            ;
-            x.range([0, width - 1]);
-            y.range([height, 0]);
+        function my(selection){
+            selection.each(function (data){
+                var svg = d3.select(this)
+                      .attr("height", height)
+                      .attr("width", width)
+                  , notesG = svg.append("g")
+                  , brushG = svg.append("g")
+                      .attr("class", "x brush")
+                ;
+                x.domain([
+                      d3.min(data, function(d) { return d.time; })
+                    , d3.max(data, function(d) { return d.time + d.duration; })
+                  ])
+                ;
+                y.domain([
+                      d3.min(data, function(d) { return d.pitch - 1; })
+                    , d3.max(data, function(d) { return d.pitch; })
+                  ])
+                ;
+                x.range([0, width - 1]);
+                y.range([height, 0]);
 
-            noteHeight = height / (y.domain()[1] - y.domain()[0])
-            roundedCornerSize = noteHeight / 2
+                noteHeight = height / (y.domain()[1] - y.domain()[0])
+                roundedCornerSize = noteHeight / 2
 
-            var rects = notesG.selectAll("rect").data(data);
-            rects.enter().append("rect");
-            rects.exit().remove();
-            rects
-                .attr("x", function(d) { return x(d.time); })
-                .attr("y", function(d) { return y(d.pitch); })
-                .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
-                .attr("height", noteHeight)
-                .attr("fill", function(d) { return colorScale(d.voice); })
-                .attr("stroke", function(d) { return colorScale(d.voice); })
-                .attr("rx", roundedCornerSize)
-                .attr("ry", roundedCornerSize)
-                .classed("note", true)
-            ;
+                var rects = notesG.selectAll("rect").data(data);
+                rects.enter().append("rect");
+                rects.exit().remove();
+                rects
+                    .attr("x", function(d) { return x(d.time); })
+                    .attr("y", function(d) { return y(d.pitch); })
+                    .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
+                    .attr("height", noteHeight)
+                    .attr("fill", function(d) { return colorScale(d.voice); })
+                    .attr("stroke", function(d) { return colorScale(d.voice); })
+                    .attr("rx", roundedCornerSize)
+                    .attr("ry", roundedCornerSize)
+                    .classed("note", true)
+                ;
 
-            brushG
-                .call(brush)
-              .selectAll("rect")
-                .attr("y", 0)
-                .attr("height", height - 1);
-
-            var computedProperties = {
-                svg: svg
-            };
-            return computedProperties;
+                brushG
+                    .call(brush)
+                  .selectAll("rect")
+                    .attr("y", 0)
+                    .attr("height", height - 1);
+            });
         } // my()
 
         function brushed(){
@@ -179,14 +178,12 @@
         my.width = function (value){
             if(arguments.length === 0) return width;
             width = value;
-            svg.attr("width", width);
             return my;
         };
 
         my.height = function (value){
             if(arguments.length === 0) return height;
             height = value;
-            svg.attr("height", height);
             return my;
         };
 
@@ -207,7 +204,7 @@
         ;
 
         function my(options) {
-            var svg = options.svg
+            var svg = d3.select("#notes-svg")
               , row = legend.selectAll("li")
                     .data(colorScale.domain())
             ;

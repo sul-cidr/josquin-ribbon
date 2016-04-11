@@ -9,4 +9,5 @@ Curran
 1 hour on PoC
 
 4/11/16
-11:00 start
+11:00 - 11:30 Reusable Charts Refactoring
+12:00 - 
