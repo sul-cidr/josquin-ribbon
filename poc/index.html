@@ -80,6 +80,11 @@
         colorLegend.colorScale(colorScale);
 
         d3.csv(csvPath, type, function (data){
+
+            //d3.select("#notes")
+            //    .datum(data)
+            //    .call(notesView);
+
             var computedProperties = notesView(data);
             colorLegend(computedProperties);
         });
@@ -148,7 +153,6 @@
                 .attr("height", height - 1);
 
             var computedProperties = {
-                height: height,
                 noteHeight: noteHeight,
                 roundedCornerSize: roundedCornerSize,
                 svg: svg
@@ -194,11 +198,7 @@
         function my(options) {
             var noteHeight = options.noteHeight
               , roundedCornerSize = options.roundedCornerSize
-              , height = options.height
               , svg = options.svg
-              , y = d3.scale.ordinal()
-                    .domain(colorScale.domain())
-                    .rangeRoundBands([0, height])
               , row = legend.selectAll("li")
                     .data(colorScale.domain())
             ;
@@ -261,6 +261,12 @@
                 return colorScale;
             }
             colorScale = value;
+        };
+
+        my.height = function (value){
+            if(arguments.length === 0) return height;
+            height = value;
+            return my;
         };
 
         return my;
