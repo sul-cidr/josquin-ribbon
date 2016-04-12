@@ -44,8 +44,19 @@
           stroke-opacity: .2;
           shape-rendering: crispEdges;
       }
+
+      /* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
+      .d3-tip {
+          line-height: 1;
+          padding: 5px;
+          background: rgba(0, 0, 0, 0.5);
+          color: #fff;
+          border-radius: 2px;
+      }
+
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
 </head>
 
 <body>
@@ -87,6 +98,7 @@
             .colorScale(colorScale)
             .width(notesViewContext.width())
             .height(notesViewContext.height())
+            .tipEnabled(true)
         ;
 
         colorLegend.colorScale(colorScale);
@@ -173,6 +185,7 @@
               .x(x)
               .on("brush", brushed)
           , brushEnabled = false
+          , tipEnabled = false
           , onBrush
           , colorScale
           , noteHeight
@@ -182,6 +195,9 @@
           // it overrides the domain computed from the data.
           // This is set on the focus view based on the brush of the context view.
           , xDomain
+          , tip = d3.tip()
+              .attr("class", "d3-tip")
+              .html(function(d) { return d.pitchName; });
         ;
 
         function brushed(){
@@ -250,6 +266,14 @@
                         .attr("y", 0)
                         .attr("height", height - 1);
                 }
+
+                if(tipEnabled){
+                    svg.call(tip);
+                    rects
+                        .on("mouseover", tip.show)
+                        .on("mouseout", tip.hide)
+                    ;
+                }
             });
         } // my()
 
@@ -286,6 +310,12 @@
 
         my.xDomain = function (value){
             xDomain = value;
+        };
+
+        my.tipEnabled = function (value){
+            if(arguments.length === 0) return tipEnabled;
+            tipEnabled = value;
+            return my;
         };
 
         return my;
