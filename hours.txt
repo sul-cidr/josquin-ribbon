@@ -9,8 +9,13 @@ Curran
 1 hour on PoC
 
 4/11/16
+Curran
 1 hour on Reusable Charts Refactoring
 1 hour on Focus Plus Context Zooming
 .5 hour on Concept Sketch and SoW updates
 .5 on composers bar chart
 3 hours total
+
+4/12/16
+Curran
+12:30 - Add tooltips

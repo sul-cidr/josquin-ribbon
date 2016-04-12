@@ -27,6 +27,7 @@ prollData.partdata.forEach(function (part){
   part.notedata.forEach(function (note){
     data.push({
       pitch: note.pitch.b7,
+      pitchName: note.pitch.name,
       time: note.starttime[0],
       duration: note.duration[0],
       voice: voice
