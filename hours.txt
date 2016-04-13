@@ -20,5 +20,10 @@ Curran
 Curran
 .5 hours on adding pitch name tooltips
 
+4/13/16
+.5 hours on dynamic <p> tags with filtered notes info
+
 Grand total
-8.5 hours
+9 hours
+
+

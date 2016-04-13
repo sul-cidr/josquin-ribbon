@@ -71,6 +71,10 @@
         </div>
         <div id="legend" class="col-xs-12 col-lg-2"></div>
       </div><!--.row-->
+      <div class="row">
+        <span>Note names: </span> <p id="note-names-string"></p>
+        <span>Note durations: </span><p id="note-durations-string"></p>
+      </div><!--.row-->
     </div><!--.container-->
   </article>
   <script>
@@ -145,11 +149,39 @@
             renderNotesViewFocus(data);
             renderColorLegend(data);
 
+            // When the user brushes in the context view,
             notesViewContext.onBrush(function (extent){
-                notesViewFocus.xDomain(extent);
-                renderNotesViewFocus(data.filter(function (d){
+
+                // Filter the notes based on the selected time interval.
+                var filteredData = data.filter(function (d){
                     return d.time > extent[0] && d.time < extent[1];
-                }));
+                });
+
+                // Update the focus view.
+                notesViewFocus.xDomain(extent);
+                renderNotesViewFocus(filteredData);
+
+                // Update the pitch names text.
+                var pitchNames = filteredData.map(function (d){
+                    return d.pitchName;
+                }).join(", ");
+                d3.select("#note-names-string").text(pitchNames);
+
+                // Update the note names text.
+                var pitchNames = filteredData.map(function (d){
+                    return d.pitchName;
+                }).join(", ");
+                d3.select("#note-names-string").text(pitchNames);
+
+                // Update the note durations text.
+                var pitchNames = filteredData.map(function (d){
+                    return d.duration;
+                }).join(", ");
+                d3.select("#note-durations-string").text(pitchNames);
+
+                // TODO For the text entries, we may need to filter by the voice 
+                // that is currently selected from the legend. Currently, these 
+                // show notes from all voices combined, and not in temporal order.
             });
         }
 
