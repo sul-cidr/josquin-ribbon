@@ -86,7 +86,7 @@
           , notesViewFocus = NotesView()
           , notesViewFocusSVG = d3.select("#notes").append("svg")
           , colorLegend = ColorLegend()
-          , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=Jos2721-La_Bernardina",
+          , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=Jos2721-La_Bernardina"
           , colorScale = d3.scale.category10()
           , notesViewFocus = NotesView()
         ;
@@ -124,7 +124,9 @@
           return data;
         }
 
-        d3.csv(csvPath, type, function (data){
+        d3.json(jsonURL, function (err, prollData){
+            console.log(prollData);
+            var data = parseJSON(prollData);
             chartify(data);
 
             // Test that the chartify function can be called multiple times with different data.
