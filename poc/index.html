@@ -107,6 +107,23 @@
 
         colorLegend.colorScale(colorScale);
 
+        function parseJSON(prollData){
+          var data = [];
+          prollData.partdata.forEach(function (part){
+            var voice = prollData.partnames[part.partindex];
+            part.notedata.forEach(function (note){
+              data.push({
+                pitch: note.pitch.b7,
+                pitchName: note.pitch.name,
+                time: note.starttime[0],
+                duration: note.duration[0],
+                voice: voice
+              });
+            });
+          });
+          return data;
+        }
+
         d3.csv(csvPath, type, function (data){
             chartify(data);
 
