@@ -125,7 +125,6 @@
         }
 
         d3.json(jsonURL, function (err, prollData){
-            console.log(prollData);
             var data = parseJSON(prollData);
             chartify(data);
 
