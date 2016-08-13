@@ -15,7 +15,7 @@
     For reset and grid layout.
     from http://getbootstrap.com/customize/?id=c9c26f4080624c8af8ea9d80a6a64013
   -->
-  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
       rect, li {
           transition: opacity 0.5s ease;
@@ -33,7 +33,7 @@
           margin-left: 1em;
       }
       header {
-          background-image: url('josquin.jpg');
+          background-image: url('img/josquin.jpg');
           background-size: contain;
           background-repeat: no-repeat;
       }
@@ -197,8 +197,8 @@
                 }).join(", ");
                 d3.select("#note-durations-string").text(pitchNames);
 
-                // TODO For the text entries, we may need to filter by the voice 
-                // that is currently selected from the legend. Currently, these 
+                // TODO For the text entries, we may need to filter by the voice
+                // that is currently selected from the legend. Currently, these
                 // show notes from all voices combined, and not in temporal order.
             });
         }
