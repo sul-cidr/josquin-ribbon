@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+
+  <!--
+    This program loads note data for a single work in CSV format
+    and renders it using D3.js.
+
+    By Curran Kelleher <curran.kelleher@gmail.com>
+      & Seemant Kulleen <seemantk@gmail.com>
+    April 2016
+  -->
+
+  <!-- Bootstrap
+    For reset and grid layout.
+    from http://getbootstrap.com/customize/?id=c9c26f4080624c8af8ea9d80a6a64013
+  -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+      rect, li {
+          transition: opacity 0.5s ease;
+      }
+      rect.note {
+          fill-opacity: 0.5;
+      }
+      .subdued {
+          opacity: 0.1;
+      }
+      #legend li {
+          cursor: pointer;
+      }
+      #legend li text {
+          margin-left: 1em;
+      }
+      header {
+          background-image: url('img/josquin.jpg');
+          background-size: contain;
+          background-repeat: no-repeat;
+      }
+
+      .brush .extent {
+          stroke: black;
+          fill-opacity: .08;
+          stroke-opacity: .2;
+          shape-rendering: crispEdges;
+      }
+
+      /* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
+      .d3-tip {
+          line-height: 1;
+          padding: 5px;
+          background: rgba(0, 0, 0, 0.5);
+          color: #fff;
+          border-radius: 2px;
+      }
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
+  <script src="js/legend.js"></script>
+  <script src="js/notesview.js"></script>
+</head>
+
+<body>
+  <header class="page-header text-center">
+    <h1>Josquin Music Project</h1>
+    <h2>Work in Progress</h2>
+  </header>
+  <article>
+    <div class="container">
+      <div class="row">
+        <div id="notes" class="col-xs-12 col-lg-10">
+        </div>
+        <div id="legend" class="col-xs-12 col-lg-2"></div>
+      </div><!--.row-->
+      <div class="row">
+        <span>Note names: </span> <p id="note-names-string"></p>
+        <span>Note durations: </span><p id="note-durations-string"></p>
+      </div><!--.row-->
+    </div><!--.container-->
+  </article>
+  <script>
+
+    main();
+    function main(){
+        var notesViewContext = NotesView()
+          , notesViewContextSVG = d3.select("#notes").append("svg")
+          , notesViewFocus = NotesView()
+          , notesViewFocusSVG = d3.select("#notes").append("svg")
+          , colorLegend = ColorLegend()
+          , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=Jos2721-La_Bernardina"
+          , colorScale = d3.scale.category10()
+          , notesViewFocus = NotesView()
+        ;
+
+        notesViewContext
+            .colorScale(colorScale)
+            .width(900)
+            .height(150)
+            .brushEnabled(true)
+        ;
+
+        notesViewFocus
+            .colorScale(colorScale)
+            .width(notesViewContext.width())
+            .height(notesViewContext.height())
+            .tipEnabled(true)
+        ;
+
+        colorLegend.colorScale(colorScale);
+
+        function parseJSON(prollData){
+          var data = [];
+          prollData.partdata.forEach(function (part){
+            var voice = prollData.partnames[part.partindex];
+            part.notedata.forEach(function (note){
+              data.push({
+                pitch: note.pitch.b7,
+                pitchName: note.pitch.name,
+                time: note.starttime[0],
+                duration: note.duration[0],
+                voice: voice
+              });
+            });
+          });
+          return data;
+        }
+
+        d3.json(jsonURL, function (err, prollData){
+            var data = parseJSON(prollData);
+            chartify(data);
+        });
+
+        function chartify(data){
+
+            colorScale.domain(data.map(function (d){
+                return d.voice;
+            }));
+
+            renderNotesViewContext(data);
+            renderNotesViewFocus(data);
+            renderColorLegend(data);
+
+            // When the user brushes in the context view,
+            notesViewContext.onBrush(function (extent){
+
+                // Filter the notes based on the selected time interval.
+                var filteredData = data.filter(function (d){
+                    return d.time > extent[0] && d.time < extent[1];
+                });
+
+                // Update the focus view.
+                notesViewFocus.xDomain(extent);
+                renderNotesViewFocus(filteredData);
+
+                // Update the pitch names text.
+                var pitchNames = filteredData.map(function (d){
+                    return d.pitchName;
+                }).join(", ");
+                d3.select("#note-names-string").text(pitchNames);
+
+                // Update the note names text.
+                var pitchNames = filteredData.map(function (d){
+                    return d.pitchName;
+                }).join(", ");
+                d3.select("#note-names-string").text(pitchNames);
+
+                // Update the note durations text.
+                var pitchNames = filteredData.map(function (d){
+                    return d.duration;
+                }).join(", ");
+                d3.select("#note-durations-string").text(pitchNames);
+
+                // TODO For the text entries, we may need to filter by the voice
+                // that is currently selected from the legend. Currently, these
+                // show notes from all voices combined, and not in temporal order.
+            });
+        }
+
+        function renderNotesViewContext(data){
+            notesViewContextSVG
+                .datum(data)
+                .call(notesViewContext)
+            ;
+        }
+
+        function renderNotesViewFocus(data){
+            notesViewFocusSVG
+                .datum(data)
+                .call(notesViewFocus)
+            ;
+        }
+
+        function renderColorLegend(data){
+            colorLegend
+                .noteHeight(notesViewContext.noteHeight())
+                .roundedCornerSize(notesViewContext.roundedCornerSize())
+            ;
+            colorLegend();
+        }
+    }
+
+  </script>
+</body>
