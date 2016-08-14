@@ -1,8 +1,8 @@
 # josquin-ribbon
 
-This project is about visualizing very old vocal music. [Try it out!](https://sul-cidr.github.io/josquin-ribbon/poc/)
+This project is about visualizing very old vocal music. [Try it out!](https://sul-cidr.github.io/josquin-ribbon/)
 
-[![image](https://cloud.githubusercontent.com/assets/68416/17561420/d5bbcaa0-5ef3-11e6-85f5-8ccff46a27ea.png)](https://sul-cidr.github.io/josquin-ribbon/poc/)
+[![image](https://cloud.githubusercontent.com/assets/68416/17561420/d5bbcaa0-5ef3-11e6-85f5-8ccff46a27ea.png)](https://sul-cidr.github.io/josquin-ribbon/)
 
 
 The following command extracts data for a given song, which can be used as input to the visualization.
