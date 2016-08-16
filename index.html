@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-
+  <title>Josquin Music Project</title>
   <!--
     This program loads note data for a single work in CSV format
     and renders it using D3.js.
@@ -80,125 +80,116 @@
     </div><!--.container-->
   </article>
   <script>
+    var notesViewContext = NotesView()
+      , notesViewContextSVG = d3.select("#notes").append("svg")
+      , notesViewFocus = NotesView()
+      , notesViewFocusSVG = d3.select("#notes").append("svg")
+      , colorLegend = ColorLegend()
+      , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=Jos2721-La_Bernardina"
+      , colorScale = d3.scale.category10()
+      , notesViewFocus = NotesView()
+    ;
 
-    main();
-    function main(){
-        var notesViewContext = NotesView()
-          , notesViewContextSVG = d3.select("#notes").append("svg")
-          , notesViewFocus = NotesView()
-          , notesViewFocusSVG = d3.select("#notes").append("svg")
-          , colorLegend = ColorLegend()
-          , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=Jos2721-La_Bernardina"
-          , colorScale = d3.scale.category10()
-          , notesViewFocus = NotesView()
-        ;
+    colorLegend.colorScale(colorScale);
 
-        notesViewContext
-            .colorScale(colorScale)
-            .width(900)
-            .height(150)
-            .brushEnabled(true)
-        ;
-
-        notesViewFocus
-            .colorScale(colorScale)
-            .width(notesViewContext.width())
-            .height(notesViewContext.height())
-            .tipEnabled(true)
-        ;
-
-        colorLegend.colorScale(colorScale);
-
-        function parseJSON(prollData){
-          var data = [];
-          prollData.partdata.forEach(function (part){
-            var voice = prollData.partnames[part.partindex];
-            part.notedata.forEach(function (note){
-              data.push({
+    function parseJSON(prollData){
+      prollData.notes = [];
+      prollData.partdata.forEach(function (part){
+          var voice = prollData.partnames[part.partindex];
+          part.notedata.forEach(function (note){
+              prollData.notes.push({
                 pitch: note.pitch.b7,
                 pitchName: note.pitch.name,
                 time: note.starttime[0],
                 duration: note.duration[0],
                 voice: voice
               });
-            });
           });
-          return data;
-        }
-
-        d3.json(jsonURL, function (err, prollData){
-            var data = parseJSON(prollData);
-            chartify(data);
-        });
-
-        function chartify(data){
-
-            colorScale.domain(data.map(function (d){
-                return d.voice;
-            }));
-
-            renderNotesViewContext(data);
-            renderNotesViewFocus(data);
-            renderColorLegend(data);
-
-            // When the user brushes in the context view,
-            notesViewContext.onBrush(function (extent){
-
-                // Filter the notes based on the selected time interval.
-                var filteredData = data.filter(function (d){
-                    return d.time > extent[0] && d.time < extent[1];
-                });
-
-                // Update the focus view.
-                notesViewFocus.xDomain(extent);
-                renderNotesViewFocus(filteredData);
-
-                // Update the pitch names text.
-                var pitchNames = filteredData.map(function (d){
-                    return d.pitchName;
-                }).join(", ");
-                d3.select("#note-names-string").text(pitchNames);
-
-                // Update the note names text.
-                var pitchNames = filteredData.map(function (d){
-                    return d.pitchName;
-                }).join(", ");
-                d3.select("#note-names-string").text(pitchNames);
-
-                // Update the note durations text.
-                var pitchNames = filteredData.map(function (d){
-                    return d.duration;
-                }).join(", ");
-                d3.select("#note-durations-string").text(pitchNames);
-
-                // TODO For the text entries, we may need to filter by the voice
-                // that is currently selected from the legend. Currently, these
-                // show notes from all voices combined, and not in temporal order.
-            });
-        }
-
-        function renderNotesViewContext(data){
-            notesViewContextSVG
-                .datum(data)
-                .call(notesViewContext)
-            ;
-        }
-
-        function renderNotesViewFocus(data){
-            notesViewFocusSVG
-                .datum(data)
-                .call(notesViewFocus)
-            ;
-        }
-
-        function renderColorLegend(data){
-            colorLegend
-                .noteHeight(notesViewContext.noteHeight())
-                .roundedCornerSize(notesViewContext.roundedCornerSize())
-            ;
-            colorLegend();
-        }
+      });
+      return prollData;
     }
 
+    d3.json(jsonURL, function (err, prollData){
+        chartify(parseJSON(prollData));
+    });
+
+    function chartify(data){
+        notesViewContext
+            .colorScale(colorScale)
+            .width(900)
+            .height(150)
+            .brushEnabled(true)
+        ;
+        notesViewFocus
+            .colorScale(colorScale)
+            .width(notesViewContext.width())
+            .height(notesViewContext.height())
+            .tipEnabled(true)
+        ;
+        colorScale.domain(
+            data.notes.map(function (d){ return d.voice; })
+          )
+        ;
+        renderNotesViewContext(data.notes);
+        renderNotesViewFocus(data.notes);
+        renderColorLegend(data.notes);
+
+        // When the user brushes in the context view,
+        notesViewContext.onBrush(function (extent){
+
+            // Filter the notes based on the selected time interval.
+            var filteredData = data.notes.filter(function (d){
+                return d.time > extent[0] && d.time < extent[1];
+            });
+
+            // Update the focus view.
+            notesViewFocus.xDomain(extent);
+            renderNotesViewFocus(filteredData);
+
+            // Update the pitch names text.
+            var pitchNames = filteredData.map(function (d){
+                return d.pitchName;
+            }).join(", ");
+            d3.select("#note-names-string").text(pitchNames);
+
+            // Update the note names text.
+            var pitchNames = filteredData.map(function (d){
+                return d.pitchName;
+            }).join(", ");
+            d3.select("#note-names-string").text(pitchNames);
+
+            // Update the note durations text.
+            var pitchNames = filteredData.map(function (d){
+                return d.duration;
+            }).join(", ");
+            d3.select("#note-durations-string").text(pitchNames);
+
+            // TODO For the text entries, we may need to filter by the voice
+            // that is currently selected from the legend. Currently, these
+            // show notes from all voices combined, and not in temporal order.
+        });
+    }
+
+    function renderNotesViewContext(data){
+        notesViewContextSVG
+            .datum(data)
+            .call(notesViewContext)
+        ;
+    }
+
+    function renderNotesViewFocus(data){
+        notesViewFocusSVG
+            .datum(data)
+            .call(notesViewFocus)
+        ;
+    }
+
+    function renderColorLegend(data){
+        colorLegend
+            .noteHeight(notesViewContext.noteHeight())
+            .roundedCornerSize(notesViewContext.roundedCornerSize())
+        ;
+        colorLegend();
+    }
   </script>
 </body>
