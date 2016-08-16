@@ -1,6 +1,8 @@
 function NotesView(){
-    var width = 500
+    var svg
+      , width = 900
       , height = 500
+      , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , x = d3.scale.linear()
       , y = d3.scale.linear()
       , brush = d3.svg.brush()
@@ -12,6 +14,8 @@ function NotesView(){
       , colorScale
       , noteHeight
       , roundedCornerSize
+      , dispatch
+      , emphasize
 
       // This is a fixed x domain set from outside,
       // it overrides the domain computed from the data.
@@ -29,23 +33,24 @@ function NotesView(){
     }
 
     function my(selection){
-        selection.each(function (data){
+        svg = selection
+            .attr("height", height)
+            .attr("width", width)
+        ;
+        svg.selectAll("g")
+            .data(["notes-g", "brush"])
+            .enter()
+              .append("g")
+              .attr("class", function (d){ return d; })
+        ;
+        if(tipEnabled)
+            svg.call(tip)
+        ;
+        var notesG = svg.select(".notes-g")
+          , brushG = svg.select(".brush")
+        ;
 
-            var svg = d3.select(this)
-                .attr("height", height)
-                .attr("width", width)
-            ;
-
-            svg.selectAll("g")
-                .data(["notes-g", "brush"])
-                .enter()
-                  .append("g")
-                  .attr("class", function (d){ return d; });
-
-            var notesG = svg.select(".notes-g")
-              , brushG = svg.select(".brush")
-            ;
-
+        svg.each(function(data) {
             if(xDomain){
                 x.domain(xDomain);
             } else {
@@ -67,7 +72,13 @@ function NotesView(){
             roundedCornerSize = noteHeight / 2
 
             var rects = notesG.selectAll("rect").data(data);
-            rects.enter().append("rect");
+            rects
+              .enter().append("rect")
+                .attr("class", "note")
+                .classed("subdued", function(d) {
+                    return emphasize && d.voice !== emphasize;
+                  })
+            ;
             rects.exit().remove();
             rects
                 .attr("x", function(d) { return x(d.time); })
@@ -78,10 +89,19 @@ function NotesView(){
                 .attr("stroke", function(d) { return colorScale(d.voice); })
                 .attr("rx", roundedCornerSize)
                 .attr("ry", roundedCornerSize)
-                .classed("note", true)
+                .classed("subdued", function(d) {
+                    return emphasize && d.voice !== emphasize;
+                  })
             ;
 
             if(brushEnabled){
+                rects
+                    .attr("display", function(d) {
+                        return (emphasize && d.voice !== emphasize)
+                          ? "none"
+                          : null
+                        ;
+                      })
                 brushG
                     .call(brush)
                   .selectAll("rect")
@@ -90,7 +110,6 @@ function NotesView(){
             }
 
             if(tipEnabled){
-                svg.call(tip);
                 rects
                     .on("mouseover", tip.show)
                     .on("mouseout", tip.hide)
@@ -99,6 +118,22 @@ function NotesView(){
         });
     } // my()
 
+    /*
+    ** Helper Functions
+    */
+    function hilite(arg) {
+        emphasize = arg.emphasize;
+
+        svg.selectAll("rect.note")
+            .classed("subdued", function(d) {
+                return emphasize && d.voice !== emphasize;
+              })
+        ;
+    } // hilite()
+
+    /*
+    ** API (Getter/Setter) Functions
+    */
     my.colorScale = function (value){
         if(arguments.length === 0) return colorScale;
         colorScale = value;
@@ -138,7 +173,18 @@ function NotesView(){
         if(arguments.length === 0) return tipEnabled;
         tipEnabled = value;
         return my;
-    };
+      } // my.tipEnabled()
+    ;
+    my.connect = function(value){
+        if(!arguments.length) return dispatch;
+        var name = brushEnabled ? "focus" : "context";
 
+        dispatch = value
+            .on("hilite.notesview" + name, hilite) // listen for appropriate events
+        ;
+
+        return my;
+      } // my.connect()
+    ;
     return my;
-}
+} // NotesView()
