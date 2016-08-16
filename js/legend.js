@@ -6,6 +6,7 @@ function ColorLegend(){
       , colorScale
       , noteHeight
       , roundedCornerSize
+      , dispatch
     ;
 
     function my(options) {
@@ -53,11 +54,8 @@ function ColorLegend(){
           .on("click", function(c) {
               d3.event.stopPropagation();
               hilite = hilite === c ? false : c;
-              svg.selectAll("rect.note")
-                  .classed("subdued", function(d) {
-                      return hilite && d.voice !== c;
-                    })
-              ;
+              dispatch.hilite({ emphasize: hilite });
+
               legend.selectAll("li")
                   .classed("subdued", function(d) {
                       return hilite && d !== c;
@@ -91,7 +89,14 @@ function ColorLegend(){
         if(arguments.length === 0) return roundedCornerSize;
         roundedCornerSize = value;
         return my;
-    };
+      }
+    ;
+    my.connect = function(value){
+        if(!arguments.length) return dispatch;
+        dispatch = value;
+        return my;
+      } // my.connect()
+    ;
 
     return my;
 }
