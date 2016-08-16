@@ -114,22 +114,27 @@
     });
 
     function chartify(data){
+        var signal = d3.dispatch("hilite");
+
         notesViewContext
             .colorScale(colorScale)
             .width(900)
             .height(150)
             .brushEnabled(true)
+            .connect(signal)
         ;
         notesViewFocus
             .colorScale(colorScale)
             .width(notesViewContext.width())
             .height(notesViewContext.height())
             .tipEnabled(true)
+            .connect(signal)
         ;
         colorScale.domain(
             data.notes.map(function (d){ return d.voice; })
           )
         ;
+        colorLegend.connect(signal);
         renderNotesViewContext(data.notes);
         renderNotesViewFocus(data.notes);
         renderColorLegend(data.notes);
