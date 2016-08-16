@@ -14,14 +14,6 @@ function ColorLegend(){
           , row = legend.selectAll("li")
                 .data(colorScale.domain())
         ;
-        legend
-            .on("click", function() {
-                hilite = false;
-                svg.selectAll("rect")
-                    .classed("subdued", false)
-                ;
-              })
-        ;
         row.enter()
           .append("li")
             .each(function(c) {
@@ -49,12 +41,10 @@ function ColorLegend(){
                     .text(c)
                 ;
               })
-        ;
-        row
           .on("click", function(c) {
               d3.event.stopPropagation();
               hilite = hilite === c ? false : c;
-              dispatch.hilite({ emphasize: hilite });
+              dispatch.call("hilite", this, { emphasize: hilite });
 
               legend.selectAll("li")
                   .classed("subdued", function(d) {
@@ -64,6 +54,16 @@ function ColorLegend(){
             })
         ;
         row.exit().remove();
+        legend
+            .on("click", function() {
+                d3.event.stopPropagation();
+                hilite = false;
+                dispatch.call("hilite", this, { emphasize: hilite });
+                svg.selectAll("rect")
+                    .classed("subdued", false)
+                ;
+              })
+        ;
     } // my()
 
     my.colorScale = function (value){
