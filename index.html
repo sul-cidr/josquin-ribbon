@@ -101,7 +101,10 @@
       , notesViewFocus = NotesView()
       , notesViewFocusSVG = d3.select("#notes").append("svg")
       , colorLegend = ColorLegend()
-      , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=Jos2721-La_Bernardina"
+      , defaultWork = "Jos2721-La_Bernardina"
+      , hash = window.location.hash
+      , work = hash ? hash.substr(1) : defaultWork
+      , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
       , colorScale = d3.scale.category10()
     ;
 
