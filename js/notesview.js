@@ -10,7 +10,6 @@ function NotesView(){
           .on("brush", brushed)
       , brushEnabled = false
       , tipEnabled = false
-      , onBrush
       , colorScale
       , noteHeight
       , roundedCornerSize
