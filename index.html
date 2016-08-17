@@ -149,7 +149,12 @@
             .call(brush.move, notesViewContext.x().range())
         ;
         function brushed(){
-            notesViewFocus.update(d3.event.selection, notesViewContext.x());
+            var filtered = data.notes.filter(function(d) {
+              return d.time >= (d3.event.selection[0] || 0)
+                && d.time < (d3.event.selection[1] || Infinity)
+              ;
+            })
+            notesViewFocus.update(filtered);
         } // brushed()
 
 
