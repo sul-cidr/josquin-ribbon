@@ -28,7 +28,9 @@ function NotesView(){
 
     function brushed(){
         if(onBrush){
-            onBrush(brush.empty() ? x.domain() : brush.extent());
+            dispatch.zoom({
+              extent: brush.empty() ? x.domain() : brush.extent()
+            });
         }
     }
 
@@ -159,10 +161,6 @@ function NotesView(){
         if(arguments.length === 0) return brushEnabled;
         brushEnabled = value;
         return my;
-    };
-
-    my.onBrush = function (callback){
-        onBrush = callback;
     };
 
     my.xDomain = function (value){
