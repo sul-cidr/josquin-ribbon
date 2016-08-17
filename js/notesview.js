@@ -27,11 +27,9 @@ function NotesView(){
     ;
 
     function brushed(){
-        if(onBrush){
-            dispatch.zoom({
-              extent: brush.empty() ? x.domain() : brush.extent()
-            });
-        }
+      dispatch.zoom({
+        extent: brush.empty() ? x.domain() : brush.extent()
+      });
     }
 
     function my(selection){
