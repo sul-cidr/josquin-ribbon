@@ -117,7 +117,7 @@
     });
 
     function chartify(data){
-        var signal = d3.dispatch("hilite");
+        var signal = d3.dispatch("hilite", "zoom");
 
         notesViewContext
             .colorScale(colorScale)
@@ -143,7 +143,8 @@
         renderColorLegend(data.notes);
 
         // When the user brushes in the context view,
-        notesViewContext.onBrush(function (extent){
+        signal.on("zoom.extent", function (zoom){
+           var extent = zoom.extent;
 
             // Filter the notes based on the selected time interval.
             var filteredData = data.notes.filter(function (d){

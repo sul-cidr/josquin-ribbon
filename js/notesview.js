@@ -10,7 +10,6 @@ function NotesView(){
           .on("brush", brushed)
       , brushEnabled = false
       , tipEnabled = false
-      , onBrush
       , colorScale
       , noteHeight
       , roundedCornerSize
@@ -27,9 +26,9 @@ function NotesView(){
     ;
 
     function brushed(){
-        if(onBrush){
-            onBrush(brush.empty() ? x.domain() : brush.extent());
-        }
+      dispatch.zoom({
+        extent: brush.empty() ? x.domain() : brush.extent()
+      });
     }
 
     function my(selection){
@@ -159,10 +158,6 @@ function NotesView(){
         if(arguments.length === 0) return brushEnabled;
         brushEnabled = value;
         return my;
-    };
-
-    my.onBrush = function (callback){
-        onBrush = callback;
     };
 
     my.xDomain = function (value){
