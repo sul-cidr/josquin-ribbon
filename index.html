@@ -59,6 +59,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
   <script src="js/legend.js"></script>
   <script src="js/notesview.js"></script>
+  <script src="js/combineSeparateUI.js"></script>
 </head>
 
 <body>
@@ -69,24 +70,10 @@
   <article>
     <div class="container">
       <div class="row">
-        <div id="notes" class="col-xs-12 col-lg-10">
-        </div>
-
+        <div id="notes" class="col-xs-12 col-lg-10"></div>
         <div class="col-xs-12 col-lg-2">
-
-          <div>
-            <form class="form">
-              <label class="radio-inline">
-                <input type="radio" name="combine-separate-group"> Combine
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="combine-separate-group"> Separate
-              </label>
-            </form>
-          </div>
-
+          <div id="combine-separate-ui"></div>
           <div id="legend"></div>
-
         </div>
       </div><!--.row-->
       <div class="row">
@@ -100,12 +87,15 @@
       , notesViewContextSVG = d3.select("#notes").append("svg")
       , notesViewFocus = NotesView()
       , notesViewFocusSVG = d3.select("#notes").append("svg")
+      , combineSeparateUI = CombineSeparateUI()
       , colorLegend = ColorLegend()
-      , defaultWork = "Jos2721-La_Bernardina"
+      , colorScale = d3.scale.category10()
+    ;
+
+    var defaultWork = "Jos2721-La_Bernardina"
       , hash = window.location.hash
       , work = hash ? hash.substr(1) : defaultWork
       , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
-      , colorScale = d3.scale.category10()
     ;
 
     colorLegend.colorScale(colorScale);
