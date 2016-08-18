@@ -142,7 +142,11 @@
             data.notes.map(function (d){ return d.voice; })
           )
         ;
+
         colorLegend.connect(signal);
+
+        combineSeparateUI.connect(signal);
+
         renderNotesViewContext(data.notes);
         renderNotesViewFocus(data.notes);
         renderColorLegend(data.notes);
