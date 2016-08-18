@@ -75,7 +75,7 @@ function NotesView(){
 
             if(separate){
                 yPitch.range([height / yVoice.domain().length, 0]);
-                yVoice.rangeBands([height, 0]);
+                yVoice.rangeBands([0, height]);
             } else {
                 yPitch.range([height, 0]);
                 yVoice.rangeBands([0, 0]);
