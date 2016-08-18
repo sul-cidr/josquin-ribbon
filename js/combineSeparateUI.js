@@ -7,16 +7,18 @@ function CombineSeparateUI(){
     ;
 
     var labels = form.selectAll("label").data(data)
-      .enter().append("label")
-        .attr("class", "radio-inline")
+          .enter().append("label")
+            .attr("class", "radio-inline")
+      , inputs = labels.append("input")
+            .attr("type", "radio")
+            .attr("name", "combine-separate-group")
+      , spans = labels.append("span")
+            .text(function (d){ return " " + d + " "; })
     ;
-    labels.append("input")
-        .attr("type", "radio")
-        .attr("name", "combine-separate-group")
-    ;
-    labels.append("span")
-        .text(function (d){ return " " + d + " "; })
-    ;
+
+    inputs.on("click", function (e){
+        dispatch.separate(e == "Separate");
+    });
 
     function my() {
     } // my()

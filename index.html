@@ -122,7 +122,7 @@
     });
 
     function chartify(data){
-        var signal = d3.dispatch("hilite", "zoom");
+        var signal = d3.dispatch("hilite", "zoom", "separate");
 
         notesViewContext
             .colorScale(colorScale)
@@ -181,6 +181,11 @@
                 return d.duration;
             }).join(", ");
             d3.select("#note-durations-string").text(pitchNames);
+        });
+
+        // When the user selects to separate or combine...
+        signal.on("separate", function (separate){
+           console.log("separate: " + separate);
         });
     }
 
