@@ -75,10 +75,10 @@ function NotesView(){
 
             if(separate){
                 yPitch.range([height / yVoice.domain().length, 0]);
-                yVoice.rangePoints([height / yVoice.domain().length, 0]);
+                yVoice.rangeBands([height, 0]);
             } else {
                 yPitch.range([height, 0]);
-                yVoice.rangePoints([0, 0]);
+                yVoice.rangeBands([0, 0]);
             }
 
             noteHeight = height / (yPitch.domain()[1] - yPitch.domain()[0])
