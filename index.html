@@ -101,20 +101,20 @@
     colorLegend.colorScale(colorScale);
 
     function parseJSON(prollData){
-      prollData.notes = [];
-      prollData.partdata.forEach(function (part){
-          var voice = prollData.partnames[part.partindex];
-          part.notedata.forEach(function (note){
-              prollData.notes.push({
-                pitch: note.pitch.b7,
-                pitchName: note.pitch.name,
-                time: note.starttime[0],
-                duration: note.duration[0],
-                voice: voice
-              });
-          });
-      });
-      return prollData;
+        prollData.notes = [];
+        prollData.partdata.forEach(function (part){
+            var voice = prollData.partnames[part.partindex];
+            part.notedata.forEach(function (note){
+                prollData.notes.push({
+                    pitch: note.pitch.b7,
+                    pitchName: note.pitch.name,
+                    time: note.starttime[0],
+                    duration: note.duration[0],
+                    voice: voice
+                });
+            });
+        });
+        return prollData;
     }
 
     d3.json(jsonURL, function (err, prollData){
