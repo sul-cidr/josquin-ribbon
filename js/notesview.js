@@ -4,7 +4,8 @@ function NotesView(){
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , x = d3.scale.linear()
-      , y = d3.scale.linear()
+      , yPitch = d3.scale.linear()
+      , yVoice = d3.scale.ordinal()
       , brush = d3.svg.brush()
           .x(x)
           .on("brush", brushed)
@@ -15,6 +16,7 @@ function NotesView(){
       , roundedCornerSize
       , dispatch
       , emphasize
+      , separate
 
       // This is a fixed x domain set from outside,
       // it overrides the domain computed from the data.
@@ -59,15 +61,27 @@ function NotesView(){
                   ])
                 ;
             }
-            y.domain([
+            yPitch.domain([
                   d3.min(data, function(d) { return d.pitch - 1; })
                 , d3.max(data, function(d) { return d.pitch; })
               ])
             ;
-            x.range([0, width - 1]);
-            y.range([height, 0]);
+            yVoice.domain(
+                data.map(function (d){ return d.voice; })
+              )
+            ;
 
-            noteHeight = height / (y.domain()[1] - y.domain()[0])
+            x.range([0, width - 1]);
+
+            if(separate){
+                yPitch.range([height / yVoice.domain().length, 0]);
+                yVoice.rangePoints([height / yVoice.domain().length, 0]);
+            } else {
+                yPitch.range([height, 0]);
+                yVoice.rangePoints([0, 0]);
+            }
+
+            noteHeight = height / (yPitch.domain()[1] - yPitch.domain()[0])
             roundedCornerSize = noteHeight / 2
 
             var rects = notesG.selectAll("rect").data(data);
@@ -81,7 +95,7 @@ function NotesView(){
             rects.exit().remove();
             rects
                 .attr("x", function(d) { return x(d.time); })
-                .attr("y", function(d) { return y(d.pitch); })
+                .attr("y", function(d) { return yPitch(d.pitch) + yVoice(d.voice); })
                 .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
                 .attr("height", noteHeight)
                 .attr("fill", function(d) { return colorScale(d.voice); })
@@ -180,6 +194,12 @@ function NotesView(){
 
         return my;
       } // my.connect()
+    ;
+    my.separate = function (value){
+        if(arguments.length === 0) return separate;
+        separate = value;
+        return my;
+      } // my.tipEnabled()
     ;
     return my;
 } // NotesView()

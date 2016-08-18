@@ -186,6 +186,8 @@
         // When the user selects to separate or combine...
         signal.on("separate", function (separate){
            console.log("separate: " + separate);
+           notesViewContext.separate(separate);
+           renderNotesViewContext(data.notes);
         });
     }
 
