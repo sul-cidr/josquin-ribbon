@@ -177,10 +177,6 @@
                 return d.duration;
             }).join(", ");
             d3.select("#note-durations-string").text(pitchNames);
-
-            // TODO For the text entries, we may need to filter by the voice
-            // that is currently selected from the legend. Currently, these
-            // show notes from all voices combined, and not in temporal order.
         });
     }
 
