@@ -110,20 +110,20 @@ function NotesCanvas(){
         if(arguments.length === 0) return colorScale;
         colorScale = value;
         return my;
-    };
-
+      } // my.colorScale()
+    ;
     my.width = function (value){
         if(arguments.length === 0) return width;
         width = value;
         return my;
-    };
-
+      } // my.width()
+    ;
     my.height = function (value){
         if(arguments.length === 0) return height;
         height = value;
         return my;
-    };
-
+      } // my.height()
+    ;
     my.noteHeight = function (){ return noteHeight; };
     my.roundedCornerSize = function (){ return roundedCornerSize; };
 
