@@ -1,4 +1,7 @@
 function NotesView(){
+    /*
+    ** Private Variables - only used inside this object
+    */
     var svg
       , width = 900
       , height = 500
@@ -26,13 +29,9 @@ function NotesView(){
           .attr("class", "d3-tip")
           .html(function(d) { return d.pitchName; });
     ;
-
-    function brushed(){
-      dispatch.zoom({
-        extent: brush.empty() ? x.domain() : brush.extent()
-      });
-    }
-
+    /*
+    ** Main Function Object
+    */
     function my(selection){
         svg = selection
             .attr("height", height)
@@ -144,6 +143,12 @@ function NotesView(){
         ;
     } // hilite()
 
+    // Brush callback
+    function brushed(){
+      dispatch.zoom({
+        extent: brush.empty() ? x.domain() : brush.extent()
+      });
+    }
     /*
     ** API (Getter/Setter) Functions
     */
