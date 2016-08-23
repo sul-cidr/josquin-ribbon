@@ -59,9 +59,6 @@ function NotesCanvas(){
         rects
           .enter().append("rect")
             .attr("class", "note")
-            .classed("subdued", function(d) {
-                return emphasize && d.voice !== emphasize;
-              })
         ;
         rects.exit().remove();
         rects
