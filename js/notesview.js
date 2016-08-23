@@ -13,21 +13,18 @@ function NotesView(){
           .x(x)
           .on("brush", brushed)
       , brushEnabled = false
-      , tipEnabled = false
       , colorScale
       , noteHeight
       , roundedCornerSize
       , dispatch
       , emphasize
       , separate
+      , tooltip
 
       // This is a fixed x domain set from outside,
       // it overrides the domain computed from the data.
       // This is set on the focus view based on the brush of the context view.
       , xDomain
-      , tip = d3.tip()
-          .attr("class", "d3-tip")
-          .html(function(d) { return d.pitchName; });
     ;
     /*
     ** Main Function Object
@@ -43,8 +40,8 @@ function NotesView(){
               .append("g")
               .attr("class", function (d){ return d; })
         ;
-        if(tipEnabled)
-            svg.call(tip)
+        if(tooltip)
+            svg.call(tooltip)
         ;
         var notesG = svg.select(".notes-g")
           , brushG = svg.select(".brush")
@@ -122,7 +119,7 @@ function NotesView(){
                     .attr("height", height - 1);
             }
 
-            if(tipEnabled){
+            if(tooltip){
                 rects
                     .on("mouseover", tip.show)
                     .on("mouseout", tip.hide)
@@ -182,13 +179,15 @@ function NotesView(){
 
     my.xDomain = function (value){
         xDomain = value;
-    };
-
-    my.tipEnabled = function (value){
-        if(arguments.length === 0) return tipEnabled;
-        tipEnabled = value;
+      } // my.xDomain()
+    ;
+    my.tooltip = function(value) {
+        if(!arguments.length === 0) return tooltip;
+        tooltip = value
+            .html(function(d) { return d.pitchName; })
+        ;
         return my;
-      } // my.tipEnabled()
+      } // my.tooltip()
     ;
     my.connect = function(value){
         if(!arguments.length) return dispatch;
