@@ -160,7 +160,7 @@ function NotesCanvas(){
         if(arguments.length === 0) return separate;
         separate = value;
         return my;
-      } // my.tipEnabled()
+      } // my.separate()
     ;
     return my;
 } // NotesCanvas()
