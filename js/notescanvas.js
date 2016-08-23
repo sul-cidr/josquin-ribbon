@@ -124,19 +124,12 @@ function NotesCanvas(){
         return my;
       } // my.height()
     ;
-    my.noteHeight = function (){ return noteHeight; };
-    my.roundedCornerSize = function (){ return roundedCornerSize; };
-
     my.xDomain = function(value) {
         if(!arguments.length) return xDomain;
 
         xDomain = value;
         return my;
       } // my.xDomain()
-    ;
-    my.x = function() {
-        return x; // GETTER ONLY
-      } // my.x()
     ;
     my.tooltip = function(value) {
         if(!arguments.length === 0) return tooltip;
@@ -162,5 +155,14 @@ function NotesCanvas(){
         return my;
       } // my.separate()
     ;
+
+    /*
+    ** API (Getter ONLY) Functions
+    */
+    my.noteHeight = function (){ return noteHeight; };
+    my.roundedCornerSize = function (){ return roundedCornerSize; };
+    my.x = function() { return x; };
+
+    // This is always the last thing returned
     return my;
 } // NotesCanvas()
