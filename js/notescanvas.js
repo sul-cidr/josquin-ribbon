@@ -103,12 +103,6 @@ function NotesCanvas(){
         ;
     } // hilite()
 
-    // Brush callback
-    function brushed(){
-        dispatch.zoom({
-          extent: brush.empty() ? x.domain() : brush.extent()
-        });
-    }
     /*
     ** API (Getter/Setter) Functions
     */
