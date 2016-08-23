@@ -145,8 +145,9 @@
 
         colorLegend.connect(signal);
 
-        combineSeparateUI.connect(signal);
-
+        d3.select("#combine-separate-ui")
+            .call(combineSeparateUI.connect(signal))
+        ;
         renderNotesViewContext(data.notes);
         renderNotesViewFocus(data.notes);
         renderColorLegend(data.notes);
@@ -185,7 +186,6 @@
 
         // When the user selects to separate or combine...
         signal.on("separate", function (separate){
-           console.log("separate: " + separate);
            notesViewContext.separate(separate);
            renderNotesViewContext(data.notes);
         });
