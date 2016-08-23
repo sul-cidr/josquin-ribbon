@@ -1,4 +1,4 @@
-function NotesView(){
+function NotesCanvas(){
     /*
     ** Private Variables - only used inside this object
     */
@@ -172,4 +172,4 @@ function NotesView(){
       } // my.tipEnabled()
     ;
     return my;
-} // NotesView()
+} // NotesCanvas()
