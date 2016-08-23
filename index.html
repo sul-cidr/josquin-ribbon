@@ -89,8 +89,9 @@
       , combineSeparateUI = CombineSeparateUI()
       , colorLegend = ColorLegend()
       , colorScale = d3.scale.category10()
+      , tip = d3.tip()
+              .attr("class", "d3-tip")
     ;
-
     var defaultWork = "Jos2721-La_Bernardina"
       , hash = window.location.hash
       , work = hash ? hash.substr(1) : defaultWork
@@ -134,6 +135,7 @@
             .height(450)
             .tipEnabled(true)
             .connect(signal)
+            .tooltip(tip)
         ;
         colorScale.domain(
             data.notes.map(function (d){ return d.voice; })
