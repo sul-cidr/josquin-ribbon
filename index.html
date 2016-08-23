@@ -187,7 +187,13 @@
         signal.on("separate", function (separate){
            notesViewFocus.separate(separate);
            renderNotesViewFocus(data.notes);
-        });
+         })
+        ;
+        // When the user higlights/unhilights from the legend
+        signal.on("hilite", function(hilite) {
+            notesViewFocus.hilite(hilite);
+          })
+        ;
     }
 
     function renderNotesViewContext(data){
