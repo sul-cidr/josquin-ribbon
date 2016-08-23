@@ -57,7 +57,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
   <script src="js/legend.js"></script>
-  <script src="js/notesview.js"></script>
+  <script src="js/notescanvas.js"></script>
+  <script src="js/brushview.js"></script>
   <script src="js/combineSeparateUI.js"></script>
 </head>
 
@@ -87,6 +88,7 @@
       , notesViewFocus = NotesView()
       , notesViewFocusSVG = d3.select("#notes").append("svg")
       , combineSeparateUI = CombineSeparateUI()
+      , brush = BrushView()
       , colorLegend = ColorLegend()
       , colorScale = d3.scale.category10()
       , tip = d3.tip()
@@ -126,7 +128,6 @@
             .colorScale(colorScale)
             .width(900)
             .height(150)
-            .brushEnabled(true)
             .connect(signal)
         ;
         notesViewFocus
@@ -150,6 +151,8 @@
         renderNotesViewFocus(data.notes);
         renderColorLegend(data.notes);
 
+        brush.connect(signal);
+
         // When the user brushes in the context view,
         signal.on("zoom.extent", function (zoom){
             var extent = zoom.extent;
@@ -158,7 +161,7 @@
             var filteredData = data.notes
                 .filter(function (d){
                     return d.time > extent[0] && d.time < extent[1];
-                })
+                  })
             ;
             // Update the focus view.
             notesViewFocus.xDomain(extent);
@@ -191,16 +194,15 @@
         notesViewContextSVG
             .datum(data)
             .call(notesViewContext)
+            .call(brush.x(notesViewContext.x()))
         ;
     }
-
     function renderNotesViewFocus(data){
         notesViewFocusSVG
             .datum(data)
             .call(notesViewFocus)
         ;
     }
-
     function renderColorLegend(data){
         colorLegend
             .noteHeight(notesViewContext.noteHeight())
