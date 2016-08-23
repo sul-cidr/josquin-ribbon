@@ -29,9 +29,6 @@ function NotesCanvas(){
             .attr("height", height)
             .attr("width", width)
         ;
-        if(tooltip)
-            svg.call(tooltip)
-        ;
         svg.selectAll("g")
             .data(["notes-g"])
             .enter()
@@ -85,6 +82,7 @@ function NotesCanvas(){
             .attr("ry", roundedCornerSize)
         ;
         if(tooltip){
+            svg.call(tooltip);
             rects
                 .on("mouseover", tip.show)
                 .on("mouseout", tip.hide)
