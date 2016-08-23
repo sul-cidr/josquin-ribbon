@@ -94,7 +94,7 @@ function NotesCanvas(){
     ** Helper Functions
     */
     function hilite(arg) {
-        emphasize = arg.emphasize;
+        emphasize = arg && arg.emphasize;
 
         svg.selectAll("rect.note")
             .classed("subdued", function(d) {
@@ -142,12 +142,18 @@ function NotesCanvas(){
     my.connect = function(value){
         if(!arguments.length) return dispatch;
 
-        dispatch = value
-            .on("hilite.notesview" + name, hilite) // listen for appropriate events
-        ;
-
+        dispatch = value;
         return my;
       } // my.connect()
+    ;
+    my.hilite = function(value) {
+        if(!arguments.length)
+            hilite(); // un-highlight
+        else
+            hilite(value);
+
+        return my;
+      } // my.hilite()
     ;
     my.separate = function (value){
         if(arguments.length === 0) return separate;
