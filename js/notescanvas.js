@@ -7,6 +7,7 @@ function NotesCanvas(){
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , x = d3.scale.linear()
+      , xorig = d3.scale.linear()
       , y = d3.scale.linear()
       , tooltip
       , colorScale
@@ -15,10 +16,6 @@ function NotesCanvas(){
       , dispatch
       , emphasize
       , separate
-      // This is a fixed x domain set from outside,
-      // it overrides the domain computed from the data.
-      // This is set on the focus view based on the brush of the context view.
-      , xDomain
     ;
     /*
     ** Main Function Object
@@ -35,17 +32,17 @@ function NotesCanvas(){
               .append("g")
               .attr("class", function (d){ return d; })
         ;
-        if(xDomain){
-            x.domain(xDomain);
-        } else {
-            x.domain([
+        xorig
+            .domain([
                   d3.min(data, function(d) { return d.time; })
                 , d3.max(data, function(d) { return d.time + d.duration; })
               ])
-            ;
-        }
-        x.range([0, width - 1]);
-
+            .range([0, width - 1]);
+        ;
+        x
+            .domain(xorig.domain())
+            .range(xorig.range())
+        ;
         y
             .domain([
                   d3.min(data, function(d) { return d.pitch - 1; })
@@ -71,7 +68,6 @@ function NotesCanvas(){
             .classed("subdued", function(d) {
                 return emphasize && d.voice !== emphasize;
               })
-          .transition()
             .attr("x", function(d) { return x(d.time); })
             .attr("y", function(d) { return y(d.pitch); })
             .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
@@ -103,6 +99,19 @@ function NotesCanvas(){
         ;
     } // hilite()
 
+    function update() {
+        svg.selectAll("rect.note")
+            .attr("x", function(d) { return x(d.time); })
+            .attr("y", function(d) { return y(d.pitch); })
+            .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
+            .attr("height", noteHeight)
+            .attr("fill", function(d) { return colorScale(d.voice); })
+            .attr("stroke", function(d) { return colorScale(d.voice); })
+            .attr("rx", roundedCornerSize)
+            .attr("ry", roundedCornerSize)
+        ;
+    } // update()
+
     /*
     ** API (Getter/Setter) Functions
     */
@@ -123,13 +132,6 @@ function NotesCanvas(){
         height = value;
         return my;
       } // my.height()
-    ;
-    my.xDomain = function(value) {
-        if(!arguments.length) return xDomain;
-
-        xDomain = value;
-        return my;
-      } // my.xDomain()
     ;
     my.tooltip = function(value) {
         if(!arguments.length === 0) return tooltip;
@@ -160,6 +162,15 @@ function NotesCanvas(){
         separate = value;
         return my;
       } // my.separate()
+    ;
+    my.zoom = function(value) {
+        // Set the xdomain of notes in the zoomed in region and update
+        //  -- if value is epty, the zoom is reset to the entire domain (xorig)
+        x.domain(arguments.length ? value : xorig.domain());
+        update();
+
+        return my;
+      } // my.zoom()
     ;
 
     /*
