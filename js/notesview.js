@@ -93,6 +93,10 @@ function NotesView(){
             ;
             rects.exit().remove();
             rects
+                .classed("subdued", function(d) {
+                    return emphasize && d.voice !== emphasize;
+                  })
+              .transition()
                 .attr("x", function(d) { return x(d.time); })
                 .attr("y", function(d) { return yPitch(d.pitch) + yVoice(d.voice); })
                 .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
@@ -101,9 +105,6 @@ function NotesView(){
                 .attr("stroke", function(d) { return colorScale(d.voice); })
                 .attr("rx", roundedCornerSize)
                 .attr("ry", roundedCornerSize)
-                .classed("subdued", function(d) {
-                    return emphasize && d.voice !== emphasize;
-                  })
             ;
 
             if(brushEnabled){
