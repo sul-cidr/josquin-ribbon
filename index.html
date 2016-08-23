@@ -133,9 +133,8 @@
             .colorScale(colorScale)
             .width(notesViewContext.width())
             .height(450)
-            .tipEnabled(true)
-            .connect(signal)
             .tooltip(tip)
+            .connect(signal)
         ;
         colorScale.domain(
             data.notes.map(function (d){ return d.voice; })
