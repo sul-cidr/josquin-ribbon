@@ -53,8 +53,8 @@ function NotesCanvas(){
               ])
             .range([height, 0])
         ;
-        noteHeight = height / (y.domain()[1] - y.domain()[0])
-        roundedCornerSize = noteHeight / 2
+        noteHeight = height / (y.domain()[1] - y.domain()[0]);
+        roundedCornerSize = noteHeight / 2;
 
         var notesG = svg.select(".notes-g")
           , rects = notesG.selectAll("rect").data(data)
