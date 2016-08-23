@@ -155,33 +155,31 @@
             var extent = zoom.extent;
 
             // Filter the notes based on the selected time interval.
-            var filteredData = data.notes.filter(function (d){
-                return d.time > extent[0] && d.time < extent[1];
-            });
-
+            var filteredData = data.notes
+                .filter(function (d){
+                    return d.time > extent[0] && d.time < extent[1];
+                })
+            ;
             // Update the focus view.
             notesViewFocus.xDomain(extent);
             renderNotesViewFocus(filteredData);
 
             // Update the pitch names text.
-            var pitchNames = filteredData.map(function (d){
-                return d.pitchName;
-            }).join(", ");
-            d3.select("#note-names-string").text(pitchNames);
-
-            // Update the note names text.
-            var pitchNames = filteredData.map(function (d){
-                return d.pitchName;
-            }).join(", ");
-            d3.select("#note-names-string").text(pitchNames);
-
+            var pitchNames = filteredData
+                .map(function (d){ return d.pitchName; })
+            ;
+            d3.select("#note-names-string")
+                .text(pitchNames.join(", "))
+            ;
             // Update the note durations text.
-            var pitchNames = filteredData.map(function (d){
-                return d.duration;
-            }).join(", ");
-            d3.select("#note-durations-string").text(pitchNames);
-        });
-
+            pitchNames = filteredData
+                .map(function (d){ return d.duration; })
+            ;
+            d3.select("#note-durations-string")
+                .text(pitchNames.join(", "))
+            ;
+          })
+        ;
         // When the user selects to separate or combine...
         signal.on("separate", function (separate){
            notesViewFocus.separate(separate);
