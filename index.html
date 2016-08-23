@@ -91,8 +91,7 @@
       , brush = BrushView()
       , colorLegend = ColorLegend()
       , colorScale = d3.scale.category10()
-      , tip = d3.tip()
-              .attr("class", "d3-tip")
+      , tip = d3.tip().attr("class", "d3-tip")
     ;
     var defaultWork = "Jos2721-La_Bernardina"
       , hash = window.location.hash
@@ -155,18 +154,16 @@
 
         // When the user brushes in the context view,
         signal.on("zoom.extent", function (zoom){
-            var extent = zoom.extent;
+            // Update the focus view.
+            notesViewFocus.zoom(zoom.extent);
 
+            /*
             // Filter the notes based on the selected time interval.
             var filteredData = data.notes
                 .filter(function (d){
                     return d.time > extent[0] && d.time < extent[1];
                   })
             ;
-            // Update the focus view.
-            notesViewFocus.xDomain(extent);
-            renderNotesViewFocus(filteredData);
-
             // Update the pitch names text.
             var pitchNames = filteredData
                 .map(function (d){ return d.pitchName; })
@@ -181,18 +178,18 @@
             d3.select("#note-durations-string")
                 .text(pitchNames.join(", "))
             ;
+            */
           })
         ;
+        // When the user clicks on a legend item, they are either:
+        //  1. selecting a voice to highlight
+        //  2. deselecting it to show all voices.
+        signal.on("hilite", notesViewFocus.hilite);
         // When the user selects to separate or combine...
         signal.on("separate", function (separate){
            notesViewFocus.separate(separate);
            renderNotesViewFocus(data.notes);
          })
-        ;
-        // When the user higlights/unhilights from the legend
-        signal.on("hilite", function(hilite) {
-            notesViewFocus.hilite(hilite);
-          })
         ;
     }
 
