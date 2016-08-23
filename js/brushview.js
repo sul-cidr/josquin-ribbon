@@ -26,19 +26,18 @@ function BrushView() {
             .attr("y", 0)
             .attr("height", height - 1);
         ;
+        dispatch = dispatch || d3.dispatch()
     } // my() - Main Function Object
 
     /*
     ** Helper Functions
     */
     function brushed() {
-        if(dispatch) {
-            dispatch
-                .zoom({
-                    extent: brush.empty() ? x.domain() : brush.extent()
-                  })
-            ;
-        }
+        dispatch
+            .zoom({
+                extent: brush.empty() ? x.domain() : brush.extent()
+              })
+        ;
     } // brushed()
 
     /*
