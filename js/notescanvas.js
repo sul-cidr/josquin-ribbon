@@ -24,6 +24,7 @@ function NotesCanvas(){
     ** Main Function Object
     */
     function my(selection){
+        var data = selection.datum();
         svg = selection
             .attr("height", height)
             .attr("width", width)
@@ -37,60 +38,58 @@ function NotesCanvas(){
               .append("g")
               .attr("class", function (d){ return d; })
         ;
-        svg.each(function(data) {
-            if(xDomain){
-                x.domain(xDomain);
-            } else {
-                x.domain([
-                      d3.min(data, function(d) { return d.time; })
-                    , d3.max(data, function(d) { return d.time + d.duration; })
-                  ])
-                ;
-            }
-            x.range([0, width - 1]);
+        if(xDomain){
+            x.domain(xDomain);
+        } else {
+            x.domain([
+                  d3.min(data, function(d) { return d.time; })
+                , d3.max(data, function(d) { return d.time + d.duration; })
+              ])
+            ;
+        }
+        x.range([0, width - 1]);
 
-            y
-                .domain([
-                      d3.min(data, function(d) { return d.pitch - 1; })
-                    , d3.max(data, function(d) { return d.pitch; })
-                  ])
-                .range([height, 0])
-            ;
-            noteHeight = height / (y.domain()[1] - y.domain()[0])
-            roundedCornerSize = noteHeight / 2
+        y
+            .domain([
+                  d3.min(data, function(d) { return d.pitch - 1; })
+                , d3.max(data, function(d) { return d.pitch; })
+              ])
+            .range([height, 0])
+        ;
+        noteHeight = height / (y.domain()[1] - y.domain()[0])
+        roundedCornerSize = noteHeight / 2
 
-            var notesG = svg.select(".notes-g")
-              , rects = notesG.selectAll("rect").data(data)
-            ;
+        var notesG = svg.select(".notes-g")
+          , rects = notesG.selectAll("rect").data(data)
+        ;
+        rects
+          .enter().append("rect")
+            .attr("class", "note")
+            .classed("subdued", function(d) {
+                return emphasize && d.voice !== emphasize;
+              })
+        ;
+        rects.exit().remove();
+        rects
+            .classed("subdued", function(d) {
+                return emphasize && d.voice !== emphasize;
+              })
+          .transition()
+            .attr("x", function(d) { return x(d.time); })
+            .attr("y", function(d) { return y(d.pitch); })
+            .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
+            .attr("height", noteHeight)
+            .attr("fill", function(d) { return colorScale(d.voice); })
+            .attr("stroke", function(d) { return colorScale(d.voice); })
+            .attr("rx", roundedCornerSize)
+            .attr("ry", roundedCornerSize)
+        ;
+        if(tooltip){
             rects
-              .enter().append("rect")
-                .attr("class", "note")
-                .classed("subdued", function(d) {
-                    return emphasize && d.voice !== emphasize;
-                  })
+                .on("mouseover", tip.show)
+                .on("mouseout", tip.hide)
             ;
-            rects.exit().remove();
-            rects
-                .classed("subdued", function(d) {
-                    return emphasize && d.voice !== emphasize;
-                  })
-              .transition()
-                .attr("x", function(d) { return x(d.time); })
-                .attr("y", function(d) { return y(d.pitch); })
-                .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
-                .attr("height", noteHeight)
-                .attr("fill", function(d) { return colorScale(d.voice); })
-                .attr("stroke", function(d) { return colorScale(d.voice); })
-                .attr("rx", roundedCornerSize)
-                .attr("ry", roundedCornerSize)
-            ;
-            if(tooltip){
-                rects
-                    .on("mouseover", tip.show)
-                    .on("mouseout", tip.hide)
-                ;
-            }
-        }); // svg.each()
+        }
     } // my()
 
     /*
