@@ -6,7 +6,7 @@ function BrushView() {
     var svg
       , x
       , brush = d3.svg.brush()
-      , dispatch
+      , dispatch = d3.dispatch()
     ;
 
     /*
@@ -26,7 +26,6 @@ function BrushView() {
             .attr("y", 0)
             .attr("height", height - 1);
         ;
-        dispatch = dispatch || d3.dispatch()
     } // my() - Main Function Object
 
     /*
