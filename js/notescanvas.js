@@ -7,7 +7,7 @@ function NotesCanvas(){
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , x = d3.scale.linear()
-      , yPitch = d3.scale.linear()
+      , y = d3.scale.linear()
       , tooltip
       , colorScale
       , noteHeight
@@ -49,14 +49,14 @@ function NotesCanvas(){
             }
             x.range([0, width - 1]);
 
-            yPitch
+            y
                 .domain([
                       d3.min(data, function(d) { return d.pitch - 1; })
                     , d3.max(data, function(d) { return d.pitch; })
                   ])
                 .range([height, 0])
             ;
-            noteHeight = height / (yPitch.domain()[1] - yPitch.domain()[0])
+            noteHeight = height / (y.domain()[1] - y.domain()[0])
             roundedCornerSize = noteHeight / 2
 
             var notesG = svg.select(".notes-g")
@@ -76,7 +76,7 @@ function NotesCanvas(){
                   })
               .transition()
                 .attr("x", function(d) { return x(d.time); })
-                .attr("y", function(d) { return yPitch(d.pitch); })
+                .attr("y", function(d) { return y(d.pitch); })
                 .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
                 .attr("height", noteHeight)
                 .attr("fill", function(d) { return colorScale(d.voice); })
