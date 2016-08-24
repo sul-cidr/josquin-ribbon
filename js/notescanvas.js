@@ -108,28 +108,21 @@ function NotesCanvas(){
     } // setHeights()
 
     function describe() {
-        /*
         // Filter the notes based on the selected time interval.
-        var filteredData = data.notes
+        var filteredData = data.value
             .filter(function (d){
-                return d.time > extent[0] && d.time < extent[1];
+                return d.time > scale.zoom.x.domain()[0]
+                  && d.time < scale.zoom.x.domain()[1];
               })
         ;
         // Update the pitch names text.
         var pitchNames = filteredData
             .map(function (d){ return d.pitchName; })
         ;
-        d3.select("#note-names-string")
-            .text(pitchNames.join(", "))
-        ;
         // Update the note durations text.
-        pitchNames = filteredData
+        var pitchTimes = filteredData
             .map(function (d){ return d.duration; })
         ;
-        d3.select("#note-durations-string")
-            .text(pitchNames.join(", "))
-        ;
-        */
     } // describe()
 
     /*
