@@ -97,6 +97,7 @@ function NotesCanvas(){
     } // hilite()
 
     function update() {
+        setHeights();
         svg.selectAll("rect.note")
             .attr("x", function(d) { return scale.zoom.x(d.time); })
             .attr("y", function(d) { return scale.zoom.y(d.pitch); })
