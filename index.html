@@ -162,29 +162,6 @@ return prollData;
         signal.on("zoom.extent", function (zoom){
             // Update the focus view.
             notesViewFocus.zoom(zoom.extent);
-
-            /*
-            // Filter the notes based on the selected time interval.
-            var filteredData = data.notes
-                .filter(function (d){
-                    return d.time > extent[0] && d.time < extent[1];
-                  })
-            ;
-            // Update the pitch names text.
-            var pitchNames = filteredData
-                .map(function (d){ return d.pitchName; })
-            ;
-            d3.select("#note-names-string")
-                .text(pitchNames.join(", "))
-            ;
-            // Update the note durations text.
-            pitchNames = filteredData
-                .map(function (d){ return d.duration; })
-            ;
-            d3.select("#note-durations-string")
-                .text(pitchNames.join(", "))
-            ;
-            */
           })
         ;
         // When the user clicks on a legend item, they are either:
