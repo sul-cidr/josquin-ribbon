@@ -108,6 +108,7 @@ function NotesCanvas(){
     } // setHeights()
 
     function describe() {
+      /*
         // Filter the notes based on the selected time interval.
         var filteredData = data.value
             .filter(function (d){
@@ -123,6 +124,14 @@ function NotesCanvas(){
         var pitchTimes = filteredData
             .map(function (d){ return d.duration; })
         ;
+        if(dispatch)
+            dispatch.selected({
+                  names: pitchNames
+                , times: pitchTimes
+              })
+            ;
+        console.log(dispatch);
+      */
     } // describe()
 
     /*
