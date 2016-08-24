@@ -94,9 +94,11 @@ function NotesCanvas(){
         ;
     } // hilite()
 
-    function update() {
+    function update(selection) {
+        selection = selection || svg;
         setHeights();
-        svg.selectAll("rect.note")
+
+        selection.selectAll("rect.note")
             .attr("x", function(d) { return scale.zoom.x(d.time); })
             .attr("y", function(d) { return scale.zoom.y(d.pitch); })
             .attr("width", function(d) { return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time); })
