@@ -7,8 +7,7 @@ function NotesCanvas(){
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , scale = {
-            full: { x: d3.scale.linear(), y: d3.scale.linear() }
-          , data: { x: d3.scale.linear(), y: d3.scale.linear() }
+          data: { x: d3.scale.linear(), y: d3.scale.linear() }
           , zoom: { x: d3.scale.linear(), y: d3.scale.linear() }
         }
       , perspectives = d3.keys(scale)
@@ -145,6 +144,7 @@ function NotesCanvas(){
     */
     my.colorScale = function (value){
         if(arguments.length === 0) return colorScale;
+
         colorScale = value;
         return my;
       } // my.colorScale()
@@ -210,28 +210,27 @@ function NotesCanvas(){
         return my;
       } // my.separate()
     ;
-    my.zoom = function(value, ended) {
+    my.zoom = function(value, stop) {
         // Set the xdomain of notes in the zoomed in region and update
         //  -- if value is epty, the zoom is reset to the entire domain (xorig)
-        scale.zoom.x.domain(arguments.length ? value : scale.x.data.domain());
+        if(!arguments.length) {
+            scale.zoom.x.domain(scale.x.data.domain());
+            scale.zoom.y.domain(scale.y.data.domain());
+        } else {
+            if(value[1][1]) {
+                scale.zoom.x.domain(value[0]);
+                scale.zoom.y.domain(value[1]);
+            } else {
+                scale.zoom.x.domain(value)
+            }
+        }
         update();
 
-        if(ended)
+        if(stop)
             describe();
         return my;
       } // my.zoom()
     ;
-    my.full = function(value) {
-        if(!arguments.length) return scale.full.x;
-
-        scale.full.x.domain(value[0]);
-        if(value[1])
-            scale.full.y.domain(value[1]);
-
-        return my;
-      } // my.full()
-    ;
-
     // This is always the last thing returned
     return my;
 } // NotesCanvas()
