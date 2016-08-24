@@ -38,6 +38,19 @@ function NotesBook() {
   } // my() - Main function object
 
   /*
+  ** Helpeer Functions
+  */
+  function hilite(arg) {
+      var emphasize = arg && arg.emphasize;
+
+      canvases.forEach(function(c) {
+          c.canvas.hilite(arg);
+        })
+      ;
+  } // hilite()
+
+
+  /*
   ** API (Getter/Setter) Functions
   */
   my.tooltip = function(value) {
@@ -105,6 +118,16 @@ function NotesBook() {
       return my;
     } // my.zoom()
   ;
+  my.hilite = function(value) {
+      if(!arguments.length)
+          hilite();
+      else
+          hilite(value);
+
+      return my;
+    } // my.hilite()
+  ;
+
   // This is always the last thing returned
   return my;
 } // NotesBook()
