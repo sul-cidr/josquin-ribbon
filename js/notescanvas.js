@@ -44,6 +44,7 @@ function NotesCanvas(){
               ])
             .range([0, width - 1]);
         ;
+        console.log(data, scale.data.x.domain())
         scale.data.y
             .domain([
                   d3.min(data.values, function(d) { return d.pitch - 1; })
@@ -59,9 +60,7 @@ function NotesCanvas(){
             .domain(scale.data.y.domain())
             .range(scale.data.y.range())
         ;
-        noteHeight = height / (scale.zoom.y.domain()[1] - scale.zoom.y.domain()[0]);
-        roundedCornerSize = noteHeight / 2;
-
+        setHeights();
         var rects = svg.selectAll("rect").data(data.values);
         rects
           .enter().append("rect")
@@ -115,6 +114,11 @@ function NotesCanvas(){
         ;
     } // update()
 
+    function setHeights() {
+        noteHeight = height / (scale.zoom.y.domain()[1] - scale.zoom.y.domain()[0]);
+        roundedCornerSize = noteHeight / 2;
+    } // setHeights()
+
     function describe() {
         /*
         // Filter the notes based on the selected time interval.
@@ -163,8 +167,7 @@ function NotesCanvas(){
 
         height = value;
         perspectives.forEach(function(p) { scale[p].y.range([height, 0]); });
-        noteHeight = height / (scale.zoom.y.domain()[1] - scale.zoom.y.domain()[0]);
-        roundedCornerSize = noteHeight / 2;
+        setHeights();
 
         return my;
       } // my.height()
@@ -222,7 +225,7 @@ function NotesCanvas(){
         return my;
       } // my.zoom()
     ;
-    my.context = function(value) {
+    my.full = function(value) {
         if(!arguments.length) return scale.full.x;
 
         scale.full.x.domain(value[0]);
@@ -230,7 +233,7 @@ function NotesCanvas(){
             scale.full.y.domain(value[1]);
 
         return my;
-      } // my.contextX()
+      } // my.full()
     ;
 
     // This is always the last thing returned
