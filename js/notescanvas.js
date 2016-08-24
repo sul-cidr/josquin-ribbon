@@ -26,12 +26,8 @@ function NotesCanvas(){
     function my(selection){
         data = selection.datum();
         name = data.key;
-        svg = selection.selectAll("." + name + ".notes-g")
-              .data([name])
-            .enter()
-              .append("g")
-              .attr("class", "notes-g " + name)
-        ;
+        svg = selection.attr("class", "notes-g " + name);
+
         perspectives.forEach(function(p) {
             scale[p].x.range([0, width]);
             scale[p].y.range([height,0]);
