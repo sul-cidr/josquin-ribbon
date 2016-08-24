@@ -163,6 +163,7 @@ function NotesCanvas(){
 
         height = value;
         perspectives.forEach(function(p) { scale[p].y.range([height, 0]); });
+
         setHeights();
 
         return my;
@@ -192,7 +193,24 @@ function NotesCanvas(){
         return my;
       } // my.hilite()
     ;
-
+    my.transform = function(value) {
+        if(arguments.length)
+        svg
+          .transition()
+            .attr("transform", "translate(" + value[0] + "," + value[1] + ")")
+          .selectAll("rect.note")
+            .attr("x", function(d) { return scale.zoom.x(d.time); })
+            .attr("y", function(d) { return scale.zoom.y(d.pitch); })
+            .attr("width", function(d) { return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time); })
+            .attr("height", noteHeight)
+            .attr("fill", function(d) { return colorScale(d.voice); })
+            .attr("stroke", function(d) { return colorScale(d.voice); })
+            .attr("rx", roundedCornerSize)
+            .attr("ry", roundedCornerSize)
+        ;
+        return my;
+      } // my.transform()
+    ;
     /*
     ** API (Getter ONLY) Functions
     */
