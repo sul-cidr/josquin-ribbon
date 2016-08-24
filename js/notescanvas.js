@@ -191,8 +191,8 @@ function NotesCanvas(){
     ** API (Setter ONLY) Functions
     */
     my.zoom = function(value, stop) {
-        // Set the xdomain of notes in the zoomed in region and update
-        //  -- if value is epty, the zoom is reset to the entire domain (xorig)
+        // Set the domain of notes in the zoomed in region
+        //  -- if value is empty, the zoom is reset to the dataset's domain
         if(!arguments.length) {
             scale.zoom.x.domain(scale.x.data.domain());
             scale.zoom.y.domain(scale.y.data.domain());
