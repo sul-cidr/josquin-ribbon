@@ -6,42 +6,53 @@ function BrushView() {
     var svg
       , x
       , brush = d3.svg.brush()
+            .on("brush", brushed)
+            .on("brushend", brushed(true))
       , dispatch = d3.dispatch()
+      , height
     ;
 
     /*
     ** Main function Object
     */
     function my(sel) {
-        var height = sel.attr("height");
-
         svg = sel.selectAll(".brush")
             .data(["brush"])
           .enter().append("g")
             .attr("class", function(d) { return d; })
         ;
         svg
-            .call(brush.on("brush", brushed))
-          .selectAll("rect")
-            .attr("y", 0)
-            .attr("height", height - 1);
+            .call(brush)
         ;
     } // my() - Main Function Object
 
     /*
     ** Helper Functions
     */
-    function brushed() {
-        dispatch
-            .zoom({
-                extent: brush.empty() ? x.domain() : brush.extent()
-              })
-        ;
+    function brushed(ended) {
+        if(dispatch)
+            dispatch
+                .zoom({
+                      extent: brush.empty() ? x.domain() : brush.extent()
+                    , ended: ended || false
+                  })
+            ;
     } // brushed()
 
     /*
     ** API - Getters/Setters
     */
+    my.height = function(value) {
+        if(!arguments.length) return height;
+
+        height = value;
+        svg.selectAll("rect")
+          .attr("y", 0)
+          .attr("height", height - 1)
+        ;
+        return my;
+      } // my.height()
+    ;
     my.x = function(value) {
         if(!arguments.length) return x;
 
