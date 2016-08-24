@@ -28,11 +28,13 @@ function NotesBook() {
           .data(data)
         .enter().append("g")
           .each(function(d) {
+              var self = d3.select(this);
               canvases.push({
                     key: d.key
                   , canvas: NotesCanvas().colorScale(colorScale)
+                  , selection: self
               });
-              d3.select(this)
+              self
                   .call(canvases[canvases.length - 1].canvas)
               ;
             })
@@ -56,20 +58,21 @@ function NotesBook() {
   } // hilite()
 
   function update() {
-      if(separate) {
-          canvases.forEach(function(c) {
-              c.canvas.height(yScale.rangeBand());
-              c.canvas.transform([0, yScale(c.key)]);
-            })
+      var transforms = { true: 0, false: 0 }
+        , h = separate ? yScale.rangeBand() : height
+      ;
+      canvases.forEach(function(c) {
+          transforms.true = yScale(c.key);
+          c.canvas
+              .height(h)
+              .update()
           ;
-      } else {
-          canvases.forEach(function(c) {
-              c.canvas.height(height);
-              c.canvas.transform([0, 0]);
-            })
+          c.selection
+            .transition()
+              .attr("transform", "translate(0," +  transforms[separate] + ")")
           ;
-
-      }
+        })
+      ;
   } // update()
 
 
