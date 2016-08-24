@@ -146,8 +146,9 @@ return prollData;
 //            .full([[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]])
             .connect(signal)
         ;
-        colorScale.domain(data.notes.keys());
-
+        colorScale
+            .domain(data.partnames)
+        ;
         d3.select("#combine-separate-ui")
             .call(combineSeparateUI.connect(signal))
         ;
@@ -161,7 +162,7 @@ return prollData;
         // When the user brushes in the context view,
         signal.on("zoom.extent", function (zoom){
             // Update the focus view.
-            notesViewFocus.zoom(zoom.extent);
+            notesViewFocus.zoom(zoom.extent, zoom.ended);
           })
         ;
         // When the user clicks on a legend item, they are either:
