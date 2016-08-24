@@ -10,10 +10,12 @@ function NotesBook() {
           full: { x: d3.scale.linear(), y: d3.scale.linear() }
         , zoom: { x: d3.scale.linear(), y: d3.scale.linear() }
       }
+    , yScale = d3.scale.ordinal()
     , colorScale
     , dispatch
     , tooltip
     , canvases = []
+    , separate = false
   ;
 
   /*
@@ -35,10 +37,14 @@ function NotesBook() {
               ;
             })
       ;
+      yScale
+          .domain(data.map(function(d) { return d.key; }))
+          .rangeRoundBands([0, height])
+      ;
   } // my() - Main function object
 
   /*
-  ** Helpeer Functions
+  ** Helper Functions
   */
   function hilite(arg) {
       var emphasize = arg && arg.emphasize;
@@ -48,6 +54,23 @@ function NotesBook() {
         })
       ;
   } // hilite()
+
+  function update() {
+      if(separate) {
+          canvases.forEach(function(c) {
+              c.canvas.height(yScale.rangeBand());
+              c.canvas.transform([0, yScale(c.key)]);
+            })
+          ;
+      } else {
+          canvases.forEach(function(c) {
+              c.canvas.height(height);
+              c.canvas.transform([0, 0]);
+            })
+          ;
+
+      }
+  } // update()
 
 
   /*
@@ -84,6 +107,8 @@ function NotesBook() {
       perspectives.forEach(function(p) {
           scale[p].y.range([height, 0]);
       });
+
+      yScale.rangeRoundBands([height, 0]);
 
       return my;
     } // my.height()
@@ -127,6 +152,14 @@ function NotesBook() {
       return my;
     } // my.hilite()
   ;
+  my.separate = function(value) {
+      if(!arguments.length) return separate;
+
+      separate = value;
+      update();
+
+      return my;
+    } // my.separate()
 
   // This is always the last thing returned
   return my;
