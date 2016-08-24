@@ -60,18 +60,8 @@ function NotesCanvas(){
             .attr("class", "note")
         ;
         rects.exit().remove();
-        rects
-            .attr("x", function(d) { return scale.zoom.x(d.time); })
-            .attr("y", function(d) { return scale.zoom.y(d.pitch); })
-            .attr("width", function(d) {
-                return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time);
-              })
-            .attr("height", noteHeight)
-            .attr("fill", function(d) { return colorScale(d.voice); })
-            .attr("stroke", function(d) { return colorScale(d.voice); })
-            .attr("rx", roundedCornerSize)
-            .attr("ry", roundedCornerSize)
-        ;
+        update();
+
         if(tooltip){
             svg.call(tooltip);
             rects
