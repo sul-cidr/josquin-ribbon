@@ -2,7 +2,7 @@ function NotesBook() {
   /*
   ** Private Variables
   */
-  var svg
+  var svg, data
     , width
     , height
     , x = d3.scale.linear()
@@ -16,7 +16,7 @@ function NotesBook() {
   */
   function my(selection) {
       svg = selection;
-      console.log(svg.data())
+      data = svg.datum();
   } // my() - Main function object
 
   /*
@@ -29,19 +29,19 @@ function NotesBook() {
       return my;
     } // my.tooltip()
   ;
-  my.colorScale = function (value){
+  my.colorScale = function(value) {
       if(arguments.length === 0) return colorScale;
       colorScale = value;
       return my;
     } // my.colorScale()
   ;
-  my.width = function (value){
+  my.width = function(value) {
       if(arguments.length === 0) return width;
       width = value;
       return my;
     } // my.width()
   ;
-  my.height = function (value){
+  my.height = function(value) {
       if(arguments.length === 0) return height;
       height = value;
       return my;
