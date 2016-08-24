@@ -179,6 +179,16 @@ function NotesCanvas(){
         return my;
       } // my.hilite()
     ;
+    /*
+    ** API (Getter ONLY) Functions
+    */
+    my.noteHeight = function (){ return noteHeight; };
+    my.roundedCornerSize = function (){ return roundedCornerSize; };
+    my.x = function() { return x; };
+
+    /*
+    ** API (Setter ONLY) Functions
+    */
     my.separate = function (value){
         if(arguments.length === 0) return separate;
         separate = value;
@@ -196,13 +206,6 @@ function NotesCanvas(){
         return my;
       } // my.zoom()
     ;
-
-    /*
-    ** API (Getter ONLY) Functions
-    */
-    my.noteHeight = function (){ return noteHeight; };
-    my.roundedCornerSize = function (){ return roundedCornerSize; };
-    my.x = function() { return x; };
 
     // This is always the last thing returned
     return my;
