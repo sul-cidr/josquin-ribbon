@@ -58,6 +58,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
   <script src="js/legend.js"></script>
   <script src="js/notescanvas.js"></script>
+  <script src="js/notesbook.js"></script>
   <script src="js/brushview.js"></script>
   <script src="js/combineSeparateUI.js"></script>
 </head>
@@ -85,7 +86,7 @@
   <script>
     var notesViewContext = NotesCanvas()
       , notesViewContextSVG = d3.select("#notes").append("svg")
-      , notesViewFocus = NotesCanvas()
+      , notesViewFocus = NotesBook()
       , notesViewFocusSVG = d3.select("#notes").append("svg")
       , combineSeparateUI = CombineSeparateUI()
       , brush = BrushView()
@@ -124,13 +125,7 @@
             .key(function(d) { return d.voice; })
             .map(notes, d3.map)
         ;
-        prollData.pitches = d3.extent(notes, function(d) { return d.pitch; });
-        prollData.times = [
-              d3.min(notes, function(d) { return d.time; })
-            , d3.max(notes, function(d) { return d.time + d.duration; })
-          ]
-        ;
-        return prollData;
+return prollData;
     } // parseJSON()
 
     function chartify(data){
@@ -140,6 +135,7 @@
             .colorScale(colorScale)
             .width(900)
             .height(150)
+            .full([[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]])
             .connect(signal)
         ;
         notesViewFocus
@@ -147,14 +143,10 @@
             .width(notesViewContext.width())
             .height(450)
             .tooltip(tip)
+//            .full([[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]])
             .connect(signal)
         ;
-        colorScale.domain(
-            data.notes.map(function (d){ return d.voice; })
-          )
-        ;
-
-        colorLegend.connect(signal);
+        colorScale.domain(data.notes.keys());
 
         d3.select("#combine-separate-ui")
             .call(combineSeparateUI.connect(signal))
@@ -163,6 +155,7 @@
         renderNotesViewFocus(data.notes);
         renderColorLegend(data.notes);
 
+        colorLegend.connect(signal);
         brush.connect(signal);
 
         // When the user brushes in the context view,
