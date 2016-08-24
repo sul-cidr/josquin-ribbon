@@ -84,10 +84,18 @@
     </div><!--.container-->
   </article>
   <script>
-    var notesViewContext = NotesCanvas()
-      , notesViewContextSVG = d3.select("#notes").append("svg")
+    var width = 960
+      , height = 150 // height of one strip of notes
+      , notesViewContext = NotesCanvas()
+      , notesViewContextSVG = d3.select("#notes")
+          .append("svg")
+            .attr("width", width)
+            .attr("height", height)
       , notesViewFocus = NotesBook()
-      , notesViewFocusSVG = d3.select("#notes").append("svg")
+      , notesViewFocusSVG = d3.select("#notes")
+          .append("svg")
+            .attr("width", width)
+            .attr("height", 3 * height)
       , combineSeparateUI = CombineSeparateUI()
       , brush = BrushView()
       , colorLegend = ColorLegend()
@@ -125,44 +133,48 @@
             .key(function(d) { return d.voice; })
             .map(notes, d3.map)
         ;
-return prollData;
+        return prollData;
     } // parseJSON()
 
-    function chartify(data){
+    function chartify(data) {
         var signal = d3.dispatch("hilite", "zoom", "separate");
 
+        colorScale
+            .domain(data.partnames)
+        ;
         notesViewContext
-            .colorScale(colorScale)
-            .width(900)
-            .height(150)
             .full([[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]])
+            .colorScale(colorScale)
+            .width(width)
+            .height(height)
             .connect(signal)
         ;
         notesViewFocus
             .colorScale(colorScale)
-            .width(notesViewContext.width())
-            .height(450)
+            .width(width)
+            .height(height)
             .tooltip(tip)
-//            .full([[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]])
             .connect(signal)
         ;
-        colorScale
-            .domain(data.partnames)
+        colorLegend
+            .connect(signal)
         ;
         d3.select("#combine-separate-ui")
             .call(combineSeparateUI.connect(signal))
         ;
+        renderColorLegend();
         renderNotesViewContext(data.notes);
-        renderNotesViewFocus(data.notes);
-        renderColorLegend(data.notes);
+        renderNotesViewFocus(data);
 
-        colorLegend.connect(signal);
-        brush.connect(signal);
-
+        brush
+            .height(150)
+            .connect(signal)
+        ;
         // When the user brushes in the context view,
         signal.on("zoom.extent", function (zoom){
             // Update the focus view.
             notesViewFocus.zoom(zoom.extent, zoom.ended);
+
           })
         ;
         // When the user clicks on a legend item, they are either:
@@ -179,7 +191,7 @@ return prollData;
 
     function renderNotesViewContext(data){
         notesViewContextSVG
-            .datum(data)
+            .datum({ key: "full", values: d3.merge((data.values())) })
             .call(notesViewContext)
             .call(brush.x(notesViewContext.x()))
         ;
@@ -189,8 +201,8 @@ return prollData;
             .datum(data)
             .call(notesViewFocus)
         ;
-    } // renderNotesViewFocus()
-    function renderColorLegend(data){
+    } // renderNotesViewContext()
+    function renderColorLegend(){
         colorLegend
             .noteHeight(notesViewContext.noteHeight())
             .roundedCornerSize(notesViewContext.roundedCornerSize())
