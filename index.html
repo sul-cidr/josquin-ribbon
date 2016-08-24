@@ -104,21 +104,34 @@
     colorLegend.colorScale(colorScale);
 
     function parseJSON(prollData){
-        prollData.notes = [];
-        prollData.partdata.forEach(function (part){
-            var voice = prollData.partnames[part.partindex];
-            part.notedata.forEach(function (note){
-                prollData.notes.push({
-                    pitch: note.pitch.b7,
-                    pitchName: note.pitch.name,
-                    time: note.starttime[0],
-                    duration: note.duration[0],
-                    voice: voice
+        var notes = []
+          , voice
+        ;
+        prollData.partdata.forEach(function(part) {
+            voice = prollData.partnames[part.partindex];
+            part.notedata.forEach(function(note) {
+                notes.push({
+                      pitch: note.pitch.b7
+                    , pitchName: note.pitch.name
+                    , time: note.starttime[0]
+                    , duration: note.duration[0]
+                    , voice: voice
                 });
             });
         });
+        // Group the notes by voice
+        prollData.notes = d3.nest()
+            .key(function(d) { return d.voice; })
+            .map(notes, d3.map)
+        ;
+        prollData.pitches = d3.extent(notes, function(d) { return d.pitch; });
+        prollData.times = [
+              d3.min(notes, function(d) { return d.time; })
+            , d3.max(notes, function(d) { return d.time + d.duration; })
+          ]
+        ;
         return prollData;
-    }
+    } // parseJSON()
 
     function chartify(data){
         var signal = d3.dispatch("hilite", "zoom", "separate");
