@@ -35,15 +35,15 @@ function NotesCanvas(){
         ;
         scale.data.x
             .domain([
-                  d3.min(data.values, function(d) { return d.time; })
-                , d3.max(data.values, function(d) { return d.time + d.duration; })
+                  d3.min(data.value, function(d) { return d.time; })
+                , d3.max(data.value, function(d) { return d.time + d.duration; })
               ])
             .range([0, width - 1]);
         ;
         scale.data.y
             .domain([
-                  d3.min(data.values, function(d) { return d.pitch - 1; })
-                , d3.max(data.values, function(d) { return d.pitch; })
+                  d3.min(data.value, function(d) { return d.pitch - 1; })
+                , d3.max(data.value, function(d) { return d.pitch; })
               ])
             .range([height, 0])
         ;
@@ -56,7 +56,7 @@ function NotesCanvas(){
             .range(scale.data.y.range())
         ;
         setHeights();
-        var rects = svg.selectAll("rect").data(data.values);
+        var rects = svg.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
             .attr("class", "note")
