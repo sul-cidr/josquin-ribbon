@@ -6,11 +6,12 @@ function NotesCanvas(){
       , width = 900
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
-      , x = d3.scale.linear()
-      , xorig = d3.scale.linear()
-      , y = d3.scale.linear()
-      , perspectives = ["full", "data", "zoom"]
-      , scale = {}
+      , scale = {
+            full: { x: d3.scale.linear(), y: d3.scale.linear() }
+          , data: { x: d3.scale.linear(), y: d3.scale.linear() }
+          , zoom: { x: d3.scale.linear(), y: d3.scale.linear() }
+        }
+      , perspectives = d3.keys(scale)
       , tooltip
       , colorScale
       , noteHeight
@@ -32,44 +33,47 @@ function NotesCanvas(){
               .attr("class", "notes-g " + name)
         ;
         perspectives.forEach(function(p) {
-            scale[p].x = d3.scale.linear().range([0, width]);
-            scale[p].y = d3.scale.linear().range([height,0]);
-        });
-        xorig
+            scale[p].x.range([0, width]);
+            scale[p].y.range([height,0]);
+          })
+        ;
+        scale.data.x
             .domain([
                   d3.min(data.values, function(d) { return d.time; })
                 , d3.max(data.values, function(d) { return d.time + d.duration; })
               ])
             .range([0, width - 1]);
         ;
-        x
-            .domain(xorig.domain())
-            .range(xorig.range())
-        ;
-        y
+        scale.data.y
             .domain([
                   d3.min(data.values, function(d) { return d.pitch - 1; })
                 , d3.max(data.values, function(d) { return d.pitch; })
               ])
             .range([height, 0])
         ;
-        noteHeight = height / (y.domain()[1] - y.domain()[0]);
+        scale.zoom.x
+            .domain(scale.data.x.domain())
+            .range(scale.data.x.range())
+        ;
+        scale.zoom.y
+            .domain(scale.data.y.domain())
+            .range(scale.data.y.range())
+        ;
+        noteHeight = height / (scale.zoom.y.domain()[1] - scale.zoom.y.domain()[0]);
         roundedCornerSize = noteHeight / 2;
 
-        var rects = svg.selectAll("rect").data(data.values)
-        ;
+        var rects = svg.selectAll("rect").data(data.values);
         rects
           .enter().append("rect")
             .attr("class", "note")
         ;
         rects.exit().remove();
         rects
-            .classed("subdued", function(d) {
-                return emphasize && d.voice !== emphasize;
+            .attr("x", function(d) { return scale.zoom.x(d.time); })
+            .attr("y", function(d) { return scale.zoom.y(d.pitch); })
+            .attr("width", function(d) {
+                return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time);
               })
-            .attr("x", function(d) { return x(d.time); })
-            .attr("y", function(d) { return y(d.pitch); })
-            .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
             .attr("height", noteHeight)
             .attr("fill", function(d) { return colorScale(d.voice); })
             .attr("stroke", function(d) { return colorScale(d.voice); })
@@ -147,13 +151,21 @@ function NotesCanvas(){
     ;
     my.width = function (value){
         if(arguments.length === 0) return width;
+
         width = value;
+        perspectives.forEach(function(p) { scale[p].x.range([0, width - 1]); })
+
         return my;
       } // my.width()
     ;
     my.height = function (value){
         if(arguments.length === 0) return height;
+
         height = value;
+        perspectives.forEach(function(p) { scale[p].y.range([height, 0]); });
+        noteHeight = height / (scale.zoom.y.domain()[1] - scale.zoom.y.domain()[0]);
+        roundedCornerSize = noteHeight / 2;
+
         return my;
       } // my.height()
     ;
@@ -181,12 +193,13 @@ function NotesCanvas(){
         return my;
       } // my.hilite()
     ;
+
     /*
     ** API (Getter ONLY) Functions
     */
     my.noteHeight = function (){ return noteHeight; };
     my.roundedCornerSize = function (){ return roundedCornerSize; };
-    my.x = function() { return x; };
+    my.x = function() { return scale.zoom.x; };
 
     /*
     ** API (Setter ONLY) Functions
@@ -194,19 +207,30 @@ function NotesCanvas(){
     my.separate = function (value){
         if(arguments.length === 0) return separate;
         separate = value;
+
         return my;
       } // my.separate()
     ;
     my.zoom = function(value, ended) {
         // Set the xdomain of notes in the zoomed in region and update
         //  -- if value is epty, the zoom is reset to the entire domain (xorig)
-        x.domain(arguments.length ? value : xorig.domain());
+        scale.zoom.x.domain(arguments.length ? value : scale.x.data.domain());
         update();
 
         if(ended)
             describe();
         return my;
       } // my.zoom()
+    ;
+    my.context = function(value) {
+        if(!arguments.length) return scale.full.x;
+
+        scale.full.x.domain(value[0]);
+        if(value[1])
+            scale.full.y.domain(value[1]);
+
+        return my;
+      } // my.contextX()
     ;
 
     // This is always the last thing returned
