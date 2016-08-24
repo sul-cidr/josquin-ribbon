@@ -145,7 +145,6 @@
             .domain(data.partnames)
         ;
         notesViewContext
-            .full([[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]])
             .colorScale(colorScale)
             .width(width)
             .height(height)
@@ -154,7 +153,7 @@
         notesViewFocus
             .colorScale(colorScale)
             .width(width)
-            .height(height)
+            .height(height * 3)
             .tooltip(tip)
             .connect(signal)
         ;
@@ -168,12 +167,16 @@
         renderNotesViewContext(data.notes);
         renderNotesViewFocus(data);
 
+        var full = [[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]];
+        notesViewContext.zoom(full);
+        notesViewFocus.zoom(full);
+
         brush
             .height(150)
             .connect(signal)
         ;
         // When the user brushes in the context view,
-        signal.on("zoom.extent", function (zoom){
+        signal.on("zoom", function (zoom){
             // Update the focus view.
             notesViewFocus.zoom(zoom.extent, zoom.ended);
 
