@@ -107,10 +107,12 @@
       , work = hash ? hash.substr(1) : defaultWork
       , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
     ;
-    d3.json(jsonURL, function (err, prollData){
-        chartify(parseJSON(prollData));
-    });
     colorLegend.colorScale(colorScale);
+
+    d3.json(jsonURL, function (error, proll){
+        if(error) throw error;
+        chartify(parseJSON(proll));
+    });
 
     function parseJSON(prollData){
         var notes = []
