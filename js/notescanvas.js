@@ -101,7 +101,9 @@ function NotesCanvas(){
         selection.selectAll("rect.note")
             .attr("x", function(d) { return scale.zoom.x(d.time); })
             .attr("y", function(d) { return scale.zoom.y(d.pitch); })
-            .attr("width", function(d) { return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time); })
+            .attr("width", function(d) {
+                return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time);
+              })
             .attr("height", noteHeight)
             .attr("fill", function(d) { return colorScale(d.voice); })
             .attr("stroke", function(d) { return colorScale(d.voice); })
