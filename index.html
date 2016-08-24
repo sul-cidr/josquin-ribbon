@@ -175,7 +175,7 @@ return prollData;
            renderNotesViewFocus(data.notes);
          })
         ;
-    }
+    } // chartify()
 
     function renderNotesViewContext(data){
         notesViewContextSVG
@@ -183,19 +183,19 @@ return prollData;
             .call(notesViewContext)
             .call(brush.x(notesViewContext.x()))
         ;
-    }
+    } // renderNotesViewContext()
     function renderNotesViewFocus(data){
         notesViewFocusSVG
             .datum(data)
             .call(notesViewFocus)
         ;
-    }
+    } // renderNotesViewFocus()
     function renderColorLegend(data){
         colorLegend
             .noteHeight(notesViewContext.noteHeight())
             .roundedCornerSize(notesViewContext.roundedCornerSize())
         ;
         colorLegend();
-    }
+    } // renderColorLegend()
   </script>
 </body>
