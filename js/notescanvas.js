@@ -9,6 +9,8 @@ function NotesCanvas(){
       , x = d3.scale.linear()
       , xorig = d3.scale.linear()
       , y = d3.scale.linear()
+      , perspectives = ["full", "data", "zoom"]
+      , scale = {}
       , tooltip
       , colorScale
       , noteHeight
@@ -29,6 +31,10 @@ function NotesCanvas(){
               .append("g")
               .attr("class", "notes-g " + name)
         ;
+        perspectives.forEach(function(p) {
+            scale[p].x = d3.scale.linear().range([0, width]);
+            scale[p].y = d3.scale.linear().range([height,0]);
+        });
         xorig
             .domain([
                   d3.min(data.values, function(d) { return d.time; })
