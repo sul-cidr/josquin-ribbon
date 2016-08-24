@@ -17,7 +17,6 @@ function NotesCanvas(){
       , roundedCornerSize
       , dispatch
       , emphasize
-      , separate
     ;
     /*
     ** Main Function Object
@@ -221,13 +220,6 @@ function NotesCanvas(){
     /*
     ** API (Setter ONLY) Functions
     */
-    my.separate = function (value){
-        if(arguments.length === 0) return separate;
-        separate = value;
-
-        return my;
-      } // my.separate()
-    ;
     my.zoom = function(value, stop) {
         // Set the xdomain of notes in the zoomed in region and update
         //  -- if value is epty, the zoom is reset to the entire domain (xorig)
