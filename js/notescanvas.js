@@ -44,7 +44,6 @@ function NotesCanvas(){
               ])
             .range([0, width - 1]);
         ;
-        console.log(data, scale.data.x.domain())
         scale.data.y
             .domain([
                   d3.min(data.values, function(d) { return d.pitch - 1; })
