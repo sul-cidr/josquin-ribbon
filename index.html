@@ -139,7 +139,7 @@
     } // parseJSON()
 
     function chartify(data) {
-        var signal = d3.dispatch("hilite", "zoom", "separate");
+        var signal = d3.dispatch("hilite", "zoom", "separate", "selected");
 
         colorScale
             .domain(data.partnames)
