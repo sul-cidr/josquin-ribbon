@@ -185,7 +185,10 @@
         // When the user clicks on a legend item, they are either:
         //  1. selecting a voice to highlight
         //  2. deselecting it to show all voices.
-        signal.on("hilite", notesViewFocus.hilite);
+        signal.on("hilite", function(hilite) {
+            notesViewFocus.hilite(hilite);
+          })
+        ;
         // When the user selects to separate or combine...
         signal.on("separate", function (separate){
            notesViewFocus.separate(separate);
