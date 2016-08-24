@@ -197,7 +197,7 @@
     function renderNotesViewContext(data) {
         notesViewContextSVG
           .append("g")
-            .datum({ key: "full", value: d3.merge((data.value())) })
+            .datum({ key: "full", value: d3.merge((data.values())) })
             .call(notesViewContext)
             .call(brush.x(notesViewContext.x()))
         ;
