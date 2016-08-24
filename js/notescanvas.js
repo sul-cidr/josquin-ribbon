@@ -211,6 +211,11 @@ function NotesCanvas(){
         return my;
       } // my.zoom()
     ;
+    my.update = function() {
+        // Call update, with a transition
+        update(svg.transition());
+      } // my.update()
+    ;
     // This is always the last thing returned
     return my;
 } // NotesCanvas()
