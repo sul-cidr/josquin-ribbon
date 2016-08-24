@@ -2,7 +2,7 @@ function NotesCanvas(){
     /*
     ** Private Variables - only used inside this object
     */
-    var svg
+    var svg, data, name
       , width = 900
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
@@ -21,21 +21,18 @@ function NotesCanvas(){
     ** Main Function Object
     */
     function my(selection){
-        var data = selection.datum();
-        svg = selection
-            .attr("height", height)
-            .attr("width", width)
-        ;
-        svg.selectAll("g")
-            .data(["notes-g"])
+        data = selection.datum();
+        name = data.key;
+        svg = selection.selectAll("." + name + ".notes-g")
+              .data([name])
             .enter()
               .append("g")
-              .attr("class", function (d){ return d; })
+              .attr("class", "notes-g " + name)
         ;
         xorig
             .domain([
-                  d3.min(data, function(d) { return d.time; })
-                , d3.max(data, function(d) { return d.time + d.duration; })
+                  d3.min(data.values, function(d) { return d.time; })
+                , d3.max(data.values, function(d) { return d.time + d.duration; })
               ])
             .range([0, width - 1]);
         ;
@@ -45,16 +42,15 @@ function NotesCanvas(){
         ;
         y
             .domain([
-                  d3.min(data, function(d) { return d.pitch - 1; })
-                , d3.max(data, function(d) { return d.pitch; })
+                  d3.min(data.values, function(d) { return d.pitch - 1; })
+                , d3.max(data.values, function(d) { return d.pitch; })
               ])
             .range([height, 0])
         ;
         noteHeight = height / (y.domain()[1] - y.domain()[0]);
         roundedCornerSize = noteHeight / 2;
 
-        var notesG = svg.select(".notes-g")
-          , rects = notesG.selectAll("rect").data(data)
+        var rects = svg.selectAll("rect").data(data.values)
         ;
         rects
           .enter().append("rect")
