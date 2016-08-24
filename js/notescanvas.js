@@ -109,6 +109,31 @@ function NotesCanvas(){
         ;
     } // update()
 
+    function describe() {
+        /*
+        // Filter the notes based on the selected time interval.
+        var filteredData = data.notes
+            .filter(function (d){
+                return d.time > extent[0] && d.time < extent[1];
+              })
+        ;
+        // Update the pitch names text.
+        var pitchNames = filteredData
+            .map(function (d){ return d.pitchName; })
+        ;
+        d3.select("#note-names-string")
+            .text(pitchNames.join(", "))
+        ;
+        // Update the note durations text.
+        pitchNames = filteredData
+            .map(function (d){ return d.duration; })
+        ;
+        d3.select("#note-durations-string")
+            .text(pitchNames.join(", "))
+        ;
+        */
+    } // describe()
+
     /*
     ** API (Getter/Setter) Functions
     */
@@ -160,12 +185,14 @@ function NotesCanvas(){
         return my;
       } // my.separate()
     ;
-    my.zoom = function(value) {
+    my.zoom = function(value, ended) {
         // Set the xdomain of notes in the zoomed in region and update
         //  -- if value is epty, the zoom is reset to the entire domain (xorig)
         x.domain(arguments.length ? value : xorig.domain());
         update();
 
+        if(ended)
+            describe();
         return my;
       } // my.zoom()
     ;
