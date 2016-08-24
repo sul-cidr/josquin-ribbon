@@ -194,21 +194,21 @@
         ;
     } // chartify()
 
-    function renderNotesViewContext(data){
+    function renderNotesViewContext(data) {
         notesViewContextSVG
           .append("g")
-            .datum({ key: "full", values: d3.merge((data.value())) })
+            .datum({ key: "full", value: d3.merge((data.value())) })
             .call(notesViewContext)
             .call(brush.x(notesViewContext.x()))
         ;
     } // renderNotesViewContext()
-    function renderNotesViewFocus(data){
+    function renderNotesViewFocus(data) {
         notesViewFocusSVG
-            .datum(data)
+            .datum(data.notes.entries())
             .call(notesViewFocus)
         ;
     } // renderNotesViewContext()
-    function renderColorLegend(){
+    function renderColorLegend() {
         colorLegend
             .noteHeight(notesViewContext.noteHeight())
             .roundedCornerSize(notesViewContext.roundedCornerSize())
