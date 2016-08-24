@@ -1,36 +1,34 @@
 function NotesView(){
+    /*
+    ** Private Variables - only used inside this object
+    */
     var svg
       , width = 900
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , x = d3.scale.linear()
-      , y = d3.scale.linear()
+      , yPitch = d3.scale.linear()
+      , yVoice = d3.scale.ordinal()
       , brush = d3.svg.brush()
           .x(x)
           .on("brush", brushed)
       , brushEnabled = false
-      , tipEnabled = false
       , colorScale
       , noteHeight
       , roundedCornerSize
       , dispatch
       , emphasize
+      , separate
+      , tooltip
 
       // This is a fixed x domain set from outside,
       // it overrides the domain computed from the data.
       // This is set on the focus view based on the brush of the context view.
       , xDomain
-      , tip = d3.tip()
-          .attr("class", "d3-tip")
-          .html(function(d) { return d.pitchName; });
     ;
-
-    function brushed(){
-      dispatch.zoom({
-        extent: brush.empty() ? x.domain() : brush.extent()
-      });
-    }
-
+    /*
+    ** Main Function Object
+    */
     function my(selection){
         svg = selection
             .attr("height", height)
@@ -42,8 +40,8 @@ function NotesView(){
               .append("g")
               .attr("class", function (d){ return d; })
         ;
-        if(tipEnabled)
-            svg.call(tip)
+        if(tooltip)
+            svg.call(tooltip)
         ;
         var notesG = svg.select(".notes-g")
           , brushG = svg.select(".brush")
@@ -59,15 +57,27 @@ function NotesView(){
                   ])
                 ;
             }
-            y.domain([
+            yPitch.domain([
                   d3.min(data, function(d) { return d.pitch - 1; })
                 , d3.max(data, function(d) { return d.pitch; })
               ])
             ;
-            x.range([0, width - 1]);
-            y.range([height, 0]);
+            yVoice.domain(
+                data.map(function (d){ return d.voice; })
+              )
+            ;
 
-            noteHeight = height / (y.domain()[1] - y.domain()[0])
+            x.range([0, width - 1]);
+
+            if(separate){
+                yPitch.range([height / yVoice.domain().length, 0]);
+                yVoice.rangeBands([0, height]);
+            } else {
+                yPitch.range([height, 0]);
+                yVoice.rangeBands([0, 0]);
+            }
+
+            noteHeight = height / (yPitch.domain()[1] - yPitch.domain()[0])
             roundedCornerSize = noteHeight / 2
 
             var rects = notesG.selectAll("rect").data(data);
@@ -80,17 +90,18 @@ function NotesView(){
             ;
             rects.exit().remove();
             rects
+                .classed("subdued", function(d) {
+                    return emphasize && d.voice !== emphasize;
+                  })
+              .transition()
                 .attr("x", function(d) { return x(d.time); })
-                .attr("y", function(d) { return y(d.pitch); })
+                .attr("y", function(d) { return yPitch(d.pitch) + yVoice(d.voice); })
                 .attr("width", function(d) { return x(d.time + d.duration) - x(d.time); })
                 .attr("height", noteHeight)
                 .attr("fill", function(d) { return colorScale(d.voice); })
                 .attr("stroke", function(d) { return colorScale(d.voice); })
                 .attr("rx", roundedCornerSize)
                 .attr("ry", roundedCornerSize)
-                .classed("subdued", function(d) {
-                    return emphasize && d.voice !== emphasize;
-                  })
             ;
 
             if(brushEnabled){
@@ -108,7 +119,7 @@ function NotesView(){
                     .attr("height", height - 1);
             }
 
-            if(tipEnabled){
+            if(tooltip){
                 rects
                     .on("mouseover", tip.show)
                     .on("mouseout", tip.hide)
@@ -130,6 +141,12 @@ function NotesView(){
         ;
     } // hilite()
 
+    // Brush callback
+    function brushed(){
+      dispatch.zoom({
+        extent: brush.empty() ? x.domain() : brush.extent()
+      });
+    }
     /*
     ** API (Getter/Setter) Functions
     */
@@ -162,13 +179,15 @@ function NotesView(){
 
     my.xDomain = function (value){
         xDomain = value;
-    };
-
-    my.tipEnabled = function (value){
-        if(arguments.length === 0) return tipEnabled;
-        tipEnabled = value;
+      } // my.xDomain()
+    ;
+    my.tooltip = function(value) {
+        if(!arguments.length === 0) return tooltip;
+        tooltip = value
+            .html(function(d) { return d.pitchName; })
+        ;
         return my;
-      } // my.tipEnabled()
+      } // my.tooltip()
     ;
     my.connect = function(value){
         if(!arguments.length) return dispatch;
@@ -180,6 +199,12 @@ function NotesView(){
 
         return my;
       } // my.connect()
+    ;
+    my.separate = function (value){
+        if(arguments.length === 0) return separate;
+        separate = value;
+        return my;
+      } // my.tipEnabled()
     ;
     return my;
 } // NotesView()

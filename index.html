@@ -53,12 +53,14 @@
           color: #fff;
           border-radius: 2px;
       }
-
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
   <script src="js/legend.js"></script>
-  <script src="js/notesview.js"></script>
+  <script src="js/notescanvas.js"></script>
+  <script src="js/notesbook.js"></script>
+  <script src="js/brushview.js"></script>
+  <script src="js/combineSeparateUI.js"></script>
 </head>
 
 <body>
@@ -69,9 +71,11 @@
   <article>
     <div class="container">
       <div class="row">
-        <div id="notes" class="col-xs-12 col-lg-10">
+        <div id="notes" class="col-xs-12 col-lg-10"></div>
+        <div class="col-xs-12 col-lg-2">
+          <div id="combine-separate-ui"></div>
+          <div id="legend"></div>
         </div>
-        <div id="legend" class="col-xs-12 col-lg-2"></div>
       </div><!--.row-->
       <div class="row">
         <span>Note names: </span> <p id="note-names-string"></p>
@@ -80,125 +84,136 @@
     </div><!--.container-->
   </article>
   <script>
-    var notesViewContext = NotesView()
-      , notesViewContextSVG = d3.select("#notes").append("svg")
-      , notesViewFocus = NotesView()
-      , notesViewFocusSVG = d3.select("#notes").append("svg")
+    var width = 960
+      , height = 150 // height of one strip of notes
+      , notesViewContext = NotesCanvas()
+      , notesViewContextSVG = d3.select("#notes")
+          .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+      , notesViewFocus = NotesBook()
+      , notesViewFocusSVG = d3.select("#notes")
+          .append("svg")
+            .attr("width", width)
+            .attr("height", 3 * height)
+      , combineSeparateUI = CombineSeparateUI()
+      , brush = BrushView()
       , colorLegend = ColorLegend()
-      , defaultWork = "Jos2721-La_Bernardina"
+      , colorScale = d3.scale.category10()
+      , tip = d3.tip().attr("class", "d3-tip")
+    ;
+    var defaultWork = "Jos2721-La_Bernardina"
       , hash = window.location.hash
       , work = hash ? hash.substr(1) : defaultWork
       , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
-      , colorScale = d3.scale.category10()
-      , notesViewFocus = NotesView()
     ;
-
     colorLegend.colorScale(colorScale);
 
-    function parseJSON(prollData){
-      prollData.notes = [];
-      prollData.partdata.forEach(function (part){
-          var voice = prollData.partnames[part.partindex];
-          part.notedata.forEach(function (note){
-              prollData.notes.push({
-                pitch: note.pitch.b7,
-                pitchName: note.pitch.name,
-                time: note.starttime[0],
-                duration: note.duration[0],
-                voice: voice
-              });
-          });
-      });
-      return prollData;
-    }
-
-    d3.json(jsonURL, function (err, prollData){
-        chartify(parseJSON(prollData));
+    d3.json(jsonURL, function(error, proll) {
+        if(error) throw error;
+        chartify(parseJSON(proll));
     });
 
-    function chartify(data){
-        var signal = d3.dispatch("hilite", "zoom");
+    function parseJSON(proll) {
+        var notes = []
+          , voice
+        ;
+        proll.partdata.forEach(function(part) {
+            voice = proll.partnames[part.partindex];
+            part.notedata.forEach(function(note) {
+                notes.push({
+                      pitch: note.pitch.b7
+                    , pitchName: note.pitch.name
+                    , time: note.starttime[0]
+                    , duration: note.duration[0]
+                    , voice: voice
+                });
+            });
+        });
+        // Group the notes by voice
+        proll.notes = d3.nest()
+            .key(function(d) { return d.voice; })
+            .map(notes, d3.map)
+        ;
+        return proll;
+    } // parseJSON()
 
+    function chartify(data) {
+        var signal = d3.dispatch("hilite", "zoom", "separate");
+
+        colorScale
+            .domain(data.partnames)
+        ;
         notesViewContext
             .colorScale(colorScale)
-            .width(900)
-            .height(150)
-            .brushEnabled(true)
+            .width(width)
+            .height(height)
             .connect(signal)
         ;
         notesViewFocus
             .colorScale(colorScale)
-            .width(notesViewContext.width())
-            .height(notesViewContext.height())
-            .tipEnabled(true)
+            .width(width)
+            .height(height * 3)
+            .tooltip(tip)
             .connect(signal)
         ;
-        colorScale.domain(
-            data.notes.map(function (d){ return d.voice; })
-          )
+        colorLegend
+            .connect(signal)
         ;
-        colorLegend.connect(signal);
+        d3.select("#combine-separate-ui")
+            .call(combineSeparateUI.connect(signal))
+        ;
+        renderColorLegend();
         renderNotesViewContext(data.notes);
-        renderNotesViewFocus(data.notes);
-        renderColorLegend(data.notes);
+        renderNotesViewFocus(data);
 
-        // When the user brushes in the context view,
-        signal.on("zoom.extent", function (zoom){
-           var extent = zoom.extent;
+        var full = [[0, data.scorelength], [data.minpitch.b7, data.maxpitch.b7]];
+        notesViewContext.zoom(full);
+        notesViewFocus.zoom(full);
 
-            // Filter the notes based on the selected time interval.
-            var filteredData = data.notes.filter(function (d){
-                return d.time > extent[0] && d.time < extent[1];
-            });
-
-            // Update the focus view.
-            notesViewFocus.xDomain(extent);
-            renderNotesViewFocus(filteredData);
-
-            // Update the pitch names text.
-            var pitchNames = filteredData.map(function (d){
-                return d.pitchName;
-            }).join(", ");
-            d3.select("#note-names-string").text(pitchNames);
-
-            // Update the note names text.
-            var pitchNames = filteredData.map(function (d){
-                return d.pitchName;
-            }).join(", ");
-            d3.select("#note-names-string").text(pitchNames);
-
-            // Update the note durations text.
-            var pitchNames = filteredData.map(function (d){
-                return d.duration;
-            }).join(", ");
-            d3.select("#note-durations-string").text(pitchNames);
-
-            // TODO For the text entries, we may need to filter by the voice
-            // that is currently selected from the legend. Currently, these
-            // show notes from all voices combined, and not in temporal order.
-        });
-    }
-
-    function renderNotesViewContext(data){
-        notesViewContextSVG
-            .datum(data)
-            .call(notesViewContext)
+        brush
+            .height(height)
+            .connect(signal)
         ;
-    }
+        signal
+            .on("zoom", function(zoom) {
+                // When the user brushes in the context view,
+                // Update the focus view.
+                notesViewFocus.zoom(zoom.extent, zoom.ended);
+              })
+            .on("hilite", function(hilite) {
+                // When the user clicks on a legend item, they are either:
+                //  1. selecting a voice to highlight
+                //  2. deselecting it to show all voices.
+                // When the user selects to separate or combine...
+                notesViewFocus.hilite(hilite);
+              })
+            .on("separate", function (separate){
+               notesViewFocus.separate(separate);
+              })
+        ;
+    } // chartify()
 
-    function renderNotesViewFocus(data){
+    function renderNotesViewContext(data) {
+        notesViewContextSVG
+          .append("g")
+            .datum({ key: "full", value: d3.merge((data.values())) })
+            .call(notesViewContext)
+            .call(brush.x(notesViewContext.x()))
+        ;
+    } // renderNotesViewContext()
+    function renderNotesViewFocus(data) {
         notesViewFocusSVG
-            .datum(data)
+            .datum(data.notes.entries())
             .call(notesViewFocus)
         ;
-    }
-
-    function renderColorLegend(data){
+    } // renderNotesViewContext()
+    function renderColorLegend() {
         colorLegend
-            .noteHeight(notesViewContext.noteHeight())
-            .roundedCornerSize(notesViewContext.roundedCornerSize())
+            .noteHeight(10)
+            .roundedCornerSize(5)
         ;
         colorLegend();
-    }
+    } // renderColorLegend()
   </script>
 </body>
