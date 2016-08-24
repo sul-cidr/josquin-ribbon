@@ -8,7 +8,7 @@ function BrushView() {
       , brush = d3.svg.brush()
             .on("brush", brushed)
             .on("brushend", brushed(true))
-      , dispatch = d3.dispatch()
+      , dispatch
       , height
     ;
 
@@ -29,12 +29,12 @@ function BrushView() {
     /*
     ** Helper Functions
     */
-    function brushed(ended) {
+    function brushed(stop) {
         if(dispatch)
             dispatch
                 .zoom({
                       extent: brush.empty() ? x.domain() : brush.extent()
-                    , ended: ended || false
+                    , ended: stop || false
                   })
             ;
     } // brushed()
