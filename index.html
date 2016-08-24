@@ -109,17 +109,17 @@
     ;
     colorLegend.colorScale(colorScale);
 
-    d3.json(jsonURL, function (error, proll){
+    d3.json(jsonURL, function(error, proll) {
         if(error) throw error;
         chartify(parseJSON(proll));
     });
 
-    function parseJSON(prollData){
+    function parseJSON(proll) {
         var notes = []
           , voice
         ;
-        prollData.partdata.forEach(function(part) {
-            voice = prollData.partnames[part.partindex];
+        proll.partdata.forEach(function(part) {
+            voice = proll.partnames[part.partindex];
             part.notedata.forEach(function(note) {
                 notes.push({
                       pitch: note.pitch.b7
@@ -131,11 +131,11 @@
             });
         });
         // Group the notes by voice
-        prollData.notes = d3.nest()
+        proll.notes = d3.nest()
             .key(function(d) { return d.voice; })
             .map(notes, d3.map)
         ;
-        return prollData;
+        return proll;
     } // parseJSON()
 
     function chartify(data) {
