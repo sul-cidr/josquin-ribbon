@@ -96,8 +96,10 @@
           .append("svg")
             .attr("width", width)
             .attr("height", 3 * height)
+      , combineSeparateDiv = d3.select("#combine-separate-ui")
       , combineSeparateUI = CombineSeparateUI()
       , brush = BrushView()
+      , legendContainer = d3.select("div#legend")
       , colorLegend = ColorLegend()
       , colorScale = d3.scale.category10()
       , tip = d3.tip().attr("class", "d3-tip")
@@ -107,8 +109,6 @@
       , work = hash ? hash.substr(1) : defaultWork
       , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
     ;
-    colorLegend.colorScale(colorScale);
-
     d3.json(jsonURL, function(error, proll) {
         if(error) throw error;
         chartify(parseJSON(proll));
@@ -141,8 +141,8 @@
     function chartify(data) {
         var signal = d3.dispatch("hilite", "zoom", "separate", "selected");
 
-        colorScale
-            .domain(data.partnames)
+        combineSeparateDiv
+            .call(combineSeparateUI.connect(signal))
         ;
         notesViewContext
             .colorScale(colorScale)
@@ -158,12 +158,14 @@
             .connect(signal)
         ;
         colorLegend
+            .noteHeight(10)
+            .roundedCornerSize(5)
             .connect(signal)
         ;
-        d3.select("#combine-separate-ui")
-            .call(combineSeparateUI.connect(signal))
+        colorScale
+            .domain(data.partnames)
         ;
-        renderColorLegend();
+        renderColorLegend(data.partnames);
         renderNotesViewContext(data.notes);
         renderNotesViewFocus(data);
 
@@ -208,12 +210,11 @@
             .call(notesViewFocus)
         ;
     } // renderNotesViewContext()
-    function renderColorLegend() {
-        colorLegend
-            .noteHeight(10)
-            .roundedCornerSize(5)
+    function renderColorLegend(data) {
+        legendContainer
+            .datum(data)
+            .call(colorLegend)
         ;
-        colorLegend();
     } // renderColorLegend()
   </script>
 </body>
