@@ -1,26 +1,26 @@
 function ColorLegend(){
-    var legend = d3.select("body #legend")
-          .append("ul")
-            .attr("class", "list-unstyled")
+    /*
+    ** Private Variables
+    */
+    var legend
       , hilite
-      , colorScale
+      , colorScale = d3.scale.category10()
       , noteHeight
       , roundedCornerSize
       , dispatch
     ;
 
-    function my(options) {
-        var svg = d3.select("#notes").selectAll("svg")
-          , row = legend.selectAll("li")
-                .data(colorScale.domain())
+    /*
+    ** Main function object
+    */
+    function my(sel) {
+        colorScale.domain(sel.datum());
+        legend = sel
+              .append("ul")
+                .attr("class", "list-unstyled")
         ;
-        legend
-            .on("click", function() {
-                hilite = false;
-                svg.selectAll("rect")
-                    .classed("subdued", false)
-                ;
-              })
+        var row = legend.selectAll("li")
+                .data(colorScale.domain())
         ;
         row.enter()
           .append("li")
@@ -64,15 +64,11 @@ function ColorLegend(){
             })
         ;
         row.exit().remove();
-    } // my()
+    } // my() - Main function object
 
-    my.colorScale = function (value){
-        if(arguments.length === 0){
-            return colorScale;
-        }
-        colorScale = value;
-    };
-
+    /*
+    ** API (Getter/Setter) Functions
+    */
     my.height = function (value){
         if(arguments.length === 0) return height;
         height = value;
