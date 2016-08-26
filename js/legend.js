@@ -49,10 +49,7 @@ function ColorLegend(){
                     .text(c)
                 ;
               })
-        ;
-        row
           .on("click", function(c) {
-              d3.event.stopPropagation();
               hilite = hilite === c ? false : c;
               dispatch.call("hilite", this, { emphasize: hilite });
 
