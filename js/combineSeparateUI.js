@@ -28,8 +28,9 @@ function CombineSeparateUI(){
                 .text(function (d){ return " " + d + " "; })
         ;
         inputs.on("click", function (e){
-            dispatch.separate(e == "Separate");
-        });
+            dispatch.call("separate", this, e == "Separate");
+          })
+        ;
     } // my() - Main Function Object
     /*
     ** API (Getters/Setters)
