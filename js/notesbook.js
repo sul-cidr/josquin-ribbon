@@ -41,7 +41,7 @@ function NotesBook() {
       ;
       yScale
           .domain(data.map(function(d) { return d.key; }))
-          .range([0, height])
+          .rangeRound([0, height])
       ;
   } // my() - Main function object
 
@@ -111,7 +111,7 @@ function NotesBook() {
           scale[p].y.range([height, 0]);
       });
 
-      yScale.range([height, 0]);
+      yScale.rangeRound([height, 0]);
 
       return my;
     } // my.height()
