@@ -154,6 +154,13 @@ function NotesBook() {
       return my;
     } // my.separate()
   ;
+  my.reset = function() {
+      canvases.forEach(function(c) {
+          c.canvas.reset();
+      });
+      return my;
+    } // my.reset()
+  ;
 
   // This is always the last thing returned
   return my;
