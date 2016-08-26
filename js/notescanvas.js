@@ -179,15 +179,6 @@ function NotesCanvas(){
         return my;
       } // my.connect()
     ;
-    my.hilite = function(value) {
-        if(!arguments.length)
-            hilite(); // un-highlight
-        else
-            hilite(value);
-
-        return my;
-      } // my.hilite()
-    ;
 
     /*
     ** API (Getter ONLY) Functions
@@ -225,6 +216,16 @@ function NotesCanvas(){
         update(svg.transition());
       } // my.update()
     ;
+    my.hilite = function(value) {
+        if(!arguments.length)
+            hilite(); // un-highlight
+        else
+            hilite(value);
+
+        return my;
+      } // my.hilite()
+    ;
+
     // This is always the last thing returned
     return my;
 } // NotesCanvas()
