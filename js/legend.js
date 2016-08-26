@@ -4,7 +4,7 @@ function ColorLegend(){
     */
     var legend
       , hilite
-      , colorScale = d3.scale.category10()
+      , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
       , noteHeight
       , roundedCornerSize
       , dispatch
