@@ -7,7 +7,7 @@ function NotesBook() {
     , height
     , perspectives = ["full", "zoom"]
     , scale = {
-          full: { x: d3.scaleLinear(), y: d3.scaleLinear() }
+          full: { x: d3.scaleLinear() }
         , zoom: { x: d3.scaleLinear(), y: d3.scaleLinear() }
       }
     , yScale = d3.scaleBand()
@@ -107,9 +107,7 @@ function NotesBook() {
       if(arguments.length === 0) return height;
 
       height = value;
-      perspectives.forEach(function(p) {
-          scale[p].y.range([height, 0]);
-      });
+      scale.zoom.y.range([height, 0]);
 
       yScale.rangeRound([height, 0]);
 
@@ -121,8 +119,6 @@ function NotesBook() {
 
       if(value[0])
           scale.full.x.domain(value[0]);
-      if(value[1])
-          scale.full.y.domain(value[1]);
 
       canvases.forEach(function(c) {
           c.canvas.full(value);
@@ -163,6 +159,7 @@ function NotesBook() {
 
       return my;
     } // my.separate()
+  ;
 
   // This is always the last thing returned
   return my;
