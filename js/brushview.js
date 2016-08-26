@@ -85,6 +85,7 @@ function BrushView() {
         if(!arguments.length) return dispatch;
 
         dispatch = value;
+        return my;
       } // my.connect()
     ;
     // This is ALWAYS the last thing returned
