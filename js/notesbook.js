@@ -5,12 +5,8 @@ function NotesBook() {
   var svg, data
     , width
     , height
-    , perspectives = ["full", "zoom"]
-    , scale = {
-          full: { x: d3.scaleLinear() }
-        , zoom: { x: d3.scaleLinear(), y: d3.scaleLinear() }
-      }
-    , yScale = d3.scaleBand()
+    , domain
+    , scale = { x: d3.scaleLinear(), y: d3.scaleBand()  }
     , colorScale
     , dispatch
     , tooltip
@@ -39,7 +35,7 @@ function NotesBook() {
               ;
             })
       ;
-      yScale
+      scale.y
           .domain(data.map(function(d) { return d.key; }))
           .rangeRound([0, height])
       ;
@@ -59,10 +55,10 @@ function NotesBook() {
 
   function update() {
       var transforms = { true: 0, false: 0 }
-        , h = separate ? yScale.bandwidth() : height
+        , h = separate ? scale.y.bandwidth() : height
       ;
       canvases.forEach(function(c) {
-          transforms.true = yScale(c.key);
+          transforms.true = scale.y(c.key);
           c.canvas
               .height(h)
               .update()
@@ -96,9 +92,7 @@ function NotesBook() {
       if(arguments.length === 0) return width;
 
       width = value;
-      perspectives.forEach(function(p) {
-          scale[p].x.range([0, width]);
-      });
+      scale.x.range([0, width]);
 
       return my;
     } // my.width()
@@ -107,18 +101,17 @@ function NotesBook() {
       if(arguments.length === 0) return height;
 
       height = value;
-      scale.zoom.y.range([height, 0]);
 
-      yScale.rangeRound([height, 0]);
+      scale.y.rangeRound([height, 0]);
 
       return my;
     } // my.height()
   ;
   my.full = function(value) {
-      if(!arguments.length) return scale.full;
+      if(!arguments.length) return scale;
 
       if(value[0])
-          scale.full.x.domain(value[0]);
+          scale.x.domain(domain = value[0]);
 
       canvases.forEach(function(c) {
           c.canvas.full(value);
@@ -134,7 +127,8 @@ function NotesBook() {
     } // my.connect()
   ;
   my.zoom = function(value, stop) {
-      if(!arguments.length) return zoom;
+      if(!arguments.length)
+          return canvases.map(function(c) { return c.canvas.zoom(); });
 
       canvases.forEach(function(c) {
           c.canvas.zoom(value, stop);
