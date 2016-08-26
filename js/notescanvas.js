@@ -8,7 +8,6 @@ function NotesCanvas(){
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , scale = { x: d3.scaleLinear(), y: d3.scaleLinear() }
       , domain
-      , perspectives = d3.keys(scale)
       , tooltip
       , colorScale
       , noteHeight
