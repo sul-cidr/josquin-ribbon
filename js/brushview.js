@@ -5,9 +5,9 @@ function BrushView() {
     */
     var svg
       , x
-      , brush = d3.svg.brush()
+      , brush = d3.brushX()
             .on("brush", brushed)
-            .on("brushend", brushed(true))
+            .on("end", brushend)
       , dispatch
       , height
     ;
@@ -29,19 +29,36 @@ function BrushView() {
     /*
     ** Helper Functions
     */
+    function brushend() { brushed(true); } // brushend()
+
     function brushed(stop) {
-        if(dispatch)
-            dispatch
-                .zoom({
-                      extent: brush.empty() ? x.domain() : brush.extent()
-                    , ended: stop || false
-                  })
-            ;
+      if(!dispatch)
+          return;
+      var extent = x.domain();
+
+      if(d3.event && d3.event.selection)
+          extent = d3.event.selection
+                .map(function(s) { return x.invert(s); })
+          ;
+      dispatch.call(
+          "zoom"
+        , this
+        , {
+              extent: extent
+            , ended: stop === true || false
+          }
+      );
     } // brushed()
+
+    function extent() {
+        if(height && x)
+            brush.extent([[x.range()[0], 0], [x.range()[1], height]])
+    }
 
     /*
     ** API - Getters/Setters
     */
+
     my.height = function(value) {
         if(!arguments.length) return height;
 
@@ -50,6 +67,8 @@ function BrushView() {
           .attr("y", 0)
           .attr("height", height - 1)
         ;
+        extent();
+
         return my;
       } // my.height()
     ;
@@ -57,7 +76,7 @@ function BrushView() {
         if(!arguments.length) return x;
 
         x = value;
-        brush.x(x);
+        extent();
 
         return my;
       } // my.x()
@@ -66,6 +85,7 @@ function BrushView() {
         if(!arguments.length) return dispatch;
 
         dispatch = value;
+        return my;
       } // my.connect()
     ;
     // This is ALWAYS the last thing returned

@@ -7,10 +7,10 @@ function NotesBook() {
     , height
     , perspectives = ["full", "zoom"]
     , scale = {
-          full: { x: d3.scale.linear(), y: d3.scale.linear() }
-        , zoom: { x: d3.scale.linear(), y: d3.scale.linear() }
+          full: { x: d3.scaleLinear(), y: d3.scaleLinear() }
+        , zoom: { x: d3.scaleLinear(), y: d3.scaleLinear() }
       }
-    , yScale = d3.scale.ordinal()
+    , yScale = d3.scaleBand()
     , colorScale
     , dispatch
     , tooltip
@@ -28,18 +28,20 @@ function NotesBook() {
           .data(data)
         .enter().append("g")
           .each(function(d) {
+              var self = d3.select(this);
               canvases.push({
                     key: d.key
                   , canvas: NotesCanvas().colorScale(colorScale)
+                  , selection: self
               });
-              d3.select(this)
+              self
                   .call(canvases[canvases.length - 1].canvas)
               ;
             })
       ;
       yScale
           .domain(data.map(function(d) { return d.key; }))
-          .rangeRoundBands([0, height])
+          .rangeRound([0, height])
       ;
   } // my() - Main function object
 
@@ -56,20 +58,21 @@ function NotesBook() {
   } // hilite()
 
   function update() {
-      if(separate) {
-          canvases.forEach(function(c) {
-              c.canvas.height(yScale.rangeBand());
-              c.canvas.transform([0, yScale(c.key)]);
-            })
+      var transforms = { true: 0, false: 0 }
+        , h = separate ? yScale.bandwidth() : height
+      ;
+      canvases.forEach(function(c) {
+          transforms.true = yScale(c.key);
+          c.canvas
+              .height(h)
+              .update()
           ;
-      } else {
-          canvases.forEach(function(c) {
-              c.canvas.height(height);
-              c.canvas.transform([0, 0]);
-            })
+          c.selection
+            .transition()
+              .attr("transform", "translate(0," +  transforms[separate] + ")")
           ;
-
-      }
+        })
+      ;
   } // update()
 
 
@@ -108,7 +111,7 @@ function NotesBook() {
           scale[p].y.range([height, 0]);
       });
 
-      yScale.rangeRoundBands([height, 0]);
+      yScale.rangeRound([height, 0]);
 
       return my;
     } // my.height()

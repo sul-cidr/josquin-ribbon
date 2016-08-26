@@ -7,8 +7,8 @@ function NotesCanvas(){
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , scale = {
-          data: { x: d3.scale.linear(), y: d3.scale.linear() }
-          , zoom: { x: d3.scale.linear(), y: d3.scale.linear() }
+            data: { x: d3.scaleLinear(), y: d3.scaleLinear() }
+          , zoom: { x: d3.scaleLinear(), y: d3.scaleLinear() }
         }
       , perspectives = d3.keys(scale)
       , tooltip
@@ -17,7 +17,6 @@ function NotesCanvas(){
       , roundedCornerSize
       , dispatch
       , emphasize
-      , separate
     ;
     /*
     ** Main Function Object
@@ -61,18 +60,8 @@ function NotesCanvas(){
             .attr("class", "note")
         ;
         rects.exit().remove();
-        rects
-            .attr("x", function(d) { return scale.zoom.x(d.time); })
-            .attr("y", function(d) { return scale.zoom.y(d.pitch); })
-            .attr("width", function(d) {
-                return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time);
-              })
-            .attr("height", noteHeight)
-            .attr("fill", function(d) { return colorScale(d.voice); })
-            .attr("stroke", function(d) { return colorScale(d.voice); })
-            .attr("rx", roundedCornerSize)
-            .attr("ry", roundedCornerSize)
-        ;
+        update();
+
         if(tooltip){
             svg.call(tooltip);
             rects
@@ -95,12 +84,16 @@ function NotesCanvas(){
         ;
     } // hilite()
 
-    function update() {
+    function update(selection) {
+        selection = selection || svg;
         setHeights();
-        svg.selectAll("rect.note")
+
+        selection.selectAll("rect.note")
             .attr("x", function(d) { return scale.zoom.x(d.time); })
             .attr("y", function(d) { return scale.zoom.y(d.pitch); })
-            .attr("width", function(d) { return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time); })
+            .attr("width", function(d) {
+                return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time);
+              })
             .attr("height", noteHeight)
             .attr("fill", function(d) { return colorScale(d.voice); })
             .attr("stroke", function(d) { return colorScale(d.voice); })
@@ -115,28 +108,30 @@ function NotesCanvas(){
     } // setHeights()
 
     function describe() {
-        /*
+      /*
         // Filter the notes based on the selected time interval.
-        var filteredData = data.notes
+        var filteredData = data.value
             .filter(function (d){
-                return d.time > extent[0] && d.time < extent[1];
+                return d.time > scale.zoom.x.domain()[0]
+                  && d.time < scale.zoom.x.domain()[1];
               })
         ;
         // Update the pitch names text.
         var pitchNames = filteredData
             .map(function (d){ return d.pitchName; })
         ;
-        d3.select("#note-names-string")
-            .text(pitchNames.join(", "))
-        ;
         // Update the note durations text.
-        pitchNames = filteredData
+        var pitchTimes = filteredData
             .map(function (d){ return d.duration; })
         ;
-        d3.select("#note-durations-string")
-            .text(pitchNames.join(", "))
-        ;
-        */
+        if(dispatch)
+            dispatch.selected({
+                  names: pitchNames
+                , times: pitchTimes
+              })
+            ;
+        console.log(dispatch);
+      */
     } // describe()
 
     /*
@@ -193,24 +188,7 @@ function NotesCanvas(){
         return my;
       } // my.hilite()
     ;
-    my.transform = function(value) {
-        if(arguments.length)
-        svg
-          .transition()
-            .attr("transform", "translate(" + value[0] + "," + value[1] + ")")
-          .selectAll("rect.note")
-            .attr("x", function(d) { return scale.zoom.x(d.time); })
-            .attr("y", function(d) { return scale.zoom.y(d.pitch); })
-            .attr("width", function(d) { return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time); })
-            .attr("height", noteHeight)
-            .attr("fill", function(d) { return colorScale(d.voice); })
-            .attr("stroke", function(d) { return colorScale(d.voice); })
-            .attr("rx", roundedCornerSize)
-            .attr("ry", roundedCornerSize)
-        ;
-        return my;
-      } // my.transform()
-    ;
+
     /*
     ** API (Getter ONLY) Functions
     */
@@ -221,16 +199,9 @@ function NotesCanvas(){
     /*
     ** API (Setter ONLY) Functions
     */
-    my.separate = function (value){
-        if(arguments.length === 0) return separate;
-        separate = value;
-
-        return my;
-      } // my.separate()
-    ;
     my.zoom = function(value, stop) {
-        // Set the xdomain of notes in the zoomed in region and update
-        //  -- if value is epty, the zoom is reset to the entire domain (xorig)
+        // Set the domain of notes in the zoomed in region
+        //  -- if value is empty, the zoom is reset to the dataset's domain
         if(!arguments.length) {
             scale.zoom.x.domain(scale.x.data.domain());
             scale.zoom.y.domain(scale.y.data.domain());
@@ -248,6 +219,11 @@ function NotesCanvas(){
             describe();
         return my;
       } // my.zoom()
+    ;
+    my.update = function() {
+        // Call update, with a transition
+        update(svg.transition());
+      } // my.update()
     ;
     // This is always the last thing returned
     return my;
