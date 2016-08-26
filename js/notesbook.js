@@ -59,7 +59,7 @@ function NotesBook() {
 
   function update() {
       var transforms = { true: 0, false: 0 }
-        , h = separate ? yScale.rangeBand() : height
+        , h = separate ? yScale.bandwidth() : height
       ;
       canvases.forEach(function(c) {
           transforms.true = yScale(c.key);
