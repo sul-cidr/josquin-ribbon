@@ -32,13 +32,22 @@ function BrushView() {
     function brushend() { brushed(true); } // brushend()
 
     function brushed(stop) {
-        if(dispatch)
-            dispatch
-                .zoom({
-                      extent: brush.empty() ? x.domain() : brush.extent()
-                    , ended: stop || false
-                  })
-            ;
+      if(!dispatch)
+          return;
+      var extent = x.domain();
+
+      if(d3.event && d3.event.selection)
+          extent = d3.event.selection
+                .map(function(s) { return x.invert(s); })
+          ;
+      dispatch.call(
+          "zoom"
+        , this
+        , {
+              extent: extent
+            , ended: stop === true || false
+          }
+      );
     } // brushed()
 
     /*
