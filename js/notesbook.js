@@ -125,7 +125,7 @@ function NotesBook() {
           scale.full.y.domain(value[1]);
 
       canvases.forEach(function(c) {
-          c.canvas.zoom(value);
+          c.canvas.full(value);
       });
       return my;
     } // my.full()
