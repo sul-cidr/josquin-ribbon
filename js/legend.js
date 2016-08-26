@@ -54,7 +54,7 @@ function ColorLegend(){
           .on("click", function(c) {
               d3.event.stopPropagation();
               hilite = hilite === c ? false : c;
-              dispatch.hilite({ emphasize: hilite });
+              dispatch.call("hilite", this, { emphasize: hilite });
 
               legend.selectAll("li")
                   .classed("subdued", function(d) {
