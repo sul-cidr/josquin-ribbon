@@ -50,9 +50,15 @@ function BrushView() {
       );
     } // brushed()
 
+    function extent() {
+        if(height && x)
+            brush.extent([[x.range()[0], 0], [x.range()[1], height]])
+    }
+
     /*
     ** API - Getters/Setters
     */
+
     my.height = function(value) {
         if(!arguments.length) return height;
 
@@ -61,6 +67,8 @@ function BrushView() {
           .attr("y", 0)
           .attr("height", height - 1)
         ;
+        extent();
+
         return my;
       } // my.height()
     ;
@@ -68,7 +76,7 @@ function BrushView() {
         if(!arguments.length) return x;
 
         x = value;
-        brush.x(x);
+        extent();
 
         return my;
       } // my.x()
