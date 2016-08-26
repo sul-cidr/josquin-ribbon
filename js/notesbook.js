@@ -7,10 +7,10 @@ function NotesBook() {
     , height
     , perspectives = ["full", "zoom"]
     , scale = {
-          full: { x: d3.scale.linear(), y: d3.scale.linear() }
-        , zoom: { x: d3.scale.linear(), y: d3.scale.linear() }
+          full: { x: d3.scaleLinear(), y: d3.scaleLinear() }
+        , zoom: { x: d3.scaleLinear(), y: d3.scaleLinear() }
       }
-    , yScale = d3.scale.ordinal()
+    , yScale = d3.scaleBand()
     , colorScale
     , dispatch
     , tooltip
@@ -41,7 +41,7 @@ function NotesBook() {
       ;
       yScale
           .domain(data.map(function(d) { return d.key; }))
-          .rangeRoundBands([0, height])
+          .range([0, height])
       ;
   } // my() - Main function object
 
@@ -111,7 +111,7 @@ function NotesBook() {
           scale[p].y.range([height, 0]);
       });
 
-      yScale.rangeRoundBands([height, 0]);
+      yScale.range([height, 0]);
 
       return my;
     } // my.height()
