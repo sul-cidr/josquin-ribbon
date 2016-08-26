@@ -6,10 +6,8 @@ function NotesCanvas(){
       , width = 900
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
-      , scale = {
-            data: { x: d3.scaleLinear(), y: d3.scaleLinear() }
-          , zoom: { x: d3.scaleLinear(), y: d3.scaleLinear() }
-        }
+      , scale = { x: d3.scaleLinear(), y: d3.scaleLinear() }
+      , domain
       , perspectives = d3.keys(scale)
       , tooltip
       , colorScale
@@ -26,33 +24,22 @@ function NotesCanvas(){
         name = data.key;
         svg = selection.attr("class", "notes-g " + name);
 
-        perspectives.forEach(function(p) {
-            scale[p].x.range([0, width]);
-            scale[p].y.range([height,0]);
-          })
-        ;
-        scale.data.x
+        scale.x
             .domain([
                   d3.min(data.value, function(d) { return d.time; })
                 , d3.max(data.value, function(d) { return d.time + d.duration; })
               ])
             .range([0, width - 1]);
         ;
-        scale.data.y
+        scale.y
             .domain([
                   d3.min(data.value, function(d) { return d.pitch - 1; })
                 , d3.max(data.value, function(d) { return d.pitch; })
               ])
             .range([height, 0])
         ;
-        scale.zoom.x
-            .domain(scale.data.x.domain())
-            .range(scale.data.x.range())
-        ;
-        scale.zoom.y
-            .domain(scale.data.y.domain())
-            .range(scale.data.y.range())
-        ;
+
+        domain = scale.x.domain();
         setHeights();
         var rects = svg.selectAll("rect").data(data.value);
         rects
@@ -89,10 +76,10 @@ function NotesCanvas(){
         setHeights();
 
         selection.selectAll("rect.note")
-            .attr("x", function(d) { return scale.zoom.x(d.time); })
-            .attr("y", function(d) { return scale.zoom.y(d.pitch); })
+            .attr("x", function(d) { return scale.x(d.time); })
+            .attr("y", function(d) { return scale.y(d.pitch); })
             .attr("width", function(d) {
-                return scale.zoom.x(d.time + d.duration) - scale.zoom.x(d.time);
+                return scale.x(d.time + d.duration) - scale.x(d.time);
               })
             .attr("height", noteHeight)
             .attr("fill", function(d) { return colorScale(d.voice); })
@@ -103,7 +90,7 @@ function NotesCanvas(){
     } // update()
 
     function setHeights() {
-        noteHeight = height / (scale.zoom.y.domain()[1] - scale.zoom.y.domain()[0]);
+        noteHeight = height / (scale.y.domain()[1] - scale.y.domain()[0]);
         roundedCornerSize = noteHeight / 2;
     } // setHeights()
 
@@ -148,7 +135,7 @@ function NotesCanvas(){
         if(arguments.length === 0) return width;
 
         width = value;
-        perspectives.forEach(function(p) { scale[p].x.range([0, width - 1]); })
+        scale.x.range([0, width - 1]);
 
         return my;
       } // my.width()
@@ -157,7 +144,7 @@ function NotesCanvas(){
         if(arguments.length === 0) return height;
 
         height = value;
-        perspectives.forEach(function(p) { scale[p].y.range([height, 0]); });
+        scale.y.range([height, 0]);
 
         setHeights();
 
@@ -185,7 +172,7 @@ function NotesCanvas(){
     */
     my.noteHeight = function (){ return noteHeight; };
     my.roundedCornerSize = function (){ return roundedCornerSize; };
-    my.x = function() { return scale.zoom.x; };
+    my.x = function() { return scale.x; };
 
     /*
     ** API (Setter ONLY) Functions
@@ -193,23 +180,24 @@ function NotesCanvas(){
     my.zoom = function(value, stop) {
         // Set the domain of notes in the zoomed in region
         //  -- if value is empty, the zoom is reset to the dataset's domain
-        if(!arguments.length) {
-            scale.zoom.x.domain(scale.x.data.domain());
-            scale.zoom.y.domain(scale.y.data.domain());
-        } else {
-            if(value[1][1]) {
-                scale.zoom.x.domain(value[0]);
-                scale.zoom.y.domain(value[1]);
-            } else {
-                scale.zoom.x.domain(value)
-            }
-        }
-        update();
+        if(!arguments.length) return scale.x.domain();
 
+        scale.x.domain(value);
+        update();
         if(stop)
             describe();
+
         return my;
       } // my.zoom()
+    ;
+    my.full = function(value) {
+        if(!arguments) return scale;
+
+        if(value[0]) scale.x.domain(value[0]);
+        if(value[1]) scale.y.domain(value[1]);
+
+        return my;
+      } // my.full()
     ;
     my.update = function() {
         // Call update, with a transition
