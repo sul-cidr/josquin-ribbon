@@ -1,4 +1,4 @@
-function NotesCanvas(){
+function NotesCanvas() {
     /*
     ** Private Variables - only used inside this object
     */
@@ -18,7 +18,7 @@ function NotesCanvas(){
     /*
     ** Main Function Object
     */
-    function my(selection){
+    function my(selection) {
         data = selection.datum();
         name = data.key;
         svg = selection.attr("class", "notes-g " + name);
@@ -48,7 +48,7 @@ function NotesCanvas(){
         rects.exit().remove();
         update();
 
-        if(tooltip){
+        if(tooltip) {
             svg.call(tooltip);
             rects
                 .on("mouseover", tip.show)
@@ -123,14 +123,14 @@ function NotesCanvas(){
     /*
     ** API (Getter/Setter) Functions
     */
-    my.colorScale = function (value){
+    my.colorScale = function (value) {
         if(arguments.length === 0) return colorScale;
 
         colorScale = value;
         return my;
       } // my.colorScale()
     ;
-    my.width = function (value){
+    my.width = function (value) {
         if(arguments.length === 0) return width;
 
         width = value;
@@ -139,7 +139,7 @@ function NotesCanvas(){
         return my;
       } // my.width()
     ;
-    my.height = function (value){
+    my.height = function (value) {
         if(arguments.length === 0) return height;
 
         height = value;
@@ -158,7 +158,7 @@ function NotesCanvas(){
         return my;
       } // my.tooltip()
     ;
-    my.connect = function(value){
+    my.connect = function(value) {
         if(!arguments.length) return dispatch;
 
         dispatch = value;
@@ -169,8 +169,8 @@ function NotesCanvas(){
     /*
     ** API (Getter ONLY) Functions
     */
-    my.noteHeight = function (){ return noteHeight; };
-    my.roundedCornerSize = function (){ return roundedCornerSize; };
+    my.noteHeight = function () { return noteHeight; };
+    my.roundedCornerSize = function () { return roundedCornerSize; };
     my.x = function() { return scale.x; };
 
     /*
