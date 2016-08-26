@@ -5,9 +5,9 @@ function BrushView() {
     */
     var svg
       , x
-      , brush = d3.svg.brush()
+      , brush = d3.brushX()
             .on("brush", brushed)
-            .on("brushend", brushed(true))
+            .on("end", brushend)
       , dispatch
       , height
     ;
@@ -29,6 +29,8 @@ function BrushView() {
     /*
     ** Helper Functions
     */
+    function brushend() { brushed(true); } // brushend()
+
     function brushed(stop) {
         if(dispatch)
             dispatch
