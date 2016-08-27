@@ -7,7 +7,7 @@ function NotesCanvas() {
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , scale = { x: d3.scaleLinear(), y: d3.scaleLinear() }
-      , domain
+      , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
       , colorScale
       , noteHeight
@@ -23,22 +23,19 @@ function NotesCanvas() {
         name = data.key;
         svg = selection.attr("class", "notes-g " + name);
 
-        scale.x
-            .domain([
-                  d3.min(data.value, function(d) { return d.time; })
-                , d3.max(data.value, function(d) { return d.time + d.duration; })
-              ])
-            .range([0, width - 1]);
+        domain.x = [
+              d3.min(data.value, function(d) { return d.time; })
+            , d3.max(data.value, function(d) { return d.time + d.duration; })
+          ]
         ;
-        scale.y
-            .domain([
-                  d3.min(data.value, function(d) { return d.pitch - 1; })
-                , d3.max(data.value, function(d) { return d.pitch; })
-              ])
-            .range([height, 0])
+        domain.y = [
+              d3.min(data.value, function(d) { return d.pitch - 1; })
+            , d3.max(data.value, function(d) { return d.pitch; })
+          ]
         ;
+        scale.x.domain(domain.x).range([0, width - 1]);
+        scale.y.domain(domain.y).range([height, 0]);
 
-        domain = scale.x.domain();
         setHeights();
         var rects = svg.selectAll("rect").data(data.value);
         rects
@@ -176,10 +173,8 @@ function NotesCanvas() {
     /*
     ** API (Setter ONLY) Functions
     */
-    my.zoom = function(value, stop) {
-        // Set the domain of notes in the zoomed in region
-        //  -- if value is empty, the zoom is reset to the dataset's domain
-        if(!arguments.length) return scale.x.domain();
+    my.snap = function(value, stop) {
+        if(!arguments.length) { return; }
 
         scale.x.domain(value);
         update();
@@ -187,13 +182,28 @@ function NotesCanvas() {
             describe();
 
         return my;
+      } // my.snap()
+    ;
+    my.zoom = function(value) {
+        // Set the domain of notes in the zoomed in region
+        //  -- if value is empty, the zoom is reset to the dataset's domain
+        if(!arguments.length) {
+            scale.x.domain(domain.x);
+            scale.y.domain(domain.y);
+        }
+        else {
+            scale.x.domain(value);
+        }
+        update(svg.transition());
+
+        return my;
       } // my.zoom()
     ;
     my.full = function(value) {
         if(!arguments) return scale;
 
-        if(value[0]) scale.x.domain(value[0]);
-        if(value[1]) scale.y.domain(value[1]);
+        scale.x.domain(value.x);
+        scale.y.domain(value.y);
 
         return my;
       } // my.full()
