@@ -13,6 +13,7 @@ function NotesBook() {
     , separate = false
     , hilite = false
     , zoom = false // indicates an active brush
+    , showExtremeNotes = false
   ;
 
   /*
@@ -37,7 +38,9 @@ function NotesBook() {
               canvases
                   .push({
                         key: d.key
-                      , canvas: NotesCanvas().colorScale(scale.color)
+                      , canvas: NotesCanvas()
+                          .colorScale(scale.color)
+                          .showExtremeNotes(showExtremeNotes)
                       , selection: self
                     })
               ;
@@ -161,6 +164,17 @@ function NotesBook() {
       });
       return my;
     } // my.reset()
+  my.showExtremeNotes = function(value) {
+      if(!arguments.length)
+          return showExtremeNotes;
+      else {
+          showExtremeNotes = value;
+          canvases.forEach(function(c) {
+              c.canvas.showExtremeNotes(value);
+          });
+      }
+      return my;
+    } // my.showExtremeNotes()
   ;
 
   // This is always the last thing returned
