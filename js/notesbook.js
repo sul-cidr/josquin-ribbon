@@ -145,6 +145,7 @@ function NotesBook() {
   my.zoom = function(value) {
       if(!arguments.length)
           return canvases.map(function(c) { return c.canvas.zoom(); });
+      value.y = value.y || domain.y;
 
       canvases.forEach(function(c) {
           c.canvas.snap(value);
