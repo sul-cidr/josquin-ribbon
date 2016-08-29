@@ -13,7 +13,6 @@ function NotesCanvas() {
       , noteHeight
       , roundedCornerSize
       , dispatch
-      , emphasize
     ;
     /*
     ** Main Function Object
@@ -57,15 +56,17 @@ function NotesCanvas() {
     /*
     ** Helper Functions
     */
-    function hilite(arg) {
-        emphasize = arg && arg.emphasize;
-
+    function hilite(value) {
         svg.selectAll("rect.note")
-            .classed("subdued", function(d) {
-                return emphasize && d.voice !== emphasize;
-              })
+            .classed("subdued", !value)
         ;
     } // hilite()
+
+    function extent(value) {
+        value = value || { x: null, y: null }
+        scale.x.domain(value.x || domain.x);
+        scale.y.domain(value.y || domain.y);
+    } // extent()
 
     function update(selection) {
         selection = selection || svg;
@@ -173,13 +174,10 @@ function NotesCanvas() {
     /*
     ** API (Setter ONLY) Functions
     */
-    my.snap = function(value, stop) {
-        if(!arguments.length) { return; }
-
-        scale.x.domain(value);
+    my.snap = function(value) {
+        extent(value);
         update();
-        if(stop)
-            describe();
+        if(value.stop) describe();
 
         return my;
       } // my.snap()
@@ -187,40 +185,28 @@ function NotesCanvas() {
     my.zoom = function(value) {
         // Set the domain of notes in the zoomed in region
         //  -- if value is empty, the zoom is reset to the dataset's domain
-        if(!arguments.length) {
-            scale.x.domain(domain.x);
-            scale.y.domain(domain.y);
-        }
-        else {
-            scale.x.domain(value);
-        }
+        extent(value);
         update(svg.transition());
 
         return my;
       } // my.zoom()
-    ;
-    my.full = function(value) {
-        if(!arguments) return scale;
-
-        scale.x.domain(value.x);
-        scale.y.domain(value.y);
-
-        return my;
-      } // my.full()
     ;
     my.update = function() {
         // Call update, with a transition
         update(svg.transition());
       } // my.update()
     ;
-    my.hilite = function(value) {
-        if(!arguments.length)
-            hilite(); // un-highlight
-        else
-            hilite(value);
+    my.on = function() {
+        hilite(true);
 
         return my;
-      } // my.hilite()
+      } // my.on()
+    ;
+    my.off = function() {
+        hilite(false);
+
+        return my;
+      } // my.off()
     ;
 
     // This is always the last thing returned
