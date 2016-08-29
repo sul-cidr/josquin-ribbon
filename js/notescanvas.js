@@ -14,6 +14,7 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , showExtremeNotes = false
+      , isExtremeNote = d3.local()
     ;
     /*
     ** Main Function Object
@@ -42,6 +43,7 @@ function NotesCanvas() {
             .attr("class", "note")
         ;
         rects.exit().remove();
+        computeExtremeNotes();
         update();
 
         if(tooltip) {
@@ -85,14 +87,18 @@ function NotesCanvas() {
                 return scale.color(d.voice);
               })
             .attr("stroke", function(d) {
-                if(showExtremeNotes){
+                if(showExtremeNotes && isExtremeNote.get(this)){
                     return "red";
                 } else {
                     return scale.color(d.voice);
                 }
               })
             .attr("stroke-width", function(d) {
-                  return showExtremeNotes ? "3px" : "1px";
+                if(showExtremeNotes && isExtremeNote.get(this)){
+                    return "3px";
+                } else {
+                    return "1px";
+                }
               })
         ;
         hilite();
@@ -102,6 +108,15 @@ function NotesCanvas() {
         noteHeight = height / (scale.y.domain()[1] - scale.y.domain()[0]);
         roundedCornerSize = noteHeight / 2;
     } // setHeights()
+
+    function computeExtremeNotes() {
+        var notes = svg.datum().value
+          , pitchExtent = d3.extent(notes, function (d){ return d.pitch; })
+        ;
+        svg.selectAll("rect.note").each(function (d){
+            isExtremeNote.set(this, d.pitch === pitchExtent[0] || d.pitch === pitchExtent[1]);
+        });
+    } // computeExtremeNotes()
 
     function describe() {
       /*
