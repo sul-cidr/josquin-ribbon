@@ -13,6 +13,7 @@ function NotesCanvas() {
       , noteHeight
       , roundedCornerSize
       , dispatch
+      , state = true // on; false = off
     ;
     /*
     ** Main Function Object
@@ -56,9 +57,9 @@ function NotesCanvas() {
     /*
     ** Helper Functions
     */
-    function hilite(value) {
+    function hilite() {
         svg.selectAll("rect.note")
-            .classed("subdued", !value)
+            .classed("subdued", !state)
         ;
     } // hilite()
 
@@ -74,16 +75,17 @@ function NotesCanvas() {
 
         selection.selectAll("rect.note")
             .attr("x", function(d) { return scale.x(d.time); })
-            .attr("y", function(d) { return scale.y(d.pitch); })
             .attr("width", function(d) {
                 return scale.x(d.time + d.duration) - scale.x(d.time);
               })
+            .attr("y", function(d) { return scale.y(d.pitch); })
             .attr("height", noteHeight)
-            .attr("fill", function(d) { return colorScale(d.voice); })
-            .attr("stroke", function(d) { return colorScale(d.voice); })
             .attr("rx", roundedCornerSize)
             .attr("ry", roundedCornerSize)
+            .attr("fill", function(d) { return colorScale(d.voice); })
+            .attr("stroke", function(d) { return colorScale(d.voice); })
         ;
+        hilite();
     } // update()
 
     function setHeights() {
@@ -196,17 +198,12 @@ function NotesCanvas() {
         update(svg.transition());
       } // my.update()
     ;
-    my.on = function() {
-        hilite(true);
+    my.state = function(value) {
+        if(!arguments.length) return state;
 
+        state = value;
         return my;
-      } // my.on()
-    ;
-    my.off = function() {
-        hilite(false);
-
-        return my;
-      } // my.off()
+      } // my.state()
     ;
 
     // This is always the last thing returned
