@@ -53,8 +53,31 @@ function NotesBook() {
   ** Helper Functions
   */
   function update() {
-      var h = (separate && !hilite) ? scale.voice.bandwidth() : height;
-      canvases.forEach(function(c) {
+      var matched = -1;
+      canvases.forEach(function(c, i) {
+          var transform
+            , h
+          ;
+          if(c.key === hilite) matched = i; // only change match if there is a match
+
+          if(matched > -1) { // if hilite
+              if(matched !== i) { // not the hilited one
+                  h = 0;
+                  transform = height;
+              }
+              else { // the hilited one
+                  h = height;
+                  transform = 0;
+              }
+          } else { // if no hilite
+              if(separate) {
+                  h = scale.voice.bandwidth();
+                  transform = scale.voice(c.key);
+              } else {
+                  h = height;
+                  transform = 0;
+              }
+          }
           c.canvas
               .height(h)
               .zoom(zoom || domain)
@@ -63,17 +86,13 @@ function NotesBook() {
           if(separate) {
               if(hilite) c.canvas.zoom(zoom);
               c.canvas.update();
-              c.selection
-                .transition()
-                  .attr("transform", "translate(0," +  scale.voice(c.key) + ")")
-              ;
           } else {
               c.canvas.snap();
-              c.selection
-                .transition()
-                  .attr("transform", "translate(0,0)")
-              ;
           }
+          c.selection
+            .transition()
+              .attr("transform", "translate(0," + transform + ")")
+          ;
         })
       ;
   } // update()
