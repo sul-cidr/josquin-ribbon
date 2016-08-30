@@ -58,12 +58,11 @@ function NotesBook() {
           var transform = 0
             , h = height
           ;
-          if(c.key === hilite) matched = i; // only change match if there is a match
-
-          if(matched > -1) { // if hilite
-              if(matched !== i) { // not the hilited one
+          if(hilite) {
+              if(c.key === hilite) matched = i; // only change if this is a match
+              if(separate && matched !== i) { // not the hilited one
                   h = 0;
-                  transform = height;
+                  transform = matched === -1 ? 0 : height;
               }
           } else { // if no hilite
               if(separate) {
@@ -73,15 +72,10 @@ function NotesBook() {
           }
           c.canvas
               .height(h)
-              .zoom(zoom || domain)
+              .zoom((separate && hilite) ? zoom : zoom || domain)
               .state((hilite === c.key) || !hilite)
+              .update()
           ;
-          if(separate) {
-              if(hilite) c.canvas.zoom(zoom);
-              c.canvas.update();
-          } else {
-              c.canvas.snap();
-          }
           c.selection
             .transition()
               .attr("transform", "translate(0," + transform + ")")
