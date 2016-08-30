@@ -55,8 +55,8 @@ function NotesBook() {
   function update() {
       var matched = -1;
       canvases.forEach(function(c, i) {
-          var transform
-            , h
+          var transform = 0
+            , h = height
           ;
           if(c.key === hilite) matched = i; // only change match if there is a match
 
@@ -65,17 +65,10 @@ function NotesBook() {
                   h = 0;
                   transform = height;
               }
-              else { // the hilited one
-                  h = height;
-                  transform = 0;
-              }
           } else { // if no hilite
               if(separate) {
                   h = scale.voice.bandwidth();
                   transform = scale.voice(c.key);
-              } else {
-                  h = height;
-                  transform = 0;
               }
           }
           c.canvas
