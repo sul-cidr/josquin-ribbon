@@ -152,7 +152,6 @@
         ;
         notesViewFocus
             .colorScale(colorScale)
-            .width(width)
             .height(height * 3)
             .tooltip(tip)
             .connect(signal)
@@ -169,12 +168,12 @@
         renderNotesViewContext(data.notes);
         renderNotesViewFocus(data);
 
-        var full = [
-                  [0, data.scorelength[0]]
-                , [data.minpitch.b7, data.maxpitch.b7]
-              ]
+        var full = {
+              x: [0, data.scorelength[0]]
+            , y: [data.minpitch.b7 - 1, data.maxpitch.b7]
+          }
         ;
-        notesViewContext.full(full);
+        notesViewContext.snap(full);
         notesViewFocus.full(full);
 
         brush
@@ -182,21 +181,9 @@
             .connect(signal)
         ;
         signal
-            .on("zoom", function(zoom) {
-                // When the user brushes in the context view,
-                // Update the focus view.
-                notesViewFocus.zoom(zoom.extent, zoom.ended);
-              })
-            .on("hilite", function(hilite) {
-                // When the user clicks on a legend item, they are either:
-                //  1. selecting a voice to highlight
-                //  2. deselecting it to show all voices.
-                // When the user selects to separate or combine...
-                notesViewFocus.hilite(hilite);
-              })
-            .on("separate", function(separate) {
-               notesViewFocus.separate(separate || false);
-              })
+            .on("zoom",     notesViewFocus.zoom)
+            .on("hilite",   notesViewFocus.hilite)
+            .on("separate", notesViewFocus.separate)
         ;
     } // chartify()
 
@@ -210,7 +197,7 @@
     } // renderNotesViewContext()
     function renderNotesViewFocus(data) {
         notesViewFocusSVG
-            .datum(data.notes.entries())
+            .datum(data)
             .call(notesViewFocus)
         ;
     } // renderNotesViewContext()

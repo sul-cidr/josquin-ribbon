@@ -34,17 +34,18 @@ function BrushView() {
     function brushed(stop) {
       if(!dispatch)
           return;
-      var extent = x.domain();
+      var extent = false;
 
-      if(d3.event && d3.event.selection)
+      if(d3.event && d3.event.selection) {
           extent = d3.event.selection
-                .map(function(s) { return x.invert(s); })
+                .map(function(s) { return Math.round(x.invert(Math.round(s))); })
           ;
+      }
       dispatch.call(
           "zoom"
         , this
         , {
-              extent: extent
+              x: extent
             , ended: stop === true || false
           }
       );
