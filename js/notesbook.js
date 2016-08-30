@@ -12,6 +12,7 @@ function NotesBook() {
     , canvases = []
     , separate = false
     , hilite = false
+    , zoom = false // indicates an active brush
   ;
 
   /*
@@ -53,12 +54,9 @@ function NotesBook() {
   */
   function emphasize() {
       canvases.forEach(function(c) {
-          if(hilite) {
-              if(hilite === c.key) c.canvas.on();
-              else c.canvas.off();
-          } else {
-              c.canvas.on();
-          }
+          c.canvas.state((hilite === c.key) || !hilite);
+
+          if(separate && hilite) c.canvas.zoom(zoom);
         })
       ;
   } // emphasize()
@@ -73,13 +71,11 @@ function NotesBook() {
           transforms.true = scale.voice(c.key);
 
           c.canvas.height(h);
-          if(separate && hilite)
-              c.canvas.zoom();
-          else
-              c.canvas.zoom(domain);
-          if(!separate)
-              c.canvas.snap(domain);
-
+          if(separate) {
+              c.canvas.zoom(zoom || domain);
+          } else {
+              c.canvas.snap(zoom || domain);
+          }
           emphasize();
 
           c.canvas.update();
@@ -109,14 +105,6 @@ function NotesBook() {
       return my;
     } // my.colorScale()
   ;
-  my.width = function(value) {
-      if(arguments.length === 0) return width;
-
-      width = value;
-
-      return my;
-    } // my.width()
-  ;
   my.height = function(value) {
       if(arguments.length === 0) return height;
 
@@ -143,13 +131,15 @@ function NotesBook() {
     } // my.connect()
   ;
   my.zoom = function(value) {
-      if(!arguments.length)
-          return canvases.map(function(c) { return c.canvas.zoom(); });
-      value.y = value.y || domain.y;
+      zoom = value;
+      zoom.x = zoom.x || domain.x;
+      zoom.y = zoom.y || domain.y;
 
-      canvases.forEach(function(c) {
-          c.canvas.snap(value);
-      });
+      if(separate && hilite)
+          zoom.y = null;
+
+      canvases.forEach(function(c) { c.canvas.snap(zoom); });
+
       return my;
     } // my.zoom()
   ;
