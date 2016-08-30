@@ -152,7 +152,6 @@
         ;
         notesViewFocus
             .colorScale(colorScale)
-            .width(width)
             .height(height * 3)
             .tooltip(tip)
             .connect(signal)
@@ -182,16 +181,8 @@
             .connect(signal)
         ;
         signal
-            .on("zoom", function(zoom) {
-                // When the user brushes in the context view,
-                // Update the focus view.
-                notesViewFocus.zoom({x: zoom.extent, ended: zoom.ended });
-              })
-            .on("hilite", notesViewFocus.hilite)
-                // When the user clicks on a legend item, they are either:
-                //  1. selecting a voice to highlight
-                //  2. deselecting it to show all voices.
-                // When the user selects to separate or combine...
+            .on("zoom",     notesViewFocus.zoom)
+            .on("hilite",   notesViewFocus.hilite)
             .on("separate", notesViewFocus.separate)
         ;
     } // chartify()
