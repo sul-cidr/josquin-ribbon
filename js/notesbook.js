@@ -52,15 +52,6 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
-  function emphasize() {
-      canvases.forEach(function(c) {
-          c.canvas.state((hilite === c.key) || !hilite);
-
-          if(separate && hilite) c.canvas.zoom(zoom);
-        })
-      ;
-  } // emphasize()
-
   function update() {
       var transforms = { true: 0, false: 0 }
         , h = (separate && !hilite)
@@ -70,15 +61,17 @@ function NotesBook() {
       canvases.forEach(function(c) {
           transforms.true = scale.voice(c.key);
 
-          c.canvas.height(h);
-          if(separate) {
-              c.canvas.zoom(zoom || domain);
-          } else {
-              c.canvas.snap(zoom || domain);
-          }
-          emphasize();
+          c.canvas
+              .height(h)
+              .zoom(zoom || domain)
+          ;
+          canvases.forEach(function(c) {
+              c.canvas.state((hilite === c.key) || !hilite);
 
-          c.canvas.update();
+              if(separate && hilite) c.canvas.zoom(zoom);
+            })
+          ;
+          separate ? c.canvas.update() : c.canvas.snap();
 
           c.selection
             .transition()
@@ -117,7 +110,7 @@ function NotesBook() {
       if(!arguments.length) return scale;
 
       canvases.forEach(function(c) {
-          c.canvas.snap(value);
+          c.canvas.zoom(value).snap();
       });
 
       return my;
@@ -138,7 +131,7 @@ function NotesBook() {
       if(separate && hilite)
           zoom.y = null;
 
-      canvases.forEach(function(c) { c.canvas.snap(zoom); });
+      canvases.forEach(function(c) { c.canvas.zoom(zoom).snap(); });
 
       return my;
     } // my.zoom()
