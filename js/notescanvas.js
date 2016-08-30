@@ -16,6 +16,8 @@ function NotesCanvas() {
       , showExtremeNotes = false
       , isExtremeNote = d3.local()
       , extremeNoteStroke = "red"
+      , extremeNoteStrokeWidth = "3px"
+      , defaultStrokeWidth = "1px"
     ;
     /*
     ** Main Function Object
@@ -96,9 +98,9 @@ function NotesCanvas() {
               })
             .attr("stroke-width", function(d) {
                 if(showExtremeNotes && isExtremeNote.get(this)){
-                    return "3px";
+                    return extremeNoteStrokeWidth;
                 } else {
-                    return "1px";
+                    return defaultStrokeWidth;
                 }
               })
         ;
