@@ -15,6 +15,7 @@ function NotesCanvas() {
       , state = true // on; false = off
       , showExtremeNotes = false
       , isExtremeNote = d3.local()
+      , extremeNoteStroke = "red"
     ;
     /*
     ** Main Function Object
@@ -88,7 +89,7 @@ function NotesCanvas() {
               })
             .attr("stroke", function(d) {
                 if(showExtremeNotes && isExtremeNote.get(this)){
-                    return "red";
+                    return extremeNoteStroke;
                 } else {
                     return scale.color(d.voice);
                 }
