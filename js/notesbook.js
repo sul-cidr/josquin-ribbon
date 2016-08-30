@@ -53,30 +53,27 @@ function NotesBook() {
   ** Helper Functions
   */
   function update() {
-      var transforms = { true: 0, false: 0 }
-        , h = (separate && !hilite)
-              ? scale.voice.bandwidth() // separated and un-highlighted
-              : height
-      ;
+      var h = (separate && !hilite) ? scale.voice.bandwidth() : height;
       canvases.forEach(function(c) {
-          transforms.true = scale.voice(c.key);
-
           c.canvas
               .height(h)
               .zoom(zoom || domain)
+              .state((hilite === c.key) || !hilite)
           ;
-          canvases.forEach(function(c) {
-              c.canvas.state((hilite === c.key) || !hilite);
-
-              if(separate && hilite) c.canvas.zoom(zoom);
-            })
-          ;
-          separate ? c.canvas.update() : c.canvas.snap();
-
-          c.selection
-            .transition()
-              .attr("transform", "translate(0," +  transforms[separate] + ")")
-          ;
+          if(separate) {
+              if(hilite) c.canvas.zoom(zoom);
+              c.canvas.update();
+              c.selection
+                .transition()
+                  .attr("transform", "translate(0," +  scale.voice(c.key) + ")")
+              ;
+          } else {
+              c.canvas.snap();
+              c.selection
+                .transition()
+                  .attr("transform", "translate(0,0)")
+              ;
+          }
         })
       ;
   } // update()
