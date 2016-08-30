@@ -2,14 +2,13 @@ function NotesCanvas() {
     /*
     ** Private Variables - only used inside this object
     */
-    var svg, data, name
+    var svg, data
       , width = 900
       , height = 500
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
-      , scale = { x: d3.scaleLinear(), y: d3.scaleLinear() }
+      , scale = { x: d3.scaleLinear(), y: d3.scaleLinear(), color: null }
       , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
-      , colorScale
       , noteHeight
       , roundedCornerSize
       , dispatch
@@ -20,8 +19,7 @@ function NotesCanvas() {
     */
     function my(selection) {
         data = selection.datum();
-        name = data.key;
-        svg = selection.attr("class", "notes-g " + name);
+        svg = selection.attr("class", "notes-g " + data.key);
 
         domain.x = [
               d3.min(data.value, function(d) { return d.time; })
@@ -82,8 +80,8 @@ function NotesCanvas() {
             .attr("height", noteHeight)
             .attr("rx", roundedCornerSize)
             .attr("ry", roundedCornerSize)
-            .attr("fill", function(d) { return colorScale(d.voice); })
-            .attr("stroke", function(d) { return colorScale(d.voice); })
+            .attr("fill", function(d) { return scale.color(d.voice); })
+            .attr("stroke", function(d) { return scale.color(d.voice); })
         ;
         hilite();
     } // update()
@@ -124,9 +122,9 @@ function NotesCanvas() {
     ** API (Getter/Setter) Functions
     */
     my.colorScale = function (value) {
-        if(arguments.length === 0) return colorScale;
+        if(arguments.length === 0) return scale.color;
 
-        colorScale = value;
+        scale.color = value;
         return my;
       } // my.colorScale()
     ;
@@ -150,11 +148,17 @@ function NotesCanvas() {
         return my;
       } // my.height()
     ;
+    my.state = function(value) {
+        if(!arguments.length) return state;
+
+        state = value;
+        return my;
+      } // my.state()
+    ;
     my.tooltip = function(value) {
         if(!arguments.length === 0) return tooltip;
-        tooltip = value
-            .html(function(d) { return d.pitchName; })
-        ;
+
+        tooltip = value.html(function(d) { return d.pitchName; });
         return my;
       } // my.tooltip()
     ;
@@ -176,19 +180,10 @@ function NotesCanvas() {
     /*
     ** API (Setter ONLY) Functions
     */
-    my.snap = function(value) {
-        extent(value);
-        update();
-        if(value.stop) describe();
-
-        return my;
-      } // my.snap()
-    ;
     my.zoom = function(value) {
         // Set the domain of notes in the zoomed in region
         //  -- if value is empty, the zoom is reset to the dataset's domain
         extent(value);
-        update(svg.transition());
 
         return my;
       } // my.zoom()
@@ -196,14 +191,16 @@ function NotesCanvas() {
     my.update = function() {
         // Call update, with a transition
         update(svg.transition());
+
+        return my;
       } // my.update()
     ;
-    my.state = function(value) {
-        if(!arguments.length) return state;
+    my.snap = function() {
+        // Call update with immediate effect (no transition)
+        update();
 
-        state = value;
         return my;
-      } // my.state()
+      } // my.snap()
     ;
 
     // This is always the last thing returned
