@@ -27,7 +27,7 @@ function NotesBook() {
           .rangeRound([0, height])
       ;
       domain.x = [0, data.scorelength[0]];
-      domain.y = [data.minpitch.b7, data.maxpitch.b7];
+      domain.y = [data.minpitch.b7 - 1, data.maxpitch.b7];
 
       svg.selectAll(".notes-g")
           .data(data.notes.entries())
