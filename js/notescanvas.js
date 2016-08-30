@@ -116,9 +116,11 @@ function NotesCanvas() {
         var notes = svg.datum().value
           , pitchExtent = d3.extent(notes, function (d){ return d.pitch; })
         ;
-        svg.selectAll("rect.note").each(function (d){
-            isExtremeNote.set(this, d.pitch === pitchExtent[0] || d.pitch === pitchExtent[1]);
-        });
+        svg.selectAll("rect.note")
+            .each(function (d){
+                isExtremeNote.set(this, d.pitch === pitchExtent[0] || d.pitch === pitchExtent[1]);
+              })
+        ;
     } // computeExtremeNotes()
 
     function describe() {
