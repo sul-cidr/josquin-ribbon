@@ -13,6 +13,11 @@ function NotesCanvas() {
       , roundedCornerSize
       , dispatch
       , state = true // on; false = off
+      , showExtremeNotes = false
+      , isExtremeNote = d3.local()
+      , extremeNoteStroke = "red"
+      , extremeNoteStrokeWidth = "3px"
+      , defaultStrokeWidth = "1px"
     ;
     /*
     ** Main Function Object
@@ -41,6 +46,7 @@ function NotesCanvas() {
             .attr("class", "note")
         ;
         rects.exit().remove();
+        computeExtremeNotes();
         update();
 
         if(tooltip) {
@@ -80,8 +86,23 @@ function NotesCanvas() {
             .attr("height", noteHeight)
             .attr("rx", roundedCornerSize)
             .attr("ry", roundedCornerSize)
-            .attr("fill", function(d) { return scale.color(d.voice); })
-            .attr("stroke", function(d) { return scale.color(d.voice); })
+            .attr("fill", function(d) {
+                return scale.color(d.voice);
+              })
+            .attr("stroke", function(d) {
+                if(showExtremeNotes && isExtremeNote.get(this)){
+                    return extremeNoteStroke;
+                } else {
+                    return scale.color(d.voice);
+                }
+              })
+            .attr("stroke-width", function(d) {
+                if(showExtremeNotes && isExtremeNote.get(this)){
+                    return extremeNoteStrokeWidth;
+                } else {
+                    return defaultStrokeWidth;
+                }
+              })
         ;
         hilite();
     } // update()
@@ -90,6 +111,17 @@ function NotesCanvas() {
         noteHeight = height / (scale.y.domain()[1] - scale.y.domain()[0]);
         roundedCornerSize = noteHeight / 2;
     } // setHeights()
+
+    function computeExtremeNotes() {
+        var notes = svg.datum().value
+          , pitchExtent = d3.extent(notes, function (d){ return d.pitch; })
+        ;
+        svg.selectAll("rect.note")
+            .each(function (d){
+                isExtremeNote.set(this, d.pitch === pitchExtent[0] || d.pitch === pitchExtent[1]);
+              })
+        ;
+    } // computeExtremeNotes()
 
     function describe() {
       /*
@@ -168,6 +200,15 @@ function NotesCanvas() {
         dispatch = value;
         return my;
       } // my.connect()
+    ;
+    my.showExtremeNotes = function(value) {
+        if(!arguments.length)
+            return showExtremeNotes;
+        else
+            showExtremeNotes = value;
+
+        return my;
+      } // my.showExtremeNotes()
     ;
 
     /*
