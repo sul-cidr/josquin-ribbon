@@ -36,11 +36,11 @@ function ColorLegend(){
                     .attr("class", c.toLowerCase())
                     .classed("note", true)
                     .attr("x", 0)
-                    .attr("y", 0)
-                    .attr("width", "100%")
-                    .attr("height", "100%")
                     .attr("rx", roundedCornerSize)
+                    .attr("width", "100%")
+                    .attr("y", 0)
                     .attr("ry", roundedCornerSize)
+                    .attr("height", "100%")
                     .style("color", colorScale(c))
                 ;
                 self
