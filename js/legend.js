@@ -39,10 +39,9 @@ function ColorLegend(){
                     .attr("y", 0)
                     .attr("width", "100%")
                     .attr("height", "100%")
-                    .attr("fill", colorScale(c))
-                    .attr("stroke", colorScale(c))
                     .attr("rx", roundedCornerSize)
                     .attr("ry", roundedCornerSize)
+                    .style("color", colorScale(c))
                 ;
                 self
                   .append("text")
