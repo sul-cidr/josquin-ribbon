@@ -1,7 +1,7 @@
 var width = 960
   , height = 150 // height of one strip of notes
-  , notesViewContext = NotesCanvas()
-  , notesViewContextSVG = d3.select("#notes")
+  , notesNav = NotesCanvas()
+  , notesNavSVG = d3.select("#nav")
       .append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -58,7 +58,7 @@ function chartify(data) {
     combineSeparateDiv
         .call(combineSeparateUI.connect(signal))
     ;
-    notesViewContext
+    notesNav
         .colorScale(colorScale)
         .width(width)
         .height(height)
@@ -80,7 +80,7 @@ function chartify(data) {
         .domain(data.partnames)
     ;
     renderColorLegend(data.partnames);
-    renderNotesViewContext(data.notes);
+    renderNotesNav(data.notes);
     renderNotesViewFocus(data);
 
     var full = {
@@ -88,7 +88,7 @@ function chartify(data) {
         , y: [data.minpitch.b7 - 1, data.maxpitch.b7]
       }
     ;
-    notesViewContext.snap(full);
+    notesNav.snap(full);
     notesViewFocus.full(full);
 
     brush
@@ -102,20 +102,20 @@ function chartify(data) {
     ;
 } // chartify()
 
-function renderNotesViewContext(data) {
-    notesViewContextSVG
+function renderNotesNav(data) {
+    notesNavSVG
       .append("g")
         .datum({ key: "full", value: d3.merge((data.values())) })
-        .call(notesViewContext)
-        .call(brush.x(notesViewContext.x()))
+        .call(notesNav)
+        .call(brush.x(notesNav.x()))
     ;
-} // renderNotesViewContext()
+} // renderNotesNav()
 function renderNotesViewFocus(data) {
     notesViewFocusSVG
         .datum(data)
         .call(notesViewFocus)
     ;
-} // renderNotesViewContext()
+} // renderNotesViewFocus()
 function renderColorLegend(data) {
     legendContainer
         .datum(data)
