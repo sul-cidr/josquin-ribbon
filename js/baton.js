@@ -5,8 +5,8 @@ var width = 960
       .append("svg")
         .attr("width", width)
         .attr("height", height)
-  , notesViewFocus = NotesBook()
-  , notesViewFocusSVG = d3.select("#notes")
+  , notesBook = NotesBook()
+  , notesBookSVG = d3.select("#notes")
       .append("svg")
         .attr("width", width)
         .attr("height", 3 * height)
@@ -64,7 +64,7 @@ function chartify(data) {
         .height(height)
         .connect(signal)
     ;
-    notesViewFocus
+    notesBook
         .colorScale(colorScale)
         .height(height * 3)
         .tooltip(tip)
@@ -81,7 +81,7 @@ function chartify(data) {
     ;
     renderColorLegend(data.partnames);
     renderNotesNav(data.notes);
-    renderNotesViewFocus(data);
+    renderNotesBook(data);
 
     var full = {
           x: [0, data.scorelength[0]]
@@ -89,16 +89,16 @@ function chartify(data) {
       }
     ;
     notesNav.snap(full);
-    notesViewFocus.full(full);
+    notesBook.full(full);
 
     brush
         .height(height)
         .connect(signal)
     ;
     signal
-        .on("zoom",     notesViewFocus.zoom)
-        .on("hilite",   notesViewFocus.hilite)
-        .on("separate", notesViewFocus.separate)
+        .on("zoom",     notesBook.zoom)
+        .on("hilite",   notesBook.hilite)
+        .on("separate", notesBook.separate)
     ;
 } // chartify()
 
@@ -110,12 +110,12 @@ function renderNotesNav(data) {
         .call(brush.x(notesNav.x()))
     ;
 } // renderNotesNav()
-function renderNotesViewFocus(data) {
-    notesViewFocusSVG
+function renderNotesBook(data) {
+    notesBookSVG
         .datum(data)
-        .call(notesViewFocus)
+        .call(notesBook)
     ;
-} // renderNotesViewFocus()
+} // renderNotesBook()
 function renderColorLegend(data) {
     legendContainer
         .datum(data)
