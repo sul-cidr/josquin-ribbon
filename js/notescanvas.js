@@ -15,9 +15,6 @@ function NotesCanvas() {
       , state = true // on; false = off
       , showExtremeNotes = false
       , isExtremeNote = d3.local()
-      , extremeNoteStroke = "red"
-      , extremeNoteStrokeWidth = "3px"
-      , defaultStrokeWidth = "1px"
     ;
     /*
     ** Main Function Object
@@ -86,22 +83,11 @@ function NotesCanvas() {
             .attr("height", noteHeight)
             .attr("rx", roundedCornerSize)
             .attr("ry", roundedCornerSize)
-            .attr("fill", function(d) {
+            .style("color", function(d) {
                 return scale.color(d.voice);
               })
-            .attr("stroke", function(d) {
-                if(showExtremeNotes && isExtremeNote.get(this)){
-                    return extremeNoteStroke;
-                } else {
-                    return scale.color(d.voice);
-                }
-              })
-            .attr("stroke-width", function(d) {
-                if(showExtremeNotes && isExtremeNote.get(this)){
-                    return extremeNoteStrokeWidth;
-                } else {
-                    return defaultStrokeWidth;
-                }
+            .classed("extreme", function(d) {
+                return showExtremeNotes && isExtremeNote.get(this);
               })
         ;
         hilite();
