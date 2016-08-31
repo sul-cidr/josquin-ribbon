@@ -86,6 +86,8 @@ function NotesCanvas() {
             .style("color", function(d) {
                 return scale.color(d.voice);
               })
+        ;
+        svg.selectAll("rect.note")
             .classed("extreme", function(d) {
                 return showExtremeNotes && isExtremeNote.get(this);
               })
@@ -99,12 +101,13 @@ function NotesCanvas() {
     } // setHeights()
 
     function computeExtremeNotes() {
-        var notes = svg.datum().value
-          , pitchExtent = d3.extent(notes, function (d){ return d.pitch; })
-        ;
+        var extent = d3.extent(data.value, function(d) { return d.pitch; });
         svg.selectAll("rect.note")
-            .each(function (d){
-                isExtremeNote.set(this, d.pitch === pitchExtent[0] || d.pitch === pitchExtent[1]);
+            .each(function(d) {
+                isExtremeNote.set(
+                    this
+                  , extent.some(function(e) { return d.pitch === e; })
+                );
               })
         ;
     } // computeExtremeNotes()
