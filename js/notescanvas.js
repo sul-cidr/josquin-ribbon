@@ -87,11 +87,6 @@ function NotesCanvas() {
                 return scale.color(d.voice);
               })
         ;
-        svg.selectAll("rect.note")
-            .classed("extreme", function(d) {
-                return showExtremeNotes && isExtremeNote.get(this);
-              })
-        ;
         hilite();
     } // update()
 
@@ -108,6 +103,11 @@ function NotesCanvas() {
                     this
                   , extent.some(function(e) { return d.pitch === e; })
                 );
+                d3.select(this)
+                    .classed("extreme", function(d) {
+                        return showExtremeNotes && isExtremeNote.get(this);
+                      })
+                ;
               })
         ;
     } // computeExtremeNotes()
