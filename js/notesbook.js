@@ -44,8 +44,7 @@ function NotesBook() {
                         key: d.key
                       , canvas: NotesCanvas()
                           .colorScale(scale.color)
-                          .showExtremeNotes(display.extremes)
-                          .tooltip(tooltip)
+                          .extremes(display.extremes)
                       , selection: self
                     })
               ;
@@ -169,16 +168,16 @@ function NotesBook() {
       });
       return my;
     } // my.reset()
-  my.showExtremeNotes = function(value) {
+  my.extremes = function(value) {
       if(!arguments.length) return display.extremes;
 
       display.extremes = value;
       canvases.forEach(function(c) {
-          c.canvas.showExtremeNotes(value);
+          c.canvas.extremes(value);
       });
 
       return my;
-    } // my.showExtremeNotes()
+    } // my.extremes()
   ;
 
   // This is always the last thing returned
