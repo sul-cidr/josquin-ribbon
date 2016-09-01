@@ -36,7 +36,9 @@ function NotesCanvas() {
 
         setHeights();
 
-        svg = selection.attr("class", "notes-g " + data.key);
+        svg = selection
+              .attr("class", "notes-g " + data.key)
+        ;
         var rects = svg.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
@@ -45,14 +47,6 @@ function NotesCanvas() {
         rects.exit().remove();
         computeExtremeNotes();
         update();
-
-        if(tooltip) {
-            svg.call(tooltip);
-            rects
-                .on("mouseover", tip.show)
-                .on("mouseout", tip.hide)
-            ;
-        }
     } // my()
 
     /*
@@ -74,7 +68,8 @@ function NotesCanvas() {
         selection = selection || svg;
         setHeights();
 
-        selection.selectAll("rect.note")
+        var rect = selection.selectAll("rect.note");
+        rect
             .attr("x", function(d) { return scale.x(d.time); })
             .attr("width", function(d) {
                 return scale.x(d.time + d.duration) - scale.x(d.time);
@@ -87,6 +82,12 @@ function NotesCanvas() {
                 return scale.color(d.voice);
               })
         ;
+        if(tooltip) {
+            rect
+                .on("mouseover", tooltip.show)
+                .on("mouseout", tooltip.hide)
+            ;
+        }
         hilite();
     } // update()
 
@@ -173,9 +174,10 @@ function NotesCanvas() {
       } // my.state()
     ;
     my.tooltip = function(value) {
-        if(!arguments.length === 0) return tooltip;
+        if(!arguments.length) return tooltip;
 
-        tooltip = value.html(function(d) { return d.pitchName; });
+        tooltip = value;
+
         return my;
       } // my.tooltip()
     ;
