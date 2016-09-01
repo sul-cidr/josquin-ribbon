@@ -73,7 +73,7 @@ function chartify(data) {
         .colorScale(colorScale)
         .height(height * 3)
         .tooltip(tip)
-        .showExtremeNotes(true)
+        .extremes(true)
         .connect(signal)
     ;
     colorLegend
@@ -104,7 +104,7 @@ function chartify(data) {
         .on("zoom",     notesBook.zoom)
         .on("hilite",   notesBook.hilite)
         .on("separate", notesBook.separate)
-        .on("extremes", notesBook.showExtremeNotes)
+        .on("extremes", notesBook.extremes)
     ;
 } // chartify()
 

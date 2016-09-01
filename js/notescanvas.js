@@ -13,7 +13,7 @@ function NotesCanvas() {
       , roundedCornerSize
       , dispatch
       , state = true // on; false = off
-      , showExtremeNotes = false
+      , extremes = false
     ;
     /*
     ** Main Function Object
@@ -100,7 +100,7 @@ function NotesCanvas() {
             svg.selectAll("rect.note").each(function(d) {
                 d3.select(this)
                     .classed("extreme", function(d) {
-                        return showExtremeNotes
+                        return extremes
                             && domain.y.some(function(e) { return d.pitch === e; })
                         ;
                       })
@@ -188,16 +188,16 @@ function NotesCanvas() {
         return my;
       } // my.connect()
     ;
-    my.showExtremeNotes = function(value) {
+    my.extremes = function(value) {
         if(!arguments.length)
-            return showExtremeNotes;
+            return extremes;
         else {
-            showExtremeNotes = value;
+            extremes = value;
             computeExtremeNotes();
         }
 
         return my;
-      } // my.showExtremeNotes()
+      } // my.extremes()
     ;
 
     /*
