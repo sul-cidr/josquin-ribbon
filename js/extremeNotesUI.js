@@ -2,32 +2,29 @@ function ExtremeNotesUI(){
     /*
     ** Private Variables
     */
-    var form
-      , data = ["Show Extreme Notes"]
+    var labelText = "Show Extreme Notes"
       , dispatch
     ;
     /*
     ** Main Function Object
     */
     function my(sel) {
-        form = sel
+        var label = sel
           .append("form")
             .attr("class", "form")
+          .append("label")
         ;
-        var labels = form.selectAll("label")
-                .data(data)
-              .enter().append("label")
-          , inputs = labels
-              .append("input")
-                .attr("type", "checkbox")
-                .property("checked", true)
-          , spans = labels
-              .append("span")
-                .text(function (d){ return " " + d + " "; })
+        label
+          .append("input")
+            .attr("type", "checkbox")
+            .property("checked", true)
+            .on("click", function (e){
+                dispatch.call("extremes", this, this.checked);
+              })
         ;
-        inputs.on("click", function (e){
-            dispatch.call("extremes", this, this.checked);
-          })
+        label
+          .append("span")
+            .text(labelText)
         ;
     } // my() - Main Function Object
     /*
