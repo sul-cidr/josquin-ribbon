@@ -46,6 +46,7 @@ function NotesCanvas() {
         ;
         rects.exit().remove();
         computeExtremeNotes();
+        enableTooltips();
         update();
     } // my()
 
@@ -68,8 +69,7 @@ function NotesCanvas() {
         selection = selection || svg;
         setHeights();
 
-        var rect = selection.selectAll("rect.note");
-        rect
+        selection.selectAll("rect.note")
             .attr("x", function(d) { return scale.x(d.time); })
             .attr("width", function(d) {
                 return scale.x(d.time + d.duration) - scale.x(d.time);
@@ -82,12 +82,6 @@ function NotesCanvas() {
                 return scale.color(d.voice);
               })
         ;
-        if(tooltip) {
-            rect
-                .on("mouseover", tooltip.show)
-                .on("mouseout", tooltip.hide)
-            ;
-        }
         hilite();
     } // update()
 
@@ -108,6 +102,15 @@ function NotesCanvas() {
           })
         ;
     } // computeExtremeNotes()
+
+    function enableTooltips() {
+        if(tooltip && svg) {
+            svg.selectAll("rect.note")
+                .on("mouseover", tooltip.show)
+                .on("mouseout", tooltip.hide)
+            ;
+        }
+    } // enableTooltips()
 
     function describe() {
       /*
@@ -177,7 +180,7 @@ function NotesCanvas() {
         if(!arguments.length) return tooltip;
 
         tooltip = value;
-
+        enableTooltips();
         return my;
       } // my.tooltip()
     ;
