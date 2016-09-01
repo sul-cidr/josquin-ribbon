@@ -16,7 +16,6 @@ var width = 960
   , legendContainer = d3.select("div#legend")
   , colorLegend = ColorLegend()
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-  , tip = d3.tip().attr("class", "d3-tip")
 ;
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = window.location.hash
@@ -37,7 +36,7 @@ function parseJSON(proll) {
         part.notedata.forEach(function(note) {
             notes.push({
                   pitch: note.pitch.b7
-                , pitchName: note.pitch.name
+                , note: note.pitch.name
                 , time: note.starttime[0]
                 , duration: note.duration[0]
                 , voice: voice
@@ -47,7 +46,7 @@ function parseJSON(proll) {
     // Group the notes by voice
     proll.notes = d3.nest()
         .key(function(d) { return d.voice; })
-        .map(notes, d3.map)
+        .map(notes)
     ;
     return proll;
 } // parseJSON()
@@ -67,7 +66,6 @@ function chartify(data) {
     notesBook
         .colorScale(colorScale)
         .height(height * 3)
-        .tooltip(tip)
         .showExtremeNotes(true)
         .connect(signal)
     ;
