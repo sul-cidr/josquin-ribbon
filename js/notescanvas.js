@@ -14,14 +14,12 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , showExtremeNotes = false
-      , isExtremeNote = d3.local()
     ;
     /*
     ** Main Function Object
     */
     function my(selection) {
         data = selection.datum();
-        svg = selection.attr("class", "notes-g " + data.key);
 
         domain.x = [
               d3.min(data.value, function(d) { return d.time; })
@@ -29,7 +27,7 @@ function NotesCanvas() {
           ]
         ;
         domain.y = [
-              d3.min(data.value, function(d) { return d.pitch - 1; })
+              d3.min(data.value, function(d) { return d.pitch; })
             , d3.max(data.value, function(d) { return d.pitch; })
           ]
         ;
@@ -37,6 +35,8 @@ function NotesCanvas() {
         scale.y.domain(domain.y).range([height, 0]);
 
         setHeights();
+
+        svg = selection.attr("class", "notes-g " + data.key);
         var rects = svg.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
@@ -96,19 +96,15 @@ function NotesCanvas() {
     } // setHeights()
 
     function computeExtremeNotes() {
-        var extent = d3.extent(data.value, function(d) { return d.pitch; });
-        svg.selectAll("rect.note")
-            .each(function(d) {
-                isExtremeNote.set(
-                    this
-                  , extent.some(function(e) { return d.pitch === e; })
-                );
-                d3.select(this)
-                    .classed("extreme", function(d) {
-                        return showExtremeNotes && isExtremeNote.get(this);
-                      })
-                ;
-              })
+        svg.selectAll("rect.note").each(function(d) {
+            d3.select(this)
+                .classed("extreme", function(d) {
+                    return showExtremeNotes
+                        && domain.y.some(function(e) { return d.pitch === e; })
+                    ;
+                  })
+            ;
+          })
         ;
     } // computeExtremeNotes()
 
