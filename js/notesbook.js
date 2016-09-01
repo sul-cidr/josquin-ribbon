@@ -10,10 +10,12 @@ function NotesBook() {
     , dispatch
     , tooltip
     , canvases = []
-    , separate = false
-    , hilite = false
-    , zoom = false // indicates an active brush
-    , showExtremeNotes = false
+    , display = {
+          separate: false // show each note strip separately
+          , hilite:   false // one set of notes is visible
+          , zoom:     false // indicates an active brush
+          , extremes: false // hilite the maximum and minimum pitches
+        }
   ;
 
   /*
@@ -40,7 +42,7 @@ function NotesBook() {
                         key: d.key
                       , canvas: NotesCanvas()
                           .colorScale(scale.color)
-                          .showExtremeNotes(showExtremeNotes)
+                          .showExtremeNotes(display.extremes)
                       , selection: self
                     })
               ;
@@ -60,23 +62,30 @@ function NotesBook() {
       canvases.forEach(function(c, i) {
           var transform = 0
             , h = height
+            , z = display.zoom || domain
           ;
-          if(hilite) {
-              if(c.key === hilite) matched = i; // only change if this is a match
-              if(separate && matched !== i) { // not the hilited one
-                  h = 0;
-                  transform = matched === -1 ? 0 : height;
+          if(display.hilite) {
+              // only change if this is a match
+              matched = (c.key === display.hilite) ? i : matched;
+              if(display.separate) {
+                  if(matched !== i) { // we're not the matched one
+                      h = 0;
+                      transform = (matched === -1)
+                        ? 0      // above the yet to be found matched frame,
+                        : height // or below the already found one
+                      ;
+                  }
               }
           } else { // if no hilite
-              if(separate) {
+              if(display.separate) {
                   h = scale.voice.bandwidth();
                   transform = scale.voice(c.key);
               }
           }
           c.canvas
               .height(h)
-              .zoom((separate && hilite) ? zoom : zoom || domain)
-              .state((hilite === c.key) || !hilite)
+              .zoom(z)
+              .state((display.hilite === c.key) || !display.hilite)
               .update()
           ;
           c.selection
@@ -130,29 +139,29 @@ function NotesBook() {
     } // my.connect()
   ;
   my.zoom = function(value) {
-      zoom = value;
-      zoom.x = zoom.x || domain.x;
-      zoom.y = zoom.y || domain.y;
+      display.zoom = value;
+      display.zoom.x = display.zoom.x || domain.x;
+      display.zoom.y = display.zoom.y || domain.y;
 
-      if(separate && hilite)
-          zoom.y = null;
+      if(display.separate && display.hilite)
+          display.zoom.y = null;
 
-      canvases.forEach(function(c) { c.canvas.zoom(zoom).snap(); });
+      canvases.forEach(function(c) { c.canvas.zoom(display.zoom).snap(); });
 
       return my;
     } // my.zoom()
   ;
   my.hilite = function(value) {
-      hilite = (value && value.emphasize) || false;
+      display.hilite = (value && value.emphasize) || false;
       update();
 
       return my;
     } // my.hilite()
   ;
   my.separate = function(value) {
-      if(!arguments.length) return separate;
+      if(!arguments.length) return display.separate;
 
-      separate = value || false;
+      display.separate = value || false;
       update();
 
       return my;
@@ -165,14 +174,13 @@ function NotesBook() {
       return my;
     } // my.reset()
   my.showExtremeNotes = function(value) {
-      if(!arguments.length)
-          return showExtremeNotes;
-      else {
-          showExtremeNotes = value;
-          canvases.forEach(function(c) {
-              c.canvas.showExtremeNotes(value);
-          });
-      }
+      if(!arguments.length) return display.extremes;
+
+      display.extremes = value;
+      canvases.forEach(function(c) {
+          c.canvas.showExtremeNotes(value);
+      });
+
       return my;
     } // my.showExtremeNotes()
   ;

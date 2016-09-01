@@ -14,17 +14,12 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , showExtremeNotes = false
-      , isExtremeNote = d3.local()
-      , extremeNoteStroke = "red"
-      , extremeNoteStrokeWidth = "3px"
-      , defaultStrokeWidth = "1px"
     ;
     /*
     ** Main Function Object
     */
     function my(selection) {
         data = selection.datum();
-        svg = selection.attr("class", "notes-g " + data.key);
 
         domain.x = [
               d3.min(data.value, function(d) { return d.time; })
@@ -32,7 +27,7 @@ function NotesCanvas() {
           ]
         ;
         domain.y = [
-              d3.min(data.value, function(d) { return d.pitch - 1; })
+              d3.min(data.value, function(d) { return d.pitch; })
             , d3.max(data.value, function(d) { return d.pitch; })
           ]
         ;
@@ -40,6 +35,8 @@ function NotesCanvas() {
         scale.y.domain(domain.y).range([height, 0]);
 
         setHeights();
+
+        svg = selection.attr("class", "notes-g " + data.key);
         var rects = svg.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
@@ -86,22 +83,8 @@ function NotesCanvas() {
             .attr("height", noteHeight)
             .attr("rx", roundedCornerSize)
             .attr("ry", roundedCornerSize)
-            .attr("fill", function(d) {
+            .style("color", function(d) {
                 return scale.color(d.voice);
-              })
-            .attr("stroke", function(d) {
-                if(showExtremeNotes && isExtremeNote.get(this)){
-                    return extremeNoteStroke;
-                } else {
-                    return scale.color(d.voice);
-                }
-              })
-            .attr("stroke-width", function(d) {
-                if(showExtremeNotes && isExtremeNote.get(this)){
-                    return extremeNoteStrokeWidth;
-                } else {
-                    return defaultStrokeWidth;
-                }
               })
         ;
         hilite();
@@ -113,13 +96,15 @@ function NotesCanvas() {
     } // setHeights()
 
     function computeExtremeNotes() {
-        var notes = svg.datum().value
-          , pitchExtent = d3.extent(notes, function (d){ return d.pitch; })
-        ;
-        svg.selectAll("rect.note")
-            .each(function (d){
-                isExtremeNote.set(this, d.pitch === pitchExtent[0] || d.pitch === pitchExtent[1]);
-              })
+        svg.selectAll("rect.note").each(function(d) {
+            d3.select(this)
+                .classed("extreme", function(d) {
+                    return showExtremeNotes
+                        && domain.y.some(function(e) { return d.pitch === e; })
+                    ;
+                  })
+            ;
+          })
         ;
     } // computeExtremeNotes()
 
