@@ -13,7 +13,7 @@ function NotesCanvas() {
       , roundedCornerSize
       , dispatch
       , state = true // on; false = off
-      , showExtremeNotes = false
+      , extremes = false
     ;
     /*
     ** Main Function Object
@@ -96,15 +96,17 @@ function NotesCanvas() {
     } // setHeights()
 
     function computeExtremeNotes() {
-        svg.selectAll("rect.note").each(function(d) {
-            d3.select(this)
-                .classed("extreme", function(d) {
-                    return showExtremeNotes
-                        && domain.y.some(function(e) { return d.pitch === e; })
-                    ;
-                  })
-            ;
-          })
+        if(svg){
+            svg.selectAll("rect.note").each(function(d) {
+                d3.select(this)
+                    .classed("extreme", function(d) {
+                        return extremes
+                            && domain.y.some(function(e) { return d.pitch === e; })
+                        ;
+                      })
+                ;
+              })
+        }
         ;
     } // computeExtremeNotes()
 
@@ -186,14 +188,16 @@ function NotesCanvas() {
         return my;
       } // my.connect()
     ;
-    my.showExtremeNotes = function(value) {
+    my.extremes = function(value) {
         if(!arguments.length)
-            return showExtremeNotes;
-        else
-            showExtremeNotes = value;
+            return extremes;
+        else {
+            extremes = value;
+            computeExtremeNotes();
+        }
 
         return my;
-      } // my.showExtremeNotes()
+      } // my.extremes()
     ;
 
     /*

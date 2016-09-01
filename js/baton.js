@@ -12,6 +12,8 @@ var width = 960
         .attr("height", 3 * height)
   , combineSeparateDiv = d3.select("#combine-separate-ui")
   , combineSeparateUI = CombineSeparateUI()
+  , extremeNotesDiv = d3.select("#extreme-notes-ui")
+  , extremeNotesUI = ExtremeNotesUI()
   , brush = BrushView()
   , legendContainer = d3.select("div#legend")
   , colorLegend = ColorLegend()
@@ -53,10 +55,13 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
-    var signal = d3.dispatch("hilite", "zoom", "separate", "selected");
+    var signal = d3.dispatch("hilite", "zoom", "separate", "selected", "extremes");
 
     combineSeparateDiv
         .call(combineSeparateUI.connect(signal))
+    ;
+    extremeNotesDiv
+        .call(extremeNotesUI.connect(signal))
     ;
     notesNav
         .colorScale(colorScale)
@@ -68,7 +73,7 @@ function chartify(data) {
         .colorScale(colorScale)
         .height(height * 3)
         .tooltip(tip)
-        .showExtremeNotes(true)
+        .extremes(true)
         .connect(signal)
     ;
     colorLegend
@@ -99,6 +104,7 @@ function chartify(data) {
         .on("zoom",     notesBook.zoom)
         .on("hilite",   notesBook.hilite)
         .on("separate", notesBook.separate)
+        .on("extremes", notesBook.extremes)
     ;
 } // chartify()
 
