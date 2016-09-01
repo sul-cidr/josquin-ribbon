@@ -104,6 +104,7 @@ function chartify(data) {
         .on("zoom",     notesBook.zoom)
         .on("hilite",   notesBook.hilite)
         .on("separate", notesBook.separate)
+        .on("extremes", notesBook.showExtremeNotes)
     ;
 } // chartify()
 

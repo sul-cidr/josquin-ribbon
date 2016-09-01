@@ -96,15 +96,17 @@ function NotesCanvas() {
     } // setHeights()
 
     function computeExtremeNotes() {
-        svg.selectAll("rect.note").each(function(d) {
-            d3.select(this)
-                .classed("extreme", function(d) {
-                    return showExtremeNotes
-                        && domain.y.some(function(e) { return d.pitch === e; })
-                    ;
-                  })
-            ;
-          })
+        if(svg){
+            svg.selectAll("rect.note").each(function(d) {
+                d3.select(this)
+                    .classed("extreme", function(d) {
+                        return showExtremeNotes
+                            && domain.y.some(function(e) { return d.pitch === e; })
+                        ;
+                      })
+                ;
+              })
+        }
         ;
     } // computeExtremeNotes()
 
@@ -189,8 +191,10 @@ function NotesCanvas() {
     my.showExtremeNotes = function(value) {
         if(!arguments.length)
             return showExtremeNotes;
-        else
+        else {
             showExtremeNotes = value;
+            computeExtremeNotes();
+        }
 
         return my;
       } // my.showExtremeNotes()

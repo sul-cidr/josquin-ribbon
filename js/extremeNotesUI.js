@@ -26,7 +26,7 @@ function ExtremeNotesUI(){
                 .text(function (d){ return " " + d + " "; })
         ;
         inputs.on("click", function (e){
-            dispatch.extremes(this.checked);
+            dispatch.call("extremes", this, this.checked);
           })
         ;
     } // my() - Main Function Object
