@@ -22,6 +22,7 @@ function ExtremeNotesUI(){
                 .attr("type", "checkbox")
                 .property("checked", true)
           , spans = labels
+              .append("span")
                 .text(function (d){ return " " + d + " "; })
         ;
         inputs.on("click", function (e){

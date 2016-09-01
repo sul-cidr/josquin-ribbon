@@ -55,10 +55,13 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
-    var signal = d3.dispatch("hilite", "zoom", "separate", "selected");
+    var signal = d3.dispatch("hilite", "zoom", "separate", "selected", "extremes");
 
     combineSeparateDiv
         .call(combineSeparateUI.connect(signal))
+    ;
+    extremeNotesDiv
+        .call(extremeNotesUI.connect(signal))
     ;
     notesNav
         .colorScale(colorScale)
