@@ -20,7 +20,7 @@ rect.note {
     fill-opacity: 0.5;
     stroke-width: 1;
 }
-rect.subdued {
+.subdued {
     opacity: 0.1;
 }
 rect.extreme {
