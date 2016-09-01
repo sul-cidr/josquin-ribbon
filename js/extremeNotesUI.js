@@ -24,7 +24,7 @@ function ExtremeNotesUI(){
         ;
         label
           .append("span")
-            .text(labelText)
+            .text(" " + labelText)
         ;
     } // my() - Main Function Object
     /*
