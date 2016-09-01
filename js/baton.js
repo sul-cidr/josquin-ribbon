@@ -12,6 +12,8 @@ var width = 960
         .attr("height", 3 * height)
   , combineSeparateDiv = d3.select("#combine-separate-ui")
   , combineSeparateUI = CombineSeparateUI()
+  , extremeNotesDiv = d3.select("#extreme-notes-ui")
+  , extremeNotesUI = ExtremeNotesUI()
   , brush = BrushView()
   , legendContainer = d3.select("div#legend")
   , colorLegend = ColorLegend()
