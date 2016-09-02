@@ -8,7 +8,9 @@ function NotesBook() {
     , scale = { color: null, voice: d3.scaleBand()  }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , dispatch
-    , tooltip
+    , tooltip = d3.tip()
+          .attr("class", "d3-tip")
+          .html(function(d) { return d.note; })
     , canvases = []
     , display = {
           separate: false // show each note strip separately
@@ -22,7 +24,7 @@ function NotesBook() {
   ** Main Function Object
   */
   function my(selection) {
-      svg = selection.call(tooltip);
+      svg = selection;
       data = svg.datum();
 
       scale.voice
@@ -36,13 +38,14 @@ function NotesBook() {
           .data(data.notes.entries())
         .enter().append("g")
           .each(function(d) {
-              var self = d3.select(this);
+              var self = d3.select(this).call(tooltip);
               canvases
                   .push({
                         key: d.key
                       , canvas: NotesCanvas()
                           .colorScale(scale.color)
                           .extremes(display.extremes)
+                          .tooltip(tooltip)
                       , selection: self
                     })
               ;
@@ -99,13 +102,6 @@ function NotesBook() {
   /*
   ** API (Getter/Setter) Functions
   */
-  my.tooltip = function(value) {
-      if(!arguments.length) return tooltip;
-
-      tooltip = value;
-      return my;
-    } // my.tooltip()
-  ;
   my.colorScale = function(value) {
       if(arguments.length === 0) return scale.color;
       scale.color = value;

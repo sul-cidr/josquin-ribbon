@@ -36,7 +36,9 @@ function NotesCanvas() {
 
         setHeights();
 
-        svg = selection.attr("class", "notes-g " + data.key);
+        svg = selection
+              .attr("class", "notes-g " + data.key)
+        ;
         var rects = svg.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
@@ -44,15 +46,8 @@ function NotesCanvas() {
         ;
         rects.exit().remove();
         computeExtremeNotes();
+        enableTooltips();
         update();
-
-        if(tooltip) {
-            svg.call(tooltip);
-            rects
-                .on("mouseover", tip.show)
-                .on("mouseout", tip.hide)
-            ;
-        }
     } // my()
 
     /*
@@ -109,6 +104,15 @@ function NotesCanvas() {
         }
         ;
     } // computeExtremeNotes()
+
+    function enableTooltips() {
+        if(tooltip && svg) {
+            svg.selectAll("rect.note")
+                .on("mouseover", tooltip.show)
+                .on("mouseout", tooltip.hide)
+            ;
+        }
+    } // enableTooltips()
 
     function describe() {
       /*
@@ -175,9 +179,10 @@ function NotesCanvas() {
       } // my.state()
     ;
     my.tooltip = function(value) {
-        if(!arguments.length === 0) return tooltip;
+        if(!arguments.length) return tooltip;
 
-        tooltip = value.html(function(d) { return d.pitchName; });
+        tooltip = value;
+        enableTooltips();
         return my;
       } // my.tooltip()
     ;
