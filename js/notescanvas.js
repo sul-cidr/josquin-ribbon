@@ -3,8 +3,8 @@ function NotesCanvas() {
     ** Private Variables - only used inside this object
     */
     var svg, data
-      , width = 900
-      , height = 500
+      , width
+      , height
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , scale = { x: d3.scaleLinear(), y: d3.scaleLinear(), color: null }
       , domain = { x: [], y: [] } // store the dataset's domains
@@ -27,7 +27,7 @@ function NotesCanvas() {
           ]
         ;
         domain.y = [
-              d3.min(data.value, function(d) { return d.pitch; })
+              d3.min(data.value, function(d) { return d.pitch; }) - 1
             , d3.max(data.value, function(d) { return d.pitch; })
           ]
         ;
@@ -92,11 +92,12 @@ function NotesCanvas() {
 
     function computeExtremeNotes() {
         if(svg){
+            var extent = d3.extent(data.value, function (d){ return d.pitch; });
             svg.selectAll("rect.note").each(function(d) {
                 d3.select(this)
                     .classed("extreme", function(d) {
                         return extremes
-                            && domain.y.some(function(e) { return d.pitch === e; })
+                            && extent.some(function(e) { return d.pitch === e; })
                         ;
                       })
                 ;
