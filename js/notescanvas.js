@@ -27,7 +27,7 @@ function NotesCanvas() {
           ]
         ;
         domain.y = [
-              d3.min(data.value, function(d) { return d.pitch; })
+              d3.min(data.value, function(d) { return d.pitch; }) - 1
             , d3.max(data.value, function(d) { return d.pitch; })
           ]
         ;
