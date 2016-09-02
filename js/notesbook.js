@@ -46,6 +46,8 @@ function NotesBook() {
                           .colorScale(scale.color)
                           .extremes(display.extremes)
                           .tooltip(tooltip)
+                          .width(width)
+                          .height(height)
                       , selection: self
                     })
               ;
@@ -108,6 +110,14 @@ function NotesBook() {
 
       return my;
     } // my.colorScale()
+  ;
+  my.width = function(value) {
+      if(arguments.length === 0) return width;
+
+      width = value;
+
+      return my;
+    } // my.width()
   ;
   my.height = function(value) {
       if(arguments.length === 0) return height;

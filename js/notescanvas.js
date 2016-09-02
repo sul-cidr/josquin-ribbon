@@ -3,8 +3,8 @@ function NotesCanvas() {
     ** Private Variables - only used inside this object
     */
     var svg, data
-      , width = 900
-      , height = 500
+      , width
+      , height
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
       , scale = { x: d3.scaleLinear(), y: d3.scaleLinear(), color: null }
       , domain = { x: [], y: [] } // store the dataset's domains

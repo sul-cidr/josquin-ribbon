@@ -71,6 +71,7 @@ function chartify(data) {
     notesBook
         .colorScale(colorScale)
         .height(height * 3)
+        .width(width)
         .extremes(true)
         .connect(signal)
     ;
