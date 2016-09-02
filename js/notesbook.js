@@ -45,6 +45,7 @@ function NotesBook() {
                       , canvas: NotesCanvas()
                           .colorScale(scale.color)
                           .extremes(display.extremes)
+                          .tooltip(tooltip)
                       , selection: self
                     })
               ;
