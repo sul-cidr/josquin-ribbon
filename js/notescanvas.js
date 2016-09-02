@@ -92,11 +92,12 @@ function NotesCanvas() {
 
     function computeExtremeNotes() {
         if(svg){
+            var extent = d3.extent(data.value, function (d){ return d.pitch; });
             svg.selectAll("rect.note").each(function(d) {
                 d3.select(this)
                     .classed("extreme", function(d) {
                         return extremes
-                            && domain.y.some(function(e) { return d.pitch === e; })
+                            && extent.some(function(e) { return d.pitch === e; })
                         ;
                       })
                 ;
