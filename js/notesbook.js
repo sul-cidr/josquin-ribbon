@@ -39,6 +39,15 @@ function NotesBook() {
           .domain(data.partnames)
           .rangeRound([0, height])
       ;
+      axis
+          .scale(scale.barlines)
+          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+      ;
+      barlines = svg
+        .append("g")
+          .attr("class", "barlines")
+          .call(axis)
+      ;
       svg.selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
@@ -60,15 +69,6 @@ function NotesBook() {
                   .call(canvases[canvases.length - 1].canvas)
               ;
             })
-      ;
-      axis
-          .scale(scale.barlines)
-          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-      ;
-      barlines = svg
-        .append("g")
-          .attr("class", "barlines")
-          .call(axis)
       ;
   } // my() - Main function object
 
