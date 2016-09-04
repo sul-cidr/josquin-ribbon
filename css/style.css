@@ -33,7 +33,13 @@ rect.extreme {
     stroke-opacity: .2;
     shape-rendering: crispEdges;
 }
-
+path.domain {
+    fill: none;
+    stroke: none;
+}
+.tick line {
+    stroke: gray;
+}
 /* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
 .d3-tip {
     line-height: 1;
