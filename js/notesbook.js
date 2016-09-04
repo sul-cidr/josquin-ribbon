@@ -67,7 +67,7 @@ function NotesBook() {
       ;
       barlines = svg
         .append("g")
-          .attr("class", "bars")
+          .attr("class", "barlines")
           .call(axis)
       ;
   } // my() - Main function object
