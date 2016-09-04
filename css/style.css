@@ -33,14 +33,14 @@ rect.extreme {
     stroke-opacity: .2;
     shape-rendering: crispEdges;
 }
-.barlines .tick line {
+.barlines .tick line , .reflines .tick line {
     stroke: lightgray;
 }
-.barlines .tick text {
+.barlines .tick text , .reflines .tick text {
     display: none;
     fill: none;
 }
-.barlines path.domain {
+.barlines path.domain , .reflines path.domain {
     fill: none;
     stroke: none;
 }
