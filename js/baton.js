@@ -1,7 +1,7 @@
 var width = 960
   , height = 150 // height of one strip of notes
   , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-  , notesNav = NotesCanvas()
+  , notesNav = NotesNav()
   , notesNavSVG = d3.select("#nav")
       .append("svg")
         .attr("width", width)
