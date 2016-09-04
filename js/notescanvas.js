@@ -6,10 +6,9 @@ function NotesCanvas() {
       , width
       , height
       , margin = { top: 10, bottom: 20, left: 10, right: 10 }
-      , scale = { x: d3.scaleLinear(), y: d3.scaleLinear(), color: null }
+      , scale = { x: d3.scaleLinear(), y: d3.scaleBand(), color: null }
       , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
-      , noteHeight
       , roundedCornerSize
       , dispatch
       , state = true // on; false = off
@@ -26,15 +25,13 @@ function NotesCanvas() {
             , d3.max(data.value, function(d) { return d.time + d.duration; })
           ]
         ;
-        domain.y = [
-              d3.min(data.value, function(d) { return d.pitch; }) - 1
+        domain.y = d3.range(
+              d3.min(data.value, function(d) { return d.pitch; })
             , d3.max(data.value, function(d) { return d.pitch; })
-          ]
+          )
         ;
         scale.x.domain(domain.x).range([0, width - 1]);
         scale.y.domain(domain.y).range([height, 0]);
-
-        setHeights();
 
         svg = selection
               .attr("class", "notes-g " + data.key)
@@ -67,7 +64,6 @@ function NotesCanvas() {
 
     function update(selection) {
         selection = selection || svg;
-        setHeights();
 
         selection.selectAll("rect.note")
             .attr("x", function(d) { return scale.x(d.time); })
@@ -75,20 +71,15 @@ function NotesCanvas() {
                 return scale.x(d.time + d.duration) - scale.x(d.time);
               })
             .attr("y", function(d) { return scale.y(d.pitch); })
-            .attr("height", noteHeight)
-            .attr("rx", roundedCornerSize)
-            .attr("ry", roundedCornerSize)
+            .attr("height", scale.y.bandwidth())
+            .attr("rx", scale.y.bandwidth() / 2)
+            .attr("ry", scale.y.bandwidth() / 2)
             .style("color", function(d) {
                 return scale.color(d.voice);
               })
         ;
         hilite();
     } // update()
-
-    function setHeights() {
-        noteHeight = height / (scale.y.domain()[1] - scale.y.domain()[0]);
-        roundedCornerSize = noteHeight / 2;
-    } // setHeights()
 
     function computeExtremeNotes() {
         if(svg){
@@ -166,8 +157,6 @@ function NotesCanvas() {
 
         height = value;
         scale.y.range([height, 0]);
-
-        setHeights();
 
         return my;
       } // my.height()

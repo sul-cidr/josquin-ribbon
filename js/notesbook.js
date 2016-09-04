@@ -30,7 +30,11 @@ function NotesBook() {
       data = svg.datum();
 
       domain.x = [0, data.scorelength[0]];
-      domain.y = [data.minpitch.b7 - 1, data.maxpitch.b7];
+      domain.y = d3.range(
+            data.minpitch.b7
+          , data.maxpitch.b7
+        )
+      ;
       scale.barlines
           .domain(domain.x)
           .range([0, width])
