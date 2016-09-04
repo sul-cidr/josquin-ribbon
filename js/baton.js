@@ -68,6 +68,7 @@ function chartify(data) {
     ;
     notesNav
         .colorScale(colorScale)
+        .margin(margin)
         .width(width)
         .height(height)
         .connect(signal)
