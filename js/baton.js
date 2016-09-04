@@ -1,5 +1,6 @@
 var width = 960
   , height = 150 // height of one strip of notes
+  , margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , notesNav = NotesCanvas()
   , notesNavSVG = d3.select("#nav")
       .append("svg")
@@ -64,12 +65,14 @@ function chartify(data) {
     ;
     notesNav
         .colorScale(colorScale)
+        .margin(margin)
         .width(width)
         .height(height)
         .connect(signal)
     ;
     notesBook
         .colorScale(colorScale)
+        .margin(margin)
         .height(height * 3)
         .width(width)
         .extremes(true)
