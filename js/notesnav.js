@@ -1,46 +1,63 @@
 function NotesNav() {
     /*
-    ** Private Variables
-    **   - These are exclusively used in this object only.
+    ** Private Variables - only used inside this object
     */
     var svg
-      , x
+      , data
+      , width
+      , height
+      , canvas = NotesCanvas()
       , brush = d3.brushX()
             .on("brush", brushed)
             .on("end", brushend)
       , dispatch
-      , height
     ;
 
     /*
     ** Main function Object
     */
     function my(sel) {
-        svg = sel.selectAll(".brush")
-            .data(["brush"])
+        svg = sel;
+        svg.selectAll("g")
+            .data(["canvas", "brush"])
           .enter().append("g")
             .attr("class", function(d) { return d; })
         ;
-        svg
+
+        canvas
+            .width(width)
+            .height(height)
+        ;
+        brush.extent([[0, 0], [width, height]]);
+
+        data = sel.datum();
+
+        svg.select(".canvas")
+            .datum({ key: "full", value: d3.merge(data.notes.values()) })
+            .call(canvas)
+        ;
+        svg.select(".brush")
             .call(brush)
+          .selectAll("rect")
+            .attr("y", 0)
+            .attr("height", height)
         ;
     } // my() - Main Function Object
 
     /*
     ** Helper Functions
     */
-    function brushend() { brushed(true); } // brushend()
+    function brushend() { return brushed(true); }
 
     function brushed(stop) {
         if(!dispatch)
             return;
-        var extent = false;
 
-        if(d3.event && d3.event.selection) {
-            extent = d3.event.selection
-                  .map(function(s) { return Math.round(x.invert(Math.round(s))); })
-            ;
-        }
+        var extent = d3.event && d3.event.selection
+            ? d3.event.selection.map(Math.round)
+            : false
+        ;
+
         dispatch.call(
             "zoom"
           , this
@@ -52,35 +69,48 @@ function NotesNav() {
     } // brushed()
 
     function extent() {
-        if(height && x)
-            brush.extent([[x.range()[0], 0], [x.range()[1], height]]);
     } // extent()
+
+    function update() {
+        console.log(arguments.length);
+    } // update()
+
+    function move() {
+        svg.select(".brush")
+            .call(brush.move(
+                  [0, 0]
+                , [height * canvas.ratio(), height]
+              ))
+        ;
+    } // resize()
+
 
     /*
     ** API - Getters/Setters
     */
-
     my.height = function(value) {
         if(!arguments.length) return height;
 
         height = value;
-        svg.selectAll("rect")
-          .attr("y", 0)
-          .attr("height", height - 1)
-        ;
-        extent();
 
         return my;
       } // my.height()
     ;
-    my.x = function(value) {
-        if(!arguments.length) return x;
+    my.width = function (value) {
+        if(arguments.length === 0) return width;
 
-        x = value;
-        extent();
+        width = value;
 
         return my;
-      } // my.x()
+      } // my.width()
+    ;
+    my.colorScale = function (value) {
+        if(arguments.length === 0) return canvas.colorScale();
+
+        canvas.colorScale(value);
+
+        return my;
+      } // my.colorScale()
     ;
     my.connect = function(value) {
         if(!arguments.length) return dispatch;
@@ -89,6 +119,16 @@ function NotesNav() {
         return my;
       } // my.connect()
     ;
+    my.full = function(value) {
+        if(!arguments.length) return scale;
+
+        scale = value;
+        canvas.zoom(scale).snap();
+
+        return my;
+      } // my.full()
+    ;
+
     // This is ALWAYS the last thing returned
     return my;
 } // NotesNav()
