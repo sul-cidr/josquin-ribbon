@@ -33,12 +33,16 @@ rect.extreme {
     stroke-opacity: .2;
     shape-rendering: crispEdges;
 }
-path.domain {
+.barlines .tick line {
+    stroke: lightgray;
+}
+.barlines .tick text {
+    display: none;
+    fill: none;
+}
+.barlines path.domain {
     fill: none;
     stroke: none;
-}
-.tick line {
-    stroke: gray;
 }
 /* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
 .d3-tip {
