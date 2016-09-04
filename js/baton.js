@@ -15,7 +15,6 @@ var width = 960
   , combineSeparateUI = CombineSeparateUI()
   , extremeNotesDiv = d3.select("#extreme-notes-ui")
   , extremeNotesUI = ExtremeNotesUI()
-  , brush = BrushView()
   , legendContainer = d3.select("div#legend")
   , colorLegend = ColorLegend()
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
@@ -63,9 +62,12 @@ function chartify(data) {
     extremeNotesDiv
         .call(extremeNotesUI.connect(signal))
     ;
+
+    colorScale
+        .domain(data.partnames)
+    ;
     notesNav
         .colorScale(colorScale)
-        .margin(margin)
         .width(width)
         .height(height)
         .connect(signal)
@@ -83,11 +85,9 @@ function chartify(data) {
         .roundedCornerSize(5)
         .connect(signal)
     ;
-    colorScale
-        .domain(data.partnames)
-    ;
+
     renderColorLegend(data.partnames);
-    renderNotesNav(data.notes);
+    renderNotesNav(data);
     renderNotesBook(data);
 
     var full = {
@@ -95,13 +95,9 @@ function chartify(data) {
         , y: [data.minpitch.b7 - 1, data.maxpitch.b7]
       }
     ;
-    notesNav.snap(full);
+    notesNav.full(full);
     notesBook.full(full);
 
-    brush
-        .height(height)
-        .connect(signal)
-    ;
     signal
         .on("zoom",     notesBook.zoom)
         .on("hilite",   notesBook.hilite)
@@ -112,10 +108,8 @@ function chartify(data) {
 
 function renderNotesNav(data) {
     notesNavSVG
-      .append("g")
-        .datum({ key: "full", value: d3.merge((data.values())) })
+        .datum(data)
         .call(notesNav)
-        .call(brush.x(notesNav.x()))
     ;
 } // renderNotesNav()
 function renderNotesBook(data) {
