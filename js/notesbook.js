@@ -5,7 +5,7 @@ function NotesBook() {
   var svg, data
     , width
     , height
-    , scale = { color: null, voice: d3.scaleBand()  }
+    , scale = { color: null, voice: d3.scaleBand(), barlines: d3.scaleLinear() }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , dispatch
     , tooltip = d3.tip()
@@ -18,6 +18,8 @@ function NotesBook() {
           , zoom:     false // indicates an active brush
           , extremes: false // hilite the maximum and minimum pitches
         }
+    , barlines
+    , axis = d3.axisTop()
   ;
 
   /*
@@ -27,13 +29,16 @@ function NotesBook() {
       svg = selection;
       data = svg.datum();
 
+      domain.x = [0, data.scorelength[0]];
+      domain.y = [data.minpitch.b7 - 1, data.maxpitch.b7];
+      scale.barlines
+          .domain(domain.x)
+          .range([0, width])
+      ;
       scale.voice
           .domain(data.partnames)
           .rangeRound([0, height])
       ;
-      domain.x = [0, data.scorelength[0]];
-      domain.y = [data.minpitch.b7 - 1, data.maxpitch.b7];
-
       svg.selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
@@ -56,7 +61,15 @@ function NotesBook() {
               ;
             })
       ;
-
+      axis
+          .scale(scale.barlines)
+          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+      ;
+      barlines = svg
+        .append("g")
+          .attr("class", "bars")
+          .call(axis)
+      ;
   } // my() - Main function object
 
   /*
@@ -99,6 +112,11 @@ function NotesBook() {
           ;
         })
       ;
+      axis
+          .scale(scale.barlines)
+          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+      ;
+      barlines.call(axis);
   } // update()
 
   /*
@@ -123,6 +141,8 @@ function NotesBook() {
       if(arguments.length === 0) return height;
 
       height = value;
+      scale.voice.rangeRound([0, height]);
+      axis.tickSize(-height);
 
       return my;
     } // my.height()
@@ -148,6 +168,7 @@ function NotesBook() {
       display.zoom = value;
       display.zoom.x = display.zoom.x || domain.x;
       display.zoom.y = display.zoom.y || domain.y;
+      barlines.call(axis.scale(scale.barlines.domain(display.zoom.x)));
 
       if(display.separate && display.hilite)
           display.zoom.y = null;
