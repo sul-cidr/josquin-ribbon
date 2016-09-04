@@ -1,4 +1,4 @@
-function BrushView() {
+function NotesNav() {
     /*
     ** Private Variables
     **   - These are exclusively used in this object only.
@@ -91,4 +91,4 @@ function BrushView() {
     ;
     // This is ALWAYS the last thing returned
     return my;
-} // brushableView()
+} // NotesNav()
