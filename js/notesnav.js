@@ -57,7 +57,7 @@ function NotesNav() {
             return;
 
         var extent = d3.event && d3.event.selection
-            ? d3.event.selection.map(Math.round)
+            ? d3.event.selection.map(Math.round).map(canvas.x().invert)
             : false
         ;
 
