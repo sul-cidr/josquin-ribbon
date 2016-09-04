@@ -13,6 +13,8 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
+      , reflinesAxis = d3.axisLeft()
+      , reflines
     ;
     /*
     ** Main Function Object
@@ -34,6 +36,14 @@ function NotesCanvas() {
 
         svg = selection
               .attr("class", "notes-g " + data.key)
+        ;
+        reflinesAxis
+            .scale(scale.y)
+            .tickSize(-width)
+        ;
+        reflines = svg
+          .append("g")
+            .attr("class", "reflines")
         ;
         var rects = svg.selectAll("rect").data(data.value);
         rects
@@ -78,6 +88,7 @@ function NotesCanvas() {
               })
         ;
         hilite();
+        reflines.call(reflinesAxis);
     } // update()
 
     function computeExtremeNotes() {
