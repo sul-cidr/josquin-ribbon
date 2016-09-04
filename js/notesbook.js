@@ -34,12 +34,15 @@ function NotesBook() {
       ;
       data = svg.datum();
 
-      domain.x = [0, data.scorelength[0]];
-      domain.y = [data.minpitch.b7 - 1, data.maxpitch.b7];
-
       height = height - margin.top - margin.bottom;
       width = width - margin.left - margin.right;
 
+      domain.x = [0, data.scorelength[0]];
+      domain.y = d3.range(
+            data.minpitch.b7
+          , data.maxpitch.b7
+        )
+      ;
       scale.voice
           .domain(data.partnames)
           .rangeRound([0, height])
