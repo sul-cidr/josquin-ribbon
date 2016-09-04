@@ -5,7 +5,7 @@ function NotesCanvas() {
     var svg, data
       , width
       , height
-      , margin = { top: 10, bottom: 20, left: 10, right: 10 }
+      , margin = { top: 20, right: 20, bottom: 20, left: 20 }
       , scale = { x: d3.scaleLinear(), y: d3.scaleLinear(), color: null }
       , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
@@ -20,18 +20,14 @@ function NotesCanvas() {
     */
     function my(selection) {
         data = selection.datum();
-
         domain.x = [
               d3.min(data.value, function(d) { return d.time; })
             , d3.max(data.value, function(d) { return d.time + d.duration; })
           ]
         ;
-        domain.y = [
-              d3.min(data.value, function(d) { return d.pitch; }) - 1
-            , d3.max(data.value, function(d) { return d.pitch; })
-          ]
-        ;
-        scale.x.domain(domain.x).range([0, width - 1]);
+        domain.y = d3.extent(data.value, function(d) { return d.pitch; });
+
+        scale.x.domain(domain.x).range([0, width ]);
         scale.y.domain(domain.y).range([height, 0]);
 
         setHeights();
@@ -156,7 +152,7 @@ function NotesCanvas() {
         if(arguments.length === 0) return width;
 
         width = value;
-        scale.x.range([0, width - 1]);
+        scale.x.range([0, width]);
 
         return my;
       } // my.width()
