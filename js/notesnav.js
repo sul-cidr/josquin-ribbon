@@ -6,6 +6,7 @@ function NotesNav() {
       , data
       , width
       , height
+      , margin = { top: 20, right: 20, bottom: 20, left: 20 }
       , canvas = NotesCanvas()
       , brush = d3.brushX()
             .on("brush", brushed)
@@ -23,6 +24,8 @@ function NotesNav() {
           .enter().append("g")
             .attr("class", function(d) { return d; })
         ;
+        width  = width - margin.left - margin.right;
+        height = height - margin.top - margin.bottom;
 
         canvas
             .width(width)
@@ -103,6 +106,14 @@ function NotesNav() {
 
         return my;
       } // my.width()
+    ;
+    my.margin = function (value) {
+        if(!arguments.length) return margin;
+
+        margin = value;
+
+        return my;
+      } // my.margin()
     ;
     my.colorScale = function (value) {
         if(arguments.length === 0) return canvas.colorScale();
