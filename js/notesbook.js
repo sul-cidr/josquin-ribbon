@@ -30,7 +30,7 @@ function NotesBook() {
   function my(selection) {
       svg = selection
         .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+          .attr("transform", "translate(" + margin.left +","+ margin.top + ")")
       ;
       data = svg.datum();
 
@@ -172,6 +172,8 @@ function NotesBook() {
   ;
   my.margin = function(value) {
       if(!arguments.length) return margin;
+
+      margin = value;
 
       return my;
     } // my.margin()
