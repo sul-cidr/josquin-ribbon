@@ -2,12 +2,13 @@ function NotesBook() {
   /*
   ** Private Variables
   */
-  var svg, data
+  var svg
+    , data
     , width
     , height
+    , margin = { top: 20, right: 20, bottom: 20, left: 20 }
     , scale = { color: null, voice: d3.scaleBand(), barlines: d3.scaleLinear() }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
-    , dispatch
     , tooltip = d3.tip()
           .attr("class", "d3-tip")
           .html(function(d) { return d.note; })
@@ -18,28 +19,49 @@ function NotesBook() {
           , zoom:     false // indicates an active brush
           , extremes: false // hilite the maximum and minimum pitches
         }
-    , barlines
     , axis = d3.axisTop()
+    , barlines
+    , dispatch
   ;
 
   /*
   ** Main Function Object
   */
   function my(selection) {
-      svg = selection;
+      svg = selection
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      ;
       data = svg.datum();
 
       domain.x = [0, data.scorelength[0]];
       domain.y = [data.minpitch.b7 - 1, data.maxpitch.b7];
-      scale.barlines
-          .domain(domain.x)
-          .range([0, width])
-      ;
+
+      height = height - margin.top - margin.bottom;
+      width = width - margin.left - margin.right;
+
       scale.voice
           .domain(data.partnames)
           .rangeRound([0, height])
       ;
-      svg.selectAll(".notes-g")
+      scale.barlines
+          .domain(domain.x)
+          .range([0, width])
+      ;
+      var bars = data.barlines.map(function(b) { return b.time[0]; });
+      axis
+          .scale(scale.barlines)
+          .tickValues(bars)
+      ;
+      barlines = svg
+        .append("g")
+          .attr("class", "barlines")
+          .call(axis)
+      ;
+      svg
+        .append("g")
+          .attr("class", "notesbook")
+        .selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
           .each(function(d) {
@@ -60,15 +82,6 @@ function NotesBook() {
                   .call(canvases[canvases.length - 1].canvas)
               ;
             })
-      ;
-      axis
-          .scale(scale.barlines)
-          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-      ;
-      barlines = svg
-        .append("g")
-          .attr("class", "bars")
-          .call(axis)
       ;
   } // my() - Main function object
 
@@ -156,6 +169,12 @@ function NotesBook() {
 
       return my;
     } // my.full()
+  ;
+  my.margin = function(value) {
+      if(!arguments.length) return margin;
+
+      return my;
+    } // my.margin()
   ;
   my.connect = function(value) {
       if(!arguments.length) return dispatch;
