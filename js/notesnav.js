@@ -18,7 +18,10 @@ function NotesNav() {
     ** Main function Object
     */
     function my(sel) {
-        svg = sel;
+        svg = sel
+          .append("g")
+            .attr("transform", "translate("+ margin.left +","+ margin.top +")")
+        ;
         svg.selectAll("g")
             .data(["canvas", "brush"])
           .enter().append("g")
