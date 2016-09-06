@@ -7,10 +7,17 @@ function NotesNav() {
       , width
       , height
       , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-      , canvas = NotesCanvas()
-      , brush = d3.brushX()
-            .on("brush", brushed)
-            .on("end", brushend)
+      , canvas = {
+              selection: null
+            , widget: NotesCanvas()
+          }
+      , brush =  {
+              selection: null
+            , widget: d3.brushX()
+                    .handleSize(10)
+                    .on("brush", brushed)
+                    .on("end", brushend)
+          }
       , dispatch
     ;
 
@@ -30,21 +37,22 @@ function NotesNav() {
         width  = width - margin.left - margin.right;
         height = height - margin.top - margin.bottom;
 
-        canvas
+        canvas.widget
             .width(width)
             .height(height)
         ;
-        brush.extent([[0, 0], [width, height]]);
+        brush.widget.extent([[0, 0], [width, height]]);
 
         data = sel.datum();
 
-        svg.select(".canvas")
+        canvas.selection = svg.select(".canvas")
             .datum({ key: "full", value: d3.merge(data.notes.values()) })
-            .call(canvas)
+            .call(canvas.widget)
         ;
-        svg.select(".brush")
-            .call(brush)
-          .selectAll("rect")
+        brush.selection = svg.select(".brush")
+            .call(brush.widget)
+        ;
+        brush.selection.selectAll("rect")
             .attr("y", 0)
             .attr("height", height)
         ;
@@ -55,21 +63,21 @@ function NotesNav() {
     */
     function brushend() { return brushed(true); }
 
-    function brushed(stop) {
-        if(!dispatch)
-            return;
-
+    function brushed(ended) {
         var extent = d3.event && d3.event.selection
             ? d3.event.selection.map(Math.round).map(canvas.x().invert)
+
             : false
         ;
+        if(!dispatch)
+            return;
 
         dispatch.call(
             "zoom"
           , this
           , {
                 x: extent
-              , ended: stop === true || false
+              , ended: ended || false
             }
         );
     } // brushed()
@@ -82,14 +90,13 @@ function NotesNav() {
     } // update()
 
     function move() {
-        svg.select(".brush")
-            .call(brush.move(
+        brush.selection
+            .call(brush.widget.move(
                   [0, 0]
-                , [height * canvas.ratio(), height]
+                , [height * canvas.widget.ratio(), height]
               ))
         ;
     } // resize()
-
 
     /*
     ** API - Getters/Setters
@@ -119,9 +126,9 @@ function NotesNav() {
       } // my.margin()
     ;
     my.colorScale = function (value) {
-        if(arguments.length === 0) return canvas.colorScale();
+        if(arguments.length === 0) return canvas.widget.colorScale();
 
-        canvas.colorScale(value);
+        canvas.widget.colorScale(value);
 
         return my;
       } // my.colorScale()
@@ -137,7 +144,7 @@ function NotesNav() {
         if(!arguments.length) return scale;
 
         scale = value;
-        canvas.zoom(scale).snap();
+        canvas.widget.zoom(scale).snap();
 
         return my;
       } // my.full()
