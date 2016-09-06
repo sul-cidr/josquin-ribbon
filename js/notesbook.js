@@ -19,7 +19,7 @@ function NotesBook() {
           , zoom:     false // indicates an active brush
           , extremes: false // hilite the maximum and minimum pitches
         }
-    , axis = d3.axisTop()
+    , barlinesAxis = d3.axisTop()
     , barlines
     , dispatch
   ;
@@ -52,14 +52,14 @@ function NotesBook() {
           .range([0, width])
       ;
       var bars = data.barlines.map(function(b) { return b.time[0]; });
-      axis
+      barlinesAxis
           .scale(scale.barlines)
           .tickValues(bars)
       ;
       barlines = svg
         .append("g")
           .attr("class", "barlines")
-          .call(axis)
+          .call(barlinesAxis)
       ;
       svg
         .append("g")
@@ -128,11 +128,11 @@ function NotesBook() {
           ;
         })
       ;
-      axis
+      barlinesAxis
           .scale(scale.barlines)
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
       ;
-      barlines.call(axis);
+      barlines.call(barlinesAxis);
   } // update()
 
   /*
@@ -158,7 +158,7 @@ function NotesBook() {
 
       height = value;
       scale.voice.rangeRound([0, height]);
-      axis.tickSize(-height);
+      barlinesAxis.tickSize(-height);
 
       return my;
     } // my.height()
@@ -192,7 +192,7 @@ function NotesBook() {
       display.zoom = value;
       display.zoom.x = display.zoom.x || domain.x;
       display.zoom.y = display.zoom.y || domain.y;
-      barlines.call(axis.scale(scale.barlines.domain(display.zoom.x)));
+      barlines.call(barlinesAxis.scale(scale.barlines.domain(display.zoom.x)));
 
       if(display.separate && display.hilite)
           display.zoom.y = null;
