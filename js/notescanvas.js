@@ -5,7 +5,7 @@ function NotesCanvas() {
     var svg, data
       , width
       , height
-      , margin = { top: 20, right: 20, bottom: 20, left: 20 }
+      , margin = { top: 10, bottom: 10, left: 0, right: 0 }
       , scale = { x: d3.scaleLinear(), y: d3.scaleBand(), color: null }
       , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
