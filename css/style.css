@@ -36,9 +36,12 @@ rect.extreme {
 .barlines .tick line , .reflines .tick line {
     stroke: lightgray;
 }
-.barlines .tick text , .reflines .tick text {
+.barlines .tick text {
     display: none;
     fill: none;
+}
+.reflines .tick text {
+    fill: gray;
 }
 .barlines path.domain , .reflines path.domain {
     fill: none;
