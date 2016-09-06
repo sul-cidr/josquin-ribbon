@@ -42,6 +42,7 @@ rect.extreme {
 }
 .reflines .tick text {
     fill: gray;
+    font-size: 1.3rem;
 }
 .barlines path.domain , .reflines path.domain {
     fill: none;
