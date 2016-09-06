@@ -65,7 +65,7 @@ function NotesNav() {
 
     function brushed(ended) {
         var extent = d3.event && d3.event.selection
-            ? d3.event.selection.map(Math.round).map(canvas.x().invert)
+            ? d3.event.selection.map(Math.round).map(canvas.widget.x().invert)
 
             : false
         ;
