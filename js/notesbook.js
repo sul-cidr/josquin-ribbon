@@ -7,7 +7,7 @@ function NotesBook() {
     , width
     , height
     , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-    , scale = { color: null, voice: d3.scaleBand(), barlines: d3.scaleLinear() }
+    , scale = { color: null, voice: d3.scaleBand(), barlines: d3.scaleLinear(), reflines: d3.scaleBand()}
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , tooltip = d3.tip()
           .attr("class", "d3-tip")
@@ -21,6 +21,8 @@ function NotesBook() {
         }
     , barlinesAxis = d3.axisTop()
     , barlines
+    , reflinesAxis = d3.axisLeft()
+    , reflines
     , dispatch
   ;
 
@@ -51,6 +53,10 @@ function NotesBook() {
           .domain(domain.x)
           .range([0, width])
       ;
+      scale.reflines
+          .domain(domain.y)
+          .range([height, 0])
+      ;
       var bars = data.barlines.map(function(b) { return b.time[0]; });
       barlinesAxis
           .scale(scale.barlines)
@@ -60,6 +66,15 @@ function NotesBook() {
         .append("g")
           .attr("class", "barlines")
           .call(barlinesAxis)
+      ;
+      reflinesAxis
+          .scale(scale.reflines)
+          .tickSize(-width)
+      ;
+      reflines = svg
+        .append("g")
+          .attr("class", "reflines")
+          .call(reflinesAxis)
       ;
       svg
         .append("g")
@@ -133,6 +148,8 @@ function NotesBook() {
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
       ;
       barlines.call(barlinesAxis);
+      console.log(scale.reflines.domain());
+      reflines.call(reflinesAxis);
   } // update()
 
   /*
