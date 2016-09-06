@@ -21,13 +21,13 @@ function NotesBook() {
         }
     , barlinesAxis = d3.axisTop()
     , barlines
-    , reflinesValues = [
-            { pitch: 32, label: "G", style: "solid" },
-            { pitch: 28, label: "C4", style: "dashed" },
-            { pitch: 24, label: "F", style: "solid" }
-        ]
+    , reflinesValues = {
+            32: { label: "G", style: "solid" },
+            28: { label: "C4", style: "dashed" },
+            24: { label: "F", style: "solid" }
+        }
     , reflinesAxis = d3.axisLeft()
-          .tickValues(reflinesValues.map( function (d){ return d.pitch }))
+          .tickValues(Object.keys(reflinesValues))
     , reflines
     , dispatch
   ;
