@@ -28,6 +28,7 @@ function NotesBook() {
         }
     , reflinesAxis = d3.axisLeft()
           .tickValues(Object.keys(reflinesValues))
+          .tickFormat(function (d){ return reflinesValues[d].label; })
     , reflines
     , dispatch
   ;
