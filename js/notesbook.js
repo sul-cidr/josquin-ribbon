@@ -160,7 +160,11 @@ function NotesBook() {
 
   function reflinesRender(selection){
       selection.call(reflinesAxis);
-      //selection.selectAll(".tick")
+      selection.selectAll(".tick")
+          .attr("stroke-dasharray", function (d){
+              return reflinesValues[d].style === "dashed" ? "4 4" : "";
+            })
+      ;
   }
 
   /*
