@@ -93,7 +93,7 @@ function chartify(data) {
 
     var full = {
           x: [0, data.scorelength[0]]
-        , y: [data.minpitch.b7 - 1, data.maxpitch.b7]
+        , y: d3.range(data.minpitch.b7, data.maxpitch.b7)
       }
     ;
     notesNav.full(full);
