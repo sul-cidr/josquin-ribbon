@@ -22,9 +22,9 @@ function NotesBook() {
     , barlinesAxis = d3.axisTop()
     , barlines
     , reflinesValues = [
-            {pitch: 32, label: "G", style: "solid"},
-            {pitch: 28, label: "C4", style: "dashed"},
-            {pitch: 24, label: "F", style: "solid"}
+            { pitch: 32, label: "G", style: "solid" },
+            { pitch: 28, label: "C4", style: "dashed" },
+            { pitch: 24, label: "F", style: "solid" }
         ]
     , reflinesAxis = d3.axisLeft()
           .tickValues(reflinesValues.map( function (d){ return d.pitch }))
@@ -80,7 +80,7 @@ function NotesBook() {
       reflines = svg
         .append("g")
           .attr("class", "reflines")
-          .call(reflinesAxis)
+          .call(reflinesRender)
       ;
       svg
         .append("g")
@@ -155,8 +155,13 @@ function NotesBook() {
       ;
       barlines.call(barlinesAxis);
       console.log(scale.reflines.domain());
-      reflines.call(reflinesAxis);
+      reflines.call(reflinesRender);
   } // update()
+
+  function reflinesRender(selection){
+      selection.call(reflinesAxis);
+      //selection.selectAll(".tick")
+  }
 
   /*
   ** API (Getter/Setter) Functions
