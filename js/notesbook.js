@@ -26,6 +26,7 @@ function NotesBook() {
         }
     , barlinesAxis = d3.axisTop()
     , barlines
+    , bars
     , reflinesValues = {
             32: { label: "G", style: "solid" },
             28: { label: "C4", style: "dashed" },
@@ -47,7 +48,7 @@ function NotesBook() {
           .attr("transform", "translate(" + margin.left +","+ margin.top + ")")
       ;
       data = svg.datum();
-
+      bars = data.barlines.map(function(b) { return b.time[0]; });
       height = height - margin.top - margin.bottom;
       width = width - margin.left - margin.right;
 
@@ -69,7 +70,6 @@ function NotesBook() {
           .domain(domain.y)
           .range([height, 0])
       ;
-      var bars = data.barlines.map(function(b) { return b.time[0]; });
       barlinesAxis
           .scale(scale.barlines)
           .tickValues(bars)
@@ -157,7 +157,7 @@ function NotesBook() {
       ;
       barlinesAxis
           .scale(scale.barlines)
-          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+          .tickValues(bars)
       ;
       barlines.call(barlinesAxis);
       console.log(scale.reflines.domain());
