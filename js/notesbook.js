@@ -172,8 +172,7 @@ function NotesBook() {
       ;
       barlines.call(barlinesAxis);
       reflines.call(reflinesRender);
-      measuresAxis.scale(scale.barlines);
-      measures.call(measuresAxis);
+      measures.call(measuresAxis.scale(scale.barlines));
   } // update()
 
   function reflinesRender(selection){
@@ -183,7 +182,7 @@ function NotesBook() {
           .filter(function (d){ return reflinesValues[d].style === "dashed" })
           .attr("stroke-dasharray", "4 4")
       ;
-  }
+  } // reflinesRender()
 
   /*
   ** API (Getter/Setter) Functions
