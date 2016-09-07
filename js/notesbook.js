@@ -161,7 +161,7 @@ function NotesBook() {
               .height(h)
               .zoom(z)
               .state(hilited || !display.hilite)
-              .showReflines(display.separate || (i === 0))
+              .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
               .update()
           ;
           c.selection
