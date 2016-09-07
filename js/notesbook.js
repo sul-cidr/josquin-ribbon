@@ -36,6 +36,8 @@ function NotesBook() {
           .tickValues(Object.keys(reflinesValues))
           .tickFormat(function (d){ return reflinesValues[d].label; })
     , reflines
+    , measuresAxis = d3.axisBottom()
+    , measures
     , dispatch
   ;
 
@@ -87,6 +89,15 @@ function NotesBook() {
         .append("g")
           .attr("class", "reflines")
           .call(reflinesRender)
+      ;
+      measuresAxis
+          .scale(scale.barlines)
+          .tickSize(0)
+      ;
+      measures = svg
+        .append("g")
+          .attr("class", "measures")
+          .call(measuresAxis)
       ;
       svg
         .append("g")
@@ -160,8 +171,9 @@ function NotesBook() {
           .tickValues(bars)
       ;
       barlines.call(barlinesAxis);
-      console.log(scale.reflines.domain());
       reflines.call(reflinesRender);
+      measuresAxis.scale(scale.barlines);
+      measures.call(measuresAxis);
   } // update()
 
   function reflinesRender(selection){
@@ -230,7 +242,9 @@ function NotesBook() {
       display.zoom = value;
       display.zoom.x = display.zoom.x || domain.x;
       display.zoom.y = display.zoom.y || domain.y;
-      barlines.call(barlinesAxis.scale(scale.barlines.domain(display.zoom.x)));
+      scale.barlines.domain(display.zoom.x);
+      barlines.call(barlinesAxis.scale(scale.barlines));
+      measures.call(measuresAxis.scale(scale.barlines));
 
       if(display.separate && display.hilite)
           display.zoom.y = null;
