@@ -1,7 +1,19 @@
+@font-face {
+	font-family: 'BravuraText';
+	src: url('fonts/BravuraText.eot'); /* IE 5-8 */
+	src: local(':)'), /* trick IE to ignore the rest */
+			url('fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
+			url('fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
+			url('fonts/BravuraText.svg') format('svg'); /* iOS */
+}
 header {
     background-image: url('/img/josquin.jpg');
     background-repeat: no-repeat;
     background-size: contain;
+}
+.mensuration {
+		font-family: 'BravuraText';
+		font-size: xx-large;
 }
 
 #legend li {
