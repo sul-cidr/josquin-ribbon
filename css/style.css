@@ -1,10 +1,10 @@
 @font-face {
-	font-family: 'BravuraText';
-	src: url('fonts/BravuraText.eot'); /* IE 5-8 */
-	src: local(':)'), /* trick IE to ignore the rest */
-			url('fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
-			url('fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
-			url('fonts/BravuraText.svg') format('svg'); /* iOS */
+  font-family: 'BravuraText';
+  src: url('fonts/BravuraText.eot'); /* IE 5-8 */
+  src: local(':)'), /* trick IE to ignore the rest */
+      url('fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
+      url('fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
+      url('fonts/BravuraText.svg') format('svg'); /* iOS */
 }
 header {
     background-image: url('/img/josquin.jpg');
@@ -12,8 +12,8 @@ header {
     background-size: contain;
 }
 .mensuration {
-		font-family: 'BravuraText';
-		font-size: xx-large;
+    font-family: 'BravuraText';
+    font-size: xx-large;
 }
 
 #legend li {
@@ -52,13 +52,16 @@ path.domain {
 .tick line {
     stroke: lightgray;
 }
+.tick text {
+    fill: gray;
+    font-size: 1.3rem;
+}
 .barlines .tick text {
     display: none;
     fill: none;
 }
-.reflines .tick text {
-    fill: gray;
-    font-size: 1.3rem;
+.mensuration .tick text {
+		font-size: 2.5rem;
 }
 /* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
 .d3-tip {
