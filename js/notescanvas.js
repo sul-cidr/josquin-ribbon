@@ -41,11 +41,7 @@ function NotesCanvas() {
             .map(function(d) { return d.pitch; })
             .concat(reflinesPitches)
         ;
-        domain.y = d3.range(
-              d3.min(pitches)
-            , d3.max(pitches)
-          )
-        ;
+        domain.y = d3.range.apply(null, d3.extent(pitches));
         scale.y.domain(domain.y).range([height, 0]);
 
         svg = selection
