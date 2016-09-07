@@ -11,7 +11,6 @@ function NotesBook() {
             color: null
           , voice: d3.scaleBand()
           , barlines: d3.scaleLinear()
-          , reflines: d3.scaleBand()
         }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , tooltip = d3.tip()
@@ -27,15 +26,6 @@ function NotesBook() {
     , barlinesAxis = d3.axisTop()
     , barlines
     , bars
-    , reflinesValues = {
-            32: { label: "G", style: "solid" },
-            28: { label: "C4", style: "dashed" },
-            24: { label: "F", style: "solid" }
-        }
-    , reflinesAxis = d3.axisLeft()
-          .tickValues(Object.keys(reflinesValues))
-          .tickFormat(function (d){ return reflinesValues[d].label; })
-    , reflines
     , measuresAxis = d3.axisBottom()
     , measures
     , mensurationCodes = {
@@ -90,19 +80,6 @@ function NotesBook() {
         .append("g")
           .attr("class", "barlines")
           .call(barlinesAxis)
-      ;
-      scale.reflines
-          .domain(domain.y)
-          .range([height, 0])
-      ;
-      reflinesAxis
-          .scale(scale.reflines)
-          .tickSize(-width)
-      ;
-      reflines = svg
-        .append("g")
-          .attr("class", "reflines")
-          .call(reflinesRender)
       ;
       measuresAxis
           .scale(scale.barlines)
@@ -195,24 +172,8 @@ function NotesBook() {
           .tickValues(bars)
       ;
       barlines.call(barlinesAxis);
-      reflines.call(reflinesRender);
       measures.call(measuresAxis.scale(scale.barlines));
   } // update()
-
-  function reflinesRender(selection){
-      if(display.separate){
-          selection.style("visibility", "hidden");
-      } else {
-          selection
-              .style("visibility", "visible")
-              .call(reflinesAxis)
-            .selectAll(".tick")
-              .filter(function (d){ return reflinesValues[d].style === "dashed" })
-              .attr("stroke-dasharray", "4 4")
-          ;
-      }
-  } // reflinesRender()
-
 
   function mensurationsRender(selection) {
       selection

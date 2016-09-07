@@ -13,6 +13,15 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
+      , reflinesValues = {
+              32: { label: "G", style: "solid" },
+              28: { label: "C4", style: "dashed" },
+              24: { label: "F", style: "solid" }
+          }
+      , reflinesAxis = d3.axisLeft()
+            .tickValues(Object.keys(reflinesValues))
+            .tickFormat(function (d){ return reflinesValues[d].label; })
+      , reflines
     ;
     /*
     ** Main Function Object
@@ -43,6 +52,17 @@ function NotesCanvas() {
         rects.exit().remove();
         computeExtremeNotes();
         enableTooltips();
+
+        reflinesAxis
+            .scale(scale.y)
+            .tickSize(-width)
+        ;
+        reflines = svg
+          .append("g")
+            .attr("class", "reflines")
+            .call(reflinesRender)
+        ;
+
         update();
     } // my()
 
@@ -78,7 +98,19 @@ function NotesCanvas() {
               })
         ;
         hilite();
+        reflines.call(reflinesRender);
     } // update()
+
+    function reflinesRender(selection){
+       selection
+           .call(reflinesAxis)
+         .selectAll(".tick")
+           .filter(function (d){ return reflinesValues[d].style === "dashed" })
+           .attr("stroke-dasharray", "4 4")
+       ;
+    } // reflinesRender()
+
+
 
     function computeExtremeNotes() {
         if(svg){
