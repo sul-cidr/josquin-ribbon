@@ -137,10 +137,11 @@ function NotesBook() {
           var transform = 0
             , h = height
             , z = display.zoom || domain
+            , hilited = (c.key === display.hilite)
           ;
           if(display.hilite) {
               // only change if this is a match
-              matched = (c.key === display.hilite) ? i : matched;
+              matched = hilited ? i : matched;
               if(display.separate) {
                   if(matched !== i) { // we're not the matched one
                       h = 0;
@@ -159,7 +160,8 @@ function NotesBook() {
           c.canvas
               .height(h)
               .zoom(z)
-              .state((display.hilite === c.key) || !display.hilite)
+              .state(hilited || !display.hilite)
+              .showReflines(display.separate || (i === 0))
               .update()
           ;
           c.selection
