@@ -7,7 +7,12 @@ function NotesBook() {
     , width
     , height
     , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-    , scale = { color: null, voice: d3.scaleBand(), barlines: d3.scaleLinear(), reflines: d3.scaleBand()}
+    , scale = {
+            color: null
+          , voice: d3.scaleBand()
+          , barlines: d3.scaleLinear()
+          , reflines: d3.scaleBand()
+        }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , tooltip = d3.tip()
           .attr("class", "d3-tip")
@@ -21,6 +26,7 @@ function NotesBook() {
         }
     , barlinesAxis = d3.axisTop()
     , barlines
+    , bars
     , reflinesValues = {
             32: { label: "G", style: "solid" },
             28: { label: "C4", style: "dashed" },
@@ -30,6 +36,8 @@ function NotesBook() {
           .tickValues(Object.keys(reflinesValues))
           .tickFormat(function (d){ return reflinesValues[d].label; })
     , reflines
+    , measuresAxis = d3.axisBottom()
+    , measures
     , dispatch
   ;
 
@@ -42,7 +50,7 @@ function NotesBook() {
           .attr("transform", "translate(" + margin.left +","+ margin.top + ")")
       ;
       data = svg.datum();
-
+      bars = data.barlines.map(function(b) { return b.time[0]; });
       height = height - margin.top - margin.bottom;
       width = width - margin.left - margin.right;
 
@@ -64,7 +72,6 @@ function NotesBook() {
           .domain(domain.y)
           .range([height, 0])
       ;
-      var bars = data.barlines.map(function(b) { return b.time[0]; });
       barlinesAxis
           .scale(scale.barlines)
           .tickValues(bars)
@@ -82,6 +89,15 @@ function NotesBook() {
         .append("g")
           .attr("class", "reflines")
           .call(reflinesRender)
+      ;
+      measuresAxis
+          .scale(scale.barlines)
+          .tickSize(0)
+      ;
+      measures = svg
+        .append("g")
+          .attr("class", "measures")
+          .call(measuresAxis)
       ;
       svg
         .append("g")
@@ -152,11 +168,11 @@ function NotesBook() {
       ;
       barlinesAxis
           .scale(scale.barlines)
-          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+          .tickValues(bars)
       ;
       barlines.call(barlinesAxis);
-      console.log(scale.reflines.domain());
       reflines.call(reflinesRender);
+      measures.call(measuresAxis.scale(scale.barlines));
   } // update()
 
   function reflinesRender(selection){
@@ -166,7 +182,7 @@ function NotesBook() {
           .filter(function (d){ return reflinesValues[d].style === "dashed" })
           .attr("stroke-dasharray", "4 4")
       ;
-  }
+  } // reflinesRender()
 
   /*
   ** API (Getter/Setter) Functions
@@ -225,7 +241,9 @@ function NotesBook() {
       display.zoom = value;
       display.zoom.x = display.zoom.x || domain.x;
       display.zoom.y = display.zoom.y || domain.y;
-      barlines.call(barlinesAxis.scale(scale.barlines.domain(display.zoom.x)));
+      scale.barlines.domain(display.zoom.x);
+      barlines.call(barlinesAxis.scale(scale.barlines));
+      measures.call(measuresAxis.scale(scale.barlines));
 
       if(display.separate && display.hilite)
           display.zoom.y = null;
