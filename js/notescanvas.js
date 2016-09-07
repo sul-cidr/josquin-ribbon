@@ -24,7 +24,6 @@ function NotesCanvas() {
       , reflinesAxis = d3.axisLeft()
             .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
-      , reflines
     ;
     /*
     ** Main Function Object
@@ -57,7 +56,7 @@ function NotesCanvas() {
             .scale(scale.y)
             .tickSize(-width)
         ;
-        reflines = svg
+        svg
           .append("g")
             .attr("class", "reflines")
             .call(reflinesRender)
