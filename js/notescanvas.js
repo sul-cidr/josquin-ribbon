@@ -45,14 +45,6 @@ function NotesCanvas() {
         svg = selection
               .attr("class", "notes-g " + data.key)
         ;
-        var rects = svg.selectAll("rect").data(data.value);
-        rects
-          .enter().append("rect")
-            .attr("class", "note")
-        ;
-        rects.exit().remove();
-        computeExtremeNotes();
-        enableTooltips();
 
         reflinesAxis
             .scale(scale.y)
@@ -63,6 +55,15 @@ function NotesCanvas() {
             .attr("class", "reflines")
             .call(reflinesRender)
         ;
+
+        var rects = svg.selectAll("rect").data(data.value);
+        rects
+          .enter().append("rect")
+            .attr("class", "note")
+        ;
+        rects.exit().remove();
+        computeExtremeNotes();
+        enableTooltips();
 
         update();
     } // my()
