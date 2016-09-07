@@ -38,6 +38,19 @@ function NotesBook() {
     , reflines
     , measuresAxis = d3.axisBottom()
     , measures
+    , mensurationCodes = {
+            "O": ""
+          , "O|": ""
+          , "O|.": ""
+          , "C.": ""
+          , "C": ""
+          , "Cr": ""
+          , "C|.": ""
+          , "C|": ""
+          , "C|r": ""
+        }
+    , mensurationsAxis = d3.axisTop()
+    , mensurations
     , dispatch
   ;
 
@@ -68,18 +81,19 @@ function NotesBook() {
           .domain(domain.x)
           .range([0, width])
       ;
-      scale.reflines
-          .domain(domain.y)
-          .range([height, 0])
-      ;
       barlinesAxis
           .scale(scale.barlines)
           .tickValues(bars)
+          .tickSize(-height);
       ;
       barlines = svg
         .append("g")
           .attr("class", "barlines")
           .call(barlinesAxis)
+      ;
+      scale.reflines
+          .domain(domain.y)
+          .range([height, 0])
       ;
       reflinesAxis
           .scale(scale.reflines)
@@ -92,12 +106,22 @@ function NotesBook() {
       ;
       measuresAxis
           .scale(scale.barlines)
-          .tickSize(0)
+          .tickSize(0) // no ticklines only tick labels
       ;
       measures = svg
         .append("g")
           .attr("class", "measures")
+          .attr("transform", "translate(0," + height + ")")
           .call(measuresAxis)
+      ;
+      mensurationsAxis
+          .scale(scale.barlines)
+          .tickSize(0)
+      ;
+      mensurations = svg
+        .append("g")
+          .attr("class", "mensuration")
+          .call(mensurationsRender)
       ;
       svg
         .append("g")
@@ -184,6 +208,23 @@ function NotesBook() {
       ;
   } // reflinesRender()
 
+
+  function mensurationsRender(selection) {
+      selection
+          .call(mensurationsAxis)
+        .selectAll(".tick")
+          .each(function(d, i) {
+              var self = d3.select(this)
+                , sym = data.barlines[i].mensuration
+              ;
+              self.select("text")
+                  .text(mensurationCodes[sym] || null)
+              ;
+            })
+      ;
+  } // mensurationsRender()
+
+
   /*
   ** API (Getter/Setter) Functions
   */
@@ -207,7 +248,6 @@ function NotesBook() {
 
       height = value;
       scale.voice.rangeRound([0, height]);
-      barlinesAxis.tickSize(-height);
 
       return my;
     } // my.height()
