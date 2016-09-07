@@ -200,12 +200,17 @@ function NotesBook() {
   } // update()
 
   function reflinesRender(selection){
-      selection
-          .call(reflinesAxis)
-        .selectAll(".tick")
-          .filter(function (d){ return reflinesValues[d].style === "dashed" })
-          .attr("stroke-dasharray", "4 4")
-      ;
+      if(display.separate){
+          selection.style("visibility", "hidden");
+      } else {
+          selection
+              .style("visibility", "visible")
+              .call(reflinesAxis)
+            .selectAll(".tick")
+              .filter(function (d){ return reflinesValues[d].style === "dashed" })
+              .attr("stroke-dasharray", "4 4")
+          ;
+      }
   } // reflinesRender()
 
 
