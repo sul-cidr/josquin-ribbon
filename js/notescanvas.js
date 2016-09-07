@@ -13,6 +13,7 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
+      , showReflines = false
       , reflinesValues = {
               32: { label: "G", style: "solid" },
               28: { label: "C4", style: "dashed" },
@@ -102,12 +103,17 @@ function NotesCanvas() {
     } // update()
 
     function reflinesRender(selection){
-       selection
-           .call(reflinesAxis)
-         .selectAll(".tick")
-           .filter(function (d){ return reflinesValues[d].style === "dashed" })
-           .attr("stroke-dasharray", "4 4")
-       ;
+       if(showReflines){
+           selection
+               .style("visibility", "visible")
+               .call(reflinesAxis)
+             .selectAll(".tick")
+               .filter(function (d){ return reflinesValues[d].style === "dashed" })
+               .attr("stroke-dasharray", "4 4")
+           ;
+       } else {
+           selection.style("visibility", "hidden");
+       }
     } // reflinesRender()
 
 
@@ -224,6 +230,13 @@ function NotesCanvas() {
 
         return my;
       } // my.extremes()
+    ;
+    my.showReflines = function (value) {
+        if(arguments.length === 0) return showReflines;
+
+        showReflines = value;
+        return my;
+      } // my.showReflines()
     ;
 
     /*
