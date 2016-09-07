@@ -19,8 +19,10 @@ function NotesCanvas() {
               28: { label: "C4", style: "dashed" },
               24: { label: "F", style: "solid" }
           }
+      , reflinesPitches = Object.keys(reflinesValues)
+            .map(function (d){ return +d; })
       , reflinesAxis = d3.axisLeft()
-            .tickValues(Object.keys(reflinesValues))
+            .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
       , reflines
     ;
@@ -35,9 +37,14 @@ function NotesCanvas() {
           ]
         ;
         scale.x.domain(domain.x).range([0, width ]);
+
+        var pitches = data.value
+            .map(function(d) { return d.pitch; })
+            .concat(reflinesPitches)
+        ;
         domain.y = d3.range(
-              d3.min(data.value, function(d) { return d.pitch; })
-            , d3.max(data.value, function(d) { return d.pitch; })
+              d3.min(pitches)
+            , d3.max(pitches)
           )
         ;
         scale.y.domain(domain.y).range([height, 0]);
