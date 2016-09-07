@@ -117,6 +117,7 @@ function NotesBook() {
                           .tooltip(tooltip)
                           .width(width)
                           .height(height)
+                          .showReflines(canvases.length === 0)
                       , selection: self
                     })
               ;
