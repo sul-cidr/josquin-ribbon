@@ -100,7 +100,8 @@ function NotesCanvas() {
               })
         ;
         hilite();
-        reflines.call(reflinesRender);
+        selection.select(".reflines")
+            .call(reflinesRender);
     } // update()
 
     function reflinesRender(selection){
