@@ -7,7 +7,12 @@ function NotesBook() {
     , width
     , height
     , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-    , scale = { color: null, voice: d3.scaleBand(), barlines: d3.scaleLinear(), reflines: d3.scaleBand()}
+    , scale = {
+            color: null
+          , voice: d3.scaleBand()
+          , barlines: d3.scaleLinear()
+          , reflines: d3.scaleBand()
+        }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , tooltip = d3.tip()
           .attr("class", "d3-tip")
