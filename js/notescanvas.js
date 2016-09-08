@@ -13,6 +13,17 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
+      , showReflines = false
+      , reflinesValues = {
+              32: { label: "G", style: "solid" },
+              28: { label: "C4", style: "dashed" },
+              24: { label: "F", style: "solid" }
+          }
+      , reflinesPitches = Object.keys(reflinesValues)
+            .map(function (d){ return +d; })
+      , reflinesAxis = d3.axisLeft()
+            .tickValues(reflinesPitches)
+            .tickFormat(function (d){ return reflinesValues[d].label; })
     ;
     /*
     ** Main Function Object
@@ -25,16 +36,28 @@ function NotesCanvas() {
           ]
         ;
         scale.x.domain(domain.x).range([0, width ]);
-        domain.y = d3.range(
-              d3.min(data.value, function(d) { return d.pitch; })
-            , d3.max(data.value, function(d) { return d.pitch; })
-          )
+
+        var pitches = data.value
+            .map(function(d) { return d.pitch; })
+            .concat(reflinesPitches)
         ;
+        domain.y = d3.range.apply(null, d3.extent(pitches));
         scale.y.domain(domain.y).range([height, 0]);
 
         svg = selection
               .attr("class", "notes-g " + data.key)
         ;
+
+        reflinesAxis
+            .scale(scale.y)
+            .tickSize(-width)
+        ;
+        svg
+          .append("g")
+            .attr("class", "reflines")
+            .call(reflinesRender)
+        ;
+
         var rects = svg.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
@@ -43,6 +66,7 @@ function NotesCanvas() {
         rects.exit().remove();
         computeExtremeNotes();
         enableTooltips();
+
         update();
     } // my()
 
@@ -78,7 +102,25 @@ function NotesCanvas() {
               })
         ;
         hilite();
+        selection.select(".reflines")
+            .call(reflinesRender);
     } // update()
+
+    function reflinesRender(selection){
+       if(showReflines){
+           selection
+               .style("visibility", "visible")
+               .call(reflinesAxis)
+             .selectAll(".tick")
+               .filter(function (d){ return reflinesValues[d].style === "dashed" })
+               .attr("stroke-dasharray", "4 4")
+           ;
+       } else {
+           selection.style("visibility", "hidden");
+       }
+    } // reflinesRender()
+
+
 
     function computeExtremeNotes() {
         if(svg){
@@ -192,6 +234,13 @@ function NotesCanvas() {
 
         return my;
       } // my.extremes()
+    ;
+    my.showReflines = function (value) {
+        if(arguments.length === 0) return showReflines;
+
+        showReflines = value;
+        return my;
+      } // my.showReflines()
     ;
 
     /*

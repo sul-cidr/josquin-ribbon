@@ -11,7 +11,6 @@ function NotesBook() {
             color: null
           , voice: d3.scaleBand()
           , barlines: d3.scaleLinear()
-          , reflines: d3.scaleBand()
         }
     , domain = { x: [], y: [] } // Store the aggregate domains for all strips
     , tooltip = d3.tip()
@@ -27,15 +26,6 @@ function NotesBook() {
     , barlinesAxis = d3.axisTop()
     , barlines
     , bars
-    , reflinesValues = {
-            32: { label: "G", style: "solid" },
-            28: { label: "C4", style: "dashed" },
-            24: { label: "F", style: "solid" }
-        }
-    , reflinesAxis = d3.axisLeft()
-          .tickValues(Object.keys(reflinesValues))
-          .tickFormat(function (d){ return reflinesValues[d].label; })
-    , reflines
     , measuresAxis = d3.axisBottom()
     , measures
     , mensurationCodes = {
@@ -91,19 +81,6 @@ function NotesBook() {
           .attr("class", "barlines")
           .call(barlinesAxis)
       ;
-      scale.reflines
-          .domain(domain.y)
-          .range([height, 0])
-      ;
-      reflinesAxis
-          .scale(scale.reflines)
-          .tickSize(-width)
-      ;
-      reflines = svg
-        .append("g")
-          .attr("class", "reflines")
-          .call(reflinesRender)
-      ;
       measuresAxis
           .scale(scale.barlines)
           .tickSize(0) // no ticklines only tick labels
@@ -140,6 +117,7 @@ function NotesBook() {
                           .tooltip(tooltip)
                           .width(width)
                           .height(height)
+                          .showReflines(canvases.length === 0)
                       , selection: self
                     })
               ;
@@ -159,10 +137,11 @@ function NotesBook() {
           var transform = 0
             , h = height
             , z = display.zoom || domain
+            , hilited = (c.key === display.hilite)
           ;
           if(display.hilite) {
               // only change if this is a match
-              matched = (c.key === display.hilite) ? i : matched;
+              matched = hilited ? i : matched;
               if(display.separate) {
                   if(matched !== i) { // we're not the matched one
                       h = 0;
@@ -181,7 +160,8 @@ function NotesBook() {
           c.canvas
               .height(h)
               .zoom(z)
-              .state((display.hilite === c.key) || !display.hilite)
+              .state(hilited || !display.hilite)
+              .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
               .update()
           ;
           c.selection
@@ -195,19 +175,8 @@ function NotesBook() {
           .tickValues(bars)
       ;
       barlines.call(barlinesAxis);
-      reflines.call(reflinesRender);
       measures.call(measuresAxis.scale(scale.barlines));
   } // update()
-
-  function reflinesRender(selection){
-      selection
-          .call(reflinesAxis)
-        .selectAll(".tick")
-          .filter(function (d){ return reflinesValues[d].style === "dashed" })
-          .attr("stroke-dasharray", "4 4")
-      ;
-  } // reflinesRender()
-
 
   function mensurationsRender(selection) {
       selection
