@@ -5,8 +5,8 @@ var width = 960
       .svg(d3.select("#nav").append("svg"))
   , notesBook = NotesBook()
       .svg(d3.select("#notes").append("svg"))
-  , combineSeparateDiv = d3.select("#combine-separate-ui")
   , combineSeparateUI = CombineSeparateUI()
+      .div(d3.select("#combine-separate-ui"))
   , extremeNotesDiv = d3.select("#extreme-notes-ui")
   , extremeNotesUI = ExtremeNotesUI()
   , legendContainer = d3.select("div#legend")
@@ -50,9 +50,8 @@ function parseJSON(proll) {
 function chartify(data) {
     var signal = d3.dispatch("hilite", "zoom", "separate", "selected", "extremes");
 
-    combineSeparateDiv
-        .call(combineSeparateUI.connect(signal))
-    ;
+    combineSeparateUI.connect(signal)
+
     extremeNotesDiv
         .call(extremeNotesUI.connect(signal))
     ;
@@ -88,6 +87,7 @@ function chartify(data) {
     // Render views.
     notesNav();
     notesBook();
+    combineSeparateUI();
 
     var full = {
           x: [0, data.scorelength[0]]
