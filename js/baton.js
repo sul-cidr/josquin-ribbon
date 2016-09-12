@@ -74,6 +74,7 @@ function chartify(data) {
         .connect(signal)
     ;
     colorLegend
+        .colorScale(colorScale)
         .noteHeight(10)
         .roundedCornerSize(5)
         .data(data.partnames)

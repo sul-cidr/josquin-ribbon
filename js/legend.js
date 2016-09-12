@@ -5,7 +5,7 @@ function ColorLegend(){
     var div
       , data
       , hilite
-      , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+      , colorScale
       , noteHeight
       , roundedCornerSize
       , dispatch
@@ -104,6 +104,12 @@ function ColorLegend(){
         data = value;
         return my;
       } // my.data()
+    ;
+    my.colorScale = function (value){
+        if(arguments.length === 0) return colorScale;
+        colorScale = value;
+        return my;
+      } // my.colorScale()
     ;
 
     return my;
