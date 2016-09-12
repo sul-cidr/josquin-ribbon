@@ -7,8 +7,8 @@ var width = 960
       .svg(d3.select("#notes").append("svg"))
   , combineSeparateUI = CombineSeparateUI()
       .div(d3.select("#combine-separate-ui"))
-  , extremeNotesDiv = d3.select("#extreme-notes-ui")
   , extremeNotesUI = ExtremeNotesUI()
+      .div(d3.select("#extreme-notes-ui"))
   , legendContainer = d3.select("div#legend")
   , colorLegend = ColorLegend()
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
@@ -50,11 +50,8 @@ function parseJSON(proll) {
 function chartify(data) {
     var signal = d3.dispatch("hilite", "zoom", "separate", "selected", "extremes");
 
-    combineSeparateUI.connect(signal)
-
-    extremeNotesDiv
-        .call(extremeNotesUI.connect(signal))
-    ;
+    combineSeparateUI.connect(signal);
+    extremeNotesUI.connect(signal);
 
     colorScale
         .domain(data.partnames)
@@ -88,6 +85,7 @@ function chartify(data) {
     notesNav();
     notesBook();
     combineSeparateUI();
+    extremeNotesUI();
 
     var full = {
           x: [0, data.scorelength[0]]
