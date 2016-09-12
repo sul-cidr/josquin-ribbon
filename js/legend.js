@@ -4,7 +4,6 @@ function ColorLegend(){
     */
     var div
       , data
-      , legend
       , hilite
       , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
       , noteHeight
@@ -18,7 +17,7 @@ function ColorLegend(){
     function my() {
         colorScale.domain(data);
 
-        legend = div.selectAll("ul").data([1]);
+        var legend = div.selectAll("ul").data([1]);
         legend = legend.enter().append("ul")
             .attr("class", "list-unstyled")
           .merge(legend)
