@@ -24,7 +24,7 @@ function NotesNav() {
     /*
     ** Main function Object
     */
-    function my(sel) {
+    function my() {
 
         svg
           .attr("width", width)
