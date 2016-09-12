@@ -4,10 +4,7 @@ var width = 960
   , notesNav = NotesNav()
       .svg(d3.select("#nav").append("svg"))
   , notesBook = NotesBook()
-  , notesBookSVG = d3.select("#notes")
-      .append("svg")
-        .attr("width", width)
-        .attr("height", 3 * height)
+      .svg(d3.select("#notes").append("svg"))
   , combineSeparateDiv = d3.select("#combine-separate-ui")
   , combineSeparateUI = CombineSeparateUI()
   , extremeNotesDiv = d3.select("#extreme-notes-ui")
@@ -77,6 +74,7 @@ function chartify(data) {
         .height(height * 3)
         .width(width)
         .extremes(true)
+        .data(data)
         .connect(signal)
     ;
     colorLegend
@@ -87,10 +85,9 @@ function chartify(data) {
 
     renderColorLegend(data.partnames);
         
-    // Render notes nav.
+    // Render views.
     notesNav();
-
-    renderNotesBook(data);
+    notesBook();
 
     var full = {
           x: [0, data.scorelength[0]]
@@ -108,12 +105,6 @@ function chartify(data) {
     ;
 } // chartify()
 
-function renderNotesBook(data) {
-    notesBookSVG
-        .datum(data)
-        .call(notesBook)
-    ;
-} // renderNotesBook()
 function renderColorLegend(data) {
     legendContainer
         .datum(data)
