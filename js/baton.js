@@ -9,8 +9,8 @@ var width = 960
       .div(d3.select("#combine-separate-ui"))
   , extremeNotesUI = ExtremeNotesUI()
       .div(d3.select("#extreme-notes-ui"))
-  , legendContainer = d3.select("div#legend")
   , colorLegend = ColorLegend()
+      .div(d3.select("div#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 ;
 var defaultWork = "Jos2721-La_Bernardina"
@@ -76,16 +76,16 @@ function chartify(data) {
     colorLegend
         .noteHeight(10)
         .roundedCornerSize(5)
+        .data(data.partnames)
         .connect(signal)
     ;
-
-    renderColorLegend(data.partnames);
         
     // Render views.
     notesNav();
     notesBook();
     combineSeparateUI();
     extremeNotesUI();
+    colorLegend();
 
     var full = {
           x: [0, data.scorelength[0]]
@@ -102,10 +102,3 @@ function chartify(data) {
         .on("extremes", notesBook.extremes)
     ;
 } // chartify()
-
-function renderColorLegend(data) {
-    legendContainer
-        .datum(data)
-        .call(colorLegend)
-    ;
-} // renderColorLegend()
