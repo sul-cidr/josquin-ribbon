@@ -2,10 +2,7 @@ var width = 960
   , height = 150 // height of one strip of notes
   , margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , notesNav = NotesNav()
-  , notesNavSVG = d3.select("#nav")
-      .append("svg")
-        .attr("width", width)
-        .attr("height", height)
+      .svg(d3.select("#nav").append("svg"))
   , notesBook = NotesBook()
   , notesBookSVG = d3.select("#notes")
       .append("svg")
@@ -71,6 +68,7 @@ function chartify(data) {
         .margin(margin)
         .width(width)
         .height(height)
+        .data(data)
         .connect(signal)
     ;
     notesBook
@@ -88,7 +86,10 @@ function chartify(data) {
     ;
 
     renderColorLegend(data.partnames);
-    renderNotesNav(data);
+        
+    // Render notes nav.
+    notesNav();
+
     renderNotesBook(data);
 
     var full = {
@@ -107,12 +108,6 @@ function chartify(data) {
     ;
 } // chartify()
 
-function renderNotesNav(data) {
-    notesNavSVG
-        .datum(data)
-        .call(notesNav)
-    ;
-} // renderNotesNav()
 function renderNotesBook(data) {
     notesBookSVG
         .datum(data)
