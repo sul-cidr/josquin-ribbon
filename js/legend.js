@@ -2,9 +2,10 @@ function ColorLegend(){
     /*
     ** Private Variables
     */
-    var legend
+    var div
+      , data
       , hilite
-      , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+      , colorScale
       , noteHeight
       , roundedCornerSize
       , dispatch
@@ -13,12 +14,15 @@ function ColorLegend(){
     /*
     ** Main function object
     */
-    function my(sel) {
-        colorScale.domain(sel.datum());
-        legend = sel
-              .append("ul")
-                .attr("class", "list-unstyled")
+    function my() {
+        colorScale.domain(data);
+
+        var legend = div.selectAll("ul").data([1]);
+        legend = legend.enter().append("ul")
+            .attr("class", "list-unstyled")
+          .merge(legend)
         ;
+
         var row = legend.selectAll("li")
                 .data(colorScale.domain())
         ;
@@ -88,6 +92,24 @@ function ColorLegend(){
         dispatch = value;
         return my;
       } // my.connect()
+    ;
+    my.div = function (value){
+        if(arguments.length === 0) return div;
+        div = value;
+        return my;
+      } // my.div()
+    ;
+    my.data = function (value){
+        if(arguments.length === 0) return data;
+        data = value;
+        return my;
+      } // my.data()
+    ;
+    my.colorScale = function (value){
+        if(arguments.length === 0) return colorScale;
+        colorScale = value;
+        return my;
+      } // my.colorScale()
     ;
 
     return my;

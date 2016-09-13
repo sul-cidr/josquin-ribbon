@@ -47,12 +47,17 @@ function NotesBook() {
   /*
   ** Main Function Object
   */
-  function my(selection) {
-      svg = selection
-        .append("g")
-          .attr("transform", "translate(" + margin.left +","+ margin.top + ")")
+  function my() {
+
+      svg
+        .attr("width", width)
+        .attr("height", height)
       ;
-      data = svg.datum();
+
+      var g = svg.selectAll("g").data([1]);
+      g = g.enter().append("g").merge(g);
+      g.attr("transform", "translate("+ margin.left +","+ margin.top +")")
+
       bars = data.barlines.map(function(b) { return b.time[0]; });
       height = height - margin.top - margin.bottom;
       width = width - margin.left - margin.right;
@@ -76,7 +81,7 @@ function NotesBook() {
           .tickValues(bars)
           .tickSize(-height);
       ;
-      barlines = svg
+      barlines = g
         .append("g")
           .attr("class", "barlines")
           .call(barlinesAxis)
@@ -85,7 +90,7 @@ function NotesBook() {
           .scale(scale.barlines)
           .tickSize(0) // no ticklines only tick labels
       ;
-      measures = svg
+      measures = g
         .append("g")
           .attr("class", "measures")
           .attr("transform", "translate(0," + height + ")")
@@ -95,12 +100,12 @@ function NotesBook() {
           .scale(scale.barlines)
           .tickSize(0)
       ;
-      mensurations = svg
+      mensurations = g
         .append("g")
           .attr("class", "mensuration")
           .call(mensurationsRender)
       ;
-      svg
+      g
         .append("g")
           .attr("class", "notesbook")
         .selectAll(".notes-g")
@@ -294,6 +299,18 @@ function NotesBook() {
 
       return my;
     } // my.extremes()
+  ;
+  my.svg = function (value){
+      if(arguments.length === 0) return svg;
+      svg = value;
+      return my;
+    } // my.svg()
+  ;
+  my.data = function (value){
+      if(arguments.length === 0) return data;
+      data = value;
+      return my;
+    } // my.data()
   ;
 
   // This is always the last thing returned

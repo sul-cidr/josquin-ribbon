@@ -24,12 +24,18 @@ function NotesNav() {
     /*
     ** Main function Object
     */
-    function my(sel) {
-        svg = sel
-          .append("g")
-            .attr("transform", "translate("+ margin.left +","+ margin.top +")")
+    function my() {
+
+        svg
+          .attr("width", width)
+          .attr("height", height)
         ;
-        svg.selectAll("g")
+
+        var g = svg.selectAll("g").data([1]);
+        g = g.enter().append("g").merge(g);
+        g.attr("transform", "translate("+ margin.left +","+ margin.top +")")
+
+        g.selectAll("g")
             .data(["canvas", "brush"])
           .enter().append("g")
             .attr("class", function(d) { return d; })
@@ -43,13 +49,11 @@ function NotesNav() {
         ;
         brush.widget.extent([[0, 0], [width, height]]);
 
-        data = sel.datum();
-
-        canvas.selection = svg.select(".canvas")
+        canvas.selection = g.select(".canvas")
             .datum({ key: "full", value: d3.merge(data.notes.values()) })
             .call(canvas.widget)
         ;
-        brush.selection = svg.select(".brush")
+        brush.selection = g.select(".brush")
             .call(brush.widget)
         ;
         brush.selection.selectAll("rect")
@@ -148,6 +152,18 @@ function NotesNav() {
 
         return my;
       } // my.full()
+    ;
+    my.svg = function (value){
+        if(arguments.length === 0) return svg;
+        svg = value;
+        return my;
+      } // my.svg()
+    ;
+    my.data = function (value){
+        if(arguments.length === 0) return data;
+        data = value;
+        return my;
+      } // my.data()
     ;
 
     // This is ALWAYS the last thing returned

@@ -2,21 +2,15 @@ var width = 960
   , height = 150 // height of one strip of notes
   , margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , notesNav = NotesNav()
-  , notesNavSVG = d3.select("#nav")
-      .append("svg")
-        .attr("width", width)
-        .attr("height", height)
+      .svg(d3.select("#nav").append("svg"))
   , notesBook = NotesBook()
-  , notesBookSVG = d3.select("#notes")
-      .append("svg")
-        .attr("width", width)
-        .attr("height", 3 * height)
-  , combineSeparateDiv = d3.select("#combine-separate-ui")
+      .svg(d3.select("#notes").append("svg"))
   , combineSeparateUI = CombineSeparateUI()
-  , extremeNotesDiv = d3.select("#extreme-notes-ui")
+      .div(d3.select("#combine-separate-ui"))
   , extremeNotesUI = ExtremeNotesUI()
-  , legendContainer = d3.select("div#legend")
+      .div(d3.select("#extreme-notes-ui"))
   , colorLegend = ColorLegend()
+      .div(d3.select("div#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 ;
 var defaultWork = "Jos2721-La_Bernardina"
@@ -56,12 +50,8 @@ function parseJSON(proll) {
 function chartify(data) {
     var signal = d3.dispatch("hilite", "zoom", "separate", "selected", "extremes");
 
-    combineSeparateDiv
-        .call(combineSeparateUI.connect(signal))
-    ;
-    extremeNotesDiv
-        .call(extremeNotesUI.connect(signal))
-    ;
+    combineSeparateUI.connect(signal);
+    extremeNotesUI.connect(signal);
 
     colorScale
         .domain(data.partnames)
@@ -71,6 +61,7 @@ function chartify(data) {
         .margin(margin)
         .width(width)
         .height(height)
+        .data(data)
         .connect(signal)
     ;
     notesBook
@@ -79,17 +70,23 @@ function chartify(data) {
         .height(height * 3)
         .width(width)
         .extremes(true)
+        .data(data)
         .connect(signal)
     ;
     colorLegend
+        .colorScale(colorScale)
         .noteHeight(10)
         .roundedCornerSize(5)
+        .data(data.partnames)
         .connect(signal)
     ;
-
-    renderColorLegend(data.partnames);
-    renderNotesNav(data);
-    renderNotesBook(data);
+        
+    // Render views.
+    notesNav();
+    notesBook();
+    combineSeparateUI();
+    extremeNotesUI();
+    colorLegend();
 
     var full = {
           x: [0, data.scorelength[0]]
@@ -106,22 +103,3 @@ function chartify(data) {
         .on("extremes", notesBook.extremes)
     ;
 } // chartify()
-
-function renderNotesNav(data) {
-    notesNavSVG
-        .datum(data)
-        .call(notesNav)
-    ;
-} // renderNotesNav()
-function renderNotesBook(data) {
-    notesBookSVG
-        .datum(data)
-        .call(notesBook)
-    ;
-} // renderNotesBook()
-function renderColorLegend(data) {
-    legendContainer
-        .datum(data)
-        .call(colorLegend)
-    ;
-} // renderColorLegend()

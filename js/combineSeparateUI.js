@@ -2,18 +2,20 @@ function CombineSeparateUI(){
     /*
     ** Private Variables
     */
-    var form
+    var div
       , data = ["Combine", "Separate"]
       , dispatch
     ;
     /*
     ** Main Function Object
     */
-    function my(sel) {
-        form = sel
-          .append("form")
+    function my() {
+        var form = div.selectAll("form").data([1]);
+        form = form.enter().append("form")
             .attr("class", "form")
+          .merge(form)
         ;
+
         var labels = form.selectAll("label")
                 .data(data)
               .enter().append("label")
@@ -40,6 +42,12 @@ function CombineSeparateUI(){
         dispatch = value;
         return my;
       } // my.connect()
+    ;
+    my.div = function (value){
+        if(arguments.length === 0) return div;
+        div = value;
+        return my;
+      } // my.div()
     ;
     // ALWAYS return this last
     return my;
