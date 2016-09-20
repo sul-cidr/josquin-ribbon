@@ -14,12 +14,14 @@ var width = 960
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 ;
 var defaultWork = "Jos2721-La_Bernardina"
-  , hash = window.location.hash
-  , work = hash ? hash.substr(1) : defaultWork
+  , hash = getQueryVariables()
+  , work = hash.id || defaultWork
   , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
 ;
 d3.json(jsonURL, function(error, proll) {
     if(error) throw error;
+    // Set the URL history to the current song
+    history.pushState(null, null, '?id=' + work);
     chartify(parseJSON(proll));
 });
 
@@ -80,7 +82,7 @@ function chartify(data) {
         .data(data.partnames)
         .connect(signal)
     ;
-        
+
     // Render views.
     notesNav();
     notesBook();
@@ -103,3 +105,19 @@ function chartify(data) {
         .on("extremes", notesBook.extremes)
     ;
 } // chartify()
+
+// Capture URL query param
+function getQueryVariables() {
+    var inits = {}
+      , query = window.location.search.substring(1).toLowerCase().split("&")
+      , arg // loop variable
+
+    ;
+    query.forEach(function(q) {
+        arg = q.split("=");
+        if(arg[0].length && arg[1].length)
+            inits[arg[0]] = decodeURIComponent(arg[1]);
+      })
+    ;
+    return inits;
+} // getQueryVariables()
