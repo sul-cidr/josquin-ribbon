@@ -12,6 +12,8 @@ var width = 960
   , colorLegend = ColorLegend()
       .div(d3.select("div#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+  , lifeSize = 10 // screen width of 1 duration
+  , lifeScale = d3.scaleLinear()
 ;
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
@@ -50,8 +52,14 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
-    var signal = d3.dispatch("hilite", "zoom", "separate", "selected", "extremes");
-
+    var signal = d3.dispatch(
+              "hilite"
+            , "zoom"
+            , "separate"
+            , "selected"
+            , "extremes"
+          )
+    ;
     combineSeparateUI.connect(signal);
     extremeNotesUI.connect(signal);
 
@@ -95,8 +103,17 @@ function chartify(data) {
         , y: d3.range(data.minpitch.b7, data.maxpitch.b7)
       }
     ;
-    notesNav.full(full);
+//    notesNav.full(full);
     notesBook.full(full);
+
+    // Lifesize of this piece
+    lifeScale
+        .range([0, lifeSize * data.scorelength[0]])
+        .domain([0, data.scorelength[0]])
+    ;
+    // Domain window corresponding to the size of the canvas
+    var nbwidth = lifeScale.invert(notesBook.width());
+    notesNav.extent([0, nbwidth])
 
     signal
         .on("zoom",     notesBook.zoom)
