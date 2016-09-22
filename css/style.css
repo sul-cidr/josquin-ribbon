@@ -15,7 +15,6 @@ header {
     font-family: 'BravuraText';
     font-size: xx-large;
 }
-
 #legend li {
     cursor: pointer;
 }
@@ -44,6 +43,9 @@ rect.extreme {
     fill-opacity: .08;
     stroke-opacity: .2;
     shape-rendering: crispEdges;
+}
+.brush .selection {
+    stroke: darkgrey;
 }
 path.domain {
     fill: none;

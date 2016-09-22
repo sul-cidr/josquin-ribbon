@@ -55,6 +55,7 @@ function NotesNav() {
         ;
         brush.selection = g.select(".brush")
             .call(brush.widget)
+            brush.selection.call(brush.widget.move, canvas.widget.x().range())
         ;
         brush.selection.selectAll("rect")
             .attr("y", 0)
@@ -152,6 +153,17 @@ function NotesNav() {
 
         return my;
       } // my.full()
+    ;
+    my.extent = function(value) {
+        if(!value) return;
+        var t = d3.transition()
+          , extent = value.map(canvas.widget.x())
+        ;
+        brush.selection
+          .transition(t)
+            .call(brush.widget.move, extent)
+        ;
+      } // my.extent()
     ;
     my.svg = function (value){
         if(arguments.length === 0) return svg;
