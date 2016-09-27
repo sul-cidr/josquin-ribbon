@@ -13,6 +13,7 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
+      , ribbon = false
       , showReflines = false
       , reflinesValues = {
               32: { label: "G", style: "solid" },
@@ -234,6 +235,16 @@ function NotesCanvas() {
 
         return my;
       } // my.extremes()
+    ;
+    my.ribbon = function(value) {
+        if(!arguments.length)
+            return ribbon;
+        else {
+            ribbon = value;
+        }
+
+        return my;
+      } // my.ribbon()
     ;
     my.showReflines = function (value) {
         if(arguments.length === 0) return showReflines;
