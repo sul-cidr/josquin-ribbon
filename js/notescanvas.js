@@ -14,7 +14,7 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
-      , ribbon = false
+      , showRibbon = false
       , showReflines = false
       , reflinesValues = {
               32: { label: "G", style: "solid" },
@@ -27,6 +27,7 @@ function NotesCanvas() {
             .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
       , clipPath
+      , ribbon = Ribbon()
     ;
     /*
     ** Main Function Object
@@ -69,12 +70,20 @@ function NotesCanvas() {
         if(clipPath){
             notesG.attr("clip-path", "url(#" + clipPath + ")");
         }
+
+        ribbon
+          .g(notesG.append("g"))
+          .data(data)
+        ;
+
         var rects = notesG.selectAll("rect").data(data.value);
+
         rects
           .enter().append("rect")
             .attr("class", "note")
         ;
         rects.exit().remove();
+
         computeExtremeNotes();
         enableTooltips();
 
@@ -246,12 +255,12 @@ function NotesCanvas() {
         return my;
       } // my.extremes()
     ;
-    my.ribbon = function(value) {
+    my.showRibbon = function(value) {
         if(!arguments.length)
-            return ribbon;
-        ribbon = value;
+            return showRibbon;
+        showRibbon = value;
         return my;
-      } // my.ribbon()
+      } // my.showRibbon()
     ;
     my.showReflines = function (value) {
         if(arguments.length === 0) return showReflines;

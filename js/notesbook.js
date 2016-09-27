@@ -22,7 +22,7 @@ function NotesBook() {
           , hilite:   false // one set of notes is visible
           , extremes: false // hilite the maximum and minimum pitches
           , zoom:     { x: [], y: [] } // indicates an active brush
-          , ribbons: true // show or hide the ribbons layer
+          , showRibbons: true // show or hide the ribbons layer
         }
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -135,7 +135,7 @@ function NotesBook() {
                           .height(height)
                           .clipPath("noteclip")
                           .showReflines(canvases.length === 0)
-                          .ribbon(display.ribbons)
+                          .showRibbon(display.showRibbons)
                       , selection: self
                     })
               ;
@@ -180,7 +180,7 @@ function NotesBook() {
               .zoom(z)
               .state(hilited || !display.hilite)
               .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
-              .ribbon(display.ribbons)
+              .showRibbon(display.showRibbons)
               .update()
           ;
           c.selection
