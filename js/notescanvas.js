@@ -112,6 +112,7 @@ function NotesCanvas() {
         hilite();
         selection.select(".reflines")
             .call(reflinesRender);
+        ribbon();
     } // update()
 
     function reflinesRender(selection){
