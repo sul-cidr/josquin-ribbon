@@ -14,7 +14,7 @@ function NotesCanvas() {
       , dispatch
       , state = true // on; false = off
       , extremes = false
-      , ribbon = false
+      , showRibbon = false
       , showReflines = false
       , reflinesValues = {
               32: { label: "G", style: "solid" },
@@ -26,6 +26,7 @@ function NotesCanvas() {
       , reflinesAxis = d3.axisLeft()
             .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
+      , ribbon = Ribbon()
     ;
     /*
     ** Main Function Object
@@ -58,6 +59,11 @@ function NotesCanvas() {
           .append("g")
             .attr("class", "reflines")
             .call(reflinesRender)
+        ;
+
+        ribbon
+          .g(svg.append("g"))
+          .data(data)
         ;
 
         var rects = svg.selectAll("rect").data(data.value);
@@ -237,12 +243,12 @@ function NotesCanvas() {
         return my;
       } // my.extremes()
     ;
-    my.ribbon = function(value) {
+    my.showRibbon = function(value) {
         if(!arguments.length)
-            return ribbon;
-        ribbon = value;
+            return showRibbon;
+        showRibbon = value;
         return my;
-      } // my.ribbon()
+      } // my.showRibbon()
     ;
     my.showReflines = function (value) {
         if(arguments.length === 0) return showReflines;
