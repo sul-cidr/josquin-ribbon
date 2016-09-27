@@ -2,7 +2,8 @@ function NotesCanvas() {
     /*
     ** Private Variables - only used inside this object
     */
-    var svg, data
+    var svg
+      , data
       , width
       , height
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
@@ -239,10 +240,7 @@ function NotesCanvas() {
     my.ribbon = function(value) {
         if(!arguments.length)
             return ribbon;
-        else {
-            ribbon = value;
-        }
-
+        ribbon = value;
         return my;
       } // my.ribbon()
     ;
