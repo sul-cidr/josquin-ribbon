@@ -44,4 +44,5 @@ function Ribbon() {
         return my;
       } // my.bandwidth()
     ;
+    return my;
 }
