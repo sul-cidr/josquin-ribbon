@@ -29,6 +29,7 @@ function NotesCanvas() {
       , clipPath
       , ribbon = Ribbon()
             .scale(scale)
+            .domain(domain)
     ;
     /*
     ** Main Function Object
