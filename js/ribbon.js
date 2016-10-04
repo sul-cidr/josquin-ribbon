@@ -5,16 +5,22 @@ function Ribbon() {
       , interval = 12 // The interval size for the sliding window, in units of beats.
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // The scaling factor multiplied by the standard deviation before adding/subtracting from the mean.
+      , scale // Scale data passed down from notescanvas
+      , domain // Domain data passed down from notescanvas
       , area = d3.area()
           .x(function (d){ return scale.x(d.x); })
           .y0(function (d){ return scale.y(d.y0); })
           .y1(function (d){ return scale.y(d.y1); })
-      , scale // Scale data passed down from notescanvas
-      , domain // Domain data passed down from notescanvas
     ;
 
     function my(){
       if(data && domain && scale){
+
+
+        // For steps in which there are no notes in the interval,
+        // An empty interval at the previous average is used.
+        var previousAverage = data.value[0].pitch;
+
         var ribbonData = d3.range(domain.x[0], domain.x[1], step)
           .map(function (x){
             var notesInWindow = data.value.filter(function(d){
@@ -24,35 +30,42 @@ function Ribbon() {
                 (d.time + d.duration) < (x + interval)
               );
             });
+
             if(notesInWindow.length === 0){
               return {
                   x: x
-                , y0: 26
-                , y1: 27
+                , y0: previousAverage
+                , y1: previousAverage
               };
             }
-            //return {
-            //    x: x
-            //  , y0: d3.max(notesInWindow, function (d){ return d.pitch; })
-            //  , y1: d3.min(notesInWindow, function (d){ return d.pitch; })
-            //};
 
             // This is a simple temporary proxy for the avg +- standard deviation.
-            var maxPitch = d3.max(notesInWindow, function (d){ return d.pitch; })
-            var minPitch = d3.min(notesInWindow, function (d){ return d.pitch; })
+            var extent = d3.extent(notesInWindow, function (d){ return d.pitch; })
+
+            if(!extent[0]){
+              console.log(x);
+              console.log(notesInWindow);
+            }
+
+            previousAverage = (extent[0] + extent[1]) / 2;
 
             return {
                 x: x
-              , y0: minPitch
-              , y1: maxPitch
+              , y1: extent[0]
+              , y0: extent[1] 
             };
           })
+
+        //ribbonData.forEach(function (d, i){
+        //  if( !(d.x && d.y1 && d.y0)){
+        //    console.log(JSON.stringify(d), i);
+        //  }
+        //});
 
         var path = g.selectAll("path").data([ribbonData])
         path.enter().append("path").merge(path)
             .attr("class", "ribbon")
             .style("color", function(d) {
-                console.log( scale.color(data.key));
                 return scale.color(data.key);
               })
             .attr("d", area)
