@@ -71,12 +71,14 @@ function NotesCanvas() {
             notesG.attr("clip-path", "url(#" + clipPath + ")");
         }
 
-        ribbon
-          .g(notesG.append("g"))
-          .scale(scale)
-          .domain(domain)
-          .data(data)
-        ;
+        if(showRibbon){
+          ribbon
+            .g(notesG.append("g"))
+            .scale(scale)
+            .domain(domain)
+            .data(data)
+          ;
+        }
 
         var rects = notesG.selectAll("rect").data(data.value);
 
