@@ -27,8 +27,6 @@ function NotesCanvas() {
             .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
       , ribbon = Ribbon()
-            .scale(scale)
-            .domain(domain)
     ;
     /*
     ** Main Function Object
@@ -65,7 +63,9 @@ function NotesCanvas() {
 
         ribbon
           .g(svg.append("g"))
-          .data(data.value)
+          .scale(scale)
+          .domain(domain)
+          .data(data)
         ;
 
         var rects = svg.selectAll("rect").data(data.value);

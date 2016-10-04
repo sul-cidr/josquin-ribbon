@@ -73,3 +73,9 @@ path.domain {
     color: #fff;
     border-radius: 2px;
 }
+.ribbon {
+    fill: currentColor;
+    stroke: currentColor;
+    fill-opacity: 0.5;
+    stroke-width: 1;
+}

@@ -14,26 +14,45 @@ function Ribbon() {
     ;
 
     function my(){
-      var ribbonData = d3.range(domain.x[0], domain.x[1], step)
-        .map(function (x){
-          var notesInWindow = data.filter(function(d){
-            return (
-              d.time > (x - interval)
-              &&
-              (d.time + d.duration) < (x + interval)
-            );
-          });
-          return {
-              x: x
-            , y0: d3.min(notesInWindow, function (d){ return d.pitch; })
-            , y1: d3.max(notesInWindow, function (d){ return d.pitch; })
-          };
-        })
+      if(data && domain && scale){
+        var ribbonData = d3.range(domain.x[0], domain.x[1], step)
+          .map(function (x){
+            var notesInWindow = data.value.filter(function(d){
+              return (
+                d.time > (x - interval)
+                &&
+                (d.time + d.duration) < (x + interval)
+              );
+            });
+            if(notesInWindow.length === 0){
+              return {
+                  x: x
+                , y0: 26
+                , y1: 27
+              };
+            }
+            //return {
+            //    x: x
+            //  , y0: d3.max(notesInWindow, function (d){ return d.pitch; })
+            //  , y1: d3.min(notesInWindow, function (d){ return d.pitch; })
+            //};
+            return {
+                x: x
+              , y0: d3.max(notesInWindow, function (d){ return d.pitch; })
+              , y1: 28
+            };
+          })
 
-      var path = g.selectAll("path").data([ribbonData])
-      path.enter().append("path").merge(path)
-          .attr("d", area)
-      ;
+        var path = g.selectAll("path").data([ribbonData])
+        path.enter().append("path").merge(path)
+            .attr("class", "ribbon")
+            .style("color", function(d) {
+                console.log( scale.color(data.key));
+                return scale.color(data.key);
+              })
+            .attr("d", area)
+        ;
+      }
     }
 
     my.g = function(value) {
