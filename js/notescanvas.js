@@ -61,12 +61,14 @@ function NotesCanvas() {
             .call(reflinesRender)
         ;
 
-        ribbon
-          .g(svg.append("g"))
-          .scale(scale)
-          .domain(domain)
-          .data(data)
-        ;
+        if(showRibbon){
+          ribbon
+            .g(svg.append("g"))
+            .scale(scale)
+            .domain(domain)
+            .data(data)
+          ;
+        }
 
         var rects = svg.selectAll("rect").data(data.value);
         rects

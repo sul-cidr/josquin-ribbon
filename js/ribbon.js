@@ -2,7 +2,7 @@ function Ribbon() {
     var g
       , data // The original notes data
       , ribbonData // The computed data for the ribbon
-      , interval = 6 // The interval size for the sliding window, in units of beats.
+      , interval = 12 // The interval size for the sliding window, in units of beats.
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // The scaling factor multiplied by the standard deviation before adding/subtracting from the mean.
       , area = d3.area()
@@ -36,10 +36,15 @@ function Ribbon() {
             //  , y0: d3.max(notesInWindow, function (d){ return d.pitch; })
             //  , y1: d3.min(notesInWindow, function (d){ return d.pitch; })
             //};
+
+            // This is a simple temporary proxy for the avg +- standard deviation.
+            var maxPitch = d3.max(notesInWindow, function (d){ return d.pitch; })
+            var minPitch = d3.min(notesInWindow, function (d){ return d.pitch; })
+
             return {
                 x: x
-              , y0: d3.max(notesInWindow, function (d){ return d.pitch; })
-              , y1: 28
+              , y0: minPitch
+              , y1: maxPitch
             };
           })
 
