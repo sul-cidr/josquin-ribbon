@@ -28,8 +28,6 @@ function NotesCanvas() {
             .tickFormat(function (d){ return reflinesValues[d].label; })
       , clipPath
       , ribbon = Ribbon()
-            .scale(scale)
-            .domain(domain)
     ;
     /*
     ** Main Function Object
@@ -75,6 +73,8 @@ function NotesCanvas() {
 
         ribbon
           .g(notesG.append("g"))
+          .scale(scale)
+          .domain(domain)
           .data(data)
         ;
 
