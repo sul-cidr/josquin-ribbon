@@ -68,19 +68,17 @@ function NotesNav() {
     */
     function brushed() {
         if(!d3.event) return;
-        var extent = d3.event.selection
-            ? d3.event.selection.map(Math.round).map(canvas.widget.x().invert)
-
-            : recenter(d3.event.sourceEvent.layerX)
+        var extent = (d3.event.selection || recenter(d3.event.sourceEvent.layerX))
+              .map(Math.round)
         ;
         if(!d3.event.selection) {
-            svg.select(".brush")
+            brush.selection
               .transition().duration(500)
                 .call(brush.widget.move, extent)
             ;
         }
         if(dispatch)
-            dispatch.call("zoom", this, extent);
+            dispatch.call("zoom", this, extent.map(canvas.widget.x().invert));
     } // brushed()
 
     function recenter(clickX) {
