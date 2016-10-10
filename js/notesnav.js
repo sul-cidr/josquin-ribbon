@@ -79,16 +79,8 @@ function NotesNav() {
                 .call(brush.widget.move, extent)
             ;
         }
-        if(!dispatch)
-            return;
-        dispatch.call(
-            "zoom"
-          , this
-          , {
-                x: extent
-              , ended: d3.event.type === "end"
-            }
-        );
+        if(dispatch)
+            dispatch.call("zoom", this, extent);
     } // brushed()
 
     function recenter(clickX) {
