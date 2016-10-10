@@ -16,7 +16,7 @@ function NotesNav() {
             , widget: d3.brushX()
                     .handleSize(10)
                     .on("brush", brushed)
-                    .on("end", brushend)
+                    .on("end", brushed)
             , width: 0
           }
       , dispatch
@@ -26,7 +26,6 @@ function NotesNav() {
     ** Main function Object
     */
     function my() {
-
         svg
           .attr("width", width)
           .attr("height", height)
@@ -67,39 +66,27 @@ function NotesNav() {
     /*
     ** Helper Functions
     */
-    function brushend() {
-        if(!d3.event) return;
-        var extent;
-
-        if(!d3.event.selection) {
-            extent = recenter(d3.event.sourceEvent.offsetX);
-
-            brush.selection
-              .transition(d3.transition().duration(500))
-                .call(brush.widget.move, extent)
-            ;
-        }
-
-        return brushed(true, extent);
-    } // brushend()
-
-    function brushed(ended, xtnt) {
+    function brushed() {
         if(!d3.event) return;
         var extent = d3.event.selection
             ? d3.event.selection.map(Math.round).map(canvas.widget.x().invert)
 
-            : false
+            : recenter(d3.event.sourceEvent.layerX)
         ;
-        extent = xtnt || extent
+        if(!d3.event.selection) {
+            svg.select(".brush")
+              .transition().duration(500)
+                .call(brush.widget.move, extent)
+            ;
+        }
         if(!dispatch)
             return;
-
         dispatch.call(
             "zoom"
           , this
           , {
                 x: extent
-              , ended: ended || false
+              , ended: d3.event.type === "end"
             }
         );
     } // brushed()
