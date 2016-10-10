@@ -20,8 +20,8 @@ function NotesBook() {
     , display = {
           separate: false // show each note strip separately
           , hilite:   false // one set of notes is visible
-          , zoom:     false // indicates an active brush
           , extremes: false // hilite the maximum and minimum pitches
+          , zoom:     { x: [], y: [] } // indicates an active brush
         }
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -252,9 +252,8 @@ function NotesBook() {
     } // my.connect()
   ;
   my.zoom = function(value) {
-      display.zoom = value;
-      display.zoom.x = display.zoom.x || domain.x;
-      display.zoom.y = display.zoom.y || domain.y;
+      display.zoom.x = value.length ? value : domain.x
+      display.zoom.y = domain.y;
       scale.barlines.domain(display.zoom.x);
       barlines.call(barlinesAxis.scale(scale.barlines));
       measures.call(measuresAxis.scale(scale.barlines));
