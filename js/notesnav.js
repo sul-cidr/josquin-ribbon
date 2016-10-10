@@ -17,6 +17,7 @@ function NotesNav() {
                     .handleSize(10)
                     .on("brush", brushed)
                     .on("end", brushend)
+            , width: 0
           }
       , dispatch
     ;
@@ -55,7 +56,7 @@ function NotesNav() {
         ;
         brush.selection = g.select(".brush")
             .call(brush.widget)
-            brush.selection.call(brush.widget.move, canvas.widget.x().range())
+            .call(brush.widget.move, canvas.widget.x().range())
         ;
         brush.selection.selectAll("rect")
             .attr("y", 0)
@@ -66,14 +67,30 @@ function NotesNav() {
     /*
     ** Helper Functions
     */
-    function brushend() { return brushed(true); }
+    function brushend() {
+        if(!d3.event) return;
+        var extent;
 
-    function brushed(ended) {
-        var extent = d3.event && d3.event.selection
+        if(!d3.event.selection) {
+            extent = recenter(d3.event.sourceEvent.offsetX);
+
+            brush.selection
+              .transition(d3.transition().duration(500))
+                .call(brush.widget.move, extent)
+            ;
+        }
+
+        return brushed(true, extent);
+    } // brushend()
+
+    function brushed(ended, xtnt) {
+        if(!d3.event) return;
+        var extent = d3.event.selection
             ? d3.event.selection.map(Math.round).map(canvas.widget.x().invert)
 
             : false
         ;
+        extent = xtnt || extent
         if(!dispatch)
             return;
 
@@ -87,8 +104,18 @@ function NotesNav() {
         );
     } // brushed()
 
-    function extent() {
-    } // extent()
+    function recenter(clickX) {
+          var extent = brush.widget.extent()()
+                .map(function(b) { return b[0]; })
+            , center = [clickX - brush.width / 2, clickX + brush.width / 2]
+          ;
+          if(center[0] < extent[0])
+              center = [extent[0], brush.width];
+          if(center[1] > extent[1])
+              center  = [extent[1] - brush.width, extent[1]];
+
+          return center;
+    } // recenter()
 
     function update() {
         console.log(arguments.length);
@@ -156,13 +183,14 @@ function NotesNav() {
     ;
     my.extent = function(value) {
         if(!value) return;
-        var t = d3.transition()
-          , extent = value.map(canvas.widget.x())
-        ;
+        var extent = value.map(canvas.widget.x());
+
+        brush.width = Math.abs(extent[1] - extent[0]);
         brush.selection
-          .transition(t)
+          .transition(d3.transition())
             .call(brush.widget.move, extent)
         ;
+        return my;
       } // my.extent()
     ;
     my.svg = function (value){
