@@ -106,8 +106,18 @@ function NotesBook() {
           .call(mensurationsRender)
       ;
       g
+        .append("clipPath")
+          .attr("id", "noteclip")
+        .append("rect")
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("width", width)
+          .attr("height", height)
+      ;
+      g
         .append("g")
           .attr("class", "notesbook")
+          .attr("clip-path", "#noteclip")
         .selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
