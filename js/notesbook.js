@@ -84,6 +84,7 @@ function NotesBook() {
       barlines = g
         .append("g")
           .attr("class", "barlines")
+          .attr("clip-path", "url(#noteclip)")
           .call(barlinesAxis)
       ;
       measuresAxis
