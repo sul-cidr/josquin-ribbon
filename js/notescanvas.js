@@ -24,6 +24,7 @@ function NotesCanvas() {
       , reflinesAxis = d3.axisLeft()
             .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
+      , clipPath
     ;
     /*
     ** Main Function Object
@@ -58,7 +59,15 @@ function NotesCanvas() {
             .call(reflinesRender)
         ;
 
-        var rects = svg.selectAll("rect").data(data.value);
+        var notesG = svg
+          .append("g")
+            .attr("class", "notes")
+        ;
+
+        if(clipPath){
+            notesG.attr("clip-path", "url(#" + clipPath + ")");
+        }
+        var rects = notesG.selectAll("rect").data(data.value);
         rects
           .enter().append("rect")
             .attr("class", "note")
@@ -241,6 +250,14 @@ function NotesCanvas() {
         showReflines = value;
         return my;
       } // my.showReflines()
+    ;
+
+    my.clipPath = function (value) {
+        if(arguments.length === 0) return clipPath;
+
+        clipPath = value;
+        return my;
+      } // my.clipPath()
     ;
 
     /*

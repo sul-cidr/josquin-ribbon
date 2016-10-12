@@ -117,7 +117,6 @@ function NotesBook() {
       g
         .append("g")
           .attr("class", "notesbook")
-          .attr("clip-path", "url(#noteclip)")
         .selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
@@ -132,6 +131,7 @@ function NotesBook() {
                           .tooltip(tooltip)
                           .width(width)
                           .height(height)
+                          .clipPath("noteclip")
                           .showReflines(canvases.length === 0)
                       , selection: self
                     })
