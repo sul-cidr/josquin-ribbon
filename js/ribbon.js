@@ -23,42 +23,55 @@ function Ribbon() {
 
         var ribbonData = d3.range(domain.x[0], domain.x[1], step)
           .map(function (x){
-            var notesInWindow = data.value.filter(function(d){
-              return (
-                d.time > (x - interval)
-                &&
-                (d.time + d.duration) < (x + interval)
-              );
-            });
 
-            // If the set of notes in our current window is empty,
-            // then use the previous mean and a deviation of 0.
-            if(notesInWindow.length === 0){
-              return {
-                  x: x
-                , y0: previousMean
-                , y1: previousMean
-              };
+            // At each iteration of this function,
+            // we'll compute the mean and standard deviation.
+            var mean, deviation;
+
+            // This is a "windowed" computation, so we need to look
+            // at the notes in the window of width `interval`, centered on `x`.
+            var notesInWindow = data.value
+              .filter(function(d){
+                return (
+                  d.time > (x - interval / 2)
+                  &&
+                  (d.time + d.duration) < (x + interval / 2)
+                );
+              })
+              .map(function (d){ return d.pitch; })
+            ;
+
+            // The mean and standard deviation values will be computed
+            // differently depending on how many notes are in our window.
+            switch(notesInWindow.length){
+
+              // If the set of notes in our current window is empty,
+              // then use the previous mean and a deviation of 0.
+              case 0:
+                mean = previousMean;
+                deviation = 0;
+                break;
+
+              // If there's only a single note in our window,
+              // then use its pitch as the mean, and a deviation of 0.
+              case 1:
+                mean = notesInWindow[0];
+                deviation = 0;
+                break;
+              
+              // If there's more than 1 note in our window,
+              // then compute the mean and standard deviation in earnest.
+              default:
+                deviation = d3.deviation(notesInWindow);
+                mean = d3.mean(notesInWindow);
             }
-
-            var mean = d3.mean(notesInWindow, function (d){ return d.pitch; });
 
             // Stash the previous average for next time around,
-            // for use when the set of notes in the window is empty.
+            // whatever it may be, for use in the case that
+            // the set of notes in the window is empty.
             previousMean = mean;
-            
-            // If there's only a single note in our window,
-            // then use its pitch as the mean, and a deviation of 0.
-            if(notesInWindow.length === 1){
-              return {
-                  x: x
-                , y0: mean
-                , y1: mean
-              };
-            }
 
-            var deviation = d3.deviation(notesInWindow, function (d){ return d.pitch; });
-
+            // Return an objects that represents this slice of the ribbon.
             return {
                 x: x
               , y1: mean + deviation
