@@ -112,8 +112,7 @@ function chartify(data) {
         .domain([0, data.scorelength[0]])
     ;
     // Domain window corresponding to the size of the canvas
-    var nbwidth = lifeScale.invert(notesBook.width());
-    notesNav.extent([0, nbwidth])
+    notesNav.extent([0, lifeScale.invert(notesBook.width())]);
 
     signal
         .on("zoom",     notesBook.zoom)

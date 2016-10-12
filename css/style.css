@@ -23,7 +23,7 @@ header {
 }
 
 rect, li {
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s linear, fill-opacity 0.5s linear;
 }
 rect.note {
     fill: currentColor;

@@ -20,8 +20,8 @@ function NotesBook() {
     , display = {
           separate: false // show each note strip separately
           , hilite:   false // one set of notes is visible
-          , zoom:     false // indicates an active brush
           , extremes: false // hilite the maximum and minimum pitches
+          , zoom:     { x: [], y: [] } // indicates an active brush
         }
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -84,6 +84,7 @@ function NotesBook() {
       barlines = g
         .append("g")
           .attr("class", "barlines")
+          .attr("clip-path", "url(#noteclip)")
           .call(barlinesAxis)
       ;
       measuresAxis
@@ -106,6 +107,15 @@ function NotesBook() {
           .call(mensurationsRender)
       ;
       g
+        .append("clipPath")
+          .attr("id", "noteclip")
+        .append("rect")
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("width", width)
+          .attr("height", height)
+      ;
+      g
         .append("g")
           .attr("class", "notesbook")
         .selectAll(".notes-g")
@@ -122,6 +132,7 @@ function NotesBook() {
                           .tooltip(tooltip)
                           .width(width)
                           .height(height)
+                          .clipPath("noteclip")
                           .showReflines(canvases.length === 0)
                       , selection: self
                     })
@@ -252,9 +263,8 @@ function NotesBook() {
     } // my.connect()
   ;
   my.zoom = function(value) {
-      display.zoom = value;
-      display.zoom.x = display.zoom.x || domain.x;
-      display.zoom.y = display.zoom.y || domain.y;
+      display.zoom.x = value.length ? value : domain.x
+      display.zoom.y = domain.y;
       scale.barlines.domain(display.zoom.x);
       barlines.call(barlinesAxis.scale(scale.barlines));
       measures.call(measuresAxis.scale(scale.barlines));
