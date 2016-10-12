@@ -53,7 +53,7 @@ function NotesCanvas() {
         ;
         domain.y = d3.range.apply(null, pitchExtent);
         scale.y.domain(domain.y).range([height, 0]);
-        scale.yLinear.domain(pitchExtent).range([height, 0]);
+        syncYLinear();
 
         svg = selection
               .attr("class", "notes-g " + data.key)
@@ -101,6 +101,23 @@ function NotesCanvas() {
         update();
     } // my()
 
+    // Synchronizes the Y Linear scale to values
+    // from the Y band scale.
+    function syncYLinear(){
+        var extent = d3.extent(scale.y.domain());
+       
+        // Adjust the linear scale to match the band scale,
+        // such that the note values map to the center points
+        // of the note rectangles.
+        extent[0] -= 0.5;
+        extent[1] += 0.5;
+
+        scale.yLinear
+          .domain(extent)
+          .range(scale.y.range())
+        ;
+    }
+
     /*
     ** Helper Functions
     */
@@ -114,7 +131,7 @@ function NotesCanvas() {
         value = value || { x: null, y: null }
         scale.x.domain(value.x || domain.x);
         scale.y.domain(value.y || domain.y);
-        scale.yLinear.domain(d3.extent(value.y || domain.y));
+        syncYLinear();
     } // extent()
 
     function update(selection) {
@@ -231,7 +248,7 @@ function NotesCanvas() {
 
         height = value;
         scale.y.range([height, 0]);
-        scale.yLinear.range([height, 0]);
+        syncYLinear();
 
         return my;
       } // my.height()
