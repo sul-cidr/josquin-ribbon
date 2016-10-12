@@ -12,11 +12,17 @@ function Ribbon() {
           .y0(function (d){ return scale.yLinear(d.y0); })
           .y1(function (d){ return scale.yLinear(d.y1); })
           .curve(d3.curveBasis)
+      , ribbonData
+      , ribbonDataStale = true
     ;
 
     function my(){
       if(data && domain && scale){
-        var ribbonData = computeRibbon();
+
+        if(ribbonDataStale){
+          ribbonData = computeRibbon();
+          ribbonDataStale = false;
+        }
 
         var path = g.selectAll("path").data([ribbonData])
         path.enter().append("path").merge(path)
@@ -106,6 +112,7 @@ function Ribbon() {
         if(!arguments.length)
             return data;
         data = value;
+        ribbonDataStale = true;
         return my;
       } // my.data()
     ;
@@ -113,6 +120,7 @@ function Ribbon() {
         if(!arguments.length)
             return interval;
         interval = value;
+        ribbonDataStale = true;
         return my;
       } // my.interval()
     ;
@@ -120,6 +128,7 @@ function Ribbon() {
         if(!arguments.length)
             return step;
         step = value;
+        ribbonDataStale = true;
         return my;
       } // my.step()
     ;
@@ -127,6 +136,7 @@ function Ribbon() {
         if(!arguments.length)
             return bandwidth;
         bandwidth = value;
+        ribbonDataStale = true;
         return my;
       } // my.bandwidth()
     ;
@@ -134,6 +144,7 @@ function Ribbon() {
         if(!arguments.length)
             return scale;
         scale = value;
+        ribbonDataStale = true;
         return my;
       } // my.scale()
     ;
@@ -141,6 +152,7 @@ function Ribbon() {
         if(!arguments.length)
             return domain;
         domain = value;
+        ribbonDataStale = true;
         return my;
       } // my.domain()
     ;
