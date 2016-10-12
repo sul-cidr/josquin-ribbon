@@ -11,6 +11,7 @@ function Ribbon() {
           .x(function (d){ return scale.x(d.x); })
           .y0(function (d){ return scale.yLinear(d.y0); })
           .y1(function (d){ return scale.yLinear(d.y1); })
+          .curve(d3.curveBasis)
     ;
 
     function my(){
