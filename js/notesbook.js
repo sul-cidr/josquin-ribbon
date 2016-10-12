@@ -117,7 +117,7 @@ function NotesBook() {
       g
         .append("g")
           .attr("class", "notesbook")
-          .attr("clip-path", "#noteclip")
+          .attr("clip-path", "url(#noteclip)")
         .selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
