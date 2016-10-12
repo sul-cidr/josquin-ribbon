@@ -112,9 +112,9 @@ function NotesBook() {
           .attr("id", "noteclip")
         .append("rect")
           .attr("x", 0)
-          .attr("y", 0)
+          .attr("y", -margin.top)
           .attr("width", width)
-          .attr("height", height)
+          .attr("height", height + margin.bottom + margin.top)
       ;
       g
         .append("g")
