@@ -9,13 +9,12 @@ function Ribbon() {
       , domain // Domain data passed down from notescanvas
       , area = d3.area()
           .x(function (d){ return scale.x(d.x); })
-          .y0(function (d){ return scale.y(d.y0); })
-          .y1(function (d){ return scale.y(d.y1); })
+          .y0(function (d){ return scale.yLinear(d.y0); })
+          .y1(function (d){ return scale.yLinear(d.y1); })
     ;
 
     function my(){
       if(data && domain && scale){
-
 
         // For steps in which there are no notes in the interval,
         // An empty interval at the previous average is used.
@@ -42,25 +41,14 @@ function Ribbon() {
             // This is a simple temporary proxy for the avg +- standard deviation.
             var extent = d3.extent(notesInWindow, function (d){ return d.pitch; })
 
-            if(!extent[0]){
-              console.log(x);
-              console.log(notesInWindow);
-            }
-
             previousAverage = (extent[0] + extent[1]) / 2;
 
             return {
                 x: x
-              , y1: extent[0]
-              , y0: extent[1] 
+              , y1: extent[1]
+              , y0: extent[0] 
             };
           })
-
-        //ribbonData.forEach(function (d, i){
-        //  if( !(d.x && d.y1 && d.y0)){
-        //    console.log(JSON.stringify(d), i);
-        //  }
-        //});
 
         var path = g.selectAll("path").data([ribbonData])
         path.enter().append("path").merge(path)

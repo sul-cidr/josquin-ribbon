@@ -7,7 +7,12 @@ function NotesCanvas() {
       , width
       , height
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
-      , scale = { x: d3.scaleLinear(), y: d3.scaleBand(), color: null }
+      , scale = {
+          x: d3.scaleLinear(),
+          y: d3.scaleBand(), // Used for the ref lines and notes.
+          yLinear: d3.scaleLinear(), // Used for the ribbons.
+          color: null
+        }
       , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
       , roundedCornerSize
@@ -42,11 +47,13 @@ function NotesCanvas() {
         scale.x.domain(domain.x).range([0, width ]);
 
         var pitches = data.value
-            .map(function(d) { return d.pitch; })
-            .concat(reflinesPitches)
+                .map(function(d) { return d.pitch; })
+                .concat(reflinesPitches)
+          , pitchExtent = d3.extent(pitches)
         ;
-        domain.y = d3.range.apply(null, d3.extent(pitches));
+        domain.y = d3.range.apply(null, pitchExtent);
         scale.y.domain(domain.y).range([height, 0]);
+        scale.yLinear.domain(pitchExtent).range([height, 0]);
 
         svg = selection
               .attr("class", "notes-g " + data.key)
@@ -107,6 +114,7 @@ function NotesCanvas() {
         value = value || { x: null, y: null }
         scale.x.domain(value.x || domain.x);
         scale.y.domain(value.y || domain.y);
+        scale.yLinear.domain(d3.extent(value.y || domain.y));
     } // extent()
 
     function update(selection) {
@@ -223,6 +231,7 @@ function NotesCanvas() {
 
         height = value;
         scale.y.range([height, 0]);
+        scale.yLinear.range([height, 0]);
 
         return my;
       } // my.height()
