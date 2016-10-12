@@ -19,7 +19,7 @@ function Ribbon() {
 
         // For steps in which there are no notes in the interval,
         // An empty interval at the previous average is used.
-        var previousAverage = data.value[0].pitch;
+        var previousMean = data.value[0].pitch;
 
         var ribbonData = d3.range(domain.x[0], domain.x[1], step)
           .map(function (x){
@@ -31,23 +31,38 @@ function Ribbon() {
               );
             });
 
+            // If the set of notes in our current window is empty,
+            // then use the previous mean and a deviation of 0.
             if(notesInWindow.length === 0){
               return {
                   x: x
-                , y0: previousAverage
-                , y1: previousAverage
+                , y0: previousMean
+                , y1: previousMean
               };
             }
 
-            // This is a simple temporary proxy for the avg +- standard deviation.
-            var extent = d3.extent(notesInWindow, function (d){ return d.pitch; })
+            var mean = d3.mean(notesInWindow, function (d){ return d.pitch; });
 
-            previousAverage = (extent[0] + extent[1]) / 2;
+            // Stash the previous average for next time around,
+            // for use when the set of notes in the window is empty.
+            previousMean = mean;
+            
+            // If there's only a single note in our window,
+            // then use its pitch as the mean, and a deviation of 0.
+            if(notesInWindow.length === 1){
+              return {
+                  x: x
+                , y0: mean
+                , y1: mean
+              };
+            }
+
+            var deviation = d3.deviation(notesInWindow, function (d){ return d.pitch; });
 
             return {
                 x: x
-              , y1: extent[1]
-              , y0: extent[0] 
+              , y1: mean + deviation
+              , y0: mean - deviation
             };
           })
 
