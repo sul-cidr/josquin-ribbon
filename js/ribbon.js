@@ -18,8 +18,6 @@ function Ribbon() {
       , STANDARD_DEVIATION = "STANDARD_DEVIATION"
       , ATTACK_DENSITY = "ATTACK_DENSITY"
       , mode = STANDARD_DEVIATION
-// TODO add UI for toggling between these modes.
-//      , mode = ATTACK_DENSITY
     ;
 
     function my(){
@@ -263,6 +261,14 @@ function Ribbon() {
         show = value;
         return my;
       } // my.show()
+    ;
+    my.mode = function(value) {
+        if(!arguments.length)
+            return mode;
+        mode = value;
+        ribbonDataStale = true;
+        return my;
+      } // my.mode()
     ;
     return my;
 }
