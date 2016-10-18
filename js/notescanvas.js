@@ -2,17 +2,24 @@ function NotesCanvas() {
     /*
     ** Private Variables - only used inside this object
     */
-    var svg, data
+    var svg
+      , data
       , width
       , height
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
-      , scale = { x: d3.scaleLinear(), y: d3.scaleBand(), color: null }
+      , scale = {
+          x: d3.scaleLinear(),
+          y: d3.scaleBand(), // Used for the ref lines and notes.
+          yLinear: d3.scaleLinear(), // Used for the ribbons.
+          color: null
+        }
       , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
       , roundedCornerSize
       , dispatch
       , state = true // on; false = off
       , extremes = false
+      , showRibbon = false
       , showReflines = false
       , reflinesValues = {
               32: { label: "G", style: "solid" },
@@ -25,6 +32,7 @@ function NotesCanvas() {
             .tickValues(reflinesPitches)
             .tickFormat(function (d){ return reflinesValues[d].label; })
       , clipPath
+      , ribbon = Ribbon()
     ;
     /*
     ** Main Function Object
@@ -39,11 +47,13 @@ function NotesCanvas() {
         scale.x.domain(domain.x).range([0, width ]);
 
         var pitches = data.value
-            .map(function(d) { return d.pitch; })
-            .concat(reflinesPitches)
+                .map(function(d) { return d.pitch; })
+                .concat(reflinesPitches)
+          , pitchExtent = d3.extent(pitches)
         ;
-        domain.y = d3.range.apply(null, d3.extent(pitches));
+        domain.y = d3.range.apply(null, pitchExtent);
         scale.y.domain(domain.y).range([height, 0]);
+        syncYLinear();
 
         svg = selection
               .attr("class", "notes-g " + data.key)
@@ -67,17 +77,46 @@ function NotesCanvas() {
         if(clipPath){
             notesG.attr("clip-path", "url(#" + clipPath + ")");
         }
+
+        if(showRibbon){
+          ribbon
+            .g(notesG.append("g"))
+            .scale(scale)
+            .domain(domain)
+            .data(data)
+          ;
+        }
+
         var rects = notesG.selectAll("rect").data(data.value);
+
         rects
           .enter().append("rect")
             .attr("class", "note")
         ;
         rects.exit().remove();
+
         computeExtremeNotes();
         enableTooltips();
 
         update();
     } // my()
+
+    // Synchronizes the Y Linear scale to values
+    // from the Y band scale.
+    function syncYLinear(){
+        var extent = d3.extent(scale.y.domain());
+       
+        // Adjust the linear scale to match the band scale,
+        // such that the note values map to the center points
+        // of the note rectangles.
+        extent[0] -= 0.5;
+        extent[1] += 0.5;
+
+        scale.yLinear
+          .domain(extent)
+          .range(scale.y.range())
+        ;
+    }
 
     /*
     ** Helper Functions
@@ -92,6 +131,7 @@ function NotesCanvas() {
         value = value || { x: null, y: null }
         scale.x.domain(value.x || domain.x);
         scale.y.domain(value.y || domain.y);
+        syncYLinear();
     } // extent()
 
     function update(selection) {
@@ -113,6 +153,9 @@ function NotesCanvas() {
         hilite();
         selection.select(".reflines")
             .call(reflinesRender);
+
+        ribbon();
+
     } // update()
 
     function reflinesRender(selection){
@@ -207,6 +250,7 @@ function NotesCanvas() {
 
         height = value;
         scale.y.range([height, 0]);
+        syncYLinear();
 
         return my;
       } // my.height()
@@ -243,6 +287,21 @@ function NotesCanvas() {
 
         return my;
       } // my.extremes()
+    ;
+    my.showRibbon = function(value) {
+        if(!arguments.length)
+            return showRibbon;
+        showRibbon = value;
+        ribbon.show(showRibbon);
+        return my;
+      } // my.showRibbon()
+    ;
+    my.ribbonMode = function(value) {
+        if(!arguments.length)
+            return ribbonMode;
+        ribbon.mode(value);
+        return my;
+      } // my.ribbonMode()
     ;
     my.showReflines = function (value) {
         if(arguments.length === 0) return showReflines;

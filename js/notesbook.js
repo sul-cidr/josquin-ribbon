@@ -22,6 +22,8 @@ function NotesBook() {
           , hilite:   false // one set of notes is visible
           , extremes: false // hilite the maximum and minimum pitches
           , zoom:     { x: [], y: [] } // indicates an active brush
+          , showRibbons: true // show or hide the ribbons layer
+          , ribbonMode: Ribbon.STANDARD_DEVIATION // Ribbon width meaning
         }
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -111,9 +113,9 @@ function NotesBook() {
           .attr("id", "noteclip")
         .append("rect")
           .attr("x", 0)
-          .attr("y", 0)
+          .attr("y", -margin.top)
           .attr("width", width)
-          .attr("height", height)
+          .attr("height", height + margin.bottom + margin.top)
       ;
       g
         .append("g")
@@ -134,6 +136,8 @@ function NotesBook() {
                           .height(height)
                           .clipPath("noteclip")
                           .showReflines(canvases.length === 0)
+                          .showRibbon(display.showRibbons)
+                          .ribbonMode(display.ribbonMode)
                       , selection: self
                     })
               ;
@@ -178,6 +182,8 @@ function NotesBook() {
               .zoom(z)
               .state(hilited || !display.hilite)
               .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
+              .showRibbon(display.showRibbons)
+              .ribbonMode(display.ribbonMode)
               .update()
           ;
           c.selection
@@ -322,6 +328,24 @@ function NotesBook() {
       return my;
     } // my.data()
   ;
+
+  my.showRibbons = function(value) {
+      if(!arguments.length) return display.showRibbons;
+
+      display.showRibbons = value;
+      update();
+
+      return my;
+    } // my.showRibbons()
+
+  my.ribbonMode = function(value) {
+      if(!arguments.length) return display.ribbonMode;
+
+      display.ribbonMode = value;
+      update();
+
+      return my;
+    } // my.ribbonMode()
 
   // This is always the last thing returned
   return my;
