@@ -153,7 +153,10 @@ function NotesCanvas() {
         hilite();
         selection.select(".reflines")
             .call(reflinesRender);
+
+        ribbon.show(showRibbon);
         ribbon();
+
     } // update()
 
     function reflinesRender(selection){

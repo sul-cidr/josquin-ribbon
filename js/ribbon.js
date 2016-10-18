@@ -14,17 +14,19 @@ function Ribbon() {
           .curve(d3.curveBasis)
       , ribbonData
       , ribbonDataStale = true
+      , show = true
     ;
 
     function my(){
       if(data && domain && scale){
 
-        if(ribbonDataStale){
+        if(ribbonDataStale & show){
           ribbonData = computeRibbon();
           ribbonDataStale = false;
         }
 
-        var path = g.selectAll("path").data([ribbonData])
+        var path = g.selectAll("path").data(show? [ribbonData] : [])
+        path.exit().remove()
         path.enter().append("path").merge(path)
             .attr("class", "ribbon")
             .style("color", function(d) {
@@ -155,6 +157,13 @@ function Ribbon() {
         ribbonDataStale = true;
         return my;
       } // my.domain()
+    ;
+    my.show = function(value) {
+        if(!arguments.length)
+            return show;
+        show = value;
+        return my;
+      } // my.show()
     ;
     return my;
 }

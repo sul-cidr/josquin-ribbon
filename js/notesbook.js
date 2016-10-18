@@ -326,6 +326,15 @@ function NotesBook() {
     } // my.data()
   ;
 
+  my.showRibbons = function(value) {
+      if(!arguments.length) return display.showRibbons;
+
+      display.showRibbons = value;
+      update();
+
+      return my;
+    } // my.showRibbons()
+
   // This is always the last thing returned
   return my;
 } // NotesBook()

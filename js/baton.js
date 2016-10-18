@@ -124,6 +124,7 @@ function chartify(data) {
         .on("hilite",   notesBook.hilite)
         .on("separate", notesBook.separate)
         .on("extremes", notesBook.extremes)
+        .on("showRibbons", notesBook.showRibbons)
     ;
 } // chartify()
 
