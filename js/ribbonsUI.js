@@ -4,6 +4,8 @@ function RibbonsUI(){
     */
     var div
       , labelText = "Show Ribbons"
+      , showRibbons = true
+      , ribbonMode = Ribbon.STANDARD_DEVIATION
       , modes = [
           {
             label: "Standard Deviation",
@@ -40,9 +42,11 @@ function RibbonsUI(){
         labelEnter
           .append("input")
             .attr("type", "checkbox")
-            .property("checked", true)
+            .property("checked", showRibbons)
             .on("click", function (e){
-                dispatch.call("showRibbons", this, this.checked);
+                showRibbons = this.checked;
+                dispatch.call("showRibbons", this, showRibbons);
+                my();
               })
         ;
         labelEnter
@@ -54,20 +58,30 @@ function RibbonsUI(){
          * Radio Buttons
          */
         var radioContainer = form.select(".ribbon-radio-buttons");
+
         var radioLabel = radioContainer.selectAll("label")
-                .data(modes)
-              .enter().append("div").append("label")
-          , inputs = radioLabel
+            // Hide the radio buttons if the "show ribbons"
+            // box is not checked.
+            .data(showRibbons ? modes : []);
+
+        radioLabel.exit().remove();
+
+        var radioLabelEnter = radioLabel
+            .enter().append("div").append("label")
+        var inputs = radioLabelEnter
               .append("input")
                 .attr("type", "radio")
                 .attr("name", "ribbon-mode-group")
-                .property("checked", function(d, i) { return !i; })
-          , spans = radioLabel
+                .property("checked", function(d, i) {
+                  return d.mode === ribbonMode;
+                })
+          , spans = radioLabelEnter
               .append("span")
                 .text(function (d){ return " " + d.label + " "; })
         ;
         inputs.on("click", function (d){
-            dispatch.call("ribbonMode", this, d.mode);
+            ribbonMode = d.mode;
+            dispatch.call("ribbonMode", this, ribbonMode);
           })
         ;
 
