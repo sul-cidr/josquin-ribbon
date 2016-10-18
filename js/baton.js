@@ -9,6 +9,8 @@ var width = 960
       .div(d3.select("#combine-separate-ui"))
   , extremeNotesUI = ExtremeNotesUI()
       .div(d3.select("#extreme-notes-ui"))
+  , ribbonsUI = RibbonsUI()
+      .div(d3.select("#ribbons-ui"))
   , colorLegend = ColorLegend()
       .div(d3.select("div#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
@@ -58,10 +60,12 @@ function chartify(data) {
             , "separate"
             , "selected"
             , "extremes"
+            , "showRibbons"
           )
     ;
     combineSeparateUI.connect(signal);
     extremeNotesUI.connect(signal);
+    ribbonsUI.connect(signal);
 
     colorScale
         .domain(data.partnames)
@@ -96,6 +100,7 @@ function chartify(data) {
     notesBook();
     combineSeparateUI();
     extremeNotesUI();
+    ribbonsUI();
     colorLegend();
 
     var full = {
