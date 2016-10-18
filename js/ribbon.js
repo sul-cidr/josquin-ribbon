@@ -15,6 +15,11 @@ function Ribbon() {
       , ribbonData
       , ribbonDataStale = true
       , show = true
+      , STANDARD_DEVIATION = "STANDARD_DEVIATION"
+      , ATTACK_DENSITY = "ATTACK_DENSITY"
+      , mode = STANDARD_DEVIATION
+// TODO add UI for toggling between these modes.
+//      , mode = ATTACK_DENSITY
     ;
 
     function my(){
@@ -38,6 +43,14 @@ function Ribbon() {
     }
 
     function computeRibbon(){
+      if(mode === STANDARD_DEVIATION){
+        return computeWindowedStandardDeviation();
+      } else if(mode === ATTACK_DENSITY){
+        return computeAttackDensity();
+      }
+    }
+
+    function computeWindowedStandardDeviation(){
 
       // For steps in which there are no notes in the interval,
       // An empty interval at the previous average is used.
@@ -46,23 +59,28 @@ function Ribbon() {
       return d3.range(domain.x[0], domain.x[1], step)
         .map(function (x){
 
-          // At each iteration of this function,
-          // we'll compute the mean and standard deviation.
-          var mean, deviation;
-
           // This is a "windowed" computation, so we need to look
           // at the notes in the window of width `interval`, centered on `x`.
           var notesInWindow = data.value
             .filter(function(d){
+
+              // Consider the interval to be centered on the x value.
               var windowStart = x - interval / 2
                 , windowEnd   = x + interval / 2
                 , noteStart = d.time
                 , noteEnd   = d.time + d.duration
               ;
+
+              // Consider a note to be "inside the window"
+              // if any part of it falls inside the window.
               return (noteStart < windowEnd) && (noteEnd > windowStart);
             })
             .map(function (d){ return d.pitch; })
           ;
+
+          // At each iteration of this function,
+          // we'll compute the mean and standard deviation.
+          var mean, deviation;
 
           // The mean and standard deviation values will be computed
           // differently depending on how many notes are in our window.
@@ -99,6 +117,87 @@ function Ribbon() {
               x: x
             , y1: mean + deviation
             , y0: mean - deviation
+          };
+        });
+    }
+    
+    function computeAttackDensity(){
+
+      // Use the following fixed values for the attack density computation,
+      // as these specific values were prescribed by Josquin project leads.
+      var interval = 4 // Compute the density for each measure.
+        , step = 4
+        , scaleFactor = 2 // This is set to make the ribbon a bit thicker.
+      ;
+
+      // For steps in which there are no notes in the interval,
+      // An empty interval at the previous average is used.
+      var previousMean = data.value[0].pitch;
+
+      return d3.range(domain.x[0], domain.x[1], step)
+        .map(function (x){
+
+          // This is a "windowed" computation, so we need to look
+          // at the notes in the window of width `interval`, centered on `x`.
+          var notesInWindow = data.value
+            .filter(function(d){
+
+              // Consider the interval to start on the x value,
+              // so it aligns with measures.
+              var windowStart = x
+                , windowEnd   = x + interval
+                , noteStart = d.time
+              ;
+
+              // Consider a note to be "inside the window"
+              // only if its attack time falls inside the window.
+              return (noteStart < windowEnd) && (noteStart >= windowStart);
+            })
+            .map(function (d){ return d.pitch; })
+          ;
+
+          // At each iteration of this function,
+          // we'll compute the mean and standard deviation.
+          var mean, density;
+
+          // The mean and standard density values will be computed
+          // differently depending on how many notes are in our window.
+          switch(notesInWindow.length){
+
+            // If the set of notes in our current window is empty,
+            // then use the previous mean and a density of 0.
+            case 0:
+              mean = previousMean;
+              density = 0;
+              break;
+
+            // If there's only a single note in our window,
+            // then use its pitch as the mean, and a density of 1.
+            case 1:
+              mean = notesInWindow[0];
+              density = 1;
+              break;
+            
+            // If there's more than 1 note in our window,
+            // then compute the mean and use the note count as density.
+            default:
+              density = notesInWindow.length;
+              mean = d3.mean(notesInWindow);
+          }
+
+          density *= scaleFactor;
+
+
+          // Stash the previous average for next time around,
+          // whatever it may be, for use in the case that
+          // the set of notes in the window is empty.
+          previousMean = mean;
+
+          // Return an objects that represents this slice of the ribbon.
+          return {
+              x: x
+            , y1: mean + density
+            , y0: mean - density
           };
         });
     }
