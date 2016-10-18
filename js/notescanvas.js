@@ -154,7 +154,6 @@ function NotesCanvas() {
         selection.select(".reflines")
             .call(reflinesRender);
 
-        ribbon.show(showRibbon);
         ribbon();
 
     } // update()
@@ -293,8 +292,16 @@ function NotesCanvas() {
         if(!arguments.length)
             return showRibbon;
         showRibbon = value;
+        ribbon.show(showRibbon);
         return my;
       } // my.showRibbon()
+    ;
+    my.ribbonMode = function(value) {
+        if(!arguments.length)
+            return ribbonMode;
+        ribbon.mode(value);
+        return my;
+      } // my.ribbonMode()
     ;
     my.showReflines = function (value) {
         if(arguments.length === 0) return showReflines;

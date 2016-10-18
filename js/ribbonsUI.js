@@ -67,8 +67,7 @@ function RibbonsUI(){
                 .text(function (d){ return " " + d.label + " "; })
         ;
         inputs.on("click", function (d){
-            console.log(d)
-            //dispatch.call("ribbonMode", this, d.mode);
+            dispatch.call("ribbonMode", this, d.mode);
           })
         ;
 
