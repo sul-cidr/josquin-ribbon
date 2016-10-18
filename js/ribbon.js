@@ -124,7 +124,7 @@ function Ribbon() {
       // as these specific values were prescribed by Josquin project leads.
       var interval = 4 // Compute the density for each measure.
         , step = 4
-        , scaleFactor = 2 // This is set to make the ribbon a bit thicker.
+        , scaleFactor = 1
       ;
 
       // For steps in which there are no notes in the interval,
