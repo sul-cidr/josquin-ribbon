@@ -4,6 +4,16 @@ function RibbonsUI(){
     */
     var div
       , labelText = "Show Ribbons"
+      , modes = [
+          {
+            label: "Standard Deviation",
+            mode: Ribbon.STANDARD_DEVIATION
+          },
+          {
+            label: "Attack Density",
+            mode: Ribbon.ATTACK_DENSITY
+          }
+        ]
       , dispatch
     ;
     /*
@@ -11,13 +21,23 @@ function RibbonsUI(){
     */
     function my() {
         var form = div.selectAll("form").data([1]);
-        form = form.enter().append("form")
-            .attr("class", "form")
-          .merge(form)
-        ;
-       
-        var label = form.append("label");
-        label
+        var formEnter = form.enter().append("form");
+
+        formEnter.append("div")
+            .attr("class", "ribbon-checkbox");
+        formEnter.append("div")
+            .attr("class", "ribbon-radio-buttons");
+
+        form = formEnter.merge(form);
+        
+        /**
+         * Checkbox
+         */
+        var checkboxContainer = form.select(".ribbon-checkbox");
+        var label = checkboxContainer.selectAll("label").data([1]);
+        var labelEnter = label.enter().append("label");
+
+        labelEnter
           .append("input")
             .attr("type", "checkbox")
             .property("checked", true)
@@ -25,10 +45,33 @@ function RibbonsUI(){
                 dispatch.call("showRibbons", this, this.checked);
               })
         ;
-        label
+        labelEnter
           .append("span")
             .text(" " + labelText)
         ;
+
+        /**
+         * Radio Buttons
+         */
+        var radioContainer = form.select(".ribbon-radio-buttons");
+        var radioLabel = radioContainer.selectAll("label")
+                .data(modes)
+              .enter().append("div").append("label")
+          , inputs = radioLabel
+              .append("input")
+                .attr("type", "radio")
+                .attr("name", "ribbon-mode-group")
+                .property("checked", function(d, i) { return !i; })
+          , spans = radioLabel
+              .append("span")
+                .text(function (d){ return " " + d.label + " "; })
+        ;
+        inputs.on("click", function (d){
+            console.log(d)
+            //dispatch.call("ribbonMode", this, d.mode);
+          })
+        ;
+
     } // my() - Main Function Object
     /*
     ** API (Getters/Setters)

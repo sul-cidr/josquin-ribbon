@@ -15,10 +15,9 @@ function Ribbon() {
       , ribbonData
       , ribbonDataStale = true
       , show = true
-      , STANDARD_DEVIATION = "STANDARD_DEVIATION"
-      , ATTACK_DENSITY = "ATTACK_DENSITY"
-      , mode = STANDARD_DEVIATION
+      , mode = Ribbon.STANDARD_DEVIATION
     ;
+
 
     function my(){
       if(data && domain && scale){
@@ -41,9 +40,9 @@ function Ribbon() {
     }
 
     function computeRibbon(){
-      if(mode === STANDARD_DEVIATION){
+      if(mode === Ribbon.STANDARD_DEVIATION){
         return computeWindowedStandardDeviation();
-      } else if(mode === ATTACK_DENSITY){
+      } else if(mode === Ribbon.ATTACK_DENSITY){
         return computeAttackDensity();
       }
     }
@@ -272,3 +271,7 @@ function Ribbon() {
     ;
     return my;
 }
+
+// Expose constants for use in UI elements.
+Ribbon.STANDARD_DEVIATION = "STANDARD_DEVIATION";
+Ribbon.ATTACK_DENSITY = "ATTACK_DENSITY";
