@@ -8,12 +8,14 @@ function RibbonsUI(){
       , ribbonMode = Ribbon.STANDARD_DEVIATION
       , modes = [
           {
-            label: "Standard Deviation",
-            mode: Ribbon.STANDARD_DEVIATION
+              label: "&#963;"
+            , name: "Standard Deviation"
+            , mode: Ribbon.STANDARD_DEVIATION
           },
           {
-            label: "Attack Density",
-            mode: Ribbon.ATTACK_DENSITY
+              label: "&#961;"
+            , name: "Attack Density"
+            , mode: Ribbon.ATTACK_DENSITY
           }
         ]
       , dispatch
@@ -22,42 +24,46 @@ function RibbonsUI(){
     ** Main Function Object
     */
     function my() {
-        var form = div.selectAll("form").data([1]);
-        var formEnter = form.enter().append("form");
+        var form = div.selectAll("div").data([1]);
+        var formEnter = form.enter().append("div");
 
         formEnter.append("div")
-            .attr("class", "ribbon-checkbox");
+            .attr("class", "ribbon-checkbox checkbox");
         formEnter.append("div")
             .attr("class", "ribbon-radio-buttons");
 
         form = formEnter.merge(form);
-        
+
         /**
          * Checkbox
          */
         var checkboxContainer = form.select(".ribbon-checkbox");
-        var label = checkboxContainer.selectAll("label").data([1]);
-        var labelEnter = label.enter().append("label");
-
-        labelEnter
+        var label = checkboxContainer.selectAll("label").data([1])
+          .enter().append("label")
+        ;
+        label
+            .attr("class", "btn btn-primary btn-sm")
           .append("input")
             .attr("type", "checkbox")
             .property("checked", showRibbons)
-            .on("click", function (e){
+            .on("change", function (e){
                 showRibbons = this.checked;
                 dispatch.call("showRibbons", this, showRibbons);
                 my();
               })
         ;
-        labelEnter
+        label
           .append("span")
-            .text(" " + labelText)
+            .text(labelText)
         ;
 
         /**
          * Radio Buttons
          */
-        var radioContainer = form.select(".ribbon-radio-buttons");
+        var radioContainer = form.select(".ribbon-radio-buttons")
+            .attr("class", "btn-group")
+            .attr("data-toggle", "buttons")
+        ;
 
         var radioLabel = radioContainer.selectAll("label")
             // Hide the radio buttons if the "show ribbons"
@@ -67,24 +73,33 @@ function RibbonsUI(){
         radioLabel.exit().remove();
 
         var radioLabelEnter = radioLabel
-            .enter().append("div").append("label")
-        var inputs = radioLabelEnter
+            .enter().append("label")
+              .attr("class", "btn btn-sm btn-primary")
+              .classed("active", function (d, i){
+                  return d.mode === ribbonMode;
+                })
+          , inputs = radioLabelEnter
               .append("input")
                 .attr("type", "radio")
                 .attr("name", "ribbon-mode-group")
                 .property("checked", function(d, i) {
-                  return d.mode === ribbonMode;
-                })
+                    return d.mode === ribbonMode;
+                  })
           , spans = radioLabelEnter
               .append("span")
-                .text(function (d){ return " " + d.label + " "; })
+                .html(function (d){ return d.label; })
         ;
         inputs.on("click", function (d){
+            var self = this;
             ribbonMode = d.mode;
-            dispatch.call("ribbonMode", this, ribbonMode);
+            radioContainer.selectAll("label")
+                .classed("active", function(e) {
+                    return this === self.parentNode;
+                  })
+            ;
+            dispatch.call("ribbonMode", self, ribbonMode);
           })
         ;
-
     } // my() - Main Function Object
     /*
     ** API (Getters/Setters)

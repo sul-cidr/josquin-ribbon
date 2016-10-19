@@ -10,18 +10,18 @@ function CombineSeparateUI(){
     ** Main Function Object
     */
     function my() {
-        var form = div.selectAll(".btn-group").data([1]);
-        form = form.enter().append("div")
+        var form = div.selectAll(".btn-group")
+            .data([1])
+          .enter().append("div")
             .attr("class", "btn-group")
             .attr("data-toggle", "buttons")
-          .merge(form)
         ;
-
-        var labels = form.selectAll("label")
+        var labels = form.merge(form).selectAll("label")
                 .data(data)
               .enter().append("label")
                 .attr("class", "btn btn-sm btn-primary")
                 .classed("active", function(d, i) { return !i; })
+                .attr("aria-label", function(d) { return d; })
           , inputs = labels
               .append("input")
                 .attr("type", "radio")
@@ -29,16 +29,15 @@ function CombineSeparateUI(){
                 .property("checked", function(d, i) { return !i; })
           , spans = labels
               .append("span")
-                .text(function (d){ return d; })
+                .html(function (d){ return d; })
         ;
         inputs.on("click", function (e){
             var self = this;
-            dispatch.call("separate", self, e == "Separate");
-            labels
-                .classed("active",function() {
-                    return this === self.parentNode;
-                  })
+            labels.classed("active", function() {
+                return this === self.parentNode;
+              })
             ;
+            dispatch.call("separate", self, e == "Separate");
           })
         ;
     } // my() - Main Function Object
