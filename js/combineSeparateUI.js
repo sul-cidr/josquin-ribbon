@@ -19,7 +19,7 @@ function CombineSeparateUI(){
         var labels = form.merge(form).selectAll("label")
                 .data(data)
               .enter().append("label")
-                .attr("class", "btn btn-sm btn-primary")
+                .attr("class", "btn btn-sm btn-default")
                 .classed("active", function(d, i) { return !i; })
                 .attr("aria-label", function(d) { return d; })
           , inputs = labels
