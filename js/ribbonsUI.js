@@ -84,6 +84,8 @@ function RibbonsUI(){
               .append("span")
                 .html(function (d){ return d.label; })
         ;
+        radioLabel = radioLabelEnter.merge(radioLabel);
+        
         inputs.on("click", function (d){
             var self = this;
             ribbonMode = d.mode;
