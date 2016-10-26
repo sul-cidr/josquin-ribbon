@@ -4,6 +4,7 @@ function ExtremeNotesUI(){
     */
     var div
       , labelTextExtremes = "Show Extreme Notes"
+      , labelTextNotes = "Show Notes"
       , dispatch
     ;
     /*
@@ -15,6 +16,16 @@ function ExtremeNotesUI(){
             .attr("class", "form")
           .merge(form)
         ;
+
+        // Checkbox for showing/hiding all notes.
+        checkbox(form, labelTextNotes, function (checked){
+            if(arguments.length){
+                dispatch.call("notes", this, checked);
+            } else {
+                // Initial value is true.
+                return true;
+            }
+        });
 
         // Checkbox for showing/hiding extreme notes.
         checkbox(form, labelTextExtremes, function (checked){
