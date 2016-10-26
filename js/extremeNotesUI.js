@@ -15,14 +15,20 @@ function ExtremeNotesUI(){
             .attr("class", "form")
           .merge(form)
         ;
-       
-        var label = form.append("label");
+
+        var label = form
+          .append("label")
+            .attr("class", "btn btn-sm btn-default")
+            .classed("active", true)
+        ;
         label
           .append("input")
             .attr("type", "checkbox")
             .property("checked", true)
-            .on("click", function (e){
-                dispatch.call("extremes", this, this.checked);
+            .on("change ", function (e){
+                var checked = this.checked;
+                dispatch.call("extremes", this, checked);
+                label.classed("active", checked);
               })
         ;
         label

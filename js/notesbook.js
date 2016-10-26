@@ -50,7 +50,6 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-
       svg
         .attr("width", width)
         .attr("height", height)
@@ -317,8 +316,14 @@ function NotesBook() {
     } // my.extremes()
   ;
   my.svg = function (value){
-      if(arguments.length === 0) return svg;
-      svg = value;
+      if(!arguments.length) return svg;
+      svg = value.selectAll("svg")
+          .data([1])
+      ;
+      svg = svg
+        .enter().append("svg")
+        .merge(svg)
+      ;
       return my;
     } // my.svg()
   ;
