@@ -3,7 +3,7 @@ function ExtremeNotesUI(){
     ** Private Variables
     */
     var div
-      , labelText = "Show Extreme Notes"
+      , labelTextExtremes = "Show Extreme Notes"
       , dispatch
     ;
     /*
@@ -16,6 +16,19 @@ function ExtremeNotesUI(){
           .merge(form)
         ;
 
+        // Checkbox for showing/hiding extreme notes.
+        checkbox(form, labelTextExtremes, function (checked){
+            if(arguments.length){
+                dispatch.call("extremes", this, checked);
+            } else {
+                // Initial value is true.
+                return true;
+            }
+        });
+
+    } // my() - Main Function Object
+
+    function checkbox(form, labelText, accessor){
         var label = form
           .append("label")
             .attr("class", "btn btn-sm btn-default")
@@ -26,16 +39,16 @@ function ExtremeNotesUI(){
             .attr("type", "checkbox")
             .property("checked", true)
             .on("change ", function (e){
-                var checked = this.checked;
-                dispatch.call("extremes", this, checked);
-                label.classed("active", checked);
+                accessor(this.checked);
+                label.classed("active", this.checked);
               })
         ;
         label
           .append("span")
             .text(" " + labelText)
         ;
-    } // my() - Main Function Object
+    }
+
     /*
     ** API (Getters/Setters)
     */
