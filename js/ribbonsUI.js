@@ -87,7 +87,7 @@ function RibbonsUI(){
         inputs.on("click", function (d){
             var self = this;
             ribbonMode = d.mode;
-            radioContainer.selectAll("label")
+            radioLabel
                 .classed("active", function(e) {
                     return this === self.parentNode;
                   })
