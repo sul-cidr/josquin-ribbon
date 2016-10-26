@@ -4,7 +4,7 @@ var width = 960
   , notesNav = NotesNav()
       .svg(d3.select("#nav").append("svg"))
   , notesBook = NotesBook()
-      .svg(d3.select("#notes").append("svg"))
+      .svg(d3.select("#notes"))
   , combineSeparateUI = CombineSeparateUI()
       .div(d3.select("#combine-separate-ui"))
   , extremeNotesUI = ExtremeNotesUI()
