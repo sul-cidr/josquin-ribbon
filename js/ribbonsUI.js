@@ -24,18 +24,15 @@ function RibbonsUI(){
     function my() {
         var cbform = div.select(".panel-body").selectAll("div").data([1])
           , cbformEnter = cbform.enter().append("div")
-        ;
-        cbformEnter.append("div")
-            .attr("class", "ribbon-checkbox checkbox")
+                .attr("class", "ribbon-checkbox checkbox")
         ;
         cbform = cbformEnter.merge(cbform);
 
         /**
          * Checkbox
          */
-        var checkboxContainer = cbform.select(".ribbon-checkbox");
-        var label = checkboxContainer.selectAll("label").data([1])
-          .enter().append("label")
+        var label = cbform.selectAll("label").data([1])
+              .enter().append("label")
         ;
         label
             .attr("class", "btn btn-default btn-sm")
@@ -45,10 +42,8 @@ function RibbonsUI(){
             .on("change", function (e){
                 showRibbons = this.checked;
                 dispatch.call("showRibbons", this, showRibbons);
-                label.classed("active", showRibbons)
-                radioContainer
-                    .attr("visible", showRibbons ? "visible" : "hidden")
-                ;
+                label.classed("active", showRibbons);
+                my();
               })
         ;
         label
@@ -61,21 +56,16 @@ function RibbonsUI(){
         **/
         var rdform = div.select(".panel-footer").selectAll("div").data([1])
           , rdformEnter = rdform.enter().append("div")
-        ;
-        rdformEnter.append("div")
-           .attr("class", "ribbon-radio-buttons")
+                .attr("class", "ribbon-radio-buttons")
+                .classed("btn-group", true)
+                .attr("data-toggle", "buttons")
         ;
         rdform = rdformEnter.merge(rdform);
-        var radioContainer = rdform.select(".ribbon-radio-buttons")
-              .classed("btn-group", true)
-              .attr("data-toggle", "buttons")
-        ;
-        var radioLabel = radioContainer.selectAll("label")
-              // Hide the radio buttons if the "show ribbons"
-              // box is not checked.
-              .data(showRibbons ? modes : []);
+        // Hide the radio buttons if the "show ribbons" box is not checked.
+        rdform.style("display", showRibbons ? null : "none");
 
-        radioLabel.exit().remove();
+        var radioLabel = rdform.selectAll("label")
+              .data(modes);
 
         var radioLabelEnter = radioLabel
             .enter().append("label")
@@ -94,10 +84,12 @@ function RibbonsUI(){
               .append("span")
                 .html(function (d){ return d.label; })
         ;
+        radioLabel = radioLabelEnter.merge(radioLabel);
+        
         inputs.on("click", function (d){
             var self = this;
             ribbonMode = d.mode;
-            radioContainer.selectAll("label")
+            radioLabel
                 .classed("active", function(e) {
                     return this === self.parentNode;
                   })
