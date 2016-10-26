@@ -62,6 +62,7 @@ function chartify(data) {
             , "extremes"
             , "showRibbons"
             , "ribbonMode"
+            , "notes"
           )
     ;
     combineSeparateUI.connect(signal);
@@ -127,6 +128,7 @@ function chartify(data) {
         .on("extremes", notesBook.extremes)
         .on("showRibbons", notesBook.showRibbons)
         .on("ribbonMode", notesBook.ribbonMode)
+        .on("notes", notesBook.showNotes)
     ;
 } // chartify()
 

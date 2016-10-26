@@ -24,6 +24,7 @@ function NotesBook() {
           , zoom:     { x: [], y: [] } // indicates an active brush
           , showRibbons: true // show or hide the ribbons layer
           , ribbonMode: Ribbon.STANDARD_DEVIATION // Ribbon width meaning
+          , showNotes: true // show or hide the notes
         }
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -137,6 +138,7 @@ function NotesBook() {
                           .showReflines(canvases.length === 0)
                           .showRibbon(display.showRibbons)
                           .ribbonMode(display.ribbonMode)
+                          .showNotes(display.showNotes)
                       , selection: self
                     })
               ;
@@ -183,6 +185,7 @@ function NotesBook() {
               .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
               .showRibbon(display.showRibbons)
               .ribbonMode(display.ribbonMode)
+              .showNotes(display.showNotes)
               .update()
           ;
           c.selection
@@ -351,6 +354,16 @@ function NotesBook() {
 
       return my;
     } // my.ribbonMode()
+
+  my.showNotes = function(value) {
+      if(!arguments.length) return display.showNotes;
+
+      display.showNotes = value;
+      update();
+
+      return my;
+    } // my.showNotes()
+
 
   // This is always the last thing returned
   return my;
