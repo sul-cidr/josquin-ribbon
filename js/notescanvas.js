@@ -33,6 +33,7 @@ function NotesCanvas() {
             .tickFormat(function (d){ return reflinesValues[d].label; })
       , clipPath
       , ribbon = Ribbon()
+      , showNotes = true
     ;
     /*
     ** Main Function Object
@@ -124,6 +125,10 @@ function NotesCanvas() {
     function hilite() {
         svg.selectAll("rect.note")
             .classed("subdued", !state)
+
+            // Show extreme notes only if showNotes is false,
+            // but extremes is true.
+            .attr("display", null)
         ;
     } // hilite()
 
@@ -149,6 +154,7 @@ function NotesCanvas() {
             .style("color", function(d) {
                 return scale.color(d.voice);
               })
+            .attr("display", showNotes ? null : "none")
         ;
         hilite();
         selection.select(".reflines")
@@ -317,6 +323,14 @@ function NotesCanvas() {
         clipPath = value;
         return my;
       } // my.clipPath()
+    ;
+
+    my.showNotes = function (value) {
+        if(arguments.length === 0) return showNotes;
+
+        showNotes = value;
+        return my;
+      } // my.showNotes()
     ;
 
     /*
