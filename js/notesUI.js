@@ -43,6 +43,11 @@ function NotesUI(){
             .attr("class", "mdl-button mdl-button--fab mdl-button--primary")
             .on("click", function(d) {
                 var self = this;
+                var vis = toolbar.select("ul").style("visibility");
+                // Toggle the flyout
+                toolbar.select("ul")
+                    .style("visibility", vis == "visible" ? "hidden" : "visible")
+                ;
                 dispatch.call(d.callback, self, d.label);
               })
           .append("i")
