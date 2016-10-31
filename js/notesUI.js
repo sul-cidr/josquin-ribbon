@@ -1,64 +1,72 @@
-function ExtremeNotesUI(){
+function NotesUI(){
     /*
     ** Private Variables
     */
     var div
-      , labelTextExtremes = "Show Extreme Notes"
-      , labelTextNotes = "Show Notes"
+      , toggle = {
+              label: "Toggle Notes"
+            , icon: "music_note"
+            , callback: "toggleNotes"
+          }
+      , flyout = [
+              {
+                  label: "Combine"
+                , icon: "vertical_align_center"
+                , callback: "separate"
+              }
+            , {
+                  label: "Separate"
+                , icon: "format_line_spacing"
+                , callback: "separate"
+              }
+            , {
+                  label: "Show Extreme Notes"
+                , icon: "library_music"
+                , callback: "extremes"
+              }
+          ]
       , dispatch
     ;
     /*
     ** Main Function Object
     */
     function my() {
-        var form = div.selectAll("form").data([1]);
-        form = form.enter().append("form")
-            .attr("class", "form")
-          .merge(form)
+        var toolbar = div.selectAll(".fixed-action-button")
+            .data([toggle], function(d) { return d.label; })
         ;
-
-        // Checkbox for showing/hiding all notes.
-        checkbox(form, labelTextNotes, function (checked){
-            if(arguments.length){
-                dispatch.call("notes", this, checked);
-            } else {
-                // Initial value is true.
-                return true;
-            }
-        });
-
-        // Checkbox for showing/hiding extreme notes.
-        checkbox(form, labelTextExtremes, function (checked){
-            if(arguments.length){
-                dispatch.call("extremes", this, checked);
-            } else {
-                // Initial value is true.
-                return true;
-            }
-        });
-
-    } // my() - Main Function Object
-
-    function checkbox(form, labelText, accessor){
-        var label = form
-          .append("label")
-            .attr("class", "btn btn-sm btn-default")
-            .classed("active", true)
+        toolbar = toolbar.enter()
+          .append("div")
+            .attr("class", "fixed-action-button")
         ;
-        label
-          .append("input")
-            .attr("type", "checkbox")
-            .property("checked", true)
-            .on("change ", function (e){
-                accessor(this.checked);
-                label.classed("active", this.checked);
+        toolbar
+          .append("button")
+            .attr("class", "mdl-button mdl-button--fab mdl-button--primary")
+            .on("click", function(d) {
+                var self = this;
+                dispatch.call(d.callback, self, d.label);
               })
+          .append("i")
+            .attr("class", "material-icons")
+            .text(function(d) { return d.icon; })
         ;
-        label
-          .append("span")
-            .text(" " + labelText)
+        toolbar
+          .append("ul")
+            .attr("class", "list-inline")
+          .selectAll("li")
+            .data(flyout, function(d) { return d.label; })
+          .enter()
+          .append("li")
+          .append("button")
+            .attr("class", "mdl-button mdl-button--fab mdl-button--mini-fab mdl-button--colored")
+            .on("click", function(d) {
+                var self = this;
+                dispatch.call(d.callback, self, d.label);
+              })
+          .append("i")
+            .attr("class", "material-icons")
+            .text(function(d) { return d.icon; })
         ;
-    }
+    } // my() - Main Function Object
 
     /*
     ** API (Getters/Setters)
@@ -70,11 +78,11 @@ function ExtremeNotesUI(){
       } // my.connect()
     ;
     my.div = function (value){
-        if(arguments.length === 0) return div;
+        if(!arguments.length) return div;
         div = value;
         return my;
       } // my.div()
     ;
     // ALWAYS return this last
     return my;
-} // ExtremeNotesUI()
+} // NotesUI()
