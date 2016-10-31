@@ -62,8 +62,6 @@ function chartify(data) {
             , "notes"
           )
     ;
-    combineSeparateUI.connect(signal);
-    extremeNotesUI.connect(signal);
     ribbonsUI.connect(signal);
 
     colorScale
@@ -97,8 +95,6 @@ function chartify(data) {
     // Render views.
     notesNav();
     notesBook();
-    combineSeparateUI();
-    extremeNotesUI();
     ribbonsUI();
     colorLegend();
 
