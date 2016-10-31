@@ -98,6 +98,7 @@ function chartify(data) {
     // Render views.
     notesNav();
     notesBook();
+    notesUI();
     ribbonsUI();
     colorLegend();
 
@@ -117,14 +118,15 @@ function chartify(data) {
     // Domain window corresponding to the size of the canvas
     notesNav.extent([0, lifeScale.invert(notesBook.width())]);
 
+
     signal
-        .on("zoom",     notesBook.zoom)
-        .on("hilite",   notesBook.hilite)
-        .on("separate", notesBook.separate)
-        .on("extremes", notesBook.extremes)
+        .on("zoom"         , notesBook.zoom)
+        .on("hilite"       , notesBook.hilite)
+        .on("separate"     , notesBook.separate)
+        .on("extremes"     , notesBook.extremes)
+        .on("toggleNotes"  , notesBook.toggleNotes)
         .on("toggleRibbons", notesBook.toggleRibbons)
-        .on("ribbonMode", notesBook.ribbonMode)
-        .on("togglNotes", notesBook.toggleNotes)
+        .on("ribbonMode"   , notesBook.ribbonMode)
     ;
 } // chartify()
 
