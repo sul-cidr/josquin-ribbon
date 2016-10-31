@@ -57,7 +57,7 @@ function chartify(data) {
             , "separate"
             , "selected"
             , "extremes"
-            , "showRibbons"
+            , "toggleRibbons"
             , "ribbonMode"
             , "notes"
           )
@@ -119,7 +119,7 @@ function chartify(data) {
         .on("hilite",   notesBook.hilite)
         .on("separate", notesBook.separate)
         .on("extremes", notesBook.extremes)
-        .on("showRibbons", notesBook.showRibbons)
+        .on("toggleRibbons", notesBook.toggleRibbons)
         .on("ribbonMode", notesBook.ribbonMode)
         .on("notes", notesBook.showNotes)
     ;
