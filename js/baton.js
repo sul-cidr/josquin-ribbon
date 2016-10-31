@@ -128,6 +128,13 @@ function chartify(data) {
         .on("toggleRibbons", notesBook.toggleRibbons)
         .on("ribbonMode"   , notesBook.ribbonMode)
     ;
+
+    // Titles and other UI polishes
+    var titles = divMeta.selectAll(".panel-title")
+        .data(data.filename.split(".krn")[0].split('-').reverse())
+    ;
+    titles.text(function(d) { return d.split('_').join(' '); });
+
 } // chartify()
 
 // Capture URL query param
