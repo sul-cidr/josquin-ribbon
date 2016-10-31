@@ -6,6 +6,8 @@ var width = 960
   , notesBook = NotesBook()
       .svg(d3.select("#notes"))
   , divMeta = d3.select("#meta")
+  , notesUI = NotesUI()
+      .div(divMeta.select("#notes-ui"))
   , ribbonsUI = RibbonsUI()
       .div(divMeta.select("#ribbons-ui"))
   , colorLegend = ColorLegend()
@@ -59,9 +61,10 @@ function chartify(data) {
             , "extremes"
             , "toggleRibbons"
             , "ribbonMode"
-            , "notes"
+            , "toggleNotes"
           )
     ;
+    notesUI.connect(signal);
     ribbonsUI.connect(signal);
 
     colorScale
@@ -121,7 +124,7 @@ function chartify(data) {
         .on("extremes", notesBook.extremes)
         .on("toggleRibbons", notesBook.toggleRibbons)
         .on("ribbonMode", notesBook.ribbonMode)
-        .on("notes", notesBook.showNotes)
+        .on("togglNotes", notesBook.toggleNotes)
     ;
 } // chartify()
 
