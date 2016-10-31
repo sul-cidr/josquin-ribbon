@@ -182,7 +182,7 @@ function NotesBook() {
               .height(h)
               .zoom(z)
               .state(hilited || !display.hilite)
-              .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
+              .showReflines(display.separate ? (hilited || !display.hilite) : !i)
               .showRibbon(display.showRibbons)
               .ribbonMode(display.ribbonMode)
               .showNotes(display.showNotes)
@@ -295,7 +295,7 @@ function NotesBook() {
   my.separate = function(value) {
       if(!arguments.length) return display.separate;
 
-      display.separate = value || false;
+      display.separate = value == "Separate";
       update();
 
       return my;
@@ -353,14 +353,12 @@ function NotesBook() {
       return my;
     } // my.ribbonMode()
 
-  my.showNotes = function(value) {
-      if(!arguments.length) return display.showNotes;
-
-      display.showNotes = value;
+  my.toggleNotes = function() {
+      display.showNotes = !display.showNotes;
       update();
 
       return my;
-    } // my.showNotes()
+    } // my.toggleNotes()
 
 
   // This is always the last thing returned
