@@ -337,14 +337,12 @@ function NotesBook() {
     } // my.data()
   ;
 
-  my.showRibbons = function(value) {
-      if(!arguments.length) return display.showRibbons;
-
-      display.showRibbons = value;
+  my.toggleRibbons = function() {
+      display.showRibbons = !display.showRibbons;
       update();
 
       return my;
-    } // my.showRibbons()
+    } // my.toggleRibbons()
 
   my.ribbonMode = function(value) {
       if(!arguments.length) return display.ribbonMode;
