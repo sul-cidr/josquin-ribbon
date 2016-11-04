@@ -19,9 +19,14 @@
    <g class="brush"></g>
 </svg><!--/#notesnav-->
 
-<!-- Shadow DOM (not directly rendered) -->
-<!-- Javascript callbacks, signals, and css styles apply to this object -->
-<!-- Thus, the notesnav will also show combine/separate -->
+<!-- Shadow DOM (not directly rendered)
+      Javascript callbacks, signals, and css styles apply to this object.
+      The combine/separate transitions can apply to this svg and get rendered
+      to every ```<use>``` automatically.
+
+      Right?
+-->
+
 <svg id="notescanvas" (type="shadow")>
   <symbol id="score" viewBox="0 0 max(time + duration) maxpitch">
     <g class="score voice0 superius"></g>
@@ -53,8 +58,6 @@
       allow for transitions to be made universally.  Each instance that
       ```<use>```s the symbols has to manually append the voices together, and
       do the transitions.
-      With the above layout, on the other hand, the combine/separate transitions
-      can be built into the svg and then rendered on every ```<use>```.
 -->
 <svg id="notescanvas" (type="shadow")>
   <symbol id="superius" viewBox="0 0 max(time + duration) maxpitch">
