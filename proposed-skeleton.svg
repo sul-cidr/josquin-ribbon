@@ -22,7 +22,7 @@
 <!-- Shadow DOM (not directly rendered) -->
 <!-- Javascript callbacks, signals, and css styles apply to this object -->
 <!-- Thus, the notesnav will also show combine/separate -->
-<svg id="josquin" (type="shadow")>
+<svg id="notescanvas" (type="shadow")>
   <symbol id="score" viewBox="0 0 max(time + duration) maxpitch">
     <g class="score voice0 superius"></g>
     <g class="score voice1 tenor"></g>
