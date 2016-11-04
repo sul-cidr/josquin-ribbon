@@ -7,15 +7,15 @@ function RibbonsUI(){
       , showRibbons = true
       , ribbonMode = Ribbon.STANDARD_DEVIATION
       , modes = [
-          {
-            label: "Standard Deviation"
-            , mode: Ribbon.STANDARD_DEVIATION
-          },
-          {
-            label: "Attack Density"
-            , mode: Ribbon.ATTACK_DENSITY
-          }
-        ]
+            {
+              label: "Standard Deviation"
+              , mode: Ribbon.STANDARD_DEVIATION
+            }
+          , {
+              label: "Attack Density"
+              , mode: Ribbon.ATTACK_DENSITY
+            }
+          ]
       , dispatch
     ;
     /*
@@ -85,7 +85,7 @@ function RibbonsUI(){
                 .html(function (d){ return d.label; })
         ;
         radioLabel = radioLabelEnter.merge(radioLabel);
-        
+
         inputs.on("click", function (d){
             var self = this;
             ribbonMode = d.mode;
