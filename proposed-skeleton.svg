@@ -1,0 +1,50 @@
+<svg id="notesbook" width="100%" height="100%">
+  <svg type="viewBox + slice">
+    <use xlink:href="#reflines" />
+    <use xlink:href="#score" />
+    <use xlink:href="#ribbon" />
+  </svg>
+  <g class="barlines"></g>
+  <g class="mensuration"></g>
+  <g class="measures"></g>
+</svg><!--/#notesbook-->
+
+<svg id="notesnav" width="100%" height="100%">
+  <svg type="viewBox + slice">
+    <use xlink:href="#score" />
+    <!-- optional
+    <use xlink:href="#ribbon" />
+     -->
+   </svg>
+   <g class="brush"></g>
+</svg><!--/#notesnav-->
+
+<!-- Shadow DOM (not directly rendered) -->
+<!-- Javascript callbacks, signals, and css styles apply to this object -->
+<!-- Thus, the notesnav will also show combine/separate -->
+<svg id="josquin" type="shadow">
+  <symbol id="score" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice0 superius"></g>
+    <g class="score voice1 tenor"></g>
+    <g class="score voice2 contra"></g>
+    <g class="score voice3 discantus"></g>
+    <g class="score voice4 altus"></g>
+    <g class="score voice5 bassus"></g>
+  </symbol><!--/#score-->
+  <symbol id="ribbon" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="ribbon voice0 superius"></g>
+    <g class="ribbon voice1 tenor"></g>
+    <g class="ribbon voice2 contra"></g>
+    <g class="ribbon voice3 discantus"></g>
+    <g class="ribbon voice4 altus"></g>
+    <g class="ribbon voice5 bassus"></g>
+  </symbol><!--/#ribbon-->
+  <symbol id="reflines" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="reflines voice0 superius"></g>
+    <g class="reflines voice1 tenor"></g>
+    <g class="reflines voice2 contra"></g>
+    <g class="reflines voice3 discantus"></g>
+    <g class="reflines voice4 altus"></g>
+    <g class="reflines voice5 bassus"></g>
+  </symbol><!--/#reflines-->
+</svg><!--.shadow-->
