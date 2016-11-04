@@ -120,6 +120,8 @@ function NotesBook() {
       g
         .append("g")
           .attr("class", "notesbook")
+        .append("g")
+          .attr("class", "notes")
         .selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
@@ -182,7 +184,7 @@ function NotesBook() {
               .height(h)
               .zoom(z)
               .state(hilited || !display.hilite)
-              .showReflines(display.separate ? (hilited || !display.hilite) : (i === 0))
+              .showReflines(display.separate ? (hilited || !display.hilite) : !i)
               .showRibbon(display.showRibbons)
               .ribbonMode(display.ribbonMode)
               .showNotes(display.showNotes)
