@@ -24,9 +24,8 @@
       The combine/separate transitions can apply to this svg and get rendered
       to every ```<use>``` automatically.
 
-      Right?
+      Right???
 -->
-
 <svg id="notescanvas" (type="shadow")>
   <symbol id="score" viewBox="0 0 max(time + duration) maxpitch">
     <g class="score voice0 superius"></g>
@@ -54,10 +53,13 @@
   </symbol><!--/#reflines-->
 </svg><!--.shadow-->
 
-<!-- This would be cleaner to generate and process, but it doesn't really
-      allow for transitions to be made universally.  Each instance that
-      ```<use>```s the symbols has to manually append the voices together, and
-      do the transitions.
+<!-- This alternative would be cleaner to generate and process, BUT...
+
+      It doesn't allow for transitions to be made universally.
+      Each instance that ```<use>```s the voice symbols has to manually assemble
+      the voices together, and do the transitions to each container (transforms,
+      such as translate and scale, for example).  The user would then get
+      the axes and ribbon transitions for free.
 -->
 <svg id="notescanvas" (type="shadow")>
   <symbol id="superius" viewBox="0 0 max(time + duration) maxpitch">
