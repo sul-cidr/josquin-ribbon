@@ -48,3 +48,44 @@
     <g class="reflines voice5 bassus"></g>
   </symbol><!--/#reflines-->
 </svg><!--.shadow-->
+
+<!-- This would be cleaner to generate and process, but it doesn't really
+      allow for transitions to be made universally.  Each instance that
+      ```<use>```s the symbols has to manually append the voices together, and
+      do the transitions.
+      With the above layout, on the other hand, the combine/separate transitions
+      can be built into the svg and then rendered on every ```<use>```.
+-->
+<svg id="notescanvas" (type="shadow")>
+  <symbol id="superius" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice0 superius"></g>
+    <g class="ribbon voice0 superius"></g>
+    <g class="reflines voice0 superius"></g>
+  </symbol><!--/#superius-->
+  <symbol id="tenor" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice1 tenor"></g>
+    <g class="ribbon voice1 tenor"></g>
+    <g class="reflines voice1 tenor"></g>
+  </symbol><!--/#tenor-->
+  <symbol id="contra" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice2 contra"></g>
+    <g class="ribbon voice2 contra"></g>
+    <g class="reflines voice2 contra"></g>
+  </symbol><!--/#contra-->
+  <symbol id="discantus" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice3 discantus"></g>
+    <g class="ribbon voice3 discantus"></g>
+    <g class="reflines voice3 discantus"></g>
+  </symbol><!--/#discantus-->
+  <symbol id="altus" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="score voice4 altus"></g>
+    <g class="ribbon voice4 altus"></g>
+    <g class="reflines voice4 altus"></g>
+  </symbol><!--/#altus-->
+  <symbol id="bassus" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="score voice5 bassus"></g>
+    <g class="ribbon voice5 bassus"></g>
+  </symbol><!--/#ribbon-->
+    <g class="reflines voice5 bassus"></g>
+  </symbol><!--/#reflines-->
+</svg><!--.shadow-->
