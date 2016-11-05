@@ -20,7 +20,7 @@ function Score() {
   */
   function my(selection) {
       data = selection.datum();
-      console.log(data);
+
       xExtent = [
             d3.min(data, function(d) { return d.time; })
           , d3.max(data, function(d) { return d.time + d.duration; })
@@ -28,18 +28,27 @@ function Score() {
       ;
       yExtent = d3.extent(data.map(function(d) { return d.pitch; }));
 
-      console.log(xExtent, yExtent);
-
-      var rects = selection.selectAll("rect")
+      var rect = selection.selectAll("rect")
               .data(function(d) { return d; })
       ;
-      rects
-        .enter().append("rect")
+      rect.enter()
+        .append("rect")
           .attr("class", "note")
       ;
-      rects.exit().remove();
-
-      console.log(rects);
+      rect.exit()
+        .remove()
+      ;
+      selection.selectAll("rect")
+       .transition(d3.transition())
+          .attr("x", function(d) { return x(d.time); })
+          .attr("width", function(d) {
+              return x(d.time + d.duration) - x(d.time);
+            })
+          .attr("y", function(d) { return y(d.pitch); })
+          .attr("height", y.bandwidth())
+          .attr("rx", y.bandwidth() / 2)
+          .attr("ry", y.bandwidth() / 2)
+      ;
       // computeExtremeNotes();
       // enableTooltips();
   } // my()
