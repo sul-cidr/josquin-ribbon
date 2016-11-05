@@ -9,15 +9,15 @@ function NotesCanvas() {
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
       , x = d3.scaleLinear()
       , y =  d3.scaleBand() // Used for the "separate" view
-      , tooltip
-      , dispatch
       , separate = false
-      , clipPath
       , generator = {
               score: Score()
             , ribbon: Ribbon()
             //, reflines: function(){}//Reflines()
           }
+      , tooltip
+      , dispatch
+      , clipPath
     ;
     /*
     ** Main Function Object
@@ -116,18 +116,17 @@ function NotesCanvas() {
 
 
     function computeExtremeNotes() {
-        if(svg){
-            var extent = d3.extent(data.value, function (d){ return d.pitch; });
-            svg.selectAll("rect.note").each(function(d) {
-                d3.select(this)
-                    .classed("extreme", function(d) {
-                        return extremes
-                            && extent.some(function(e) { return d.pitch === e; })
-                        ;
-                      })
-                ;
-              })
-        }
+        if(!svg) return;
+        var extent = d3.extent(data.value, function (d){ return d.pitch; });
+        svg.selectAll("rect.note").each(function(d) {
+            d3.select(this)
+                .classed("extreme", function(d) {
+                    return extremes
+                        && extent.some(function(e) { return d.pitch === e; })
+                    ;
+                  })
+            ;
+          })
         ;
     } // computeExtremeNotes()
 
