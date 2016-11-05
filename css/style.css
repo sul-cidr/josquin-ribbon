@@ -11,6 +11,12 @@ header {
     background-repeat: no-repeat;
     background-size: contain;
 }
+#notes {
+    height: 60vh;
+}
+#nav {
+    height: 30vh;
+}
 .mensuration {
     font-family: 'BravuraText';
     font-size: xx-large;
