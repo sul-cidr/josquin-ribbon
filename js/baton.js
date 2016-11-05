@@ -154,3 +154,15 @@ function getQueryVariables() {
     ;
     return inits;
 } // getQueryVariables()
+
+// Convert a string into a form suitable for use as a css class name
+// Hopefully the voice names don't contain Unicode strings
+// From: https://gist.github.com/mathewbyrne/1280286#gistcomment-1716050
+function slugify(str) {
+    return str.toLowerCase()
+        .trim() // remove trailing and leading whitepsace
+        .replace(/[^\w\s-]/g, '') // remove non-{alphanum,whitespace,hyphen}s
+        .replace(/[\s_-]+/g, '-') // {whitespace,underscore,hyphen}s -> hyphen
+        .replace(/^-+|-+$/g, '') // remove leading, trailing hyphens
+    ;
+} // slugify()
