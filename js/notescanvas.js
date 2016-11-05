@@ -13,11 +13,11 @@ function NotesCanvas() {
       , dispatch
       , separate = false
       , clipPath
-      , generator = {
+      , generator = d3.entries({
               score: Score()
             , ribbon: Ribbon()
             //, reflines: function(){}//Reflines()
-          }
+          })
     ;
     /*
     ** Main Function Object
@@ -25,7 +25,7 @@ function NotesCanvas() {
     function my() {
         console.log(data);
         var symbol = svg.selectAll("symbol")
-            .data(d3.entries(generator), function(d) { return d.key; })
+            .data(generator, function(d) { return d.key; })
         ;
         symbol.enter()
           .append("symbol")
@@ -48,10 +48,10 @@ function NotesCanvas() {
               })
           .each(function(d) {
               var that = d3.select(this);
-              console.log(that, d, g.key);
+              console.log(that, d, g);
               that
                   .datum(data.notes.get(d))
-                  .call(generator[g.key])
+                  .call(g.value.x(x).y(y))
               ;
             })
         ;
