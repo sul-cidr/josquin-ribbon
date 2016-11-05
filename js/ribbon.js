@@ -2,9 +2,9 @@ function Ribbon() {
     var g
       , data // The original notes data
       , ribbonData // The computed data for the ribbon
-      , interval = 12 // The interval size for the sliding window, in units of beats.
+      , interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
-      , bandwidth = 1 // The scaling factor multiplied by the standard deviation before adding/subtracting from the mean.
+      , bandwidth = 1 // Scaling factor * standard deviation before adding/subtracting from mean.
       , scale // Scale data passed down from notescanvas
       , domain // Domain data passed down from notescanvas
       , area = d3.area()
@@ -96,7 +96,7 @@ function Ribbon() {
               mean = notesInWindow[0];
               deviation = 0;
               break;
-            
+
             // If there's more than 1 note in our window,
             // then compute the mean and standard deviation in earnest.
             default:
@@ -117,7 +117,7 @@ function Ribbon() {
           };
         });
     }
-    
+
     function computeAttackDensity(){
 
       // Use the following fixed values for the attack density computation,
@@ -174,7 +174,7 @@ function Ribbon() {
               mean = notesInWindow[0];
               density = 1;
               break;
-            
+
             // If there's more than 1 note in our window,
             // then compute the mean and use the note count as density.
             default:
@@ -269,6 +269,19 @@ function Ribbon() {
         return my;
       } // my.mode()
     ;
+    my.x = function(_) {
+        if(!arguments.length) return x;
+        x = _;
+        return my;
+      } // my.x()
+    ;
+    my.y = function(_) {
+        if(!arguments.length) return y;
+        y = _;
+        return my;
+      } // my.y()
+    ;
+
     return my;
 }
 
