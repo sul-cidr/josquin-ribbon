@@ -31,7 +31,7 @@ function NotesCanvas() {
         symbol.enter()
           .append("symbol")
             .attr("id", function(d) { return d.key; })
-            .attr("viewBox", [0, 0, width, height].join(' '))
+            .attr("viewBox", [0, y.range()[0], width, y.range()[1]].join(' '))
             .attr("preserveAspectRatio", "xMidYMid")
             .attr("meetOrSlice", "meet")
           .each(generate)
