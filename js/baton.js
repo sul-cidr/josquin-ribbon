@@ -1,10 +1,10 @@
 var width = 960
   , height = 150 // height of one strip of notes
   , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-  , notesNav = NotesNav()
-      .svg(d3.select("#nav").append("svg"))
-  , notesBook = NotesBook()
-      .svg(d3.select("#notes"))
+  // , notesNav = NotesNav()
+  //     .svg(d3.select("#nav").append("svg"))
+  // , notesBook = NotesBook()
+  //     .svg(d3.select("#notes"))
   , combineSeparateUI = CombineSeparateUI()
       .div(d3.select("#combine-separate-ui"))
   , extremeNotesUI = ExtremeNotesUI()
@@ -75,23 +75,23 @@ function chartify(data) {
     colorScale
         .domain(data.partnames)
     ;
-    notesNav
-        .colorScale(colorScale)
-        .margin(margin)
-        .width(width)
-        .height(height)
-        .data(data)
-        .connect(signal)
-    ;
-    notesBook
-        .colorScale(colorScale)
-        .margin(margin)
-        .height(height * 3)
-        .width(width)
-        .extremes(true)
-        .data(data)
-        .connect(signal)
-    ;
+    // notesNav
+    //     .colorScale(colorScale)
+    //     .margin(margin)
+    //     .width(width)
+    //     .height(height)
+    //     .data(data)
+    //     .connect(signal)
+    // ;
+    // notesBook
+    //     .colorScale(colorScale)
+    //     .margin(margin)
+    //     .height(height * 3)
+    //     .width(width)
+    //     .extremes(true)
+    //     .data(data)
+    //     .connect(signal)
+    // ;
     colorLegend
         .colorScale(colorScale)
         .noteHeight(10)
@@ -101,8 +101,8 @@ function chartify(data) {
     ;
 
     // Render views.
-    notesNav();
-    notesBook();
+    // notesNav();
+    // notesBook();
     combineSeparateUI();
     extremeNotesUI();
     ribbonsUI();
@@ -113,8 +113,8 @@ function chartify(data) {
         , y: d3.range(data.minpitch.b7, data.maxpitch.b7)
       }
     ;
-//    notesNav.full(full);
-    notesBook.full(full);
+    // notesNav.full(full);
+    // notesBook.full(full);
 
     // Lifesize of this piece
     lifeScale
@@ -122,16 +122,16 @@ function chartify(data) {
         .domain([0, data.scorelength[0]])
     ;
     // Domain window corresponding to the size of the canvas
-    notesNav.extent([0, lifeScale.invert(notesBook.width())]);
+    // notesNav.extent([0, lifeScale.invert(notesBook.width())]);
 
     signal
-        .on("zoom",     notesBook.zoom)
-        .on("hilite",   notesBook.hilite)
-        .on("separate", notesBook.separate)
-        .on("extremes", notesBook.extremes)
-        .on("showRibbons", notesBook.showRibbons)
-        .on("ribbonMode", notesBook.ribbonMode)
-        .on("notes", notesBook.showNotes)
+        // .on("zoom",     notesBook.zoom)
+        // .on("hilite",   notesBook.hilite)
+        // .on("separate", notesBook.separate)
+        // .on("extremes", notesBook.extremes)
+        // .on("showRibbons", notesBook.showRibbons)
+        // .on("ribbonMode", notesBook.ribbonMode)
+        // .on("notes", notesBook.showNotes)
     ;
 } // chartify()
 
