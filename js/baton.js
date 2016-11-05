@@ -1,6 +1,8 @@
 var width = 960
   , height = 150 // height of one strip of notes
-  , margin = { top: 20, right: 20, bottom: 20, left: 20 }
+  , margin = { top: 20, right: 20, bottom: 20, left: 20
+  , canvas = NotesCanvas()
+      .svg(d3.select("body").append("svg")) // on the shadow DOM
   // , notesNav = NotesNav()
   //     .svg(d3.select("#nav").append("svg"))
   // , notesBook = NotesBook()
@@ -57,6 +59,8 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
+    canvas.data(data)(); // draw things in the shadow DOM.
+
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
