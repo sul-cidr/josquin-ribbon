@@ -60,7 +60,19 @@ function parseJSON(proll) {
 
 function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
-
+    var notesnav = d3.select("#nav").append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+    ;
+    notesnav
+      .append("use")
+        .attr("xlink:href", "#score")
+        .attr("pointer-events", "none")
+    ;
+    notesnav
+      .append("use")
+        .attr("xlink:href", "#ribbon")
+    ;
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
