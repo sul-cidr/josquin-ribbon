@@ -12,7 +12,7 @@ function Score() {
     , xExtent // local domain
     , yExtent // local domain
     , margin = { top: 10, bottom: 10, left: 0, right: 0 }
-    , tooltip
+    // , tooltip
     , dispatch
   ;
   /*
@@ -39,15 +39,18 @@ function Score() {
         .remove()
       ;
       selection.selectAll("rect")
+        .attr("pointer-events", "auto")
+        .on("click", function(d) { console.log(d); /*tooltip.html("blah").show()*/; })
+        // .on("mouseout", tooltip.hide)
        .transition(d3.transition())
           .attr("x", function(d) { return x(d.time); })
+          .attr("y", function(d) { return y(d.pitch); })
+          .attr("rx", y.bandwidth() / 2)
+          .attr("ry", y.bandwidth() / 2)
           .attr("width", function(d) {
               return x(d.time + d.duration) - x(d.time);
             })
-          .attr("y", function(d) { return y(d.pitch); })
           .attr("height", y.bandwidth())
-          .attr("rx", y.bandwidth() / 2)
-          .attr("ry", y.bandwidth() / 2)
       ;
       // computeExtremeNotes();
       // enableTooltips();
