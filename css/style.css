@@ -79,3 +79,12 @@ path.domain {
     fill-opacity: 0.5;
     stroke-width: 1;
 }
+.voice0 {
+    color: #1f77b4;
+}
+.voice1 {
+    color: #ff7f0e;
+}
+.voice2 {
+    color: #2ca02c;
+}
