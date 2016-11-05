@@ -15,7 +15,8 @@ function NotesCanvas() {
             , ribbon: Ribbon()
             //, reflines: function(){}//Reflines()
           }
-      , tooltip
+    , lifeSize = 10 // default height and width of notes
+    , tooltip
       , dispatch
       , clipPath
     ;
@@ -30,6 +31,9 @@ function NotesCanvas() {
         symbol.enter()
           .append("symbol")
             .attr("id", function(d) { return d.key; })
+            .attr("viewBox", [0, 0, width, height].join(' '))
+            .attr("preserveAspectRatio", "xMidYMid")
+            .attr("meetOrSlice", "meet")
           .each(generate)
         ;
         console.log(svg);
@@ -278,6 +282,14 @@ function NotesCanvas() {
         data = _;
         x.domain([0, data.scorelength[0]]);
         y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7));
+
+        var scaleup = function(d) { return d * lifeSize; };
+        x.range(x.domain().map(scaleup));
+        y.range(d3.extent(y.domain()).reverse().map(scaleup));
+
+        width = x.range()[1] - x.range()[0];
+        height = d3.extent(y.range())[1] - d3.extent(y.range())[0];
+
         return my;
       } // my.data()
     ;
