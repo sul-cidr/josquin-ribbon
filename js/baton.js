@@ -60,16 +60,18 @@ function parseJSON(proll) {
 
 function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
+    var vb = canvas.viewbox();
 
     var notesbook = d3.select("#notes").append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("preserveAspectRatio", "xMinYMin slice")
       , notesnav = d3.select("#nav").append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
     ;
     [notesbook,notesnav].forEach(function(sheet) {
+        sheet
+            // .attr("viewBox", vb.join(' '))
+            .attr("preserveAspectRatio", "xMinYMin slice")
+            .style("width", "100%")
+            .style("height", "100%")
+        ;
         sheet
           .append("use")
             .attr("xlink:href", "#score")
