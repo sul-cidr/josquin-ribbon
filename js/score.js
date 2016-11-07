@@ -40,8 +40,6 @@ function Score() {
       ;
       selection.selectAll("rect")
         .attr("pointer-events", "auto")
-        .on("click", function(d) { console.log(d); /*tooltip.html("blah").show()*/; })
-        // .on("mouseout", tooltip.hide)
        .transition(d3.transition())
           .attr("x", function(d) { return x(d.time); })
           .attr("y", function(d) { return y(d.pitch); })
