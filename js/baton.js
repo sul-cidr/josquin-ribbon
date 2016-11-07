@@ -76,18 +76,20 @@ function chartify(data) {
     var notesbook = d3.select("#notes").append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
-        .attr("preserveAspectRatio", "xMinYMin")
-        .attr("meetOrSlice", "slice")
+        .attr("preserveAspectRatio", "xMinYMin slice")
     ;
     notesbook
       .append("use")
         .attr("xlink:href", "#score")
-        .attr("pointer-events", "none")
+        .attr("x", 0)
+        .attr("y", 0)
+        .style("pointer-events", "none")
     ;
     notesbook
       .append("use")
         .attr("xlink:href", "#ribbon")
     ;
+
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
