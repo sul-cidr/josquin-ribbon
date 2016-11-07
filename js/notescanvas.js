@@ -24,19 +24,16 @@ function NotesCanvas() {
     ** Main Function Object
     */
     function my() {
-        console.log(data);
         var symbol = svg.selectAll("symbol")
             .data(d3.entries(generator), function(d) { return d.key; })
         ;
         symbol.enter()
           .append("symbol")
             .attr("id", function(d) { return d.key; })
-            .attr("viewBox", [0, y.range()[0], width, y.range()[1]].join(' '))
-            .attr("preserveAspectRatio", "xMidYMid")
-            .attr("meetOrSlice", "meet")
+            .attr("viewBox", [x.range()[0], y.range()[1], width, height].join(' '))
+            .attr("preserveAspectRatio", "xMinYMin slice")
           .each(generate)
         ;
-        console.log(svg);
     } // my()
 
     /*
@@ -281,14 +278,14 @@ function NotesCanvas() {
         if(!arguments.length) return data;
         data = _;
         x.domain([0, data.scorelength[0]]);
-        y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7));
+        y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
 
         var scaleup = function(d) { return d * lifeSize; };
         x.range(x.domain().map(scaleup));
         y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
         width = x.range()[1] - x.range()[0];
-        height = d3.extent(y.range())[1] - d3.extent(y.range())[0];
+        height = Math.abs(y.range()[1] - y.range()[0]);
 
         return my;
       } // my.data()
