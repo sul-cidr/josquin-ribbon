@@ -60,34 +60,27 @@ function parseJSON(proll) {
 
 function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
-    var notesnav = d3.select("#nav").append("svg")
-        .attr("width", "100%")
-        .attr("height", "100%")
-    ;
-    notesnav
-      .append("use")
-        .attr("xlink:href", "#score")
-        .attr("pointer-events", "none")
-    ;
-    notesnav
-      .append("use")
-        .attr("xlink:href", "#ribbon")
-    ;
+
     var notesbook = d3.select("#notes").append("svg")
-        .attr("width", "100%")
-        .attr("height", "100%")
-        .attr("preserveAspectRatio", "xMinYMin slice")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("preserveAspectRatio", "xMinYMin slice")
+      , notesnav = d3.select("#nav").append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
     ;
-    notesbook
-      .append("use")
-        .attr("xlink:href", "#score")
-        .attr("x", 0)
-        .attr("y", 0)
-        .style("pointer-events", "none")
-    ;
-    notesbook
-      .append("use")
-        .attr("xlink:href", "#ribbon")
+    [notesbook,notesnav].forEach(function(sheet) {
+        sheet
+          .append("use")
+            .attr("xlink:href", "#score")
+            .style("pointer-events", "none")
+        ;
+        sheet
+          .append("use")
+            .attr("xlink:href", "#ribbon")
+        ;
+
+      })
     ;
 
     var signal = d3.dispatch(
