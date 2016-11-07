@@ -15,10 +15,11 @@ function NotesCanvas() {
             , ribbon: Ribbon()
             //, reflines: function(){}//Reflines()
           }
-    , lifeSize = 10 // default height and width of notes
-    , tooltip
+      , lifeSize = 10 // default height and width of notes
+      , tooltip
       , dispatch
       , clipPath
+      , viewbox
     ;
     /*
     ** Main Function Object
@@ -30,8 +31,8 @@ function NotesCanvas() {
         symbol.enter()
           .append("symbol")
             .attr("id", function(d) { return d.key; })
-            .attr("viewBox", [x.range()[0], y.range()[1], width, height].join(' '))
-            .attr("preserveAspectRatio", "xMinYMin slice")
+            .attr("viewBox", viewbox.join(' '))
+            .attr("preserveAspectRatio", "none")
           .each(generate)
         ;
     } // my()
@@ -284,9 +285,9 @@ function NotesCanvas() {
         x.range(x.domain().map(scaleup));
         y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
-        width = x.range()[1] - x.range()[0];
-        height = Math.abs(y.range()[1] - y.range()[0]);
-
+        width   = x.range()[1] - x.range()[0];
+        height  = Math.abs(y.range()[1] - y.range()[0]);
+        viewbox = [x.range()[0], y.range()[1], width, height];
         return my;
       } // my.data()
     ;
@@ -311,6 +312,12 @@ function NotesCanvas() {
 
         return my;
       } // my.snap()
+    ;
+    my.viewbox = function(_) {
+        if(!arguments.length) return viewbox;
+
+        viewbox = _;
+      } // my.viewbox()
     ;
 
     // This is always the last thing returned
