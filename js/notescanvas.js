@@ -299,24 +299,18 @@ function NotesCanvas() {
         return my;
       } // my.zoom()
     ;
-    my.update = function() {
+    my.update = function(trnsn) {
         // Call update, with a transition
-        update(svg.transition());
+        update(trnsn ? svg.transition(): svg);
 
         return my;
       } // my.update()
-    ;
-    my.snap = function() {
-        // Call update with immediate effect (no transition)
-        update();
-
-        return my;
-      } // my.snap()
     ;
     my.viewbox = function(_) {
         if(!arguments.length) return viewbox;
 
         viewbox = _;
+        return my;
       } // my.viewbox()
     ;
 
