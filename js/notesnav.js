@@ -7,18 +7,10 @@ function NotesNav() {
       , width
       , height
       , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-      , canvas = {
-              selection: null
-            , widget: NotesCanvas()
-          }
-      , brush =  {
-              selection: null
-            , widget: d3.brushX()
-                    .handleSize(10)
-                    .on("brush", brushed)
-                    .on("end", brushed)
-            , width: 0
-          }
+      , brush = d3.brushX()
+          .handleSize(10)
+          .on("brush", brushed)
+          .on("end", brushed)
       , dispatch
     ;
 
@@ -26,38 +18,22 @@ function NotesNav() {
     ** Main function Object
     */
     function my() {
-        svg
-          .attr("width", width)
-          .attr("height", height)
-        ;
-
-        var g = svg.selectAll("g").data([1]);
-        g = g.enter().append("g").merge(g);
-        g.attr("transform", "translate("+ margin.left +","+ margin.top +")")
-
-        g.selectAll("g")
-            .data(["canvas", "brush"])
+        var g = svg.selectAll("g").data(["brush"]);
+        g = g
           .enter().append("g")
             .attr("class", function(d) { return d; })
+            .call(brush)
+          .merge(g)
         ;
         width  = width - margin.left - margin.right;
         height = height - margin.top - margin.bottom;
 
-        canvas.widget
-            .width(width)
-            .height(height)
-        ;
-        brush.widget.extent([[0, 0], [width, height]]);
+        brush.extent([[0, 0], [width, height]]);
 
-        canvas.selection = g.select(".canvas")
-            .datum({ key: "full", value: d3.merge(data.notes.values()) })
-            .call(canvas.widget)
+        g
+            .call(brush.move, canvas.widget.x().range())
         ;
-        brush.selection = g.select(".brush")
-            .call(brush.widget)
-            .call(brush.widget.move, canvas.widget.x().range())
-        ;
-        brush.selection.selectAll("rect")
+        g.selectAll("rect")
             .attr("y", 0)
             .attr("height", height)
         ;
@@ -82,7 +58,7 @@ function NotesNav() {
     } // brushed()
 
     function recenter(clickX) {
-          var extent = brush.widget.extent()()
+          var extent = brush.extent()()
                 .map(function(b) { return b[0]; })
             , center = [clickX - brush.width / 2, clickX + brush.width / 2]
           ;
@@ -110,53 +86,12 @@ function NotesNav() {
     /*
     ** API - Getters/Setters
     */
-    my.height = function(value) {
-        if(!arguments.length) return height;
-
-        height = value;
-
-        return my;
-      } // my.height()
-    ;
-    my.width = function (value) {
-        if(arguments.length === 0) return width;
-
-        width = value;
-
-        return my;
-      } // my.width()
-    ;
-    my.margin = function (value) {
-        if(!arguments.length) return margin;
-
-        margin = value;
-
-        return my;
-      } // my.margin()
-    ;
-    my.colorScale = function (value) {
-        if(arguments.length === 0) return canvas.widget.colorScale();
-
-        canvas.widget.colorScale(value);
-
-        return my;
-      } // my.colorScale()
-    ;
     my.connect = function(value) {
         if(!arguments.length) return dispatch;
 
         dispatch = value;
         return my;
       } // my.connect()
-    ;
-    my.full = function(value) {
-        if(!arguments.length) return scale;
-
-        scale = value;
-        canvas.widget.zoom(scale).update(false);
-
-        return my;
-      } // my.full()
     ;
     my.extent = function(value) {
         if(!value) return;
@@ -170,15 +105,15 @@ function NotesNav() {
         return my;
       } // my.extent()
     ;
-    my.svg = function (value){
-        if(arguments.length === 0) return svg;
-        svg = value;
+    my.svg = function (_){
+        if(!arguments.length) return svg;
+        svg = _;
         return my;
       } // my.svg()
     ;
-    my.data = function (value){
-        if(arguments.length === 0) return data;
-        data = value;
+    my.data = function (_){
+        if(!arguments.length) return data;
+        data = _;
         return my;
       } // my.data()
     ;
