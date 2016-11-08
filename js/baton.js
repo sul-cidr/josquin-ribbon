@@ -3,7 +3,7 @@ var width = 960
   , margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , canvas = NotesCanvas()
       .svg(d3.select("body").append("svg")) // on the shadow DOM
-  // , notesNav = NotesNav()
+  , notesNav = NotesNav()
   //     .svg(d3.select("#nav").append("svg"))
   // , notesBook = NotesBook()
   //     .svg(d3.select("#notes"))
@@ -16,8 +16,6 @@ var width = 960
   , colorLegend = ColorLegend()
       .div(d3.select("div#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-  , lifeSize = 10 // screen width of 1 duration
-  , lifeScale = d3.scaleLinear()
 ;
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
@@ -62,29 +60,26 @@ function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
     var vb = canvas.viewbox();
 
-    var notesbook = d3.select("#notes").append("svg")
-      , notesnav = d3.select("#nav").append("svg")
+    var book = d3.select("#notes").append("svg")
+      , nav = d3.select("#nav").append("svg")
     ;
-    [notesbook,notesnav].forEach(function(sheet) {
+    [book,nav].forEach(function(sheet) {
         sheet
-            .attr("preserveAspectRatio", "xMinYMin slice")
+            .attr("preserveAspectRatio", "xMinYMax slice")
             .style("width", "100%")
             .style("height", "100%")
         ;
-        sheet
-          .append("use")
-            .attr("xlink:href", "#score")
+        sheet.selectAll("use")
+            .data(["score", "ribbon"])
+          .enter().append("use")
+            .attr("xlink:href", function(d) { return  "#" + d; })
             .style("pointer-events", "none")
         ;
-        sheet
-          .append("use")
-            .attr("xlink:href", "#ribbon")
-        ;
-
-      })
+      }) // forEach
     ;
-    notesbook.attr("viewBox", [0, 0, vb[2], vb[3]].join(' ')); // width and height
+    book.attr("viewBox", [0, 0, vb[2], vb[3]].join(' ')); // width and height
 
+    notesNav.svg(nav)();
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
@@ -135,22 +130,6 @@ function chartify(data) {
     extremeNotesUI();
     ribbonsUI();
     colorLegend();
-
-    var full = {
-          x: [0, data.scorelength[0]]
-        , y: d3.range(data.minpitch.b7, data.maxpitch.b7)
-      }
-    ;
-    // notesNav.full(full);
-    // notesBook.full(full);
-
-    // Lifesize of this piece
-    lifeScale
-        .range([0, lifeSize * data.scorelength[0]])
-        .domain([0, data.scorelength[0]])
-    ;
-    // Domain window corresponding to the size of the canvas
-    // notesNav.extent([0, lifeScale.invert(notesBook.width())]);
 
     signal
         // .on("zoom",     notesBook.zoom)
