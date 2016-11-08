@@ -60,14 +60,12 @@ function parseJSON(proll) {
 
 function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
+    var vb = canvas.viewbox();
 
-    var notesbook = d3.select("#notes")
-      , notesnav = d3.select("#nav")
+    var notesbook = d3.select("#notes").append("svg")
+      , notesnav = d3.select("#nav").append("svg")
     ;
     [notesbook,notesnav].forEach(function(sheet) {
-        sheet = sheet
-          .append("svg")
-        ;
         sheet
             .attr("preserveAspectRatio", "xMinYMin slice")
             .style("width", "100%")
@@ -85,7 +83,7 @@ function chartify(data) {
 
       })
     ;
-    notesbook.attr("viewBox", canvas.viewbox().join(' '));
+    notesbook.attr("viewBox", [0, 0, vb[2], vb[3]].join(' ')); // width and height
 
     var signal = d3.dispatch(
               "hilite"
