@@ -251,7 +251,7 @@ function NotesBook() {
       if(!arguments.length) return scale;
 
       canvases.forEach(function(c) {
-          c.canvas.zoom(value).snap();
+          c.canvas.zoom(value).update(false);
       });
 
       return my;
@@ -282,7 +282,9 @@ function NotesBook() {
       if(display.separate && display.hilite)
           display.zoom.y = null;
 
-      canvases.forEach(function(c) { c.canvas.zoom(display.zoom).snap(); });
+      canvases
+          .forEach(function(c) { c.canvas.zoom(display.zoom).update(false); })  
+      ;
 
       return my;
     } // my.zoom()

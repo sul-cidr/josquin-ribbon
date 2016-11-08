@@ -153,7 +153,7 @@ function NotesNav() {
         if(!arguments.length) return scale;
 
         scale = value;
-        canvas.widget.zoom(scale).snap();
+        canvas.widget.zoom(scale).update(false);
 
         return my;
       } // my.full()
