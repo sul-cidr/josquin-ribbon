@@ -299,9 +299,9 @@ function NotesCanvas() {
         return my;
       } // my.zoom()
     ;
-    my.update = function(trnsn) {
+    my.update = function(trnstn) {
         // Call update, with a transition
-        update(trnsn ? svg.transition(): svg);
+        update(trnstn ? svg.transition(): svg);
 
         return my;
       } // my.update()
