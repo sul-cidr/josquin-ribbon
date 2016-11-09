@@ -18,27 +18,16 @@ function Score() {
   /*
   ** Main Function Object
   */
-  function my(selection) {
-      data = selection.datum();
-
-      xExtent = [
-            d3.min(data, function(d) { return d.time; })
-          , d3.max(data, function(d) { return d.time + d.duration; })
-        ]
+  function my() {
+      var rect = svg.selectAll("rect")
+              .data(data)
       ;
-      yExtent = d3.extent(data.map(function(d) { return d.pitch; }));
-
-      var rect = selection.selectAll("rect")
-              .data(function(d) { return d; })
-      ;
+      rect.exit().remove();
       rect.enter()
         .append("rect")
           .attr("class", "note")
       ;
-      rect.exit()
-        .remove()
-      ;
-      selection.selectAll("rect")
+      svg.selectAll("rect")
         .attr("pointer-events", "auto")
        .transition(d3.transition())
           .attr("x", function(d) { return x(d.time); })
@@ -61,6 +50,24 @@ function Score() {
   /*
   ** API - Getter/Setter Fynctions
   */
+  my.svg = function(_) {
+      if(!arguments.length) return svg;
+      svg = _;
+      return my;
+    } // my.svg()
+  ;
+  my.data = function(_) {
+      if(!arguments.length) return data;
+      data = _;
+      xExtent = [
+            d3.min(data, function(d) { return d.time; })
+          , d3.max(data, function(d) { return d.time + d.duration; })
+        ]
+      ;
+      yExtent = d3.extent(data.map(function(d) { return d.pitch; }));
+      return my;
+    } // my.data()
+  ;
   my.x = function(_) {
       if(!arguments.length) return x;
       x = _;
