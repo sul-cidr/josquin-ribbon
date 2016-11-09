@@ -9,7 +9,6 @@ function NotesNav() {
       , y = d3.scaleLinear()
       , width
       , height
-      , margin = { top: 20, right: 20, bottom: 20, left: 20 }
       , brush = d3.brushX()
           .handleSize(10)
           .on("brush", brushed)
@@ -28,13 +27,8 @@ function NotesNav() {
             .call(brush)
           .merge(g)
         ;
-        width  = width - margin.left - margin.right;
-        height = height - margin.top - margin.bottom;
-
-        brush.extent([[0, 0], [width, height]]);
-
         g
-            .call(brush.move, canvas.widget.x().range())
+            .call(brush.move, x.range())
         ;
         g.selectAll("rect")
             .attr("y", 0)
@@ -47,17 +41,14 @@ function NotesNav() {
     */
     function brushed() {
         if(!d3.event) return;
-        var extent = (d3.event.selection || recenter(d3.event.sourceEvent.layerX))
-              .map(Math.round)
-        ;
+        var extent = d3.event.selection.map(Math.round);
         if(!d3.event.selection) {
-            brush.selection
+            svg.select(".brush")
               .transition().duration(500)
-                .call(brush.widget.move, extent)
+                .call(brush.move, extent)
             ;
         }
-        if(dispatch)
-            dispatch.call("zoom", this, extent.map(canvas.widget.x().invert));
+        if(dispatch) dispatch.call("zoom", this, extent);
     } // brushed()
 
     function recenter(clickX) {
@@ -79,7 +70,7 @@ function NotesNav() {
 
     function move() {
         brush.selection
-            .call(brush.widget.move(
+            .call(brush.move(
                   [0, 0]
                 , [height * canvas.widget.ratio(), height]
               ))
@@ -89,12 +80,24 @@ function NotesNav() {
     /*
     ** API - Getters/Setters
     */
-    my.connect = function(value) {
+    my.connect = function(_) {
         if(!arguments.length) return dispatch;
 
-        dispatch = value;
+        dispatch = _;
         return my;
       } // my.connect()
+    ;
+    my.data = function (_){
+        if(!arguments.length) return data;
+        data = _;
+        return my;
+      } // my.data()
+    ;
+    my.svg = function(_) {
+        if(!arguments.length) return svg;
+        svg = _;
+        return my;
+      } // my.svg()
     ;
     my.viewbox = function(_) {
         if(!arguments.length) return viewbox;
@@ -125,19 +128,6 @@ function NotesNav() {
         return my;
       } // my.y()
     ;
-    my.svg = function (_){
-        if(!arguments.length) return svg;
-        svg = _;
-        return my;
-      } // my.svg()
-    ;
-    my.data = function (_){
-        if(!arguments.length) return data;
-        data = _;
-        return my;
-      } // my.data()
-    ;
-
     // This is ALWAYS the last thing returned
     return my;
 } // NotesNav()
