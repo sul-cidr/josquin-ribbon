@@ -284,7 +284,7 @@ function NotesCanvas() {
         x.range(x.domain().map(scaleup));
         y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
-        width   = x.range()[1] - x.range()[0];
+        width   = Math.abs(x.range()[1] - x.range()[0]);
         height  = Math.abs(y.range()[1] - y.range()[0]);
         viewbox = [x.range()[0], y.range()[1], width, height];
         return my;
