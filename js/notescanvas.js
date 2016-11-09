@@ -49,9 +49,7 @@ function NotesCanvas() {
                 return [g.key, slugify(d), ("voice" + i)].join(' ');
               })
           .each(function(d) {
-              var that = d3.select(this);
-              console.log(that, d, g);
-              that
+              d3.select(this)
                   .datum(data.notes.get(d))
                   .call(g.value.x(x).y(y))
               ;
@@ -264,7 +262,8 @@ function NotesCanvas() {
     */
     my.noteHeight = function () { return noteHeight; };
     my.roundedCornerSize = function () { return roundedCornerSize; };
-    my.x = function() { return scale.x; };
+    my.x = function() { return x; };
+    my.y = function() { return y; };
 
     /*
     ** API (Setter ONLY) Functions
