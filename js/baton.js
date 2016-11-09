@@ -63,7 +63,7 @@ function chartify(data) {
 
     var book = d3.select("#notes")
               .append("svg")
-                .attr("preserveAspectRatio", "xMinYMax slice")
+                .attr("preserveAspectRatio", "xMinYMin slice")
       , nav = d3.select("#nav").append("svg")
                 .attr("preserveAspectRatio", "none")
     ;
