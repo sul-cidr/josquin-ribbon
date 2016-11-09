@@ -28,6 +28,7 @@ function NotesCanvas() {
         var symbol = svg.selectAll("symbol")
             .data(d3.entries(generator), function(d) { return d.key; })
         ;
+        symbol.exit().remove();
         symbol.enter()
           .append("symbol")
             .attr("id", function(d) { return d.key; })
@@ -49,9 +50,13 @@ function NotesCanvas() {
                 return [g.key, slugify(d), ("voice" + i)].join(' ');
               })
           .each(function(d) {
-              d3.select(this)
-                  .datum(data.notes.get(d))
-                  .call(g.value.x(x).y(y))
+              var self = d3.select(this);
+              g.value
+                  .x(x)
+                  .y(y)
+                  .data(data.notes.get(d))
+                  .svg(self)
+                ()
               ;
             })
         ;
