@@ -106,7 +106,7 @@ function NotesCanvas() {
     // from the Y band scale.
     function syncYLinear(){
         var extent = d3.extent(scale.y.domain());
-       
+
         // Adjust the linear scale to match the band scale,
         // such that the note values map to the center points
         // of the note rectangles.
@@ -283,14 +283,9 @@ function NotesCanvas() {
         return my;
       } // my.connect()
     ;
-    my.extremes = function(value) {
-        if(!arguments.length)
-            return extremes;
-        else {
-            extremes = value;
-            computeExtremeNotes();
-        }
-
+    my.extremes = function() {
+        extremes = !extremes;
+        computeExtremeNotes();
         return my;
       } // my.extremes()
     ;

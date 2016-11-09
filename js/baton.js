@@ -5,14 +5,13 @@ var width = 960
       .svg(d3.select("#nav").append("svg"))
   , notesBook = NotesBook()
       .svg(d3.select("#notes"))
-  , combineSeparateUI = CombineSeparateUI()
-      .div(d3.select("#combine-separate-ui"))
-  , extremeNotesUI = ExtremeNotesUI()
-      .div(d3.select("#extreme-notes-ui"))
+  , divMeta = d3.select("#meta")
+  , notesUI = NotesUI()
+      .div(divMeta.select("#notes-ui"))
   , ribbonsUI = RibbonsUI()
-      .div(d3.select("#ribbons-ui"))
+      .div(divMeta.select("#ribbons-ui"))
   , colorLegend = ColorLegend()
-      .div(d3.select("div#legend"))
+      .div(divMeta.select("#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
   , lifeSize = 10 // screen width of 1 duration
   , lifeScale = d3.scaleLinear()
@@ -60,13 +59,12 @@ function chartify(data) {
             , "separate"
             , "selected"
             , "extremes"
-            , "showRibbons"
+            , "toggleRibbons"
             , "ribbonMode"
-            , "notes"
+            , "toggleNotes"
           )
     ;
-    combineSeparateUI.connect(signal);
-    extremeNotesUI.connect(signal);
+    notesUI.connect(signal);
     ribbonsUI.connect(signal);
 
     colorScale
@@ -100,8 +98,7 @@ function chartify(data) {
     // Render views.
     notesNav();
     notesBook();
-    combineSeparateUI();
-    extremeNotesUI();
+    notesUI();
     ribbonsUI();
     colorLegend();
 
@@ -121,15 +118,23 @@ function chartify(data) {
     // Domain window corresponding to the size of the canvas
     notesNav.extent([0, lifeScale.invert(notesBook.width())]);
 
+
     signal
-        .on("zoom",     notesBook.zoom)
-        .on("hilite",   notesBook.hilite)
-        .on("separate", notesBook.separate)
-        .on("extremes", notesBook.extremes)
-        .on("showRibbons", notesBook.showRibbons)
-        .on("ribbonMode", notesBook.ribbonMode)
-        .on("notes", notesBook.showNotes)
+        .on("zoom"         , notesBook.zoom)
+        .on("hilite"       , notesBook.hilite)
+        .on("separate"     , notesBook.separate)
+        .on("extremes"     , notesBook.extremes)
+        .on("toggleNotes"  , notesBook.toggleNotes)
+        .on("toggleRibbons", notesBook.toggleRibbons)
+        .on("ribbonMode"   , notesBook.ribbonMode)
     ;
+
+    // Titles and other UI polishes
+    var titles = divMeta.selectAll(".panel-title")
+        .data(data.filename.split(".krn")[0].split('-').reverse())
+    ;
+    titles.text(function(d) { return d.split('_').join(' '); });
+
 } // chartify()
 
 // Capture URL query param

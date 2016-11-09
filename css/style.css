@@ -79,3 +79,22 @@ path.domain {
     fill-opacity: 0.5;
     stroke-width: 1;
 }
+.fixed-action-button {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    align-items: center;
+}
+.fixed-action-button > button {
+    margin: 0;
+}
+ul.fab {
+    flex: 0 0 auto;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+li {
+    flex: 0 0 auto;
+}
