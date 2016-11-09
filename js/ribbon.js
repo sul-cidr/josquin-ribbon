@@ -1,10 +1,11 @@
 function Ribbon() {
+    /* Private Variables */
     var g
       , data // The original notes data
       , ribbonData // The computed data for the ribbon
       , interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
-      , bandwidth = 1 // Scaling factor * standard deviation before adding/subtracting from mean.
+      , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
       , scale // Scale data passed down from notescanvas
       , domain // Domain data passed down from notescanvas
       , area = d3.area()
@@ -14,20 +15,20 @@ function Ribbon() {
           .curve(d3.curveBasis)
       , ribbonData
       , ribbonDataStale = true
-      , show = true
       , mode = Ribbon.STANDARD_DEVIATION
     ;
 
 
+    /*
+    ** Main Function Object
+    */
     function my(){
-      if(data && domain && scale){
-
-        if(ribbonDataStale & show){
-          ribbonData = computeRibbon();
-          ribbonDataStale = false;
+        if!(data && domain && scale) return;
+        if(ribbonDataStale){
+            ribbonData = computeRibbon();
+            ribbonDataStale = false;
         }
-
-        var path = g.selectAll("path").data(show? [ribbonData] : [])
+        var path = g.selectAll("path").data([ribbonData])
         path.exit().remove()
         path.enter().append("path").merge(path)
             .attr("class", "ribbon")
@@ -36,8 +37,7 @@ function Ribbon() {
               })
             .attr("d", area)
         ;
-      }
-    }
+    } // Main Function Object
 
     function computeRibbon(){
       if(mode === Ribbon.STANDARD_DEVIATION){
@@ -254,13 +254,6 @@ function Ribbon() {
         return my;
       } // my.domain()
     ;
-    my.show = function(value) {
-        if(!arguments.length)
-            return show;
-        show = value;
-        return my;
-      } // my.show()
-    ;
     my.mode = function(value) {
         if(!arguments.length)
             return mode;
@@ -282,8 +275,9 @@ function Ribbon() {
       } // my.y()
     ;
 
+    // This is ALWAYS the last thing returned
     return my;
-}
+} // Ribbon()
 
 // Expose constants for use in UI elements.
 Ribbon.STANDARD_DEVIATION = "STANDARD_DEVIATION";
