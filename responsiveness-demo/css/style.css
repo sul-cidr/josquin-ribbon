@@ -1,0 +1,117 @@
+@font-face {
+  font-family: 'BravuraText';
+  src: url('fonts/BravuraText.eot'); /* IE 5-8 */
+  src: local(':)'), /* trick IE to ignore the rest */
+      url('fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
+      url('fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
+      url('fonts/BravuraText.svg') format('svg'); /* iOS */
+}
+header {
+    background-image: url('/img/josquin.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+#notes {
+    height: 75vh;
+}
+#nav {
+    height: 25vh;
+}
+.mensuration {
+    font-family: 'BravuraText';
+    font-size: xx-large;
+}
+#legend li {
+    cursor: pointer;
+}
+#legend li text {
+    margin-left: 1em;
+}
+
+rect, li {
+    transition: opacity 0.5s linear, fill-opacity 0.5s linear;
+}
+rect.note {
+    fill: currentColor;
+    stroke: currentColor;
+    fill-opacity: 0.5;
+    stroke-width: 1;
+}
+.subdued {
+    opacity: 0.1;
+}
+rect.extreme {
+  stroke: red;
+  stroke-width: 3;
+}
+.brush .extent {
+    stroke: black;
+    fill-opacity: .08;
+    stroke-opacity: .2;
+    shape-rendering: crispEdges;
+}
+.brush .selection {
+    stroke: darkgrey;
+}
+path.domain {
+    fill: none;
+    stroke: none;
+}
+.tick line {
+    stroke: lightgray;
+}
+.tick text {
+    fill: gray;
+    font-size: 1.3rem;
+}
+.barlines .tick text {
+    display: none;
+    fill: none;
+}
+.mensuration .tick text {
+		font-size: 2.5rem;
+}
+/* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
+.d3-tip {
+    line-height: 1;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border-radius: 2px;
+}
+.ribbon {
+    fill: currentColor;
+    stroke: currentColor;
+    fill-opacity: 0.5;
+    stroke-width: 1;
+}
+.voice0 {
+    color: #1f77b4;
+}
+.voice1 {
+    color: #ff7f0e;
+}
+.voice2 {
+    color: #2ca02c;
+}
+.voice3 {
+    color: #d62728;
+}
+.voice4 {
+    color: #9467bd;
+}
+.voice5 {
+    color: #8c564b;
+}
+.voice6 {
+    color: #e377c2;
+}
+.voice7 {
+    color: #7f7f7f;
+}
+.voice8 {
+    color: #bcbd22;
+}
+.voice9 {
+    color: #17becf;
+}
