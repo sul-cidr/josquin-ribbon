@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Josquin Music Project</title>
+  <meta author="Curran Kelleher">
+  <meta author="Seemant Kulleen">
+
+  <!-- Bootstrap
+    For reset and grid layout.
+    from http://getbootstrap.com/customize/?id=c9c26f4080624c8af8ea9d80a6a64013
+  -->
+  <link rel="stylesheet" href="../css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-light_blue.min.css" />
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <header class="page-header text-center">
+    <h1>Josquin Music Project</h1>
+    <h2>Work in Progress</h2>
+  </header>
+  <article>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="notes col-md-9 col-lg-9">
+          <div class="row" style="height: 100vh;">
+            <div id="notes"></div>
+            <div id="nav"></div>
+          </div><!--.row-->
+        </div><!--.notes-->
+        <div class="col-md-3 col-lg-3">
+          <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                <h3 class="panel-title">Voices</h3>
+                <div id="combine-separate-ui" class="text-center"></div>
+            </div><!--.panel-heading-->
+            <div class="panel-body">
+              <div id="legend"></div>
+            </div><!--.panel-body-->
+            <div class="panel-footer text-center">
+              <div id="extreme-notes-ui"></div>
+            </div><!--.panel-footer-->
+          </div><!--.panel-->
+          <div id="ribbons-ui" class="panel panel-default text-center">
+            <div class="panel-heading">
+              <h3 class="panel-title">Ribbons</h3>
+            </div><!--.panel-heading-->
+            <div class="panel-body"></div>
+            <div class="panel-footer"></div>
+          </div><!--.panel-->
+        </div><!--.col-xs-12.col-lg-2-->
+      </div><!--.row-->
+      <div class="row">
+        <!--<p class="mensuration">&#xE911; &#xE912; &#xE913; &#xE914; &#xE915; &#xE916; &#xE917; &#xE918; &#xE919;</p>-->
+        <!--
+        <span>Note names: </span> <p id="note-names-string"></p>
+        <span>Note durations: </span><p id="note-durations-string"></p>
+        -->
+      </div><!--.row-->
+    </div><!--.container-->
+  </article>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+  <script src="js/legend.js"></script>
+  <script src="js/ribbon.js"></script>
+  <script src="js/score.js"></script>
+  <script src="js/notescanvas.js"></script>
+  <script src="js/notesbook.js"></script>
+  <script src="js/notesnav.js"></script>
+  <script src="js/combineSeparateUI.js"></script>
+  <script src="js/extremeNotesUI.js"></script>
+  <script src="js/ribbonsUI.js"></script>
+  <script src="js/baton.js"></script>
+</body>

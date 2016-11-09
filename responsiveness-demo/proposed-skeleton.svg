@@ -1,0 +1,127 @@
+<svg id="notesbook" width="100%" height="100%">
+  <svg (type="viewBox + slice")>
+    <use xlink:href="#reflines" />
+    <use xlink:href="#score" />
+    <use xlink:href="#ribbon" />
+  </svg>
+  <g class="barlines"></g>
+  <g class="mensuration"></g>
+  <g class="measures"></g>
+</svg><!--/#notesbook-->
+
+<svg id="notesnav" width="100%" height="100%">
+  <svg (type="viewBox + slice")>
+    <use xlink:href="#score" />
+    <!-- optional
+    <use xlink:href="#ribbon" />
+     -->
+   </svg>
+   <g class="brush"></g>
+</svg><!--/#notesnav-->
+
+<!-- Shadow DOM (not directly rendered)
+      Javascript callbacks, signals, and css styles apply to this object.
+      The combine/separate transitions can apply to this svg and get rendered
+      to every ```<use>``` automatically.
+
+      Right???
+-->
+<svg id="notescanvas" (type="shadow")>
+  <symbol id="score" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice0 superius"></g>
+    <g class="score voice1 tenor"></g>
+    <g class="score voice2 contra"></g>
+    <g class="score voice3 discantus"></g>
+    <g class="score voice4 altus"></g>
+    <g class="score voice5 bassus"></g>
+  </symbol><!--/#score-->
+
+  <symbol id="ribbon" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="stddev">
+      <g class="ribbon voice0 superius"></g>
+      <g class="ribbon voice1 tenor"></g>
+      <g class="ribbon voice2 contra"></g>
+      <g class="ribbon voice3 discantus"></g>
+      <g class="ribbon voice4 altus"></g>
+      <g class="ribbon voice5 bassus"></g>
+    </g><!--.stddev-->
+
+    <g class="density">
+      <g class="ribbon voice0 superius"></g>
+      <g class="ribbon voice1 tenor"></g>
+      <g class="ribbon voice2 contra"></g>
+      <g class="ribbon voice3 discantus"></g>
+      <g class="ribbon voice4 altus"></g>
+      <g class="ribbon voice5 bassus"></g>
+    </g><!--.density-->
+  </symbol><!--/#ribbon-->
+
+  <symbol id="reflines" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="reflines voice0 superius"></g>
+    <g class="reflines voice1 tenor"></g>
+    <g class="reflines voice2 contra"></g>
+    <g class="reflines voice3 discantus"></g>
+    <g class="reflines voice4 altus"></g>
+    <g class="reflines voice5 bassus"></g>
+  </symbol><!--/#reflines-->
+</svg><!--.shadow-->
+
+<!-- This alternative would be cleaner to generate and process, BUT...
+
+      It doesn't allow for transitions to be made universally.
+      Each instance that ```<use>```s the voice symbols has to manually assemble
+      the voices together, and do the transitions to each container (transforms,
+      such as translate and scale, for example).
+
+      The caller would then get the axes and ribbon transitions for free.
+-->
+<svg id="notescanvas" (type="shadow")>
+  <symbol id="superius" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice0 superius"></g>
+    <g class="ribbon voice0 superius">
+      <g class="stddev"></g>
+      <g class="density"></g>
+    </g><!--.ribbon-->
+    <g class="reflines voice0 superius"></g>
+  </symbol><!--/#superius-->
+  <symbol id="tenor" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice1 tenor"></g>
+    <g class="ribbon voice1 tenor">
+      <g class="stddev"></g>
+      <g class="density"></g>
+    </g><!--.ribbon-->
+    <g class="reflines voice1 tenor"></g>
+  </symbol><!--/#tenor-->
+  <symbol id="contra" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice2 contra"></g>
+    <g class="ribbon voice2 contra">
+      <g class="stddev"></g>
+      <g class="density"></g>
+    </g><!--.ribbon-->
+    <g class="reflines voice2 contra"></g>
+  </symbol><!--/#contra-->
+  <symbol id="discantus" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice3 discantus"></g>
+    <g class="ribbon voice3 discantus">
+      <g class="stddev"></g>
+      <g class="density"></g>
+    </g><!--.ribbon-->
+    <g class="reflines voice3 discantus"></g>
+  </symbol><!--/#discantus-->
+  <symbol id="altus" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="score voice4 altus"></g>
+    <g class="ribbon voice4 altus">
+      <g class="stddev"></g>
+      <g class="density"></g>
+    </g><!--.ribbon-->
+    <g class="reflines voice4 altus"></g>
+  </symbol><!--/#altus-->
+  <symbol id="bassus" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="score voice5 bassus"></g>
+    <g class="ribbon voice5 bassus">
+      <g class="stddev"></g>
+      <g class="density"></g>
+    </g><!--.ribbon-->
+    <g class="reflines voice5 bassus"></g>
+  </symbol><!--/#bassus-->
+</svg><!--.shadow-->
