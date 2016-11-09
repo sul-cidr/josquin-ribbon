@@ -4,6 +4,9 @@ function NotesNav() {
     */
     var svg
       , data
+      , viewbox
+      , x = d3.scaleLinear()
+      , y = d3.scaleLinear()
       , width
       , height
       , margin = { top: 20, right: 20, bottom: 20, left: 20 }
@@ -93,17 +96,34 @@ function NotesNav() {
         return my;
       } // my.connect()
     ;
-    my.extent = function(value) {
-        if(!value) return;
-        var extent = value.map(canvas.widget.x());
+    my.viewbox = function(_) {
+        if(!arguments.length) return viewbox;
 
-        brush.width = Math.abs(extent[1] - extent[0]);
-        brush.selection
+        viewbox = _;
+        x.range([viewbox[0], viewbox[2]]);
+        y.range([viewbox[3], viewbox[1]]);
+        width  = Math.abs(viewbox[2] - viewbox[0]);
+        height = Math.abs(viewbox[3] - viewbox[1]);
+        brush.extent([[0, 0], [width, height]]);
+
+        svg.select(".brush")
           .transition(d3.transition())
-            .call(brush.widget.move, extent)
+            .call(brush.move, [viewbox[0], viewbox[2]])
         ;
         return my;
       } // my.extent()
+    ;
+    my.x = function(_) {
+        if(!arguments.length) return x;
+        x = _;
+        return my;
+      } // my.x()
+    ;
+    my.y = function(_) {
+        if(!arguments.length) return y;
+        y = _;
+        return my;
+      } // my.y()
     ;
     my.svg = function (_){
         if(!arguments.length) return svg;
