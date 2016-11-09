@@ -92,10 +92,15 @@ function chartify(data) {
             , "notes"
           )
     ;
+    notesNav
+        .svg(nav)
+        .viewbox(vb)
+        .connect(signal)
+      ()
+    ;
     combineSeparateUI.connect(signal);
     extremeNotesUI.connect(signal);
     ribbonsUI.connect(signal);
-
     colorScale
         .domain(data.partnames)
     ;
@@ -133,7 +138,13 @@ function chartify(data) {
     colorLegend();
 
     signal
-        // .on("zoom",     notesBook.zoom)
+        .on("zoom", function(extent) {
+            book
+                .attr(
+                      "viewBox"
+                    , [extent[0], vb[1], vb[2], vb[3]].join(' ')
+                  )
+          })
         // .on("hilite",   notesBook.hilite)
         // .on("separate", notesBook.separate)
         // .on("extremes", notesBook.extremes)
@@ -142,6 +153,11 @@ function chartify(data) {
         // .on("notes", notesBook.showNotes)
     ;
 } // chartify()
+
+// Calculate the extent of a range
+function difference(range) {
+    return Math.abs(range[1] - range[0]);
+} // extent()
 
 // Capture URL query param
 function getQueryVariables() {
