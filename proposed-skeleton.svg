@@ -76,52 +76,57 @@
       The caller would then get the axes and ribbon transitions for free.
 -->
 <svg id="notescanvas" (type="shadow")>
-  <symbol id="superius" viewBox="0 0 max(time + duration) maxpitch">
-    <g class="score voice0 superius"></g>
-    <g class="ribbon voice0 superius">
+  <symbol id="voice0" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice0"></g>
+    <g class="ribbon voice0">
       <g class="stddev"></g>
       <g class="density"></g>
     </g><!--.ribbon-->
-    <g class="reflines voice0 superius"></g>
-  </symbol><!--/#superius-->
-  <symbol id="tenor" viewBox="0 0 max(time + duration) maxpitch">
-    <g class="score voice1 tenor"></g>
-    <g class="ribbon voice1 tenor">
+    <g class="reflines voice0"></g>
+  </symbol><!--/#voice0-->
+
+  <symbol id="voice1" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice1"></g>
+    <g class="ribbon voice1">
       <g class="stddev"></g>
       <g class="density"></g>
     </g><!--.ribbon-->
-    <g class="reflines voice1 tenor"></g>
-  </symbol><!--/#tenor-->
-  <symbol id="contra" viewBox="0 0 max(time + duration) maxpitch">
-    <g class="score voice2 contra"></g>
-    <g class="ribbon voice2 contra">
+    <g class="reflines voice1"></g>
+  </symbol><!--/#voice1-->
+
+  <symbol id="voice2" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice2"></g>
+    <g class="ribbon voice2">
       <g class="stddev"></g>
       <g class="density"></g>
     </g><!--.ribbon-->
-    <g class="reflines voice2 contra"></g>
-  </symbol><!--/#contra-->
-  <symbol id="discantus" viewBox="0 0 max(time + duration) maxpitch">
-    <g class="score voice3 discantus"></g>
-    <g class="ribbon voice3 discantus">
+    <g class="reflines voice2"></g>
+  </symbol><!--/#voice2-->
+
+  <symbol id="voice3" viewBox="0 0 max(time + duration) maxpitch">
+    <g class="score voice3"></g>
+    <g class="ribbon voice3">
       <g class="stddev"></g>
       <g class="density"></g>
     </g><!--.ribbon-->
-    <g class="reflines voice3 discantus"></g>
-  </symbol><!--/#discantus-->
-  <symbol id="altus" viewBox="0 0 max(time + duration) mymaxpitch">
-    <g class="score voice4 altus"></g>
-    <g class="ribbon voice4 altus">
+    <g class="reflines voice3"></g>
+  </symbol><!--/#voice3-->
+
+  <symbol id="voice4" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="score voice4"></g>
+    <g class="ribbon voice4">
       <g class="stddev"></g>
       <g class="density"></g>
     </g><!--.ribbon-->
-    <g class="reflines voice4 altus"></g>
-  </symbol><!--/#altus-->
-  <symbol id="bassus" viewBox="0 0 max(time + duration) mymaxpitch">
-    <g class="score voice5 bassus"></g>
-    <g class="ribbon voice5 bassus">
+    <g class="reflines voice4"></g>
+  </symbol><!--/#voice4-->
+
+  <symbol id="voice5" viewBox="0 0 max(time + duration) mymaxpitch">
+    <g class="score voice5"></g>
+    <g class="ribbon voice5">
       <g class="stddev"></g>
       <g class="density"></g>
     </g><!--.ribbon-->
-    <g class="reflines voice5 bassus"></g>
-  </symbol><!--/#bassus-->
+    <g class="reflines voice5"></g>
+  </symbol><!--/#voice5-->
 </svg><!--.shadow-->
