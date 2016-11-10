@@ -26,18 +26,16 @@ function Score() {
       rect.enter()
         .append("rect")
           .attr("class", "note")
-      ;
-      svg.selectAll("rect")
-        .attr("pointer-events", "auto")
-       .transition(d3.transition())
-          .attr("x", function(d) { return x(d.time); })
-          .attr("y", function(d) { return y(d.pitch); })
+        .merge(rect)
           .attr("rx", y.bandwidth() / 2)
           .attr("ry", y.bandwidth() / 2)
+          .attr("height", y.bandwidth())
+        .transition(d3.transition())
+          .attr("x", function(d) { return x(d.time); })
+          .attr("y", function(d) { return y(d.pitch); })
           .attr("width", function(d) {
               return x(d.time + d.duration) - x(d.time);
             })
-          .attr("height", y.bandwidth())
       ;
       // computeExtremeNotes();
       // enableTooltips();
