@@ -40,7 +40,7 @@ function NotesNav() {
     ** Helper Functions
     */
     function brushed() {
-        if(!d3.event) return;
+        if(!d3.event || !d3.event.selection) return;
         var extent = d3.event.selection.map(Math.round);
         if(!d3.event.selection) {
             svg.select(".brush")
