@@ -4,7 +4,6 @@ var width = 960
   , canvas = NotesCanvas()
       .svg(d3.select("body").append("svg")) // on the shadow DOM
   , notesNav = NotesNav()
-  //     .svg(d3.select("#nav").append("svg"))
   // , notesBook = NotesBook()
   //     .svg(d3.select("#notes"))
   , combineSeparateUI = CombineSeparateUI()
@@ -61,23 +60,33 @@ function chartify(data) {
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
 
-    var book = d3.select("#notes")
-              .append("svg")
-                .attr("preserveAspectRatio", "xMinYMin slice")
+    var book = d3.select("#notes").append("svg")
+                .attr("preserveAspectRatio", "none")
       , nav = d3.select("#nav").append("svg")
                 .attr("preserveAspectRatio", "none")
     ;
     [book,nav].forEach(function(sheet) {
         sheet
             .attr("viewBox", vb.join(' '))
+            .attr("width", Math.abs(vb[2] - vb[0]))
+            .attr("height", Math.abs(vb[3] - vb[1]))
             .style("width", "100%")
             .style("height", "100%")
         ;
-        sheet.selectAll("use")
+        sheet
+          .append("svg")
+            .attr("viewBox", vb.join(' '))
+            .attr("preserveAspectRatio", "xMinYMid slice")
+            .attr("width", Math.abs(vb[2] - vb[0]))
+            .attr("height", Math.abs(vb[3] - vb[1]))
+          .selectAll("use")
             .data(["score", "ribbon"])
           .enter().append("use")
             .attr("xlink:href", function(d) { return  "#" + d; })
-            .style("pointer-events", "none")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", Math.abs(vb[2] - vb[0]))
+            .attr("height", Math.abs(vb[3] - vb[1]))
         ;
       }) // forEach
     ;
@@ -139,11 +148,8 @@ function chartify(data) {
 
     signal
         .on("zoom", function(extent) {
-            book
-                .attr(
-                      "viewBox"
-                    , [extent[0], vb[1], vb[2], vb[3]].join(' ')
-                  )
+            var w = extent[1] - extent[0];
+            book.attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
           })
         // .on("hilite",   notesBook.hilite)
         // .on("separate", notesBook.separate)
