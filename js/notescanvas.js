@@ -33,7 +33,6 @@ function NotesCanvas() {
           .append("symbol")
             .attr("id", function(d) { return d.key; })
             .attr("viewBox", viewbox.join(' '))
-            .attr("preserveAspectRatio", "none")
           .each(generate)
         ;
     } // my()
