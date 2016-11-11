@@ -59,34 +59,36 @@ function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
-
-    var book = d3.select("#notes").append("svg")
+    var w = Math.abs(vb[2] - vb[0])
+      , h = Math.abs(vb[3] - vb[1])
+      , book = d3.select("#notes").append("svg")
                 .attr("preserveAspectRatio", "none")
       , nav = d3.select("#nav").append("svg")
                 .attr("preserveAspectRatio", "none")
     ;
-    [book,nav].forEach(function(sheet) {
-        sheet
+    function sizeit(sheet) {
+        return sheet
             .attr("viewBox", vb.join(' '))
-            .attr("width", Math.abs(vb[2] - vb[0]))
-            .attr("height", Math.abs(vb[3] - vb[1]))
+            .attr("width", w)
+            .attr("height", h)
+        ;
+    } // sizeit()
+
+    [book,nav].forEach(function(sheet) {
+        sizeit(sheet)
             .style("width", "100%")
             .style("height", "100%")
         ;
-        sheet
-          .append("svg")
-            .attr("viewBox", vb.join(' '))
+        sizeit(sheet.append("svg"))
             .attr("preserveAspectRatio", "xMinYMid slice")
-            .attr("width", Math.abs(vb[2] - vb[0]))
-            .attr("height", Math.abs(vb[3] - vb[1]))
           .selectAll("use")
             .data(["score", "ribbon"])
           .enter().append("use")
             .attr("xlink:href", function(d) { return  "#" + d; })
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", Math.abs(vb[2] - vb[0]))
-            .attr("height", Math.abs(vb[3] - vb[1]))
+            .attr("width", w)
+            .attr("height", h)
         ;
       }) // forEach
     ;
