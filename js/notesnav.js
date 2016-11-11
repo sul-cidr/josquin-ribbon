@@ -1,4 +1,4 @@
-function NotesNav() {
+ function NotesNav() {
     /*
     ** Private Variables - only used inside this object
     */
@@ -10,7 +10,7 @@ function NotesNav() {
       , width
       , height
       , brush = d3.brushX()
-          .handleSize(10)
+          .handleSize(20)
           .on("brush", brushed)
           .on("end", brushed)
       , dispatch
@@ -45,7 +45,7 @@ function NotesNav() {
         if(!d3.event.selection) {
             svg.select(".brush")
               .transition().duration(500)
-                .call(brush.move, extent)
+                .call(brush.move, recenter)
             ;
         }
         if(dispatch) dispatch.call("zoom", this, extent);
@@ -72,7 +72,7 @@ function NotesNav() {
         brush.selection
             .call(brush.move(
                   [0, 0]
-                , [height * canvas.widget.ratio(), height]
+                , [width, height]
               ))
         ;
     } // resize()
@@ -109,7 +109,7 @@ function NotesNav() {
         height = Math.abs(viewbox[3] - viewbox[1]);
         brush.extent([[0, 0], [width, height]]);
 
-        svg.select(".brush")
+        svg.selectAll(".brush")
           .transition(d3.transition())
             .call(brush.move, [viewbox[0], viewbox[2]])
         ;
