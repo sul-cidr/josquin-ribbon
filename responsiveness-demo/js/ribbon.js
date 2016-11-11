@@ -237,7 +237,7 @@ function Ribbon() {
     my.mode = function(value) {
         if(!arguments.length)
             return mode;
-        mode = value.toUpperCase();
+        mode = value;
         ribbonDataStale = true;
         return my;
       } // my.mode()
@@ -260,5 +260,5 @@ function Ribbon() {
 } // Ribbon()
 
 // Expose constants for use in UI elements.
-Ribbon.STANDARD_DEVIATION = "STANDARD DEVIATION";
-Ribbon.ATTACK_DENSITY = "ATTACK DENSITY";
+Ribbon.STANDARD_DEVIATION = "STANDARD_DEVIATION";
+Ribbon.ATTACK_DENSITY = "ATTACK_DENSITY";

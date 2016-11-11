@@ -120,8 +120,6 @@ function NotesBook() {
       g
         .append("g")
           .attr("class", "notesbook")
-        .append("g")
-          .attr("class", "notes")
         .selectAll(".notes-g")
           .data(data.notes.entries())
         .enter().append("g")
@@ -251,7 +249,7 @@ function NotesBook() {
       if(!arguments.length) return scale;
 
       canvases.forEach(function(c) {
-          c.canvas.zoom(value).update(false);
+          c.canvas.zoom(value).snap();
       });
 
       return my;
@@ -282,9 +280,7 @@ function NotesBook() {
       if(display.separate && display.hilite)
           display.zoom.y = null;
 
-      canvases
-          .forEach(function(c) { c.canvas.zoom(display.zoom).update(false); })  
-      ;
+      canvases.forEach(function(c) { c.canvas.zoom(display.zoom).snap(); });
 
       return my;
     } // my.zoom()

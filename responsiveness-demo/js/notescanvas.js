@@ -33,6 +33,7 @@ function NotesCanvas() {
           .append("symbol")
             .attr("id", function(d) { return d.key; })
             .attr("viewBox", viewbox.join(' '))
+            .attr("preserveAspectRatio", "none")
           .each(generate)
         ;
     } // my()
@@ -211,9 +212,14 @@ function NotesCanvas() {
         return my;
       } // my.connect()
     ;
-    my.extremes = function() {
-        extremes = !extremes;
-        computeExtremeNotes();
+    my.extremes = function(value) {
+        if(!arguments.length)
+            return extremes;
+        else {
+            extremes = value;
+            computeExtremeNotes();
+        }
+
         return my;
       } // my.extremes()
     ;

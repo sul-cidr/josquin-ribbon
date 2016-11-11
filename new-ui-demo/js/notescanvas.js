@@ -7,60 +7,121 @@ function NotesCanvas() {
       , width
       , height
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
-      , x = d3.scaleLinear()
-      , y =  d3.scaleBand() // Used for the "separate" view
-      , separate = false
-      , generator = {
-              score: Score()
-            , ribbon: Ribbon()
-            //, reflines: function(){}//Reflines()
-          }
-      , lifeSize = 10 // default height and width of notes
+      , scale = {
+          x: d3.scaleLinear(),
+          y: d3.scaleBand(), // Used for the ref lines and notes.
+          yLinear: d3.scaleLinear(), // Used for the ribbons.
+          color: null
+        }
+      , domain = { x: [], y: [] } // store the dataset's domains
       , tooltip
+      , roundedCornerSize
       , dispatch
+      , state = true // on; false = off
+      , extremes = false
+      , showRibbon = false
+      , showReflines = false
+      , reflinesValues = {
+              32: { label: "G", style: "solid" },
+              28: { label: "C4", style: "dashed" },
+              24: { label: "F", style: "solid" }
+          }
+      , reflinesPitches = Object.keys(reflinesValues)
+            .map(function (d){ return +d; })
+      , reflinesAxis = d3.axisLeft()
+            .tickValues(reflinesPitches)
+            .tickFormat(function (d){ return reflinesValues[d].label; })
       , clipPath
-      , viewbox
+      , ribbon = Ribbon()
+      , showNotes = true
     ;
     /*
     ** Main Function Object
     */
-    function my() {
-        var symbol = svg.selectAll("symbol")
-            .data(d3.entries(generator), function(d) { return d.key; })
+    function my(selection) {
+        data = selection.datum();
+        domain.x = [
+              d3.min(data.value, function(d) { return d.time; })
+            , d3.max(data.value, function(d) { return d.time + d.duration; })
+          ]
         ;
-        symbol.exit().remove();
-        symbol.enter()
-          .append("symbol")
-            .attr("id", function(d) { return d.key; })
-            .attr("viewBox", viewbox.join(' '))
-          .each(generate)
+        scale.x.domain(domain.x).range([0, width ]);
+
+        var pitches = data.value
+                .map(function(d) { return d.pitch; })
+                .concat(reflinesPitches)
+          , pitchExtent = d3.extent(pitches)
         ;
+        domain.y = d3.range.apply(null, pitchExtent);
+        scale.y.domain(domain.y).range([height, 0]);
+        syncYLinear();
+
+        svg = selection
+              .attr("class", "notes-g " + data.key)
+        ;
+
+        reflinesAxis
+            .scale(scale.y)
+            .tickSize(-width)
+        ;
+        svg
+          .append("g")
+            .attr("class", "reflines")
+            .call(reflinesRender)
+        ;
+
+        var notesG = svg
+          .append("g")
+            .attr("class", "notes")
+        ;
+
+        if(clipPath){
+            notesG.attr("clip-path", "url(#" + clipPath + ")");
+        }
+
+        if(showRibbon){
+          ribbon
+            .g(notesG.append("g"))
+            .scale(scale)
+            .domain(domain)
+            .data(data)
+          ;
+        }
+
+        var rects = notesG.selectAll("rect").data(data.value);
+
+        rects
+          .enter().append("rect")
+            .attr("class", "note")
+        ;
+        rects.exit().remove();
+
+        computeExtremeNotes();
+        enableTooltips();
+
+        update();
     } // my()
 
-    /*
-    ** Helper Callback Functions
-    */
-    function generate(g) {
-        var self = d3.select(this);
-        self.selectAll("." + g.key)
-            .data(data.partnames, function(d) { return d; })
-          .enter().append("g")
-            .attr("class", function(d, i) {
-                return [g.key, slugify(d), ("voice" + i)].join(' ');
-              })
-          .each(function(d) {
-              var self = d3.select(this);
-              g.value
-                  .x(x)
-                  .y(y)
-                  .data(data.notes.get(d))
-                  .svg(self)
-                ()
-              ;
-            })
-        ;
-    } // generate()
+    // Synchronizes the Y Linear scale to values
+    // from the Y band scale.
+    function syncYLinear(){
+        var extent = d3.extent(scale.y.domain());
 
+        // Adjust the linear scale to match the band scale,
+        // such that the note values map to the center points
+        // of the note rectangles.
+        extent[0] -= 0.5;
+        extent[1] += 0.5;
+
+        scale.yLinear
+          .domain(extent)
+          .range(scale.y.range())
+        ;
+    }
+
+    /*
+    ** Helper Functions
+    */
     function hilite() {
         svg.selectAll("rect.note")
             .classed("subdued", !state)
@@ -103,32 +164,35 @@ function NotesCanvas() {
 
     } // update()
 
-    function reflinesRender(selection) {
-        selection.style("visibility", showReflines ? "visible" : "hidden");
-        if(!showReflines) return;
-
-        selection
-           .call(reflinesAxis)
-         .selectAll(".tick")
-           .filter(function (d){ return reflinesValues[d].style === "dashed" })
-           .attr("stroke-dasharray", "4 4")
-       ;
+    function reflinesRender(selection){
+       if(showReflines){
+           selection
+               .style("visibility", "visible")
+               .call(reflinesAxis)
+             .selectAll(".tick")
+               .filter(function (d){ return reflinesValues[d].style === "dashed" })
+               .attr("stroke-dasharray", "4 4")
+           ;
+       } else {
+           selection.style("visibility", "hidden");
+       }
     } // reflinesRender()
 
 
 
     function computeExtremeNotes() {
-        if(!svg) return;
-        var extent = d3.extent(data.value, function (d){ return d.pitch; });
-        svg.selectAll("rect.note").each(function(d) {
-            d3.select(this)
-                .classed("extreme", function(d) {
-                    return extremes
-                        && extent.some(function(e) { return d.pitch === e; })
-                    ;
-                  })
-            ;
-          })
+        if(svg){
+            var extent = d3.extent(data.value, function (d){ return d.pitch; });
+            svg.selectAll("rect.note").each(function(d) {
+                d3.select(this)
+                    .classed("extreme", function(d) {
+                        return extremes
+                            && extent.some(function(e) { return d.pitch === e; })
+                        ;
+                      })
+                ;
+              })
+        }
         ;
     } // computeExtremeNotes()
 
@@ -174,17 +238,25 @@ function NotesCanvas() {
     my.colorScale = function (value) {
         if(arguments.length === 0) return scale.color;
 
+        scale.color = value;
         return my;
       } // my.colorScale()
     ;
     my.width = function (value) {
         if(arguments.length === 0) return width;
 
+        width = value;
+        scale.x.range([0, width]);
+
         return my;
       } // my.width()
     ;
     my.height = function (value) {
         if(arguments.length === 0) return height;
+
+        height = value;
+        scale.y.range([height, 0]);
+        syncYLinear();
 
         return my;
       } // my.height()
@@ -261,34 +333,11 @@ function NotesCanvas() {
     */
     my.noteHeight = function () { return noteHeight; };
     my.roundedCornerSize = function () { return roundedCornerSize; };
-    my.x = function() { return x; };
-    my.y = function() { return y; };
+    my.x = function() { return scale.x; };
 
     /*
     ** API (Setter ONLY) Functions
     */
-    my.svg = function(_) {
-        if(!arguments.length) return svg;
-        svg = _;
-        return my;
-      } // my.svg()
-    ;
-    my.data = function(_) {
-        if(!arguments.length) return data;
-        data = _;
-        x.domain([0, data.scorelength[0]]);
-        y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
-
-        var scaleup = function(d) { return d * lifeSize; };
-        x.range(x.domain().map(scaleup));
-        y.range(d3.extent(y.domain()).reverse().map(scaleup));
-
-        width   = Math.abs(x.range()[1] - x.range()[0]);
-        height  = Math.abs(y.range()[1] - y.range()[0]);
-        viewbox = [x.range()[0], y.range()[1], width, height];
-        return my;
-      } // my.data()
-    ;
     my.zoom = function(value) {
         // Set the domain of notes in the zoomed in region
         //  -- if value is empty, the zoom is reset to the dataset's domain
@@ -297,19 +346,19 @@ function NotesCanvas() {
         return my;
       } // my.zoom()
     ;
-    my.update = function(trnstn) {
+    my.update = function() {
         // Call update, with a transition
-        update(trnstn ? svg.transition(): svg);
+        update(svg.transition());
 
         return my;
       } // my.update()
     ;
-    my.viewbox = function(_) {
-        if(!arguments.length) return viewbox;
+    my.snap = function() {
+        // Call update with immediate effect (no transition)
+        update();
 
-        viewbox = _;
         return my;
-      } // my.viewbox()
+      } // my.snap()
     ;
 
     // This is always the last thing returned

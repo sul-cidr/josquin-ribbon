@@ -57,9 +57,7 @@ function RibbonsUI(){
           .enter()
           .append("li")
           .append("button")
-            .attr("class", "mdl-button mdl-button--fab")
-            .classed("mdl-button--mini-fab", true)
-            .classed("mdl-button--colored", true)
+            .attr("class", "mdl-button mdl-button--fab mdl-button--mini-fab mdl-button--colored")
             .on("click", function(d) {
                 var self = this;
                 dispatch.call(d.callback, self, d.label);

@@ -11,12 +11,6 @@ header {
     background-repeat: no-repeat;
     background-size: contain;
 }
-#notes {
-    height: 75vh;
-}
-#nav {
-    height: 25vh;
-}
 .mensuration {
     font-family: 'BravuraText';
     font-size: xx-large;
@@ -84,36 +78,6 @@ path.domain {
     stroke: currentColor;
     fill-opacity: 0.5;
     stroke-width: 1;
-}
-.voice0 {
-    color: #1f77b4;
-}
-.voice1 {
-    color: #ff7f0e;
-}
-.voice2 {
-    color: #2ca02c;
-}
-.voice3 {
-    color: #d62728;
-}
-.voice4 {
-    color: #9467bd;
-}
-.voice5 {
-    color: #8c564b;
-}
-.voice6 {
-    color: #e377c2;
-}
-.voice7 {
-    color: #7f7f7f;
-}
-.voice8 {
-    color: #bcbd22;
-}
-.voice9 {
-    color: #17becf;
 }
 .fixed-action-button {
     display: flex;
