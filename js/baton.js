@@ -57,12 +57,10 @@ function chartify(data) {
     var w = Math.abs(vb[2] - vb[0])
       , h = Math.abs(vb[3] - vb[1])
       , book = d3.select("#notes").append("svg")
-                .attr("preserveAspectRatio", "none")
       , nav = d3.select("#nav").append("svg")
-                .attr("preserveAspectRatio", "none")
     ;
     function sizeit(sheet) {
-        return sheet
+        sheet
             .attr("viewBox", vb.join(' '))
             .attr("width", w)
             .attr("height", h)
@@ -70,11 +68,14 @@ function chartify(data) {
     } // sizeit()
 
     [book,nav].forEach(function(sheet) {
-        sizeit(sheet)
+        sheet
+            .call(sizeit)
+            .attr("preserveAspectRatio", "none")
             .style("width", "100%")
             .style("height", "100%")
         ;
-        sizeit(sheet.append("svg"))
+        sheet.append("svg")
+            .call(sizeit)
             .attr("preserveAspectRatio", "xMinYMid slice")
           .selectAll("use")
             .data(["score", "ribbon"])
