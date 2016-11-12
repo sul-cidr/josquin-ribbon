@@ -31,26 +31,22 @@ d3.queue()
 ;
 
 function parseJSON(proll) {
-    var notes = []
-      , voice
-    ;
+    proll.notes = d3.map(); // new container for notes data
+
     proll.partdata.forEach(function(part) {
-        voice = proll.partnames[part.partindex];
+        var voice = proll.partnames[part.partindex]
+          , notes = []
+        ;
         part.notedata.forEach(function(note) {
             notes.push({
                   pitch: note.pitch.b7
                 , note: note.pitch.name
                 , time: note.starttime[0]
                 , duration: note.duration[0]
-                , voice: voice
             });
         });
+        proll.notes.set(voice, { index: part.partindex, notes: notes });
     });
-    // Group the notes by voice
-    proll.notes = d3.nest()
-        .key(function(d) { return d.voice; })
-        .map(notes)
-    ;
     return proll;
 } // parseJSON()
 
