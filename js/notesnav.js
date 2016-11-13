@@ -5,14 +5,14 @@
     var svg
       , data
       , viewbox
-      , x = d3.scaleLinear()
-      , y = d3.scaleLinear()
       , width
       , height
+      , x = d3.scaleLinear()
+      , y = d3.scaleLinear()
       , brush = d3.brushX()
           .handleSize(20)
           .on("brush", brushed)
-          .on("end", brushed)
+          .on("end"  , brushed)
       , dispatch
     ;
 
@@ -45,7 +45,7 @@
         if(!d3.event.selection) {
             svg.select(".brush")
               .transition().duration(500)
-                .call(brush.move, recenter)
+                .call(brush.move, x.range())
             ;
         }
         if(dispatch) dispatch.call("zoom", this, extent);
@@ -69,13 +69,8 @@
     } // update()
 
     function move() {
-        brush.selection
-            .call(brush.move(
-                  [0, 0]
-                , [width, height]
-              ))
-        ;
-    } // resize()
+        brush.selection.call(brush.move([0, 0], [width, height]));
+    } // move()
 
     /*
     ** API - Getters/Setters
@@ -107,6 +102,7 @@
         y.range([viewbox[3], viewbox[1]]);
         width  = Math.abs(viewbox[2] - viewbox[0]);
         height = Math.abs(viewbox[3] - viewbox[1]);
+
         brush.extent([[0, 0], [width, height]]);
 
         svg.selectAll(".brush")
