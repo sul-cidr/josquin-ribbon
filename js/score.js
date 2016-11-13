@@ -30,7 +30,6 @@ function Score() {
               return x(d.time + d.duration) - x(d.time);
             })
       ;
-      // computeExtremeNotes();
       // enableTooltips();
   } // my()
 
