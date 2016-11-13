@@ -10,11 +10,11 @@ function NotesCanvas() {
       , x = d3.scaleLinear()
       , y =  d3.scaleBand() // Used for the "separate" view
       , separate = false
-      , generator = {
+      , generator = d3.entries({
               score: Score()
-            , ribbon: Ribbon()
+            //, ribbon: Ribbon()
             //, reflines: function(){}//Reflines()
-          }
+          })
       , lifeSize = 10 // default height and width of notes
       , tooltip
       , dispatch
@@ -26,40 +26,40 @@ function NotesCanvas() {
     */
     function my() {
         var symbol = svg.selectAll("symbol")
-            .data(d3.entries(generator), function(d) { return d.key; })
+              .data(data.notes, function(d) { return d.key; })
         ;
         symbol.exit().remove();
         symbol.enter()
           .append("symbol")
-            .attr("id", function(d) { return d.key; })
+            .attr("id", function(d, i) { return "voice" + i; })
             .attr("viewBox", viewbox.join(' '))
-          .each(generate)
+            .each(function(voice, i) {
+                var self = d3.select(this);
+                // Create a `<g>` for each visualization generator
+                self.selectAll("g")
+                    .data(generator, function(g) { return g.key; })
+                  .enter().append("g")
+                    .attr("class", function(g) {
+                        return [g.key, slugify(voice.key), "voice", "voice" + i]
+                            .join(' ')
+                        ;
+                      })
+                    .each(function(g) {
+                        g.value.x(x).y(y);
+                        d3.select(this)
+                            .datum(voice.value.notes)
+                            // Call each visualization generator
+                            .call(g.value)
+                        ;
+                      })
+                ;
+              })
         ;
     } // my()
 
     /*
     ** Helper Callback Functions
     */
-    function generate(g) {
-        var self = d3.select(this);
-        self.selectAll("." + g.key)
-            .data(data.partnames, function(d) { return d; })
-          .enter().append("g")
-            .attr("class", function(d, i) {
-                return [g.key, slugify(d), ("voice" + i)].join(' ');
-              })
-          .each(function(d) {
-              var self = d3.select(this);
-              g.value
-                  .x(x)
-                  .y(y)
-                  .data(data.notes.get(d))
-                  .svg(self)
-                ()
-              ;
-            })
-        ;
-    } // generate()
 
     function hilite() {
         svg.selectAll("rect.note")
