@@ -49,7 +49,8 @@ function parseJSON(proll) {
     });
     proll.notes = remix.entries()
         .sort(function(a, b) {
-            return d3.ascending(a.value.index, b.value.index); })
+            return d3.ascending(a.value.index, b.value.index);
+          })
     ;
     return proll;
 } // parseJSON()
