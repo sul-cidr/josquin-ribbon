@@ -31,7 +31,7 @@ d3.queue()
 ;
 
 function parseJSON(proll) {
-    proll.notes = d3.map(); // new container for notes data
+    var remix = d3.map(); // new container for notes data
 
     proll.partdata.forEach(function(part) {
         var voice = proll.partnames[part.partindex]
@@ -45,8 +45,12 @@ function parseJSON(proll) {
                 , duration: note.duration[0]
             });
         });
-        proll.notes.set(voice, { index: part.partindex, notes: notes });
+        remix.set(voice, { index: part.partindex, notes: notes });
     });
+    proll.notes = remix.entries()
+        .sort(function(a, b) {
+            return d3.ascending(a.value.index, b.value.index); })
+    ;
     return proll;
 } // parseJSON()
 
