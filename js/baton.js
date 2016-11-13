@@ -59,25 +59,28 @@ function chartify(data) {
     canvas.data(data)(); // draw things in the shadow DOM.
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
+
     var w = Math.abs(vb[2] - vb[0])
       , h = Math.abs(vb[3] - vb[1])
-      , book = d3.select("#notes").append("svg")
-      , nav = d3.select("#nav").append("svg")
+      , book = d3.select("#notes").selectAll("svg")
+                .data([1])
+      , nav = d3.select("#nav").selectAll("svg")
+                .data([1])
     ;
     [book,nav].forEach(function(sheet) {
         sheet
+          .enter().append("svg")
             .call(sizeit)
             .attr("preserveAspectRatio", "none")
             .style("width", "100%")
             .style("height", "100%")
-        ;
-        sheet.append("svg")
+          .append("svg")
             .call(sizeit)
             .attr("preserveAspectRatio", "xMinYMid slice")
           .selectAll("use")
-            .data(["score", "ribbon"])
+            .data(d3.range(data.partnames.length))
           .enter().append("use")
-            .attr("xlink:href", function(d) { return  "#" + d; })
+            .attr("xlink:href", function(d) { return "#voice" + d; })
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", w)
@@ -105,7 +108,7 @@ function chartify(data) {
           )
     ;
     notesNav
-        .svg(nav)
+        .svg(d3.select("#nav svg"))
         .viewbox(vb)
         .connect(signal)
       ()
@@ -151,7 +154,9 @@ function chartify(data) {
     signal
         .on("zoom", function(extent) {
             var w = extent[1] - extent[0];
-            book.attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
+            d3.select("#notes svg")
+                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
+            ;
           })
         // .on("hilite",   notesBook.hilite)
         // .on("separate", notesBook.separate)
