@@ -63,14 +63,6 @@ function chartify(data) {
       , book = d3.select("#notes").append("svg")
       , nav = d3.select("#nav").append("svg")
     ;
-    function sizeit(sheet) {
-        sheet
-            .attr("viewBox", vb.join(' '))
-            .attr("width", w)
-            .attr("height", h)
-        ;
-    } // sizeit()
-
     [book,nav].forEach(function(sheet) {
         sheet
             .call(sizeit)
@@ -92,6 +84,14 @@ function chartify(data) {
         ;
       }) // forEach
     ;
+    function sizeit(sheet) {
+        sheet
+            .attr("viewBox", vb.join(' '))
+            .attr("width", w)
+            .attr("height", h)
+        ;
+    } // sizeit()
+
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
