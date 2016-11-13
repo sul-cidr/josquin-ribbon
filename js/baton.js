@@ -3,7 +3,7 @@ var width = 960
   , margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
   , canvas = NotesCanvas()
-      .svg(d3.select("body").append("svg").attr("id", "shadows"))
+      .svg(d3.select("body").append("svg").attr("id", "unrendered"))
   , notesNav = NotesNav()
   // , notesBook = NotesBook()
   //     .svg(d3.select("#notes"))
