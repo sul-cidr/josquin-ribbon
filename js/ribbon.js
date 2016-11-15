@@ -14,7 +14,6 @@ function Ribbon() {
                 (data)
             ;
           }
-      , ribbonData
       , ribbonDataStale = true
       , modes = {}
     ;
