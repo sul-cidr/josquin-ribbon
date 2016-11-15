@@ -36,7 +36,7 @@ function Ribbon() {
               path
                 .enter().append("path")
                 .merge(path)
-                    .attr("d", area)
+                  .attr("d", area)
               ;
             })
         ;
