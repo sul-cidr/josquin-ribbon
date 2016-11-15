@@ -21,17 +21,18 @@ function Ribbon() {
     ** Main Function Object
     */
     function my(svg){
-        data = svg.datum();
-        var ribbon = svg.selectAll("g")
-                .data(d3.entries(modes), function(d) { return d.key; })
+        var data = svg.datum()
+          , ribbon = svg.selectAll("g")
+              .data(d3.keys(modes), function(m) { return m; })
         ;
         ribbon.exit().remove();
         ribbon
           .enter().append("g")
-            .attr("class", function(d) { return d.key.toLowerCase(); })
-          .each(function(d) {
+            .attr("class", function(d) { return d.toLowerCase(); })
+          .merge(ribbon)
+          .each(function(m) {
               var path = d3.select(this).selectAll("path")
-                  .data(d.value(data))
+                  .data([modes[m](data)]) // call the mode function
               ;
               path
                 .enter().append("path")
