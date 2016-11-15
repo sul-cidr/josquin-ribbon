@@ -31,19 +31,19 @@ function Ribbon() {
             .attr("class", function(d) { return d.key.toLowerCase(); })
           .each(function(d) {
               var path = d3.select(this).selectAll("path")
-                  .data([d])
+                  .data(d.value(data))
               ;
               return;
               path
                 .enter().append("path")
                 .merge(path)
-                    .attr("d", function(e) { return area(e.value(d.value)); })
+                    .attr("d", area)
               ;
             })
         ;
     } // Main Function Object
 
-    modes.STANDARD_DEVIATION = function() {
+    modes.STANDARD_DEVIATION = function(data) {
         console.log(data);
         // For steps in which there are no notes in the interval,
         // An empty interval at the previous average is used.
@@ -114,7 +114,7 @@ function Ribbon() {
            });
     } // modes.STANDARD_DEVIATION()
 
-    modes.ATTACK_DENSITY = function() {
+    modes.ATTACK_DENSITY = function(data) {
 
       // Use the following fixed values for the attack density computation,
       // as these specific values were prescribed by Josquin project leads.
