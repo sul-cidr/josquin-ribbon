@@ -1,7 +1,6 @@
 function Ribbon() {
     /* Private Variables */
-    var svg
-      , data // The original notes data
+    var data // The original notes data
       , ribbonData // The computed data for the ribbon
       , interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
@@ -21,7 +20,8 @@ function Ribbon() {
     /*
     ** Main Function Object
     */
-    function my(){
+    function my(svg){
+        data = svg.datum();
         var ribbon = svg.selectAll("g")
                 .data(d3.entries(modes), function(d) { return d.key; })
         ;
@@ -111,7 +111,7 @@ function Ribbon() {
               , y1: mean + deviation
               , y0: mean - deviation
             };
-          });
+           });
     } // modes.STANDARD_DEVIATION()
 
     modes.ATTACK_DENSITY = function() {
@@ -195,21 +195,6 @@ function Ribbon() {
         });
     } // modes.ATTACK_DENSITY()
 
-    my.svg = function(value) {
-        if(!arguments.length)
-            return svg;
-        svg = value;
-        return my;
-      } // my.svg()
-    ;
-    my.data = function(value) {
-        if(!arguments.length)
-            return data;
-        data = value;
-        ribbonDataStale = true;
-        return my;
-      } // my.data()
-    ;
     my.interval = function(value) {
         if(!arguments.length)
             return interval;
@@ -250,7 +235,8 @@ function Ribbon() {
     ;
     my.y = function(_) {
         if(!arguments.length) return y;
-        y = _;
+        // The passed in scale is Ordinal, and we need Linear here
+        y = d3.scaleLinear().domain(d3.extent(_.domain())).range(_.range());
         return my;
       } // my.y()
     ;
