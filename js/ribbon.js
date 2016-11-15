@@ -1,7 +1,6 @@
 function Ribbon() {
     /* Private Variables */
-    var ribbonData // The computed data for the ribbon
-      , interval = 12 // Interval size for the sliding window, in units of beats
+    var interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
       , x, y
