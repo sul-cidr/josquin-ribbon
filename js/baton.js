@@ -56,6 +56,8 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
+    // Hide the source svg
+    canvas.svg().style("display", "none");
     canvas.data(data)(); // draw things in the shadow DOM.
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
@@ -158,8 +160,8 @@ function chartify(data) {
                 .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
             ;
           })
+        .on("separate", function(arg) { console.log(arg); })
         // .on("hilite",   notesBook.hilite)
-        // .on("separate", notesBook.separate)
         // .on("extremes", notesBook.extremes)
         // .on("showRibbons", notesBook.showRibbons)
         // .on("ribbonMode", notesBook.ribbonMode)
