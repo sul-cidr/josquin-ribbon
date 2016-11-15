@@ -218,13 +218,11 @@ function Ribbon() {
         return my;
       } // my.bandwidth()
     ;
-    my.mode = function(value) {
-        if(!arguments.length)
-            return mode;
-        mode = value.toUpperCase();
-        ribbonDataStale = true;
-        return my;
-      } // my.mode()
+    my.modes = function() {
+        return d3.keys(modes)
+            .map(function(m) { return m.split('_').join(' '); })
+        ;
+      } // my.modes()
     ;
     my.x = function(_) {
         if(!arguments.length) return x;
@@ -243,7 +241,3 @@ function Ribbon() {
     // This is ALWAYS the last thing returned
     return my;
 } // Ribbon()
-
-// Expose constants for use in UI elements.
-Ribbon.STANDARD_DEVIATION = "STANDARD DEVIATION";
-Ribbon.ATTACK_DENSITY = "ATTACK DENSITY";
