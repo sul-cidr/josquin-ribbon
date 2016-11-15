@@ -8,7 +8,7 @@ function NotesCanvas() {
       , height
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
       , x = d3.scaleLinear()
-      , y =  d3.scaleBand() // Used for the "separate" view
+      , y =  d3.scaleBand().padding(0.2) // Used for the "separate" view
       , separate = false
       , generator = d3.entries({
               score: Score()
