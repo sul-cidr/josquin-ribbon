@@ -44,7 +44,6 @@ function Ribbon() {
     } // Main Function Object
 
     modes.STANDARD_DEVIATION = function(data) {
-        console.log(data);
         // For steps in which there are no notes in the interval,
         // An empty interval at the previous average is used.
         var previousMean = data[0].pitch;
