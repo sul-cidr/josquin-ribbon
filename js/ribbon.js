@@ -13,7 +13,6 @@ function Ribbon() {
                 (data)
             ;
           }
-      , ribbonDataStale = true
       , modes = {}
     ;
 
