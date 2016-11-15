@@ -125,14 +125,14 @@ function Ribbon() {
 
       // For steps in which there are no notes in the interval,
       // An empty interval at the previous average is used.
-      var previousMean = data.value[0].pitch;
+      var previousMean = data[0].pitch;
 
-      return d3.range(domain.x[0], domain.x[1], step)
+      return d3.range(x.domain()[0], x.domain()[1], step)
         .map(function (x){
 
           // This is a "windowed" computation, so we need to look
           // at the notes in the window of width `interval`, centered on `x`.
-          var notesInWindow = data.value
+          var notesInWindow = data
             .filter(function(d){
 
               // Consider the interval to start on the x value,
