@@ -33,7 +33,6 @@ function Ribbon() {
               var path = d3.select(this).selectAll("path")
                   .data(d.value(data))
               ;
-              return;
               path
                 .enter().append("path")
                 .merge(path)
