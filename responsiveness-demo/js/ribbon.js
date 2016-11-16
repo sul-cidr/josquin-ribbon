@@ -1,19 +1,18 @@
 function Ribbon() {
     /* Private Variables */
-    var svg
-      , data // The original notes data
-      , ribbonData // The computed data for the ribbon
-      , interval = 12 // Interval size for the sliding window, in units of beats
+    var interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
       , x, y
-      , area = d3.area()
-          .x(function (d){ return x(d.x); })
-          .y0(function (d){ return y(d.y0); })
-          .y1(function (d){ return y(d.y1); })
-          .curve(d3.curveBasis)
-      , ribbonData
-      , ribbonDataStale = true
+      , area = function(data) {
+            return d3.area()
+                .x(function (d){ return x(d.x); })
+                .y0(function (d){ return y(d.y0); })
+                .y1(function (d){ return y(d.y1); })
+                .curve(d3.curveBasis)
+                (data)
+            ;
+          }
       , modes = {}
     ;
 
@@ -21,30 +20,30 @@ function Ribbon() {
     /*
     ** Main Function Object
     */
-    function my(){
-        var ribbon = svg.selectAll("g")
-                .data(d3.entries(modes), function(d) { return d.key; })
+    function my(svg){
+        var data = svg.datum()
+          , ribbon = svg.selectAll("g")
+              .data(d3.keys(modes), function(m) { return m; })
         ;
         ribbon.exit().remove();
         ribbon
           .enter().append("g")
-            .attr("class", function(d) { return d.key.toLowerCase(); })
-          .each(function(d) {
+            .attr("class", function(d) { return d.toLowerCase(); })
+          .merge(ribbon)
+          .each(function(m) {
               var path = d3.select(this).selectAll("path")
-                  .data([d])
+                  .data([modes[m](data)]) // call the mode function
               ;
-              return;
               path
                 .enter().append("path")
                 .merge(path)
-                    .attr("d", function(e) { return area(e.value(d.value)); })
+                  .attr("d", area)
               ;
             })
         ;
     } // Main Function Object
 
-    modes.STANDARD_DEVIATION = function() {
-        console.log(data);
+    modes.STANDARD_DEVIATION = function(data) {
         // For steps in which there are no notes in the interval,
         // An empty interval at the previous average is used.
         var previousMean = data[0].pitch;
@@ -111,10 +110,10 @@ function Ribbon() {
               , y1: mean + deviation
               , y0: mean - deviation
             };
-          });
+           });
     } // modes.STANDARD_DEVIATION()
 
-    modes.ATTACK_DENSITY = function() {
+    modes.ATTACK_DENSITY = function(data) {
 
       // Use the following fixed values for the attack density computation,
       // as these specific values were prescribed by Josquin project leads.
@@ -125,14 +124,14 @@ function Ribbon() {
 
       // For steps in which there are no notes in the interval,
       // An empty interval at the previous average is used.
-      var previousMean = data.value[0].pitch;
+      var previousMean = data[0].pitch;
 
-      return d3.range(domain.x[0], domain.x[1], step)
+      return d3.range(x.domain()[0], x.domain()[1], step)
         .map(function (x){
 
           // This is a "windowed" computation, so we need to look
           // at the notes in the window of width `interval`, centered on `x`.
-          var notesInWindow = data.value
+          var notesInWindow = data
             .filter(function(d){
 
               // Consider the interval to start on the x value,
@@ -195,21 +194,6 @@ function Ribbon() {
         });
     } // modes.ATTACK_DENSITY()
 
-    my.svg = function(value) {
-        if(!arguments.length)
-            return svg;
-        svg = value;
-        return my;
-      } // my.svg()
-    ;
-    my.data = function(value) {
-        if(!arguments.length)
-            return data;
-        data = value;
-        ribbonDataStale = true;
-        return my;
-      } // my.data()
-    ;
     my.interval = function(value) {
         if(!arguments.length)
             return interval;
@@ -234,13 +218,11 @@ function Ribbon() {
         return my;
       } // my.bandwidth()
     ;
-    my.mode = function(value) {
-        if(!arguments.length)
-            return mode;
-        mode = value;
-        ribbonDataStale = true;
-        return my;
-      } // my.mode()
+    my.modes = function() {
+        return d3.keys(modes)
+            .map(function(m) { return m.split('_').join(' '); })
+        ;
+      } // my.modes()
     ;
     my.x = function(_) {
         if(!arguments.length) return x;
@@ -250,7 +232,8 @@ function Ribbon() {
     ;
     my.y = function(_) {
         if(!arguments.length) return y;
-        y = _;
+        // The passed in scale is Ordinal, and we need Linear here
+        y = d3.scaleLinear().domain(d3.extent(_.domain())).range(_.range());
         return my;
       } // my.y()
     ;
@@ -258,7 +241,3 @@ function Ribbon() {
     // This is ALWAYS the last thing returned
     return my;
 } // Ribbon()
-
-// Expose constants for use in UI elements.
-Ribbon.STANDARD_DEVIATION = "STANDARD_DEVIATION";
-Ribbon.ATTACK_DENSITY = "ATTACK_DENSITY";

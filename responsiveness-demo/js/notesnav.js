@@ -1,18 +1,18 @@
-function NotesNav() {
+ function NotesNav() {
     /*
     ** Private Variables - only used inside this object
     */
     var svg
       , data
       , viewbox
-      , x = d3.scaleLinear()
-      , y = d3.scaleLinear()
       , width
       , height
+      , x = d3.scaleLinear()
+      , y = d3.scaleLinear()
       , brush = d3.brushX()
-          .handleSize(10)
+          .handleSize(20)
           .on("brush", brushed)
-          .on("end", brushed)
+          .on("end"  , brushed)
       , dispatch
     ;
 
@@ -40,12 +40,12 @@ function NotesNav() {
     ** Helper Functions
     */
     function brushed() {
-        if(!d3.event) return;
+        if(!d3.event || !d3.event.selection) return;
         var extent = d3.event.selection.map(Math.round);
         if(!d3.event.selection) {
             svg.select(".brush")
               .transition().duration(500)
-                .call(brush.move, extent)
+                .call(brush.move, x.range())
             ;
         }
         if(dispatch) dispatch.call("zoom", this, extent);
@@ -69,13 +69,8 @@ function NotesNav() {
     } // update()
 
     function move() {
-        brush.selection
-            .call(brush.move(
-                  [0, 0]
-                , [height * canvas.widget.ratio(), height]
-              ))
-        ;
-    } // resize()
+        brush.selection.call(brush.move([0, 0], [width, height]));
+    } // move()
 
     /*
     ** API - Getters/Setters
@@ -107,9 +102,10 @@ function NotesNav() {
         y.range([viewbox[3], viewbox[1]]);
         width  = Math.abs(viewbox[2] - viewbox[0]);
         height = Math.abs(viewbox[3] - viewbox[1]);
+
         brush.extent([[0, 0], [width, height]]);
 
-        svg.select(".brush")
+        svg.selectAll(".brush")
           .transition(d3.transition())
             .call(brush.move, [viewbox[0], viewbox[2]])
         ;

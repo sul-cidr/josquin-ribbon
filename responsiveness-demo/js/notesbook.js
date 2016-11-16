@@ -299,7 +299,7 @@ function NotesBook() {
   my.separate = function(value) {
       if(!arguments.length) return display.separate;
 
-      display.separate = value || false;
+      display.separate = value == "Separate";
       update();
 
       return my;
@@ -341,14 +341,12 @@ function NotesBook() {
     } // my.data()
   ;
 
-  my.showRibbons = function(value) {
-      if(!arguments.length) return display.showRibbons;
-
-      display.showRibbons = value;
+  my.toggleRibbons = function() {
+      display.showRibbons = !display.showRibbons;
       update();
 
       return my;
-    } // my.showRibbons()
+    } // my.toggleRibbons()
 
   my.ribbonMode = function(value) {
       if(!arguments.length) return display.ribbonMode;
@@ -359,14 +357,12 @@ function NotesBook() {
       return my;
     } // my.ribbonMode()
 
-  my.showNotes = function(value) {
-      if(!arguments.length) return display.showNotes;
-
-      display.showNotes = value;
+  my.toggleNotes = function() {
+      display.showNotes = !display.showNotes;
       update();
 
       return my;
-    } // my.showNotes()
+    } // my.toggleNotes()
 
 
   // This is always the last thing returned

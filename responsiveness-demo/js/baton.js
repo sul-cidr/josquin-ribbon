@@ -1,20 +1,16 @@
-var width = 960
-  , height = 150 // height of one strip of notes
-  , margin = { top: 20, right: 20, bottom: 20, left: 20 }
+var margin = { top: 20, right: 20, bottom: 20, left: 20 }
+  , divMeta = d3.select("#meta")
   , canvas = NotesCanvas()
-      .svg(d3.select("body").append("svg")) // on the shadow DOM
+      .svg(d3.select("body").append("svg").attr("id", "unrendered"))
   , notesNav = NotesNav()
-  //     .svg(d3.select("#nav").append("svg"))
   // , notesBook = NotesBook()
-  //     .svg(d3.select("#notes"))
-  , combineSeparateUI = CombineSeparateUI()
-      .div(d3.select("#combine-separate-ui"))
-  , extremeNotesUI = ExtremeNotesUI()
-      .div(d3.select("#extreme-notes-ui"))
+  //     .svg(d3.select("#book"))
+  , notesUI = NotesUI()
+      .div(divMeta.select("#notes-ui"))
   , ribbonsUI = RibbonsUI()
-      .div(d3.select("#ribbons-ui"))
+      .div(divMeta.select("#ribbons-ui"))
   , colorLegend = ColorLegend()
-      .div(d3.select("div#legend"))
+      .div(divMeta.select("#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 ;
 var defaultWork = "Jos2721-La_Bernardina"
@@ -33,94 +29,79 @@ d3.queue()
 ;
 
 function parseJSON(proll) {
-    var notes = []
-      , voice
-    ;
+    var remix = d3.map(); // new container for notes data
+
     proll.partdata.forEach(function(part) {
-        voice = proll.partnames[part.partindex];
+        var voice = proll.partnames[part.partindex]
+          , notes = []
+          , extent = d3.extent(part.notedata, function(d) { return d.pitch.b7; })
+        ;
         part.notedata.forEach(function(note) {
             notes.push({
                   pitch: note.pitch.b7
                 , note: note.pitch.name
                 , time: note.starttime[0]
                 , duration: note.duration[0]
-                , voice: voice
+                , extreme: note.pitch.b7 === extent[0] || note.pitch.b7 === extent[1]
             });
         });
+        remix.set(voice, { index: part.partindex, notes: notes });
     });
-    // Group the notes by voice
-    proll.notes = d3.nest()
-        .key(function(d) { return d.voice; })
-        .map(notes)
+    proll.notes = remix.entries()
+        .sort(function(a, b) {
+            return d3.ascending(a.value.index, b.value.index);
+          })
     ;
     return proll;
 } // parseJSON()
 
 function chartify(data) {
-    canvas.data(data)(); // draw things in the shadow DOM.
-    var vb = canvas.viewbox();
-    vb[0] = vb[1] = 0;
-
-    var book = d3.select("#notes")
-              .append("svg")
-                .attr("preserveAspectRatio", "xMinYMax slice")
-      , nav = d3.select("#nav").append("svg")
-                .attr("preserveAspectRatio", "none")
-    ;
-    [book,nav].forEach(function(sheet) {
-        sheet
-            .attr("viewBox", vb.join(' '))
-            .style("width", "100%")
-            .style("height", "100%")
-        ;
-        sheet.selectAll("use")
-            .data(["score", "ribbon"])
-          .enter().append("use")
-            .attr("xlink:href", function(d) { return  "#" + d; })
-            .style("pointer-events", "none")
-        ;
-      }) // forEach
-    ;
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
             , "separate"
             , "selected"
             , "extremes"
-            , "showRibbons"
+            , "toggleRibbons"
             , "ribbonMode"
             , "notes"
           )
     ;
-    notesNav
-        .svg(nav)
-        .viewbox(vb)
-        .connect(signal)
+    canvas.svg()
+        .style("display", "none") // Hide the source svg
+    ;
+    canvas
+        .data(data) // draw things in the shadow DOM.
       ()
     ;
-    combineSeparateUI.connect(signal);
-    extremeNotesUI.connect(signal);
+
+    var viewbox = canvas.viewbox();
+    viewbox[0] = viewbox[1] = 0;
+
+    var width = Math.abs(viewbox[2] - viewbox[0])
+      , height = Math.abs(viewbox[3] - viewbox[1])
+      , fullheight = height * data.partnames.length
+    ;
+    d3.selectAll("#book").call(build_image);
+    d3.select("#nav").call(build_image);
+
+
+
+    // notesBook
+    //     .svg(d3.select("#book svg"))
+    //     .viewbox(viewbox)
+    //     .connect(signal)
+    // ;
+    notesNav
+        .svg(d3.select("#nav svg"))
+        .viewbox(viewbox)
+        .connect(signal)
+    ;
+    notesUI.connect(signal);
     ribbonsUI.connect(signal);
     colorScale
         .domain(data.partnames)
     ;
-    // notesNav
-    //     .colorScale(colorScale)
-    //     .margin(margin)
-    //     .width(width)
-    //     .height(height)
-    //     .data(data)
-    //     .connect(signal)
-    // ;
-    // notesBook
-    //     .colorScale(colorScale)
-    //     .margin(margin)
-    //     .height(height * 3)
-    //     .width(width)
-    //     .extremes(true)
-    //     .data(data)
-    //     .connect(signal)
-    // ;
     colorLegend
         .colorScale(colorScale)
         .noteHeight(10)
@@ -130,34 +111,113 @@ function chartify(data) {
     ;
 
     // Render views.
-    // notesNav();
+    notesNav();
     // notesBook();
-    combineSeparateUI();
-    extremeNotesUI();
+    // combineSeparateUI();
+    notesUI();
     ribbonsUI();
     colorLegend();
 
+    var transition = d3.transition();
     signal
-        .on("zoom", function(extent) {
-            book
-                .attr(
-                      "viewBox"
-                    , [extent[0], vb[1], vb[2], vb[3]].join(' ')
-                  )
+        .on("zoom", function(extent) { // Only changes width and x coordinate
+            var sel = d3.select("#book svg")
+              , vb = sel.attr("viewBox").split(' ')
+              , h = vb[3] - vb[1] // don't change the height
+              , w = extent[1] - extent[0]
+            ;
+            sel
+                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
+            ;
+          })
+        .on("separate", function(arg) { // Only changes height and y coordinate
+            var sel = d3.select("#book svg")
+              , vb = sel.attr("viewBox").split(' ')
+              , w = vb[2] - vb[0]
+              , h = arg === "Separate" ? fullheight : height
+            ;
+            sel
+              .transition(transition)
+                .attr("viewBox", [vb[0], vb[1], w, h].join(' '))
+              .selectAll("svg")
+                .attr("y", function(d, i) {
+                    return arg === "Separate" ? i * height : 0;
+                  })
+            ;
           })
         // .on("hilite",   notesBook.hilite)
-        // .on("separate", notesBook.separate)
-        // .on("extremes", notesBook.extremes)
+        .on("extremes", function() {
+            if(d3.selectAll(".extreme").empty()) {
+                d3.selectAll(".note")
+                    .classed("extreme", function(d) { return d.extreme; })
+            }
+            else {
+                d3.selectAll(".extreme")
+                    .classed("extreme", false)
+            }
+          })
         // .on("showRibbons", notesBook.showRibbons)
         // .on("ribbonMode", notesBook.ribbonMode)
-        // .on("notes", notesBook.showNotes)
+        .on("notes", function() { // toggles the notes on/off
+            var score = d3.selectAll(".score")
+              , vis = score.style("display")
+            ;
+            score.style("display", vis == "inline" ? "none" : "inline")
+          })
+    // Titles and other UI polishes
+    var titles = divMeta.selectAll(".panel-title")
+        .data(data.filename.split(".krn")[0].split('-').reverse())
     ;
+    titles.text(function(d) { return d.split('_').join(' '); });
+
+    /*
+    ** Helper functions for chartify's scope only
+    */
+    function build_image(selection) {
+        var sheet = selection.selectAll("svg")
+            .data([selection.attr("id")])
+        ;
+        sheet = sheet.enter()
+          .append("svg")
+            .call(sizeit)
+            .attr("preserveAspectRatio", "none")
+            .style("width", "100%")
+            .style("height", "100%")
+          .merge(sheet)
+        ;
+        sheet.each(function() {
+            var page = d3.select(this).selectAll("svg")
+                .data(data.partnames, function(d) { return d; })
+            ;
+            page.enter()
+              .append("svg")
+                .call(sizeit)
+                .attr("preserveAspectRatio", "xMinYMid slice")
+                .attr("class", function(d, i) { return "voice" + i; })
+              .append("use")
+                .attr("xlink:href", function(d, i) { return "#voice" + i; })
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", width)
+                .attr("height", height)
+            ;
+          })
+        ;
+    } // build_image()
+
+    function sizeit(sheet) {
+        sheet
+            .attr("viewBox", viewbox.join(' '))
+            .attr("width", width)
+            .attr("height", height)
+        ;
+    } // sizeit()
 } // chartify()
 
 // Calculate the extent of a range
 function difference(range) {
     return Math.abs(range[1] - range[0]);
-} // extent()
+} // difference()
 
 // Capture URL query param
 function getQueryVariables() {

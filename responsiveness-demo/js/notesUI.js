@@ -1,23 +1,28 @@
-function RibbonsUI(){
+function NotesUI(){
     /*
     ** Private Variables
     */
     var div
       , toggle = {
-              label: "Toggle Ribbons"
-            , icon: "bookmark"
-            , callback: "toggleRibbons"
+              label: "Toggle Notes"
+            , icon: "music_note"
+            , callback: "notes"
           }
       , flyout = [
               {
-                  label: "Standard Deviation"
-                , icon: "tune"
-                , callback: "ribbonMode"
+                  label: "Combine"
+                , icon: "vertical_align_center"
+                , callback: "separate"
               }
             , {
-                  label: "Attack Density"
-                , icon: "multiline_chart"
-                , callback: "ribbonMode"
+                  label: "Separate"
+                , icon: "format_line_spacing"
+                , callback: "separate"
+              }
+            , {
+                  label: "Show Extreme Notes"
+                , icon: "library_music"
+                , callback: "extremes"
               }
           ]
       , dispatch
@@ -43,7 +48,7 @@ function RibbonsUI(){
                 toolbar.select("ul")
                     .style("visibility", vis == "visible" ? "hidden" : "visible")
                 ;
-                dispatch.call(d.callback, self, d.label);
+                dispatch.call(d.callback, self);
               })
           .append("i")
             .attr("class", "material-icons")
@@ -57,9 +62,7 @@ function RibbonsUI(){
           .enter()
           .append("li")
           .append("button")
-            .attr("class", "mdl-button mdl-button--fab")
-            .classed("mdl-button--mini-fab", true)
-            .classed("mdl-button--colored", true)
+            .attr("class", "mdl-button mdl-button--fab mdl-button--mini-fab mdl-button--colored")
             .on("click", function(d) {
                 var self = this;
                 dispatch.call(d.callback, self, d.label);
@@ -69,6 +72,7 @@ function RibbonsUI(){
             .text(function(d) { return d.icon; })
         ;
     } // my() - Main Function Object
+
     /*
     ** API (Getters/Setters)
     */
@@ -79,11 +83,11 @@ function RibbonsUI(){
       } // my.connect()
     ;
     my.div = function (value){
-        if(arguments.length === 0) return div;
+        if(!arguments.length) return div;
         div = value;
         return my;
       } // my.div()
     ;
     // ALWAYS return this last
     return my;
-} // RibbonsUI()
+} // NotesUI()
