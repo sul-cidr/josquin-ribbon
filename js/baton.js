@@ -85,12 +85,11 @@ function chartify(data) {
             var page = d3.select(this).selectAll("svg")
                 .data(data.partnames, function(d) { return d; })
             ;
-            console.log(page);
             page = page.enter()
               .append("svg")
                 .call(sizeit)
                 .attr("preserveAspectRatio", "xMinYMid slice")
-                .attr("class", slugify)
+                .attr("class", function(d, i) { return "voice" + i; })
               .merge(page)
             ;
             page
