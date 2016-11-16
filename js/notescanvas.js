@@ -39,11 +39,7 @@ function NotesCanvas() {
                 self.selectAll("g")
                     .data(generator, function(g) { return g.key; })
                   .enter().append("g")
-                    .attr("class", function(g) {
-                        return [g.key, slugify(voice.key), "voice", "voice" + i]
-                            .join(' ')
-                        ;
-                      })
+                    .attr("class", function(g) { return g.key; })
                     .each(function(g) {
                         g.value.x(x).y(y);
                         d3.select(this)
