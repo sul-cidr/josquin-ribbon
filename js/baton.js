@@ -1,6 +1,4 @@
-var width = 960
-  , height = 150 // height of one strip of notes
-  , margin = { top: 20, right: 20, bottom: 20, left: 20 }
+var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
   , canvas = NotesCanvas()
       .svg(d3.select("body").append("svg").attr("id", "unrendered"))
