@@ -73,11 +73,11 @@ function chartify(data) {
       ()
     ;
 
-    var vb = canvas.viewbox();
-    vb[0] = vb[1] = 0;
+    var viewbox = canvas.viewbox();
+    viewbox[0] = viewbox[1] = 0;
 
-    var width = Math.abs(vb[2] - vb[0])
-      , height = Math.abs(vb[3] - vb[1])
+    var width = Math.abs(viewbox[2] - viewbox[0])
+      , height = Math.abs(viewbox[3] - viewbox[1])
       , fullheight = height * data.partnames.length
     ;
     d3.selectAll("#book").call(build_image);
@@ -87,12 +87,12 @@ function chartify(data) {
 
     // notesBook
     //     .svg(d3.select("#book svg"))
-    //     .viewbox(vb)
+    //     .viewbox(viewbox)
     //     .connect(signal)
     // ;
     notesNav
         .svg(d3.select("#nav svg"))
-        .viewbox(vb)
+        .viewbox(viewbox)
         .connect(signal)
     ;
     notesUI.connect(signal);
@@ -118,17 +118,25 @@ function chartify(data) {
 
     var transition = d3.transition();
     signal
-        .on("zoom", function(extent) {
-            var w = extent[1] - extent[0];
-            d3.select("#book svg")
-                .attr("viewBox", [extent[0], vb[1], width, vb[3]].join(' '))
+        .on("zoom", function(extent) { // Only changes width and x coordinate
+            var sel = d3.select("#book svg")
+              , vb = sel.attr("viewBox").split(' ')
+              , h = vb[3] - vb[1] // don't change the height
+              , w = extent[1] - extent[0]
+            ;
+            sel
+                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
             ;
           })
-        .on("separate", function(arg) {
-            var h = arg === "Separate" ? fullheight : height;
-            d3.select("#book svg")
+        .on("separate", function(arg) { // Only changes height and y coordinate
+            var sel = d3.select("#book svg")
+              , vb = sel.attr("viewBox").split(' ')
+              , w = vb[2] - vb[0]
+              , h = arg === "Separate" ? fullheight : height
+            ;
+            sel
               .transition(transition)
-                .attr("viewBox", [vb[0], vb[1], vb[2], h])
+                .attr("viewBox", [vb[0], vb[1], w, h].join(' '))
               .selectAll("svg")
                 .attr("y", function(d, i) {
                     return arg === "Separate" ? i * height : 0;
@@ -170,14 +178,11 @@ function chartify(data) {
             var page = d3.select(this).selectAll("svg")
                 .data(data.partnames, function(d) { return d; })
             ;
-            page = page.enter()
+            page.enter()
               .append("svg")
                 .call(sizeit)
                 .attr("preserveAspectRatio", "xMinYMid slice")
                 .attr("class", function(d, i) { return "voice" + i; })
-              .merge(page)
-            ;
-            page
               .append("use")
                 .attr("xlink:href", function(d, i) { return "#voice" + i; })
                 .attr("x", 0)
@@ -191,7 +196,7 @@ function chartify(data) {
 
     function sizeit(sheet) {
         sheet
-            .attr("viewBox", vb.join(' '))
+            .attr("viewBox", viewbox.join(' '))
             .attr("width", width)
             .attr("height", height)
         ;
