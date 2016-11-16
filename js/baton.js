@@ -76,11 +76,14 @@ function chartify(data) {
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
 
-    var w = Math.abs(vb[2] - vb[0])
-      , h = Math.abs(vb[3] - vb[1])
+    var width = Math.abs(vb[2] - vb[0])
+      , height = Math.abs(vb[3] - vb[1])
+      , fullheight = height * data.partnames.length
     ;
     d3.selectAll("#book").call(build_image);
     d3.select("#nav").call(build_image);
+
+
 
     // notesBook
     //     .svg(d3.select("#book svg"))
@@ -113,17 +116,24 @@ function chartify(data) {
     ribbonsUI();
     colorLegend();
 
+    var transition = d3.transition();
     signal
         .on("zoom", function(extent) {
             var w = extent[1] - extent[0];
             d3.select("#book svg")
-                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
+                .attr("viewBox", [extent[0], vb[1], width, vb[3]].join(' '))
             ;
           })
         .on("separate", function(arg) {
-            if(arg === "Separate") {
-                d3.select("#book svg")
-            }
+            var h = arg === "Separate" ? fullheight : height;
+            d3.select("#book svg")
+              .transition(transition)
+                .attr("viewBox", [vb[0], vb[1], vb[2], h])
+              .selectAll("svg")
+                .attr("y", function(d, i) {
+                    return arg === "Separate" ? i * height : 0;
+                  })
+            ;
           })
         // .on("hilite",   notesBook.hilite)
         // .on("extremes", notesBook.extremes)
@@ -172,8 +182,8 @@ function chartify(data) {
                 .attr("xlink:href", function(d, i) { return "#voice" + i; })
                 .attr("x", 0)
                 .attr("y", 0)
-                .attr("width", w)
-                .attr("height", h)
+                .attr("width", width)
+                .attr("height", height)
             ;
           })
         ;
@@ -182,8 +192,8 @@ function chartify(data) {
     function sizeit(sheet) {
         sheet
             .attr("viewBox", vb.join(' '))
-            .attr("width", w)
-            .attr("height", h)
+            .attr("width", width)
+            .attr("height", height)
         ;
     } // sizeit()
 } // chartify()
