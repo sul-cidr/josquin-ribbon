@@ -34,6 +34,7 @@ function parseJSON(proll) {
     proll.partdata.forEach(function(part) {
         var voice = proll.partnames[part.partindex]
           , notes = []
+          , extent = d3.extent(part.notedata, function(d) { return d.pitch.b7; })
         ;
         part.notedata.forEach(function(note) {
             notes.push({
@@ -41,6 +42,7 @@ function parseJSON(proll) {
                 , note: note.pitch.name
                 , time: note.starttime[0]
                 , duration: note.duration[0]
+                , extreme: note.pitch.b7 === extent[0] || note.pitch.b7 === extent[1]
             });
         });
         remix.set(voice, { index: part.partindex, notes: notes });
@@ -144,7 +146,16 @@ function chartify(data) {
             ;
           })
         // .on("hilite",   notesBook.hilite)
-        // .on("extremes", notesBook.extremes)
+        .on("extremes", function() {
+            if(d3.selectAll(".extreme").empty()) {
+                d3.selectAll(".note")
+                    .classed("extreme", function(d) { return d.extreme; })
+            }
+            else {
+                d3.selectAll(".extreme")
+                    .classed("extreme", false)
+            }
+          })
         // .on("showRibbons", notesBook.showRibbons)
         // .on("ribbonMode", notesBook.ribbonMode)
         .on("notes", function() { // toggles the notes on/off
