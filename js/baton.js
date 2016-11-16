@@ -65,8 +65,13 @@ function chartify(data) {
             , "notes"
           )
     ;
-    canvas.svg().style("display", "none"); // Hide the source svg
-    canvas.data(data)(); // draw things in the shadow DOM.
+    canvas.svg()
+        .style("display", "none") // Hide the source svg
+    ;
+    canvas
+        .data(data) // draw things in the shadow DOM.
+      ()
+    ;
 
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
