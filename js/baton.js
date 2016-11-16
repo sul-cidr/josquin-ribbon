@@ -124,7 +124,7 @@ function chartify(data) {
             var sel = d3.select("#book svg")
               , vb = sel.attr("viewBox").split(' ')
               , h = vb[3] - vb[1] // don't change the height
-              , w = extent[1] - extent[0]
+              , w = Math.abs(extent[1] - extent[0])
             ;
             sel
                 .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
@@ -145,7 +145,7 @@ function chartify(data) {
                   })
             ;
           })
-        // .on("hilite",   notesBook.hilite)
+        // .on("hilite", function(arg) {
         .on("extremes", function() {
             if(d3.selectAll(".extreme").empty()) {
                 d3.selectAll(".note")
