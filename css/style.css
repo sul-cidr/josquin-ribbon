@@ -42,7 +42,7 @@ rect.note {
 }
 rect.extreme {
   stroke: red;
-  stroke-width: 3;
+  stroke-width: 2;
 }
 .brush .extent {
     stroke: black;
