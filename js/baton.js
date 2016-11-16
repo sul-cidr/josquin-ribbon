@@ -6,7 +6,7 @@ var width = 960
       .svg(d3.select("body").append("svg").attr("id", "unrendered"))
   , notesNav = NotesNav()
   // , notesBook = NotesBook()
-  //     .svg(d3.select("#notes"))
+  //     .svg(d3.select("#book"))
   , notesUI = NotesUI()
       .div(divMeta.select("#notes-ui"))
   , ribbonsUI = RibbonsUI()
@@ -170,7 +170,7 @@ function chartify(data) {
     signal
         .on("zoom", function(extent) {
             var w = extent[1] - extent[0];
-            d3.select("#notes svg")
+            d3.select("#book svg")
                 .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
             ;
           })
