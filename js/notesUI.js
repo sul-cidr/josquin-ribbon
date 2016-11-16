@@ -65,7 +65,7 @@ function NotesUI(){
             .attr("class", "mdl-button mdl-button--fab mdl-button--mini-fab mdl-button--colored")
             .on("click", function(d) {
                 var self = this;
-                dispatch.call(d.callback, self, d.label);
+                dispatch.call(d.callback, self);
               })
           .append("i")
             .attr("class", "material-icons")
