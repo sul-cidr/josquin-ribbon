@@ -64,7 +64,7 @@ function chartify(data) {
 
     var w = Math.abs(vb[2] - vb[0])
       , h = Math.abs(vb[3] - vb[1])
-      , book = d3.selectAll("#notes").call(build_image)
+      , book = d3.selectAll("#book").call(build_image)
       , nav = d3.select("#nav").call(build_image)
     ;
 
