@@ -54,19 +54,91 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
-    // Hide the source svg
-    canvas.svg().style("display", "none");
+    var signal = d3.dispatch(
+              "hilite"
+            , "zoom"
+            , "separate"
+            , "selected"
+            , "extremes"
+            , "toggleRibbons"
+            , "ribbonMode"
+            , "notes"
+          )
+    ;
+    canvas.svg().style("display", "none"); // Hide the source svg
     canvas.data(data)(); // draw things in the shadow DOM.
+
     var vb = canvas.viewbox();
     vb[0] = vb[1] = 0;
 
     var w = Math.abs(vb[2] - vb[0])
       , h = Math.abs(vb[3] - vb[1])
-      , book = d3.selectAll("#book").call(build_image)
-      , nav = d3.select("#nav").call(build_image)
+    ;
+    d3.selectAll("#book").call(build_image);
+    d3.select("#nav").call(build_image);
+
+    // notesBook
+    //     .svg(d3.select("#book svg"))
+    //     .viewbox(vb)
+    //     .connect(signal)
+    // ;
+    notesNav
+        .svg(d3.select("#nav svg"))
+        .viewbox(vb)
+        .connect(signal)
+    ;
+    notesUI.connect(signal);
+    ribbonsUI.connect(signal);
+    colorScale
+        .domain(data.partnames)
+    ;
+    colorLegend
+        .colorScale(colorScale)
+        .noteHeight(10)
+        .roundedCornerSize(5)
+        .data(data.partnames)
+        .connect(signal)
     ;
 
+    // Render views.
+    notesNav();
+    // notesBook();
+    // combineSeparateUI();
+    notesUI();
+    ribbonsUI();
+    colorLegend();
 
+    signal
+        .on("zoom", function(extent) {
+            var w = extent[1] - extent[0];
+            d3.select("#book svg")
+                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
+            ;
+          })
+        .on("separate", function(arg) {
+            if(arg === "Separate") {
+                d3.select("#book svg")
+            }
+          })
+        // .on("hilite",   notesBook.hilite)
+        // .on("extremes", notesBook.extremes)
+        // .on("showRibbons", notesBook.showRibbons)
+        // .on("ribbonMode", notesBook.ribbonMode)
+        .on("notes", function() { // toggles the notes on/off
+            var score = d3.selectAll(".score")
+              , vis = score.style("display")
+            ;
+            score.style("display", vis == "inline" ? "none" : "inline")
+          })
+    // Titles and other UI polishes
+    var titles = divMeta.selectAll(".panel-title")
+        .data(data.filename.split(".krn")[0].split('-').reverse())
+    ;
+    titles.text(function(d) { return d.split('_').join(' '); });
+
+    /*
+    ** Helper functions for chartify's scope only
+    */
     function build_image(selection) {
         var sheet = selection.selectAll("svg")
             .data([selection.attr("id")])
@@ -109,87 +181,12 @@ function chartify(data) {
             .attr("height", h)
         ;
     } // sizeit()
-
-    var signal = d3.dispatch(
-              "hilite"
-            , "zoom"
-            , "separate"
-            , "selected"
-            , "extremes"
-            , "toggleRibbons"
-            , "ribbonMode"
-            , "toggleNotes"
-          )
-    ;
-    notesNav
-        .svg(d3.select("#nav svg"))
-        .viewbox(vb)
-        .connect(signal)
-      ()
-    ;
-    notesUI.connect(signal);
-    ribbonsUI.connect(signal);
-    colorScale
-        .domain(data.partnames)
-    ;
-    // notesNav
-    //     .colorScale(colorScale)
-    //     .margin(margin)
-    //     .width(width)
-    //     .height(height)
-    //     .data(data)
-    //     .connect(signal)
-    // ;
-    // notesBook
-    //     .colorScale(colorScale)
-    //     .margin(margin)
-    //     .height(height * 3)
-    //     .width(width)
-    //     .extremes(true)
-    //     .data(data)
-    //     .connect(signal)
-    // ;
-    colorLegend
-        .colorScale(colorScale)
-        .noteHeight(10)
-        .roundedCornerSize(5)
-        .data(data.partnames)
-        .connect(signal)
-    ;
-
-    // Render views.
-    // notesNav();
-    // notesBook();
-    // combineSeparateUI();
-    notesUI();
-    ribbonsUI();
-    colorLegend();
-
-    signal
-        .on("zoom", function(extent) {
-            var w = extent[1] - extent[0];
-            d3.select("#book svg")
-                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
-            ;
-          })
-        .on("separate", function(arg) { console.log(arg); })
-        // .on("hilite",   notesBook.hilite)
-        // .on("extremes", notesBook.extremes)
-        // .on("showRibbons", notesBook.showRibbons)
-        // .on("ribbonMode", notesBook.ribbonMode)
-        // .on("notes", notesBook.showNotes)
-    // Titles and other UI polishes
-    var titles = divMeta.selectAll(".panel-title")
-        .data(data.filename.split(".krn")[0].split('-').reverse())
-    ;
-    titles.text(function(d) { return d.split('_').join(' '); });
-
 } // chartify()
 
 // Calculate the extent of a range
 function difference(range) {
     return Math.abs(range[1] - range[0]);
-} // extent()
+} // difference()
 
 // Capture URL query param
 function getQueryVariables() {
