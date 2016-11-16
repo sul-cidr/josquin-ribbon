@@ -21,7 +21,6 @@ function Score() {
           .attr("rx", y.bandwidth() / 2)
           .attr("ry", y.bandwidth() / 2)
           .attr("height", y.bandwidth())
-          .classed("extreme", function(d) { return d.extreme; })
         .transition(d3.transition())
           .attr("x", function(d) { return x(d.time); })
           .attr("y", function(d) { return y(d.pitch); })
