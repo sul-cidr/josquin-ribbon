@@ -6,7 +6,7 @@ function NotesUI(){
       , toggle = {
               label: "Toggle Notes"
             , icon: "music_note"
-            , callback: "toggleNotes"
+            , callback: "notes"
           }
       , flyout = [
               {
@@ -48,7 +48,7 @@ function NotesUI(){
                 toolbar.select("ul")
                     .style("visibility", vis == "visible" ? "hidden" : "visible")
                 ;
-                dispatch.call(d.callback, self, d.label);
+                dispatch.call(d.callback, self);
               })
           .append("i")
             .attr("class", "material-icons")
