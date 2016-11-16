@@ -5,7 +5,6 @@ function Score() {
   // Standard variables
   var x // scale for global domain
     , y // scale for global domain
-    , extent
   ;
   /*
   ** Main Function Object
@@ -22,7 +21,7 @@ function Score() {
           .attr("rx", y.bandwidth() / 2)
           .attr("ry", y.bandwidth() / 2)
           .attr("height", y.bandwidth())
-          .classed("extreme", function(d) { return ~extent.indexOf(d.pitch); })
+          .classed("extreme", function(d) { return d.extreme; })
         .transition(d3.transition())
           .attr("x", function(d) { return x(d.time); })
           .attr("y", function(d) { return y(d.pitch); })
@@ -45,7 +44,6 @@ function Score() {
   my.y = function(_) {
       if(!arguments.length) return y;
       y = _;
-      extent = d3.extent(y.domain());
       return my;
     } // my.y()
   ;
