@@ -64,32 +64,47 @@ function chartify(data) {
 
     var w = Math.abs(vb[2] - vb[0])
       , h = Math.abs(vb[3] - vb[1])
-      , book = d3.select("#notes").selectAll("svg")
-                .data([1])
-      , nav = d3.select("#nav").selectAll("svg")
-                .data([1])
+      , book = d3.selectAll("#notes").call(build_image)
+      , nav = d3.select("#nav").call(build_image)
     ;
-    [book,nav].forEach(function(sheet) {
-        sheet
-          .enter().append("svg")
+
+
+    function build_image(selection) {
+        var sheet = selection.selectAll("svg")
+            .data([selection.attr("id")])
+        ;
+        sheet = sheet.enter()
+          .append("svg")
             .call(sizeit)
             .attr("preserveAspectRatio", "none")
             .style("width", "100%")
             .style("height", "100%")
-          .append("svg")
-            .call(sizeit)
-            .attr("preserveAspectRatio", "xMinYMid slice")
-          .selectAll("use")
-            .data(d3.range(data.partnames.length))
-          .enter().append("use")
-            .attr("xlink:href", function(d) { return "#voice" + d; })
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", w)
-            .attr("height", h)
+          .merge(sheet)
         ;
-      }) // forEach
-    ;
+        sheet.each(function() {
+            var page = d3.select(this).selectAll("svg")
+                .data(data.partnames, function(d) { return d; })
+            ;
+            console.log(page);
+            page = page.enter()
+              .append("svg")
+                .call(sizeit)
+                .attr("preserveAspectRatio", "xMinYMid slice")
+                .attr("class", slugify)
+              .merge(page)
+            ;
+            page
+              .append("use")
+                .attr("xlink:href", function(d, i) { return "#voice" + i; })
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", w)
+                .attr("height", h)
+            ;
+          })
+        ;
+    } // build_image()
+
     function sizeit(sheet) {
         sheet
             .attr("viewBox", vb.join(' '))
