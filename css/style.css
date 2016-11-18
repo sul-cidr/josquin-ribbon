@@ -11,11 +11,14 @@ header {
     background-repeat: no-repeat;
     background-size: contain;
 }
+#main {
+    height: 100vh;
+}
 #book {
-    height: 75vh;
+    height: 70vh;
 }
 #nav {
-    height: 25vh;
+    height: 20vh;
 }
 .mensuration {
     font-family: 'BravuraText';
