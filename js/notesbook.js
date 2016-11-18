@@ -4,28 +4,9 @@ function NotesBook() {
   */
   var svg
     , data
+    , viewbox
     , width
     , height
-    , margin = { top: 20, right: 20, bottom: 20, left: 20 }
-    , scale = {
-            color: null
-          , voice: d3.scaleBand()
-          , barlines: d3.scaleLinear()
-        }
-    , domain = { x: [], y: [] } // Store the aggregate domains for all strips
-    , tooltip = d3.tip()
-          .attr("class", "d3-tip")
-          .html(function(d) { return d.note; })
-    , canvases = []
-    , display = {
-          separate: false // show each note strip separately
-          , hilite:   false // one set of notes is visible
-          , extremes: false // hilite the maximum and minimum pitches
-          , zoom:     { x: [], y: [] } // indicates an active brush
-          , showRibbons: true // show or hide the ribbons layer
-          , ribbonMode: Ribbon.STANDARD_DEVIATION // Ribbon width meaning
-          , showNotes: true // show or hide the notes
-        }
     , barlinesAxis = d3.axisTop()
     , barlines
     , bars
@@ -44,6 +25,8 @@ function NotesBook() {
         }
     , mensurationsAxis = d3.axisTop()
     , mensurations
+    , sensor = d3.voronoi()
+    , y = d3.scaleBand()
     , dispatch
   ;
 
@@ -283,7 +266,7 @@ function NotesBook() {
           display.zoom.y = null;
 
       canvases
-          .forEach(function(c) { c.canvas.zoom(display.zoom).update(false); })  
+          .forEach(function(c) { c.canvas.zoom(display.zoom).update(false); })
       ;
 
       return my;
