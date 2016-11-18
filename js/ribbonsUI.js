@@ -6,7 +6,7 @@ function RibbonsUI(){
       , toggle = {
               label: "Toggle Ribbons"
             , icon: "bookmark"
-            , callback: "toggleRibbons"
+            , callback: "ribbons"
           }
       , flyout = [
               {
