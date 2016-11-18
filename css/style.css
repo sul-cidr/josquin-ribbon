@@ -28,8 +28,10 @@ header {
     margin-left: 1em;
 }
 
-rect, li {
-    transition: opacity 0.5s linear, fill-opacity 0.5s linear;
+.subdued {
+    transition: opacity 0.5s linear,
+      fill-opacity 0.5s linear,
+      stroke-opacity 0.5s linear;
 }
 rect.note {
     fill: currentColor;
