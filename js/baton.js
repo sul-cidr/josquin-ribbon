@@ -137,12 +137,13 @@ function chartify(data) {
         .on("separate", function(arg) { // Only changes height and y coordinate
             var sel = d3.select("#book svg")
               , vb = sel.attr("viewBox").split(' ')
-              , w = vb[2] - vb[0]
-              , h = arg ? fullheight : height
             ;
+            vb[3] = arg ? fullheight : height;
+            vb[2] = Math.abs(vb[2] - vb[0]);
+
             sel
               .transition(transition)
-                .attr("viewBox", [vb[0], vb[1], w, h].join(' '))
+                .attr("viewBox", vb.join(' '))
               .selectAll("svg")
                 .attr("y", function(d, i) {
                     return arg ? i * height : 0;
