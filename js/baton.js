@@ -160,14 +160,10 @@ function chartify(data) {
                 ;
           })
         .on("extremes", function() {
-            if(d3.selectAll(".extreme").empty()) {
-                d3.selectAll(".note")
-                    .classed("extreme", function(d) { return d.extreme; })
-            }
-            else {
-                d3.selectAll(".extreme")
-                    .classed("extreme", false)
-            }
+            var xtrms = d3.selectAll(".extreme");
+            d3.selectAll(".extreme-plain")
+                .classed("extreme", xtrms.empty())
+            ;
           })
         // .on("showRibbons", notesBook.showRibbons)
         // .on("ribbonMode", notesBook.ribbonMode)
