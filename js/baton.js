@@ -97,6 +97,10 @@ function chartify(data) {
         .viewbox(viewbox)
         .connect(signal)
     ;
+    d3.select("#separate-ui")
+        .datum([{key: "separate", icon: "format_line_spacing"}])
+        .call(ToggleUI().connect(signal))
+    ;
     notesUI.connect(signal);
     ribbonsUI.connect(signal);
     colorScale
@@ -115,7 +119,7 @@ function chartify(data) {
     // notesBook();
     // combineSeparateUI();
     notesUI();
-    ribbonsUI();
+//    ribbonsUI();
     colorLegend();
 
     var transition = d3.transition();
@@ -134,14 +138,14 @@ function chartify(data) {
             var sel = d3.select("#book svg")
               , vb = sel.attr("viewBox").split(' ')
               , w = vb[2] - vb[0]
-              , h = arg === "Separate" ? fullheight : height
+              , h = arg ? fullheight : height
             ;
             sel
               .transition(transition)
                 .attr("viewBox", [vb[0], vb[1], w, h].join(' '))
               .selectAll("svg")
                 .attr("y", function(d, i) {
-                    return arg === "Separate" ? i * height : 0;
+                    return arg ? i * height : 0;
                   })
             ;
           })
