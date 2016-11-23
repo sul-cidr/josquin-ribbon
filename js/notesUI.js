@@ -9,17 +9,7 @@ function NotesUI(){
             , callback: "notes"
           }
       , flyout = [
-              {
-                  label: "Combine"
-                , icon: "vertical_align_center"
-                , callback: "separate"
-              }
-            , {
-                  label: "Separate"
-                , icon: "format_line_spacing"
-                , callback: "separate"
-              }
-            , {
+            {
                   label: "Show Extreme Notes"
                 , icon: "library_music"
                 , callback: "extremes"
