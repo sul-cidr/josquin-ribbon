@@ -25,7 +25,7 @@ function Score() {
           .attr("x", function(d) { return x(d.time); })
           .attr("y", function(d) { return y(d.pitch); })
           .attr("width", function(d) {
-              return x(d.time + d.duration) - x(d.time);
+              return x(d.duration);
             })
       ;
       // enableTooltips();
