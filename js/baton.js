@@ -149,7 +149,15 @@ function chartify(data) {
                   })
             ;
           })
-        // .on("hilite", function(arg) {
+        .on("hilite", function(arg) {
+            if(!arg[0])
+                d3.select("#book svg").selectAll("svg.subdued")
+                    .classed("subdued", false)
+            else
+                d3.select("#book svg").selectAll("svg")
+                    .classed("subdued", function(d, i) { return i !== arg[1]; })
+                ;
+          })
         .on("extremes", function() {
             if(d3.selectAll(".extreme").empty()) {
                 d3.selectAll(".note")
