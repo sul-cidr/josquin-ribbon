@@ -17,6 +17,14 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
         , icon: "format_line_spacing" // label
         , options: null // no dropdown
       }]
+  , ribbonButtons = [{
+          callback: "ribbons"
+        , icon: null
+        , options: {
+                "standard_deviation": "Standard Deviation"
+              , "attack_density": "Attack Density"
+            } // dropdown
+      }]
 ;
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
@@ -68,8 +76,7 @@ function chartify(data) {
             , "separate"
             , "selected"
             , "extremes"
-            , "toggleRibbons"
-            , "ribbonMode"
+            , "ribbons"
             , "notes"
           )
     ;
@@ -105,6 +112,10 @@ function chartify(data) {
     ;
     d3.select("#separate-ui")
         .datum(combineButton)
+        .call(ToggleUI().connect(signal))
+    ;
+    d3.select("#ribbons-ui")
+        .datum(ribbonButtons)
         .call(ToggleUI().connect(signal))
     ;
     notesUI.connect(signal);
