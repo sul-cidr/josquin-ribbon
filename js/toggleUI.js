@@ -30,6 +30,7 @@ function ToggleUI() {
                   ;
               } else if(options.length) {
                   label.append("select")
+                      .attr("disabled", "disabled")
                       .on("change", function() {
                           dispatch.call(d.callback, this, this.value);
                         })
