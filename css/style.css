@@ -142,7 +142,6 @@ li {
 select {
     transition: all 0.5s linear;
     display: block;
-    width: 90%;
 }
 select[disabled] {
     font-weight: 100;
