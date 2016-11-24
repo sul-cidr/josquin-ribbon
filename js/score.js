@@ -17,16 +17,15 @@ function Score() {
       rect.enter()
         .append("rect")
           .attr("class", "note")
+          .classed("extreme-plain", function(d) { return d.extreme; })
         .merge(rect)
           .attr("rx", y.bandwidth() / 2)
           .attr("ry", y.bandwidth() / 2)
           .attr("height", y.bandwidth())
         .transition(d3.transition())
-          .attr("x", function(d) { return x(d.time); })
           .attr("y", function(d) { return y(d.pitch); })
-          .attr("width", function(d) {
-              return x(d.duration);
-            })
+          .attr("x", function(d) { return x(d.time); })
+          .attr("width", function(d) { return x(d.duration); })
       ;
       // enableTooltips();
   } // my()
