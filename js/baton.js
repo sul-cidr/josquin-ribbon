@@ -7,8 +7,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   //     .svg(d3.select("#book"))
   , notesUI = NotesUI()
       .div(divMeta.select("#notes-ui"))
-  , ribbonsUI = RibbonsUI()
-      .div(divMeta.select("#ribbons-ui"))
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
@@ -119,7 +117,6 @@ function chartify(data) {
         .call(ToggleUI().connect(signal))
     ;
     notesUI.connect(signal);
-    ribbonsUI.connect(signal);
     colorScale
         .domain(data.partnames)
     ;
@@ -134,9 +131,7 @@ function chartify(data) {
     // Render views.
     notesNav();
     // notesBook();
-    // combineSeparateUI();
     notesUI();
-//    ribbonsUI();
     colorLegend();
 
     // Hide ribbons initially
