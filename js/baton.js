@@ -147,7 +147,7 @@ function chartify(data) {
         .on("zoom", function(extent) { // Only changes width and x coordinate
             var sel = d3.select("#book svg")
               , vb = sel.attr("viewBox").split(' ')
-              , h = vb[3] - vb[1] // don't change the height
+              , h = Math.abs(vb[3] - vb[1]) // don't change the height
               , w = Math.abs(extent[1] - extent[0])
             ;
             sel
@@ -196,7 +196,7 @@ function chartify(data) {
             var score = d3.selectAll(".score")
               , vis = score.style("display")
             ;
-            score.style("display", vis == "inline" ? "none" : "inline")
+            score.style("display", vis == "inline" ? "none" : "inline");
           })
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")
