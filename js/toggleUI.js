@@ -42,7 +42,7 @@ function ToggleUI() {
                       .text(function(o) { return o.value; })
                   ;
               }
-              componentHandler.upgradeElement(sel.select(".mdl-switch").node());
+              componentHandler.upgradeElement(self.node());
               check
                   .on("change", function() {
                       var checked = this.checked
