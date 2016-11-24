@@ -139,6 +139,9 @@ function chartify(data) {
 //    ribbonsUI();
     colorLegend();
 
+    // Hide ribbons initially
+    d3.selectAll(".ribbon g").style("display", "none");
+
     var transition = d3.transition();
     signal
         .on("zoom", function(extent) { // Only changes width and x coordinate
@@ -182,8 +185,13 @@ function chartify(data) {
                 .classed("extreme", xtrms.empty())
             ;
           })
-        // .on("showRibbons", notesBook.showRibbons)
-        // .on("ribbonMode", notesBook.ribbonMode)
+        .on("ribbons", function(arg) {
+            d3.selectAll(".ribbon g")
+                .style("display", function(d) {
+                    return d.toLowerCase() === arg ? "inline" : "none";
+                  })
+            ;
+          })
         .on("notes", function() { // toggles the notes on/off
             var score = d3.selectAll(".score")
               , vis = score.style("display")
