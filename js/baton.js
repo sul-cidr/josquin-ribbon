@@ -12,6 +12,11 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
   , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+  , combineButton = [{
+          callback: "separate"
+        , icon: "format_line_spacing" // label
+        , options: null // no dropdown
+      }]
 ;
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
@@ -99,7 +104,7 @@ function chartify(data) {
         .connect(signal)
     ;
     d3.select("#separate-ui")
-        .datum([{key: "separate", icon: "format_line_spacing"}])
+        .datum(combineButton)
         .call(ToggleUI().connect(signal))
     ;
     notesUI.connect(signal);
