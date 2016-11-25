@@ -57,12 +57,6 @@ function NotesCanvas() {
     /*
     ** API (Getter/Setter) Functions
     */
-    my.colorScale = function (value) {
-        if(arguments.length === 0) return scale.color;
-
-        return my;
-      } // my.colorScale()
-    ;
     my.svg = function(_) {
         if(!arguments.length) return svg;
         svg = _;
