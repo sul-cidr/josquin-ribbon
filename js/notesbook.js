@@ -336,30 +336,6 @@ function NotesBook() {
     } // my.data()
   ;
 
-  my.toggleRibbons = function() {
-      display.showRibbons = !display.showRibbons;
-      update();
-
-      return my;
-    } // my.toggleRibbons()
-
-  my.ribbonMode = function(value) {
-      if(!arguments.length) return display.ribbonMode;
-
-      display.ribbonMode = value;
-      update();
-
-      return my;
-    } // my.ribbonMode()
-
-  my.toggleNotes = function() {
-      display.showNotes = !display.showNotes;
-      update();
-
-      return my;
-    } // my.toggleNotes()
-
-
   // This is always the last thing returned
   return my;
 } // NotesBook()
