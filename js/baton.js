@@ -202,12 +202,7 @@ function chartify(data) {
     */
 } // chartify()
 
-// Calculate the extent of a range
-function difference(range) {
-    return Math.abs(range[1] - range[0]);
-} // difference()
-
-// Capture URL query param
+/// Capture URL query param
 function getQueryVariables() {
     var inits = {}
       , query = window.location.search.substring(1).toLowerCase().split("&")
