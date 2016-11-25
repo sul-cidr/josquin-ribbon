@@ -93,10 +93,8 @@ function chartify(data) {
       , height = Math.abs(viewbox[3] - viewbox[1])
       , fullheight = height * data.partnames.length
     ;
-    d3.selectAll("#book").call(build_image);
-    d3.select("#nav").call(build_image);
-
-
+    d3.selectAll("#book").call(canvas.render);
+    d3.select("#nav").call(canvas.render);
 
     // notesBook
     //     .svg(d3.select("#book svg"))
@@ -202,45 +200,6 @@ function chartify(data) {
     /*
     ** Helper functions for chartify's scope only
     */
-    function build_image(selection) {
-        var sheet = selection.selectAll("svg")
-            .data([selection.attr("id")])
-        ;
-        sheet = sheet.enter()
-          .append("svg")
-            .call(sizeit)
-            .attr("preserveAspectRatio", "none")
-            .style("width", "100%")
-            .style("height", "100%")
-          .merge(sheet)
-        ;
-        sheet.each(function() {
-            var page = d3.select(this).selectAll("svg")
-                .data(data.partnames, function(d) { return d; })
-            ;
-            page.enter()
-              .append("svg")
-                .call(sizeit)
-                .attr("preserveAspectRatio", "xMinYMid slice")
-                .attr("class", function(d, i) { return "voice" + i; })
-              .append("use")
-                .attr("xlink:href", function(d, i) { return "#voice" + i; })
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", width)
-                .attr("height", height)
-            ;
-          })
-        ;
-    } // build_image()
-
-    function sizeit(sheet) {
-        sheet
-            .attr("viewBox", viewbox.join(' '))
-            .attr("width", width)
-            .attr("height", height)
-        ;
-    } // sizeit()
 } // chartify()
 
 // Calculate the extent of a range

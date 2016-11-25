@@ -217,6 +217,47 @@ function NotesCanvas() {
         return my;
       } // my.viewbox()
     ;
+    my.render = function(sel) {
+        var sheet = sel.selectAll("svg")
+            .data([sel.attr("id")])
+        ;
+        sheet = sheet.enter()
+          .append("svg")
+            .call(sizeit)
+            .attr("preserveAspectRatio", "none")
+            .style("width", "100%")
+            .style("height", "100%")
+          .merge(sheet)
+        ;
+        sheet.each(function() {
+            var page = d3.select(this).selectAll("svg")
+                .data(data.partnames, function(d) { return d; })
+            ;
+            page.enter()
+              .append("svg")
+                .call(sizeit)
+                .attr("preserveAspectRatio", "xMinYMid slice")
+                .attr("class", function(d, i) { return "voice" + i; })
+              .append("use")
+                .attr("xlink:href", function(d, i) { return "#voice" + i; })
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", width)
+                .attr("height", height)
+            ;
+          })
+        ;
+
+        // Local helper function
+        function sizeit(box) {
+            box
+                .attr("viewBox", viewbox.join(' '))
+                .attr("width", width)
+                .attr("height", height)
+            ;
+        } // sizeit()
+      } // my.render()
+    ;
 
     // This is always the last thing returned
     return my;
