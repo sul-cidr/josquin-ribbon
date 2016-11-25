@@ -279,17 +279,18 @@ function NotesBook() {
       });
       return my;
     } // my.reset()
-  my.svg = function (value){
+  my.svg = function(_) {
       if(!arguments.length) return svg;
-      svg = value.selectAll("svg")
-          .data([1])
-      ;
-      svg = svg
-        .enter().append("svg")
-        .merge(svg)
-      ;
+      svg = _;
       return my;
     } // my.svg()
+  ;
+  my.viewbox = function(_) {
+      if(!arguments.length) return viewbox;
+
+      viewbox = _;
+      return my;
+    } // my.viewbox()
   ;
   my.data = function (value){
       if(arguments.length === 0) return data;
