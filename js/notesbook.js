@@ -225,33 +225,6 @@ function NotesBook() {
       return my;
     } // my.colorScale()
   ;
-  my.width = function(value) {
-      if(arguments.length === 0) return width;
-
-      width = value;
-
-      return my;
-    } // my.width()
-  ;
-  my.height = function(value) {
-      if(arguments.length === 0) return height;
-
-      height = value;
-      scale.voice.rangeRound([0, height]);
-
-      return my;
-    } // my.height()
-  ;
-  my.full = function(value) {
-      if(!arguments.length) return scale;
-
-      canvases.forEach(function(c) {
-          c.canvas.zoom(value).update(false);
-      });
-
-      return my;
-    } // my.full()
-  ;
   my.margin = function(value) {
       if(!arguments.length) return margin;
 
@@ -306,17 +279,6 @@ function NotesBook() {
       });
       return my;
     } // my.reset()
-  my.extremes = function(value) {
-      if(!arguments.length) return display.extremes;
-
-      display.extremes = value;
-      canvases.forEach(function(c) {
-          c.canvas.extremes(value);
-      });
-
-      return my;
-    } // my.extremes()
-  ;
   my.svg = function (value){
       if(!arguments.length) return svg;
       svg = value.selectAll("svg")
