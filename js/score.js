@@ -5,6 +5,7 @@ function Score() {
   // Standard variables
   var x // scale for global domain
     , y // scale for global domain
+    , noteHeight
   ;
   /*
   ** Main Function Object
@@ -19,9 +20,9 @@ function Score() {
           .attr("class", "note")
           .classed("extreme-plain", function(d) { return d.extreme; })
         .merge(rect)
-          .attr("rx", y.bandwidth() / 2)
-          .attr("ry", y.bandwidth() / 2)
-          .attr("height", y.bandwidth())
+          .attr("rx", noteHeight / 2)
+          .attr("ry", noteHeight / 2)
+          .attr("height", noteHeight)
         .transition(d3.transition())
           .attr("y", function(d) { return y(d.pitch); })
           .attr("x", function(d) { return x(d.time); })
@@ -42,6 +43,7 @@ function Score() {
   my.y = function(_) {
       if(!arguments.length) return y;
       y = _;
+      noteHeight = y.bandwidth();
       return my;
     } // my.y()
   ;
