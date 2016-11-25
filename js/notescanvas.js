@@ -56,24 +56,6 @@ function NotesCanvas() {
     /*
     ** Helper Callback Functions
     */
-
-    function hilite() {
-        svg.selectAll("rect.note")
-            .classed("subdued", !state)
-
-            // Show extreme notes only if showNotes is false,
-            // but extremes is true.
-            .attr("display", null)
-        ;
-    } // hilite()
-
-    function extent(value) {
-        value = value || { x: null, y: null }
-        scale.x.domain(value.x || domain.x);
-        scale.y.domain(value.y || domain.y);
-        syncYLinear();
-    } // extent()
-
     function update(selection) {
         selection = selection || svg;
 
@@ -173,33 +155,6 @@ function NotesCanvas() {
         return my;
       } // my.colorScale()
     ;
-    my.width = function (value) {
-        if(arguments.length === 0) return width;
-
-        return my;
-      } // my.width()
-    ;
-    my.height = function (value) {
-        if(arguments.length === 0) return height;
-
-        return my;
-      } // my.height()
-    ;
-    my.state = function(value) {
-        if(!arguments.length) return state;
-
-        state = value;
-        return my;
-      } // my.state()
-    ;
-    my.tooltip = function(value) {
-        if(!arguments.length) return tooltip;
-
-        tooltip = value;
-        enableTooltips();
-        return my;
-      } // my.tooltip()
-    ;
     my.connect = function(value) {
         if(!arguments.length) return dispatch;
 
@@ -207,49 +162,12 @@ function NotesCanvas() {
         return my;
       } // my.connect()
     ;
-    my.extremes = function() {
-        extremes = !extremes;
-        computeExtremeNotes();
-        return my;
-      } // my.extremes()
-    ;
-    my.showRibbon = function(value) {
-        if(!arguments.length)
-            return showRibbon;
-        showRibbon = value;
-        ribbon.show(showRibbon);
-        return my;
-      } // my.showRibbon()
-    ;
-    my.ribbonMode = function(value) {
-        if(!arguments.length)
-            return ribbonMode;
-        ribbon.mode(value);
-        return my;
-      } // my.ribbonMode()
-    ;
     my.showReflines = function (value) {
         if(arguments.length === 0) return showReflines;
 
         showReflines = value;
         return my;
       } // my.showReflines()
-    ;
-
-    my.clipPath = function (value) {
-        if(arguments.length === 0) return clipPath;
-
-        clipPath = value;
-        return my;
-      } // my.clipPath()
-    ;
-
-    my.showNotes = function (value) {
-        if(arguments.length === 0) return showNotes;
-
-        showNotes = value;
-        return my;
-      } // my.showNotes()
     ;
 
     /*
@@ -284,14 +202,6 @@ function NotesCanvas() {
         viewbox = [x.range()[0], y.range()[1], width, height];
         return my;
       } // my.data()
-    ;
-    my.zoom = function(value) {
-        // Set the domain of notes in the zoomed in region
-        //  -- if value is empty, the zoom is reset to the dataset's domain
-        extent(value);
-
-        return my;
-      } // my.zoom()
     ;
     my.update = function(trnstn) {
         // Call update, with a transition
