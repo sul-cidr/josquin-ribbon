@@ -63,25 +63,6 @@ function NotesCanvas() {
         return my;
       } // my.colorScale()
     ;
-    my.connect = function(value) {
-        if(!arguments.length) return dispatch;
-
-        dispatch = value;
-        return my;
-      } // my.connect()
-    ;
-
-    /*
-    ** API (Getter ONLY) Functions
-    */
-    my.noteHeight = function () { return noteHeight; };
-    my.roundedCornerSize = function () { return roundedCornerSize; };
-    my.x = function() { return x; };
-    my.y = function() { return y; };
-
-    /*
-    ** API (Setter ONLY) Functions
-    */
     my.svg = function(_) {
         if(!arguments.length) return svg;
         svg = _;
@@ -111,6 +92,21 @@ function NotesCanvas() {
         return my;
       } // my.data()
     ;
+    my.connect = function(value) {
+        if(!arguments.length) return dispatch;
+
+        dispatch = value;
+        return my;
+      } // my.connect()
+    ;
+
+    /*
+    ** API (Getter ONLY) Functions
+    */
+    my.noteHeight = function () { return noteHeight; };
+    my.roundedCornerSize = function () { return roundedCornerSize; };
+    my.x = function() { return x; };
+    my.y = function() { return y; };
     my.render = function(sel) {
         var sheet = sel.selectAll("svg")
             .data([sel.attr("id")])
