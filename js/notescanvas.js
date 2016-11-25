@@ -120,10 +120,10 @@ function NotesCanvas() {
           .merge(sheet)
         ;
         sheet.each(function() {
-            var page = d3.select(this).selectAll("svg")
+            var voice = d3.select(this).selectAll("svg")
                 .data(data.partnames, function(d) { return d; })
             ;
-            page.enter()
+            voice.enter()
               .append("svg")
                 .call(sizeit)
                 .attr("preserveAspectRatio", "xMinYMid slice")
