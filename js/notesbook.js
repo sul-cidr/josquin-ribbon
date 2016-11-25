@@ -202,6 +202,18 @@ function NotesBook() {
       ;
   } // mensurationsRender()
 
+  function reflinesRender(selection) {
+      selection.style("visibility", showReflines ? "visible" : "hidden");
+      if(!showReflines) return;
+
+      selection
+         .call(reflinesAxis)
+       .selectAll(".tick")
+         .filter(function (d){ return reflinesValues[d].style === "dashed" })
+         .attr("stroke-dasharray", "4 4")
+     ;
+  } // reflinesRender()
+
 
   /*
   ** API (Getter/Setter) Functions
