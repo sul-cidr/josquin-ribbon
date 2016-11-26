@@ -101,27 +101,22 @@ function NotesBook() {
   ;
   my.zoom = function(_) {
       var vb = svg.attr("viewBox").split(' ');
-      svg
-          .attr(
-                "viewBox"
-              , [_[0], vb[1], Math.abs(_[1] - _[0]), vb[3]].join(' ')
-            )
-      ;
+      vb[2] = Math.abs(_[1] - _[0]);
+
+      svg.attr("viewBox", vb.join(' ')\);
+
       return my;
     } // my.zoom()
   ;
   my.separate = function(_) {
       var vb = svg.attr("viewBox").split(' ');
+      vb[3] = _ ? fullheight : height;
+
       svg
         .transition(d3.transition())
-          .attr(
-                "viewBox"
-              , [vb[0], vb[1], vb[2], _ ? fullheight : height].join(' ')
-            )
+          .attr("viewBox", vb.join(' '))
         .selectAll(".voicebox")
-          .attr("y", function(d, i) {
-              return _ ? i * height : 0;
-            })
+          .attr("y", function(d, i) { return _ ? i * height : 0; })
       ;
       return my;
     } // my.separate()
