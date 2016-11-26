@@ -126,7 +126,7 @@ path.domain {
 }
 .fixed-action-button {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: center;
 }
