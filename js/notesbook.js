@@ -7,6 +7,7 @@ function NotesBook() {
     , viewbox
     , width
     , height
+    , voices
     , barlinesAxis = d3.axisTop()
     , barlines
     , bars
@@ -101,6 +102,9 @@ function NotesBook() {
   my.svg = function(_) {
       if(!arguments.length) return svg;
       svg = _;
+      voices = svg.datum();
+      viewbox = svg.attr("viewBox").split(' ');
+      height = Math.abs(viewbox[3] - viewbox[1]);
       return my;
     } // my.svg()
   ;
