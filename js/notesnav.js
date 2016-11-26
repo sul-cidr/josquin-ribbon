@@ -40,8 +40,10 @@
     ** Helper Functions
     */
     function brushed() {
-        if(!d3.event || !d3.event.selection) return;
-        var extent = d3.event.selection.map(Math.round);
+        var extent = (!d3.event || !d3.event.selection)
+              ? x.range()
+              : d3.event.selection.map(Math.round)
+        ;
         if(!d3.event.selection) {
             svg.select(".brush")
               .transition().duration(500)
