@@ -7,6 +7,7 @@ function NotesBook() {
     , viewbox
     , width
     , height
+    , fullheight
     , voices
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -87,16 +88,6 @@ function NotesBook() {
       return my;
     } // my.connect()
   ;
-  my.zoom = function(_) {
-      var h = Math.abs(viewbox[3] - viewbox[1]) // don't change the height
-        , w = Math.abs(_[1] - _[0])
-      ;
-      svg
-          .attr("viewBox", [_[0], viewbox[1], w, viewbox[3]].join(' '))
-      ;
-      return my;
-    } // my.zoom()
-  ;
   my.hilite = function(_) {
         if(!_[0])
             svg.selectAll("svg.subdued")
@@ -108,19 +99,26 @@ function NotesBook() {
       return my;
     } // my.hilite()
   ;
+  my.zoom = function(_) {
+      var vb = svg.attr("viewBox").split(' ');
+      svg
+          .attr(
+                "viewBox"
+              , [_[0], vb[1], Math.abs(_[1] - _[0]), vb[3]].join(' ')
+            )
+      ;
+      return my;
+    } // my.zoom()
+  ;
   my.separate = function(_) {
+      var vb = svg.attr("viewBox").split(' ');
       svg
         .transition(d3.transition())
           .attr(
                 "viewBox"
-              , [
-                    viewbox[0]
-                  , viewbox[1]
-                  , Math.abs(viewbox[2] - viewbox[0])
-                  , height * (_ ? voices.length : 1)
-                ]
+              , [vb[0], vb[1], vb[2], _ ? fullheight : height].join(' ')
             )
-        .selectAll("svg")
+        .selectAll(".voicebox")
           .attr("y", function(d, i) {
               return _ ? i * height : 0;
             })
@@ -131,9 +129,10 @@ function NotesBook() {
   my.svg = function(_) {
       if(!arguments.length) return svg;
       svg = _;
-      voices = svg.datum();
       viewbox = svg.attr("viewBox").split(' ');
+      voices = svg.datum().length;
       height = Math.abs(viewbox[3] - viewbox[1]);
+      fullheight = voices * height;
       return my;
     } // my.svg()
   ;
