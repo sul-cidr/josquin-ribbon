@@ -6,10 +6,20 @@ function NotesUI(){
       , toggle = {
               label: "Toggle Notes"
             , icon: "music_note"
-            , callback: "notes"
+            , callback: "toggleNotes"
           }
       , flyout = [
-            {
+              {
+                  label: "Combine"
+                , icon: "vertical_align_center"
+                , callback: "separate"
+              }
+            , {
+                  label: "Separate"
+                , icon: "format_line_spacing"
+                , callback: "separate"
+              }
+            , {
                   label: "Show Extreme Notes"
                 , icon: "library_music"
                 , callback: "extremes"
@@ -38,7 +48,7 @@ function NotesUI(){
                 toolbar.select("ul")
                     .style("visibility", vis == "visible" ? "hidden" : "visible")
                 ;
-                dispatch.call(d.callback, self);
+                dispatch.call(d.callback, self, d.label);
               })
           .append("i")
             .attr("class", "material-icons")

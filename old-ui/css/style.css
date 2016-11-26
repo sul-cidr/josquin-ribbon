@@ -1,28 +1,15 @@
 @font-face {
   font-family: 'BravuraText';
-  src: url('fonts/BravuraText.eot'); /* IE 5-8 */
+  src: url('../../css/fonts/BravuraText.eot'); /* IE 5-8 */
   src: local(':)'), /* trick IE to ignore the rest */
-      url('fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
-      url('fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
-      url('fonts/BravuraText.svg') format('svg'); /* iOS */
+      url('../../css/fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
+      url('../../css/fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
+      url('../../css/fonts/BravuraText.svg') format('svg'); /* iOS */
 }
 header {
     background-image: url('/img/josquin.jpg');
     background-repeat: no-repeat;
     background-size: contain;
-}
-#main {
-    height: 100vh;
-}
-#book {
-    height: 70vh;
-}
-#nav {
-    height: 20vh;
-}
-.svg-container {
-    margin: 1rem;
-    padding: 1rem;
 }
 .mensuration {
     font-family: 'BravuraText';
@@ -35,10 +22,8 @@ header {
     margin-left: 1em;
 }
 
-.subdued {
-    transition: opacity 0.5s linear,
-      fill-opacity 0.5s linear,
-      stroke-opacity 0.5s linear;
+rect, li {
+    transition: opacity 0.5s linear, fill-opacity 0.5s linear;
 }
 rect.note {
     fill: currentColor;
@@ -51,7 +36,7 @@ rect.note {
 }
 rect.extreme {
   stroke: red;
-  stroke-width: 2;
+  stroke-width: 3;
 }
 .brush .extent {
     stroke: black;
@@ -94,36 +79,6 @@ path.domain {
     fill-opacity: 0.5;
     stroke-width: 1;
 }
-.voice0 {
-    color: #1f77b4;
-}
-.voice1 {
-    color: #ff7f0e;
-}
-.voice2 {
-    color: #2ca02c;
-}
-.voice3 {
-    color: #d62728;
-}
-.voice4 {
-    color: #9467bd;
-}
-.voice5 {
-    color: #8c564b;
-}
-.voice6 {
-    color: #e377c2;
-}
-.voice7 {
-    color: #7f7f7f;
-}
-.voice8 {
-    color: #bcbd22;
-}
-.voice9 {
-    color: #17becf;
-}
 .fixed-action-button {
     display: flex;
     flex-direction: row-reverse;
@@ -142,12 +97,4 @@ ul.fab {
 
 li {
     flex: 0 0 auto;
-}
-select {
-    transition: all 0.5s linear;
-    display: block;
-}
-select[disabled] {
-    font-weight: 100;
-    background-color: #eee;
 }

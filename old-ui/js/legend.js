@@ -52,15 +52,15 @@ function ColorLegend(){
                     .text(c)
                 ;
               })
-          .on("click", function(c, i) {
+          .on("click", function(c) {
               hilite = hilite === c ? false : c;
+              dispatch.call("hilite", this, { emphasize: hilite });
 
               legend.selectAll("li")
                   .classed("subdued", function(d) {
                       return hilite && d !== c;
                     })
               ;
-              dispatch.call("hilite", this, [hilite, i]);
             })
         ;
         row.exit().remove();

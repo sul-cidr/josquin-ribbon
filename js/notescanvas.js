@@ -7,274 +7,83 @@ function NotesCanvas() {
       , width
       , height
       , margin = { top: 10, bottom: 10, left: 0, right: 0 }
-      , scale = {
-          x: d3.scaleLinear(),
-          y: d3.scaleBand(), // Used for the ref lines and notes.
-          yLinear: d3.scaleLinear(), // Used for the ribbons.
-          color: null
-        }
-      , domain = { x: [], y: [] } // store the dataset's domains
-      , tooltip
-      , roundedCornerSize
+      , x = d3.scaleLinear()
+      , y =  d3.scaleBand().padding(0.2)
+      , generator = d3.entries({
+              score: Score()
+            , ribbon: Ribbon()
+          })
+      , lifeSize = 10 // default height and width of notes
       , dispatch
-      , state = true // on; false = off
-      , extremes = false
-      , showRibbon = false
-      , showReflines = false
-      , reflinesValues = {
-              32: { label: "G", style: "solid" },
-              28: { label: "C4", style: "dashed" },
-              24: { label: "F", style: "solid" }
-          }
-      , reflinesPitches = Object.keys(reflinesValues)
-            .map(function (d){ return +d; })
-      , reflinesAxis = d3.axisLeft()
-            .tickValues(reflinesPitches)
-            .tickFormat(function (d){ return reflinesValues[d].label; })
-      , clipPath
-      , ribbon = Ribbon()
-      , showNotes = true
+      , viewbox
     ;
     /*
     ** Main Function Object
     */
-    function my(selection) {
-        data = selection.datum();
-        domain.x = [
-              d3.min(data.value, function(d) { return d.time; })
-            , d3.max(data.value, function(d) { return d.time + d.duration; })
-          ]
+    function my() {
+        var symbol = svg.selectAll("symbol")
+              .data(data.notes, function(d) { return d.key; })
         ;
-        scale.x.domain(domain.x).range([0, width ]);
-
-        var pitches = data.value
-                .map(function(d) { return d.pitch; })
-                .concat(reflinesPitches)
-          , pitchExtent = d3.extent(pitches)
-        ;
-        domain.y = d3.range.apply(null, pitchExtent);
-        scale.y.domain(domain.y).range([height, 0]);
-        syncYLinear();
-
-        svg = selection
-              .attr("class", "notes-g " + data.key)
-        ;
-
-        reflinesAxis
-            .scale(scale.y)
-            .tickSize(-width)
-        ;
-        svg
-          .append("g")
-            .attr("class", "reflines")
-            .call(reflinesRender)
-        ;
-
-        var notesG = svg
-          .append("g")
-            .attr("class", "notes")
-        ;
-
-        if(clipPath){
-            notesG.attr("clip-path", "url(#" + clipPath + ")");
-        }
-
-        if(showRibbon){
-          ribbon
-            .g(notesG.append("g"))
-            .scale(scale)
-            .domain(domain)
-            .data(data)
-          ;
-        }
-
-        var rects = notesG.selectAll("rect").data(data.value);
-
-        rects
-          .enter().append("rect")
-            .attr("class", "note")
-        ;
-        rects.exit().remove();
-
-        computeExtremeNotes();
-        enableTooltips();
-
-        update();
-    } // my()
-
-    // Synchronizes the Y Linear scale to values
-    // from the Y band scale.
-    function syncYLinear(){
-        var extent = d3.extent(scale.y.domain());
-
-        // Adjust the linear scale to match the band scale,
-        // such that the note values map to the center points
-        // of the note rectangles.
-        extent[0] -= 0.5;
-        extent[1] += 0.5;
-
-        scale.yLinear
-          .domain(extent)
-          .range(scale.y.range())
-        ;
-    }
-
-    /*
-    ** Helper Functions
-    */
-    function hilite() {
-        svg.selectAll("rect.note")
-            .classed("subdued", !state)
-
-            // Show extreme notes only if showNotes is false,
-            // but extremes is true.
-            .attr("display", null)
-        ;
-    } // hilite()
-
-    function extent(value) {
-        value = value || { x: null, y: null }
-        scale.x.domain(value.x || domain.x);
-        scale.y.domain(value.y || domain.y);
-        syncYLinear();
-    } // extent()
-
-    function update(selection) {
-        selection = selection || svg;
-
-        selection.selectAll("rect.note")
-            .attr("x", function(d) { return scale.x(d.time); })
-            .attr("width", function(d) {
-                return scale.x(d.time + d.duration) - scale.x(d.time);
-              })
-            .attr("y", function(d) { return scale.y(d.pitch); })
-            .attr("height", scale.y.bandwidth())
-            .attr("rx", scale.y.bandwidth() / 2)
-            .attr("ry", scale.y.bandwidth() / 2)
-            .style("color", function(d) {
-                return scale.color(d.voice);
-              })
-            .attr("display", showNotes ? null : "none")
-        ;
-        hilite();
-        selection.select(".reflines")
-            .call(reflinesRender);
-
-        ribbon();
-
-    } // update()
-
-    function reflinesRender(selection){
-       if(showReflines){
-           selection
-               .style("visibility", "visible")
-               .call(reflinesAxis)
-             .selectAll(".tick")
-               .filter(function (d){ return reflinesValues[d].style === "dashed" })
-               .attr("stroke-dasharray", "4 4")
-           ;
-       } else {
-           selection.style("visibility", "hidden");
-       }
-    } // reflinesRender()
-
-
-
-    function computeExtremeNotes() {
-        if(svg){
-            var extent = d3.extent(data.value, function (d){ return d.pitch; });
-            svg.selectAll("rect.note").each(function(d) {
-                d3.select(this)
-                    .classed("extreme", function(d) {
-                        return extremes
-                            && extent.some(function(e) { return d.pitch === e; })
+        symbol.exit().remove();
+        symbol.enter()
+          .append("symbol")
+            .attr("id", function(d, i) { return "voice" + i; })
+            .attr("viewBox", viewbox.join(' '))
+            .each(function(voice, i) {
+                var self = d3.select(this);
+                // Create a `<g>` for each visualization generator
+                self.selectAll("g")
+                    .data(generator, function(g) { return g.key; })
+                  .enter().append("g")
+                    .attr("class", function(g) { return g.key; })
+                    .each(function(g) {
+                        g.value.x(x).y(y);
+                        d3.select(this)
+                            .datum(voice.value.notes)
+                            // Call each visualization generator
+                            .call(g.value)
                         ;
                       })
                 ;
               })
-        }
         ;
-    } // computeExtremeNotes()
+    } // my()
 
-    function enableTooltips() {
-        if(tooltip && svg) {
-            svg.selectAll("rect.note")
-                .on("mouseover", tooltip.show)
-                .on("mouseout", tooltip.hide)
-            ;
-        }
-    } // enableTooltips()
-
-    function describe() {
-      /*
-        // Filter the notes based on the selected time interval.
-        var filteredData = data.value
-            .filter(function (d){
-                return d.time > scale.zoom.x.domain()[0]
-                  && d.time < scale.zoom.x.domain()[1];
-              })
-        ;
-        // Update the pitch names text.
-        var pitchNames = filteredData
-            .map(function (d){ return d.pitchName; })
-        ;
-        // Update the note durations text.
-        var pitchTimes = filteredData
-            .map(function (d){ return d.duration; })
-        ;
-        if(dispatch)
-            dispatch.selected({
-                  names: pitchNames
-                , times: pitchTimes
-              })
-            ;
-        console.log(dispatch);
-      */
-    } // describe()
+    /*
+    ** Helper Callback Functions
+    */
 
     /*
     ** API (Getter/Setter) Functions
     */
-    my.colorScale = function (value) {
-        if(arguments.length === 0) return scale.color;
-
-        scale.color = value;
+    my.svg = function(_) {
+        if(!arguments.length) return svg;
+        svg = _;
         return my;
-      } // my.colorScale()
+      } // my.svg()
     ;
-    my.width = function (value) {
-        if(arguments.length === 0) return width;
+    my.viewbox = function(_) {
+        if(!arguments.length) return viewbox;
 
-        width = value;
-        scale.x.range([0, width]);
-
+        viewbox = _;
         return my;
-      } // my.width()
+      } // my.viewbox()
     ;
-    my.height = function (value) {
-        if(arguments.length === 0) return height;
+    my.data = function(_) {
+        if(!arguments.length) return data;
+        data = _;
+        x.domain([0, data.scorelength[0]]);
+        y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
 
-        height = value;
-        scale.y.range([height, 0]);
-        syncYLinear();
+        var scaleup = function(d) { return d * lifeSize; };
+        x.range(x.domain().map(scaleup));
+        y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
+        width   = Math.abs(x.range()[1] - x.range()[0]);
+        height  = Math.abs(y.range()[1] - y.range()[0]);
+        viewbox = [x.range()[0], y.range()[1], width, height];
         return my;
-      } // my.height()
-    ;
-    my.state = function(value) {
-        if(!arguments.length) return state;
-
-        state = value;
-        return my;
-      } // my.state()
-    ;
-    my.tooltip = function(value) {
-        if(!arguments.length) return tooltip;
-
-        tooltip = value;
-        enableTooltips();
-        return my;
-      } // my.tooltip()
+      } // my.data()
     ;
     my.connect = function(value) {
         if(!arguments.length) return dispatch;
@@ -284,81 +93,77 @@ function NotesCanvas() {
       } // my.connect()
     ;
     my.extremes = function() {
-        extremes = !extremes;
-        computeExtremeNotes();
-        return my;
+        var xtrms = svg.selectAll(".extreme").empty();
+        svg.selectAll(".extreme-plain")
+            .classed("extreme", xtrms)
+        ;
       } // my.extremes()
     ;
-    my.showRibbon = function(value) {
-        if(!arguments.length)
-            return showRibbon;
-        showRibbon = value;
-        ribbon.show(showRibbon);
-        return my;
-      } // my.showRibbon()
+    my.ribbons = function(arg) {
+        svg.selectAll(".ribbon g")
+            .style("display", function(d) {
+                return d.toLowerCase() === arg ? "inline" : "none";
+              })
+        ;
+      } // my.ribbons()
     ;
-    my.ribbonMode = function(value) {
-        if(!arguments.length)
-            return ribbonMode;
-        ribbon.mode(value);
-        return my;
-      } // my.ribbonMode()
+    my.notes = function() { // toggles the notes on/off
+        var score = svg.selectAll(".score")
+          , vis = score.style("display")
+        ;
+        score.style("display", vis == "inline" ? "none" : "inline");
+      } // my.notes()
     ;
-    my.showReflines = function (value) {
-        if(arguments.length === 0) return showReflines;
-
-        showReflines = value;
-        return my;
-      } // my.showReflines()
-    ;
-
-    my.clipPath = function (value) {
-        if(arguments.length === 0) return clipPath;
-
-        clipPath = value;
-        return my;
-      } // my.clipPath()
-    ;
-
-    my.showNotes = function (value) {
-        if(arguments.length === 0) return showNotes;
-
-        showNotes = value;
-        return my;
-      } // my.showNotes()
-    ;
-
     /*
     ** API (Getter ONLY) Functions
     */
     my.noteHeight = function () { return noteHeight; };
     my.roundedCornerSize = function () { return roundedCornerSize; };
-    my.x = function() { return scale.x; };
+    my.x = function() { return x; };
+    my.y = function() { return y; };
+    my.render = function(sel) {
+        var sheet = sel.selectAll("svg")
+            .data([sel.attr("id")])
+        ;
+        sheet = sheet.enter()
+          .append("svg")
+            .call(sizeit)
+            .attr("class", "lens")
+             // Stretch contents to container
+            .attr("preserveAspectRatio", "none")
+            .style("width", "100%")
+            .style("height", "100%")
+          .merge(sheet)
+        ;
+        // Nest the voice SVGs
+        sheet.each(function() {
+            var voice = d3.select(this).selectAll("svg")
+                .data(data.partnames, function(d) { return d; })
+            ;
+            voice.enter()
+              .append("svg")
+                .call(sizeit)
+                .attr("class", function(d, i) { return "voicebox voice" + i; })
+                .attr("preserveAspectRatio", "xMinYMid slice")
+              .append("use")
+                .attr("xlink:href", function(d, i) { return "#voice" + i; })
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", width)
+                .attr("height", height)
+            ;
+          })
+        ;
 
-    /*
-    ** API (Setter ONLY) Functions
-    */
-    my.zoom = function(value) {
-        // Set the domain of notes in the zoomed in region
-        //  -- if value is empty, the zoom is reset to the dataset's domain
-        extent(value);
-
-        return my;
-      } // my.zoom()
-    ;
-    my.update = function() {
-        // Call update, with a transition
-        update(svg.transition());
-
-        return my;
-      } // my.update()
-    ;
-    my.snap = function() {
-        // Call update with immediate effect (no transition)
-        update();
-
-        return my;
-      } // my.snap()
+        // Local helper function
+        function sizeit(box) {
+            box
+                .attr("viewBox", viewbox.join(' '))
+                .attr("width", width)
+                .attr("height", height)
+            ;
+        } // sizeit()
+      } // my.render()
     ;
 
     // This is always the last thing returned
