@@ -88,11 +88,6 @@ function chartify(data) {
     var viewbox = canvas.viewbox();
     viewbox[0] = viewbox[1] = 0;
 
-    var width = Math.abs(viewbox[2] - viewbox[0])
-      , height = Math.abs(viewbox[3] - viewbox[1])
-      , fullheight = height * data.partnames.length
-    ;
-
     notesBook
         .svg(d3.select("#book").call(canvas.render).select("svg").datum(data.partnames))
         .viewbox(viewbox)
