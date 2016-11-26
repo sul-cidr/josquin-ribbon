@@ -20,6 +20,10 @@ header {
 #nav {
     height: 20vh;
 }
+.svg-container {
+    margin: 1rem;
+    padding: 1rem;
+}
 .mensuration {
     font-family: 'BravuraText';
     font-size: xx-large;
@@ -40,7 +44,7 @@ rect.note {
     fill: currentColor;
     stroke: currentColor;
     fill-opacity: 0.5;
-    stroke-width: 0;
+    stroke-width: 1;
 }
 .subdued {
     opacity: 0.1;
