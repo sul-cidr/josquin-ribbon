@@ -168,8 +168,8 @@ function getQueryVariables() {
 function slugify(str) {
     return str.toLowerCase()
         .trim() // remove trailing and leading whitepsace
-        .replace(/[^\w\s-]/g, '') // remove non-{alphanum,whitespace,hyphen}s
+        .replace(/[^\w]/g, '') // remove non-alphanums
         .replace(/[\s_-]+/g, '-') // {whitespace,underscore,hyphen}s -> hyphen
-        .replace(/^-+|-+$/g, '') // remove leading, trailing hyphens
+        .replace(/^-+|-+$/g, '') // remove leading and trailing hyphens
     ;
 } // slugify()
