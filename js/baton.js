@@ -169,25 +169,9 @@ function chartify(data) {
                     .classed("subdued", function(d, i) { return i !== arg[1]; })
                 ;
           })
-        .on("extremes", function() {
-            var xtrms = d3.selectAll(".extreme");
-            d3.selectAll(".extreme-plain")
-                .classed("extreme", xtrms.empty())
-            ;
-          })
-        .on("ribbons", function(arg) {
-            d3.selectAll(".ribbon g")
-                .style("display", function(d) {
-                    return d.toLowerCase() === arg ? "inline" : "none";
-                  })
-            ;
-          })
-        .on("notes", function() { // toggles the notes on/off
-            var score = d3.selectAll(".score")
-              , vis = score.style("display")
-            ;
-            score.style("display", vis == "inline" ? "none" : "inline");
-          })
+          .on("extremes", canvas.extremes)
+          .on("ribbons", canvas.ribbons)
+          .on("notes", canvas.notes)
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")
         .data(data.filename.split(".krn")[0].split('-').reverse())

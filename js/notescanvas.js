@@ -93,7 +93,28 @@ function NotesCanvas() {
         return my;
       } // my.connect()
     ;
-
+    my.extremes = function() {
+        var xtrms = svg.selectAll(".extreme").empty();
+        svg.selectAll(".extreme-plain")
+            .classed("extreme", xtrms)
+        ;
+      } // my.extremes()
+    ;
+    my.ribbons = function(arg) {
+        svg.selectAll(".ribbon g")
+            .style("display", function(d) {
+                return d.toLowerCase() === arg ? "inline" : "none";
+              })
+        ;
+      } // my.ribbons()
+    ;
+    my.notes = function() { // toggles the notes on/off
+        var score = svg.selectAll(".score")
+          , vis = score.style("display")
+        ;
+        score.style("display", vis == "inline" ? "none" : "inline");
+      } // my.notes()
+    ;
     /*
     ** API (Getter ONLY) Functions
     */
