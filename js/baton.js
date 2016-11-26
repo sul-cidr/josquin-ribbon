@@ -92,16 +92,14 @@ function chartify(data) {
       , height = Math.abs(viewbox[3] - viewbox[1])
       , fullheight = height * data.partnames.length
     ;
-    d3.selectAll("#book").call(canvas.render);
-    d3.select("#nav").call(canvas.render);
 
     notesBook
-        .svg(d3.select("#book svg"))
+        .svg(d3.select("#book").call(canvas.render).select("svg").datum(data.partnames))
         .viewbox(viewbox)
         .connect(signal)
     ;
     notesNav
-        .svg(d3.select("#nav svg"))
+        .svg(d3.select("#nav").call(canvas.render).select("svg"))
         .viewbox(viewbox)
         .connect(signal)
     ;
