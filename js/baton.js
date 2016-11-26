@@ -89,7 +89,7 @@ function chartify(data) {
     viewbox[0] = viewbox[1] = 0;
 
     notesBook
-        .svg(d3.select("#book").call(canvas.render).select("svg").datum(data.partnames))
+        .svg(d3.select("#book").call(canvas.render).select("svg"))
         .viewbox(viewbox)
         .connect(signal)
     ;
