@@ -88,14 +88,43 @@ function NotesBook() {
     } // my.connect()
   ;
   my.zoom = function(_) {
+      var h = Math.abs(viewbox[3] - viewbox[1]) // don't change the height
+        , w = Math.abs(_[1] - _[0])
+      ;
+      svg
+          .attr("viewBox", [_[0], viewbox[1], w, viewbox[3]].join(' '))
+      ;
       return my;
     } // my.zoom()
   ;
-  my.hilite = function(value) {
+  my.hilite = function(_) {
+        if(!_[0])
+            svg.selectAll("svg.subdued")
+                .classed("subdued", false)
+        else
+            svg.selectAll("svg")
+                .classed("subdued", function(d, i) { return i !== _[1]; })
+            ;
       return my;
     } // my.hilite()
   ;
-  my.separate = function(value) {
+  my.separate = function(_) {
+      svg
+        .transition(d3.transition())
+          .attr(
+                "viewBox"
+              , [
+                    viewbox[0]
+                  , viewbox[1]
+                  , Math.abs(viewbox[2] - viewbox[0])
+                  , height * (_ ? voices.length : 1)
+                ]
+            )
+        .selectAll("svg")
+          .attr("y", function(d, i) {
+              return _ ? i * height : 0;
+            })
+      ;
       return my;
     } // my.separate()
   ;

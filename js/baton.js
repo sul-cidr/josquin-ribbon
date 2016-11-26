@@ -132,46 +132,14 @@ function chartify(data) {
     // Hide ribbons initially
     d3.selectAll(".ribbon g").style("display", "none");
 
-    var transition = d3.transition();
     signal
-        .on("zoom", function(extent) { // Only changes width and x coordinate
-            var sel = d3.select("#book svg")
-              , vb = sel.attr("viewBox").split(' ')
-              , h = Math.abs(vb[3] - vb[1]) // don't change the height
-              , w = Math.abs(extent[1] - extent[0])
-            ;
-            sel
-                .attr("viewBox", [extent[0], vb[1], w, vb[3]].join(' '))
-            ;
-          })
-        .on("separate", function(arg) { // Only changes height and y coordinate
-            var sel = d3.select("#book svg")
-              , vb = sel.attr("viewBox").split(' ')
-            ;
-            vb[3] = arg ? fullheight : height;
-            vb[2] = Math.abs(vb[2] - vb[0]);
-
-            sel
-              .transition(transition)
-                .attr("viewBox", vb.join(' '))
-              .selectAll("svg")
-                .attr("y", function(d, i) {
-                    return arg ? i * height : 0;
-                  })
-            ;
-          })
-        .on("hilite", function(arg) {
-            if(!arg[0])
-                d3.select("#book svg").selectAll("svg.subdued")
-                    .classed("subdued", false)
-            else
-                d3.select("#book svg").selectAll("svg")
-                    .classed("subdued", function(d, i) { return i !== arg[1]; })
-                ;
-          })
-          .on("extremes", canvas.extremes)
-          .on("ribbons", canvas.ribbons)
-          .on("notes", canvas.notes)
+        .on("zoom", notesBook.zoom)
+        .on("separate", notesBook.separate)
+        .on("hilite", notesBook.hilite)
+        .on("extremes", canvas.extremes)
+        .on("ribbons", canvas.ribbons)
+        .on("notes", canvas.notes)
+    ;
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")
         .data(data.filename.split(".krn")[0].split('-').reverse())
