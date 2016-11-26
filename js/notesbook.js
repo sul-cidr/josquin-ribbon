@@ -101,9 +101,12 @@ function NotesBook() {
   ;
   my.zoom = function(_) {
       var vb = svg.attr("viewBox").split(' ');
+      if(!arguments.length) return vb;
+
+      vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
 
-      svg.attr("viewBox", vb.join(' '));
+      svg.attr("viewBox", vb.join(' ') );
 
       return my;
     } // my.zoom()
