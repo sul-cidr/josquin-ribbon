@@ -15,14 +15,14 @@ function NotesBook() {
     , measuresAxis = d3.axisBottom()
     , measures
     , mensurationCodes = {
-            "O": ""
-          , "O|": ""
+            "O"  : ""
+          , "O|" : ""
           , "O|.": ""
-          , "C.": ""
-          , "C": ""
-          , "Cr": ""
+          , "C." : ""
+          , "C"  : ""
+          , "Cr" : ""
           , "C|.": ""
-          , "C|": ""
+          , "C|" : ""
           , "C|r": ""
         }
     , mensurationsAxis = d3.axisTop()
