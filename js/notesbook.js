@@ -103,7 +103,7 @@ function NotesBook() {
       var vb = svg.attr("viewBox").split(' ');
       vb[2] = Math.abs(_[1] - _[0]);
 
-      svg.attr("viewBox", vb.join(' ')\);
+      svg.attr("viewBox", vb.join(' '));
 
       return my;
     } // my.zoom()
