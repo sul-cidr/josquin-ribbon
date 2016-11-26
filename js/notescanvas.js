@@ -129,11 +129,14 @@ function NotesCanvas() {
         sheet = sheet.enter()
           .append("svg")
             .call(sizeit)
+            .attr("class", "lens")
+             // Stretch contents to container
             .attr("preserveAspectRatio", "none")
             .style("width", "100%")
             .style("height", "100%")
           .merge(sheet)
         ;
+        // Nest the voice SVGs
         sheet.each(function() {
             var voice = d3.select(this).selectAll("svg")
                 .data(data.partnames, function(d) { return d; })
@@ -141,8 +144,8 @@ function NotesCanvas() {
             voice.enter()
               .append("svg")
                 .call(sizeit)
+                .attr("class", function(d, i) { return "voicebox voice" + i; })
                 .attr("preserveAspectRatio", "xMinYMid slice")
-                .attr("class", function(d, i) { return "voice" + i; })
               .append("use")
                 .attr("xlink:href", function(d, i) { return "#voice" + i; })
                 .attr("x", 0)
