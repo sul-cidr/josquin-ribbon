@@ -12,7 +12,6 @@ function NotesCanvas() {
       , generator = d3.entries({
               score: Score()
             , ribbon: Ribbon()
-            //, reflines: function(){}//Reflines()
           })
       , lifeSize = 10 // default height and width of notes
       , dispatch
