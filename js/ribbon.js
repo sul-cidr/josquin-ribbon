@@ -198,7 +198,6 @@ function Ribbon() {
         if(!arguments.length)
             return interval;
         interval = value;
-        ribbonDataStale = true;
         return my;
       } // my.interval()
     ;
@@ -206,7 +205,6 @@ function Ribbon() {
         if(!arguments.length)
             return step;
         step = value;
-        ribbonDataStale = true;
         return my;
       } // my.step()
     ;
@@ -214,7 +212,6 @@ function Ribbon() {
         if(!arguments.length)
             return bandwidth;
         bandwidth = value;
-        ribbonDataStale = true;
         return my;
       } // my.bandwidth()
     ;
