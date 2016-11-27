@@ -7,8 +7,6 @@ function NotesBook() {
     , viewbox
     , width
     , height
-    , fullheight
-    , voices
     , barlinesAxis = d3.axisTop()
     , barlines
     , bars
@@ -36,6 +34,10 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
+      svg.call(canvas.render);
+      svg = svg.select("svg");
+      viewbox = svg.attr("viewBox").split(' ');
+      height = Math.abs(viewbox[3] - viewbox[1]);
   } // my() - Main function object
 
   /*
@@ -75,12 +77,11 @@ function NotesBook() {
   /*
   ** API (Getter/Setter) Functions
   */
-  my.margin = function(_) {
-      if(!arguments.length) return margin;
-      margin = _;
-
+  my.data = function (value){
+      if(arguments.length === 0) return data;
+      data = value;
       return my;
-    } // my.margin()
+    } // my.data()
   ;
   my.connect = function(_) {
       if(!arguments.length) return dispatch;
@@ -127,10 +128,6 @@ function NotesBook() {
   my.svg = function(_) {
       if(!arguments.length) return svg;
       svg = _;
-      viewbox = svg.attr("viewBox").split(' ');
-      voices = svg.datum().length;
-      height = Math.abs(viewbox[3] - viewbox[1]);
-      fullheight = voices * height;
       return my;
     } // my.svg()
   ;
@@ -141,11 +138,11 @@ function NotesBook() {
       return my;
     } // my.viewbox()
   ;
-  my.data = function (value){
-      if(arguments.length === 0) return data;
-      data = value;
+  my.canvas = function(_) {
+      if(!arguments.length) return canvas;
+      canvas = _;
       return my;
-    } // my.data()
+    } // my.canvas()
   ;
 
   // This is always the last thing returned
