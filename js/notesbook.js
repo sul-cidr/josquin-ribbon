@@ -7,6 +7,7 @@ function NotesBook() {
     , viewbox
     , width
     , height
+    , fullheight
     , barlinesAxis = d3.axisTop()
     , barlines
     , bars
@@ -38,6 +39,7 @@ function NotesBook() {
       svg = svg.select("svg");
       viewbox = svg.attr("viewBox").split(' ');
       height = Math.abs(viewbox[3] - viewbox[1]);
+      fullheight = svg.selectAll("svg").size() * height;
   } // my() - Main function object
 
   /*
