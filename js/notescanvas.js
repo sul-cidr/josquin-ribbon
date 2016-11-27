@@ -111,7 +111,7 @@ function NotesCanvas() {
         var score = svg.selectAll(".score")
           , vis = score.style("display")
         ;
-        score.style("display", vis == "inline" ? "none" : "inline");
+        score.style("display", vis === "inline" ? "none" : "inline");
       } // my.notes()
     ;
     /*
