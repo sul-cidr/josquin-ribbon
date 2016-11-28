@@ -72,6 +72,7 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
+    console.log(data);
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
@@ -94,7 +95,7 @@ function chartify(data) {
     viewbox[0] = viewbox[1] = 0;
 
     notesBook
-        .svg(d3.select("#book"))
+        .div(d3.select("#book"))
         .viewbox(viewbox)
         .canvas(canvas)
         .connect(signal)
