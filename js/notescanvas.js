@@ -52,6 +52,49 @@ function NotesCanvas() {
     /*
     ** Helper Callback Functions
     */
+    function render(sel) {
+        var sheet = sel.selectAll("svg")
+            .data([sel.attr("id")])
+        ;
+        sheet = sheet.enter()
+          .append("svg")
+            .call(sizeit)
+            .attr("class", "lens")
+             // Stretch contents to container
+            .attr("preserveAspectRatio", "none")
+            .style("width", "100%")
+            .style("height", "100%")
+          .merge(sheet)
+        ;
+        // Nest the voice SVGs
+        sheet.each(function() {
+            var voice = d3.select(this).selectAll("svg")
+                .data(data.partnames, function(d) { return d; })
+            ;
+            voice.enter()
+              .append("svg")
+                .call(sizeit)
+                .attr("class", function(d, i) { return "voicebox voice" + i; })
+                .attr("preserveAspectRatio", "xMinYMid slice")
+              .append("use")
+                .attr("xlink:href", function(d, i) { return "#voice" + i; })
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", width)
+                .attr("height", height)
+            ;
+          })
+        ;
+
+        // Local helper function
+        function sizeit(box) {
+            box
+                .attr("viewBox", viewbox.join(' '))
+                .attr("width", width)
+                .attr("height", height)
+            ;
+        } // sizeit()
+      } // render()
 
     /*
     ** API (Getter/Setter) Functions
@@ -121,50 +164,7 @@ function NotesCanvas() {
     my.roundedCornerSize = function () { return roundedCornerSize; };
     my.x = function() { return x; };
     my.y = function() { return y; };
-    my.render = function(sel) {
-        var sheet = sel.selectAll("svg")
-            .data([sel.attr("id")])
-        ;
-        sheet = sheet.enter()
-          .append("svg")
-            .call(sizeit)
-            .attr("class", "lens")
-             // Stretch contents to container
-            .attr("preserveAspectRatio", "none")
-            .style("width", "100%")
-            .style("height", "100%")
-          .merge(sheet)
-        ;
-        // Nest the voice SVGs
-        sheet.each(function() {
-            var voice = d3.select(this).selectAll("svg")
-                .data(data.partnames, function(d) { return d; })
-            ;
-            voice.enter()
-              .append("svg")
-                .call(sizeit)
-                .attr("class", function(d, i) { return "voicebox voice" + i; })
-                .attr("preserveAspectRatio", "xMinYMid slice")
-              .append("use")
-                .attr("xlink:href", function(d, i) { return "#voice" + i; })
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", width)
-                .attr("height", height)
-            ;
-          })
-        ;
-
-        // Local helper function
-        function sizeit(box) {
-            box
-                .attr("viewBox", viewbox.join(' '))
-                .attr("width", width)
-                .attr("height", height)
-            ;
-        } // sizeit()
-      } // my.render()
-    ;
+    my.render = render;
 
     // This is always the last thing returned
     return my;
