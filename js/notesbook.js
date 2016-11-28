@@ -2,11 +2,12 @@ function NotesBook() {
   /*
   ** Private Variables
   */
-  var svg
+  var bezel, svg, lens, markings
     , data
     , viewbox
-    , width
-    , height
+    , margin = { top: 50, right: 25, bottom: 50, left: 50 }
+    , width = 960
+    , height = 500
     , fullheight
     , barlinesAxis = d3.axisTop()
     , barlines
@@ -35,11 +36,30 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-      svg.call(canvas.render);
-      svg = svg.select("svg");
-      viewbox = svg.attr("viewBox").split(' ');
+      bezel.selectAll("*").remove();
+      svg = bezel.append("svg")
+          .attr("class", "bezel")
+          // .attr("width", width + margin.left + margin.right)
+          // .attr("height", height + margin.top + margin.bottom)
+          .style("width", "100%")
+          .style("height", "100%")
+      ;
+      w = width / (width + margin.left + margin.right) * 100;
+      h = height / (height + margin.top + margin.bottom) * 100;
+      lens = svg
+          .call(canvas.render)
+        .select("svg")
+          .attr("x", (margin.left / width * 100) + "%")
+          .attr("y", (margin.top / height * 100) + "%")
+          .attr("width",  Math.round(w) + "%")
+          .attr("height", Math.round(h) + "%")
+      ;
+      console.log(lens);
+      viewbox = lens.attr("viewBox").split(' ');
       height = Math.abs(viewbox[3] - viewbox[1]);
-      fullheight = svg.selectAll("svg").size() * height;
+      fullheight = lens.selectAll(".voicebox").size() * height;
+      //markings = svg.call(canvas.render_reflines);
+      ;
   } // my() - Main function object
 
   /*
@@ -63,18 +83,6 @@ function NotesBook() {
       ;
   } // mensurationsRender()
 
-  function reflinesRender(selection) {
-      selection.style("visibility", showReflines ? "visible" : "hidden");
-      if(!showReflines) return;
-
-      selection
-         .call(reflinesAxis)
-       .selectAll(".tick")
-         .filter(function (d){ return reflinesValues[d].style === "dashed" })
-         .attr("stroke-dasharray", "4 4")
-     ;
-  } // reflinesRender()
-
 
   /*
   ** API (Getter/Setter) Functions
@@ -93,32 +101,32 @@ function NotesBook() {
   ;
   my.hilite = function(_) {
         if(!_[0])
-            svg.selectAll("svg.subdued")
+            lens.selectAll("svg.subdued")
                 .classed("subdued", false)
         else
-            svg.selectAll("svg")
+            lens.selectAll("svg")
                 .classed("subdued", function(d, i) { return i !== _[1]; })
             ;
       return my;
     } // my.hilite()
   ;
   my.zoom = function(_) {
-      var vb = svg.attr("viewBox").split(' ');
+      var vb = lens.attr("viewBox").split(' ');
       if(!arguments.length) return vb;
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
 
-      svg.attr("viewBox", vb.join(' ') );
+      lens.attr("viewBox", vb.join(' ') );
 
       return my;
     } // my.zoom()
   ;
   my.separate = function(_) {
-      var vb = svg.attr("viewBox").split(' ');
+      var vb = lens.attr("viewBox").split(' ');
       vb[3] = _ ? fullheight : height;
 
-      svg
+      lens
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
         .selectAll(".voicebox")
@@ -127,11 +135,11 @@ function NotesBook() {
       return my;
     } // my.separate()
   ;
-  my.svg = function(_) {
-      if(!arguments.length) return svg;
-      svg = _;
+  my.div = function(_) {
+      if(!arguments.length) return bezel;
+      bezel = _;
       return my;
-    } // my.svg()
+    } // my.div()
   ;
   my.viewbox = function(_) {
       if(!arguments.length) return viewbox;
