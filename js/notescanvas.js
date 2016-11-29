@@ -54,7 +54,7 @@ function NotesCanvas() {
     */
     function render(sel) {
         var sheet = sel.selectAll("svg")
-            .data([sel.attr("id")])
+            .data([sel.attr("id")], function(d) { return d; })
         ;
         sheet = sheet.enter()
           .append("svg")
@@ -62,8 +62,6 @@ function NotesCanvas() {
             .attr("class", "lens")
              // Stretch contents to container
             .attr("preserveAspectRatio", "none")
-            .style("width", "100%")
-            .style("height", "100%")
           .merge(sheet)
         ;
         // Nest the voice SVGs
@@ -94,7 +92,7 @@ function NotesCanvas() {
                 .attr("height", height)
             ;
         } // sizeit()
-      } // render()
+    } // render()
 
     /*
     ** API (Getter/Setter) Functions
@@ -164,8 +162,11 @@ function NotesCanvas() {
     my.roundedCornerSize = function () { return roundedCornerSize; };
     my.x = function() { return x; };
     my.y = function() { return y; };
-    my.render = render;
 
+    /*
+    ** Special API Stamp Functions
+    */
+    my.render = render;
     // This is always the last thing returned
     return my;
 } // NotesCanvas()
