@@ -28,7 +28,6 @@ function NotesBook() {
     , mensurationsAxis = d3.axisTop()
     , mensurations
     , sensor = d3.voronoi()
-    , y = d3.scaleBand()
     , dispatch
   ;
 
@@ -36,6 +35,11 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
+      w = width / (width + margin.left + margin.right) * 100;
+      wp = margin.left / width * 100;
+      h = height / (height + margin.top + margin.bottom) * 100;
+      hp = margin.top / height * 100;
+
       bezel.selectAll("*").remove();
       svg = bezel.append("svg")
           .attr("class", "bezel")
@@ -43,21 +47,36 @@ function NotesBook() {
           // .attr("height", height + margin.top + margin.bottom)
           .style("width", "100%")
           .style("height", "100%")
+          .attr("width", 100)
+          .attr("height", 100)
+          .attr("viewBox", "0 0 100 100")
+          .attr("preserveAspectRatio", "none")
       ;
-      w = width / (width + margin.left + margin.right) * 100;
-      h = height / (height + margin.top + margin.bottom) * 100;
       lens = svg
           .call(canvas.render)
         .select("svg")
-          .attr("x", (margin.left / width * 100) + "%")
-          .attr("y", (margin.top / height * 100) + "%")
-          .attr("width",  Math.round(w) + "%")
-          .attr("height", Math.round(h) + "%")
+          .attr("x", 7)
+          .attr("y", 7)
+          .attr("width",  93)
+          .attr("height", 93)
       ;
-      console.log(lens);
       viewbox = lens.attr("viewBox").split(' ');
       height = Math.abs(viewbox[3] - viewbox[1]);
       fullheight = lens.selectAll(".voicebox").size() * height;
+      svg.selectAll(".markings")
+          .data(["markings"], function(d) { return d; })
+        .enter().append("svg")
+          .attr("class", "markings")
+            .attr("width", 100)
+            .attr("height", 93)
+            .attr("x", 0)
+            .attr("y", 7)
+//            .attr("viewBox", viewbox.join(' '))
+            //.attr("preserveAspectRatio", "xMinYMin slice")
+            .call(render_reflines)
+          .selectAll(".tick line")
+            .attr("x1", "100%")
+      ;
       //markings = svg.call(canvas.render_reflines);
       ;
   } // my() - Main function object
@@ -82,6 +101,30 @@ function NotesBook() {
             })
       ;
   } // mensurationsRender()
+
+
+  function render_reflines(sel) {
+      var lines = d3.scaleOrdinal()
+            .domain([32, 28, 24])
+            .range(["G", "C4", "F"])
+        , y = canvas.y().range([93, 0])
+        , axis = d3.axisLeft()
+            .scale(y)
+            .tickValues(lines.domain())
+            .tickFormat(lines)
+      ;
+      sel
+        .append("g")
+          .call(axis)
+        .selectAll(".tick")
+          .attr("class", function(d) {
+              return "tick refline refline--" + lines(d);
+            })
+      sel.select("g").selectAll("path, line")
+          .attr("vector-effect", "non-scaling-stroke")
+      ;
+      console.log(sel, y.domain(), y.range());
+  } // render_reflines()
 
 
   /*
