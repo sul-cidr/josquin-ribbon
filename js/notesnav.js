@@ -21,7 +21,10 @@
     */
     function my() {
         svg.call(canvas.render);
-        svg = svg.select("svg");
+        svg = svg.select("svg")
+            .style("width", "100%")
+            .style("height", "100%")
+        ;
         var g = svg.selectAll("g").data(["brush"]);
         g = g
           .enter().append("g")
