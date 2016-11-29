@@ -62,16 +62,18 @@ rect.extreme {
 .brush .selection {
     stroke: darkgrey;
 }
+/*
 path.domain {
     fill: none;
     stroke: none;
 }
+*/
 .tick line {
     stroke: lightgray;
 }
 .tick text {
     fill: gray;
-    font-size: 1.3rem;
+    /*font-size: 1.3rem;*/
 }
 .barlines .tick text {
     display: none;
@@ -150,4 +152,11 @@ select {
 select[disabled] {
     font-weight: 100;
     background-color: #eee;
+}
+
+.refline line {
+    fill: none;
+}
+.refline--C4 line {
+    stroke-dasharray: 4 4;
 }
