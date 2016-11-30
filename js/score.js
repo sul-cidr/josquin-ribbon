@@ -19,6 +19,7 @@ function Score() {
         .append("rect")
           .attr("class", "note")
           .classed("extreme-plain", function(d) { return d.extreme; })
+          .attr("vector-effect", "non-scaling-stroke")
         .merge(rect)
           .attr("rx", noteHeight / 2)
           .attr("ry", noteHeight / 2)
