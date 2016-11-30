@@ -1,7 +1,6 @@
 var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
   , canvas = NotesCanvas()
-      .svg(d3.select("body").append("svg").attr("id", "unrendered"))
   , notesNav = NotesNav()
   , notesBook = NotesBook()
   , notesUI = NotesUI()
@@ -83,27 +82,12 @@ function chartify(data) {
             , "notes"
           )
     ;
-    canvas.svg()
-        .style("display", "none") // Hide the source svg
-    ;
-    canvas
-        .data(data) // draw things in the shadow DOM.
-      ()
-    ;
-
-    var viewbox = canvas.viewbox();
-    viewbox[0] = viewbox[1] = 0;
-
     notesBook
         .div(d3.select("#book"))
-        .viewbox(viewbox)
-        .canvas(canvas)
         .connect(signal)
     ;
     notesNav
         .svg(d3.select("#nav"))
-        .viewbox(viewbox)
-        .canvas(canvas)
         .connect(signal)
     ;
     d3.select("#separate-ui")
@@ -127,7 +111,7 @@ function chartify(data) {
     ;
 
     // Render views.
-    notesNav();
+    // notesNav();
     notesBook();
     notesUI();
     colorLegend();
