@@ -30,7 +30,7 @@ function NotesUI(){
         ;
         toolbar
           .append("button")
-            .attr("class", "mdl-button mdl-button--fab mdl-button--primary")
+            .attr("class", "mdl-button mdl-button--fab mdl-button--mini-fab mdl-button--primary")
             .on("click", function(d) {
                 var self = this;
                 var vis = toolbar.select("ul").style("visibility");

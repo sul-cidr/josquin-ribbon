@@ -20,6 +20,11 @@
     ** Main function Object
     */
     function my() {
+        svg.call(canvas.render);
+        svg = svg.select("svg")
+            .style("width", "100%")
+            .style("height", "100%")
+        ;
         var g = svg.selectAll("g").data(["brush"]);
         g = g
           .enter().append("g")
@@ -125,6 +130,12 @@
         y = _;
         return my;
       } // my.y()
+    ;
+    my.canvas = function(_) {
+        if(!arguments.length) return canvas;
+        canvas = _;
+        return my;
+      } // my.canvas()
     ;
     // This is ALWAYS the last thing returned
     return my;

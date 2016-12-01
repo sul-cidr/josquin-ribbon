@@ -5,13 +5,13 @@ function Score() {
   // Standard variables
   var x // scale for global domain
     , y // scale for global domain
-    , noteHeight
   ;
   /*
   ** Main Function Object
   */
   function my(svg) {
-      var rect = svg.selectAll("rect")
+      var noteHeight = y.bandwidth()
+        , rect = svg.selectAll("rect")
               .data(function(d) { return d; }, function(d, i) { return i; })
       ;
       rect.exit().remove();
@@ -44,7 +44,6 @@ function Score() {
   my.y = function(_) {
       if(!arguments.length) return y;
       y = _;
-      noteHeight = y.bandwidth();
       return my;
     } // my.y()
   ;
