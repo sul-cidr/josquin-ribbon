@@ -40,7 +40,35 @@ function parseJSON(proll) {
     proll.partdata.forEach(function(part) {
         part.voice = proll.partnames[part.partindex];
       })
-    ;
+    // var remix = {}; // new container for notes data
+    //
+    // proll.partdata.forEach(function(part) {
+    //     var voice = proll.partnames[part.partindex]
+    //       , notes = []
+    //       , extent = d3.extent(part.notedata, function(d){ return d.pitch.b7; })
+    //     ;
+    //     part.notedata.forEach(function(note) {
+    //         var pitch = note.pitch.b7;
+    //         notes.push({
+    //               pitch: pitch
+    //             , note: note.pitch.name
+    //             , time: note.starttime[0]
+    //             , duration: note.duration[0]
+    //             , extreme: pitch === extent[0] || pitch === extent[1]
+    //         });
+    //     });
+    //     remix[voice] = {
+    //           index: part.partindex
+    //         , notes: notes
+    //         , range: d3.extent(notes, function(d) { return d.pitch; })
+    //       }
+    //     ;
+    // });
+    // proll.notes = d3.entries(remix)
+    //     .sort(function(a, b) {
+    //         return d3.ascending(a.value.index, b.value.index);
+    //       })
+    // ;
     return proll;
 } // parseJSON()
 
@@ -100,7 +128,7 @@ function chartify(data) {
         .on("hilite", notesBook.hilite)
         .on("extremes", notesBook.extremes)
         .on("notes", notesBook.notes)
-        // .on("ribbons", canvas.ribbons)
+        .on("ribbons", notesBook.ribbons)
     ;
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")
