@@ -46,12 +46,16 @@ function Score() {
                 **      note here.
                 ** side-effect: browser tooltips in ff and chrome.
                 */
-                var self = d3.select(this);
+                var self = d3.select(this)
+                  , title = d.pitch.name + " : "
+                      + d.duration + " beats"
+                      + " (" + data.voice + ")"
+                ;
                 self.append("title")
-                    .text(d.pitch.name + " : " + d.duration + " beats")
+                    .text(title)
                 ;
                 self.append("desc")
-                    .text(d.pitch.name + " : " + d.duration + " beats")
+                    .text(title)
                 ;
               })
       ;
