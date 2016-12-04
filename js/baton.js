@@ -1,6 +1,5 @@
 var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
-  , canvas = NotesCanvas()
   , notesNav = NotesNav()
   , notesBook = NotesBook()
   , notesUI = NotesUI()
@@ -38,34 +37,9 @@ d3.queue()
 ;
 
 function parseJSON(proll) {
-    var remix = {}; // new container for notes data
-
     proll.partdata.forEach(function(part) {
-        var voice = proll.partnames[part.partindex]
-          , notes = []
-          , extent = d3.extent(part.notedata, function(d){ return d.pitch.b7; })
-        ;
-        part.notedata.forEach(function(note) {
-            var pitch = note.pitch.b7;
-            notes.push({
-                  pitch: pitch
-                , note: note.pitch.name
-                , time: note.starttime[0]
-                , duration: note.duration[0]
-                , extreme: pitch === extent[0] || pitch === extent[1]
-            });
-        });
-        remix[voice] = {
-              index: part.partindex
-            , notes: notes
-            , range: d3.extent(notes, function(d) { return d.pitch; })
-          }
-        ;
-    });
-    proll.notes = d3.entries(remix)
-        .sort(function(a, b) {
-            return d3.ascending(a.value.index, b.value.index);
-          })
+        part.voice = proll.partnames[part.partindex];
+      })
     ;
     return proll;
 } // parseJSON()
@@ -83,7 +57,8 @@ function chartify(data) {
           )
     ;
     notesBook
-        .div(d3.select("#book"))
+        .svg(d3.select("#viewer").select("svg"))
+        .data(data)
         .connect(signal)
     ;
     notesNav
@@ -123,9 +98,9 @@ function chartify(data) {
         .on("zoom", notesBook.zoom)
         .on("separate", notesBook.separate)
         .on("hilite", notesBook.hilite)
-        .on("extremes", canvas.extremes)
-        .on("ribbons", canvas.ribbons)
-        .on("notes", canvas.notes)
+        .on("extremes", notesBook.extremes)
+        .on("notes", notesBook.notes)
+        // .on("ribbons", canvas.ribbons)
     ;
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")
