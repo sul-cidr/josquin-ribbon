@@ -3,34 +3,88 @@ function Score() {
   ** Private Variables - only used inside this object
   */
   // Standard variables
-  var x // scale for global domain
+  var data
+    , x // scale for global domain
     , y // scale for global domain
+    , pitches
+    , times
+    , stamps
   ;
   /*
   ** Main Function Object
   */
   function my(svg) {
-      var noteHeight = y.bandwidth()
-        , rect = svg.selectAll("rect")
-              .data(function(d) { return d; }, function(d, i) { return i; })
+      data = svg.datum();
+      stampify();
+      boxify(data.notedata);
+
+      svg = svg
+        .append("g")
+          .attr("class", "notes")
+          .attr("data-bbox", my.bbox())
       ;
-      rect.exit().remove();
-      rect.enter()
-        .append("rect")
-          .attr("class", "note")
-          .classed("extreme-plain", function(d) { return d.extreme; })
-          .attr("vector-effect", "non-scaling-stroke")
-        .merge(rect)
+      var notes = svg.selectAll(".note")
+          .data(
+                function(d) { return d.notedata; }
+              , function(d) { return d.starttime[0]; }
+            )
+      ;
+      notes.enter()
+          .append("use")
+            .attr("x", function(d) { return x(d.starttime[0]); })
+            .attr("y", function(d) { return y(d.pitch.b7); })
+            .attr("xlink:href", function(d) {
+                return "#note-" + d.duration[0];
+              })
+            .attr("class", "note")
+            .classed("extreme-plain", function(d) {
+                return ~pitches.indexOf(d.pitch.b7);
+              })
+            .each(function(d) {
+                /*
+                ** a11y: screen readers will find all the information about the
+                **      note here.
+                ** side-effect: browser tooltips in ff and chrome.
+                */
+                var self = d3.select(this);
+                self.append("title")
+                    .text(d.pitch.name + " : " + d.duration + " beats")
+                ;
+                self.append("desc")
+                    .text(d.pitch.name + " : " + d.duration + " beats")
+                ;
+              })
+      ;
+  } // my()
+
+  /*
+  ** Helper Functions
+  */
+  function stampify() {
+      // Create notes of various widths, as found in the notedata
+      var noteHeight = y.bandwidth()
+        , durations = d3.nest()
+            .key(function(n) { return n.duration[0]; })
+            .map(data.notedata)
+            .keys()
+            .sort(d3.ascending)
+      ;
+      stamps.selectAll("rect")
+          .data(durations)
+        .enter().append("rect")
+          .attr("id", function(d) { return "note-" + d; })
           .attr("rx", noteHeight / 2)
           .attr("ry", noteHeight / 2)
           .attr("height", noteHeight)
-        .transition(d3.transition())
-          .attr("y", function(d) { return y(d.pitch); })
-          .attr("x", function(d) { return x(d.time); })
-          .attr("width", function(d) { return x(d.duration); })
+          .attr("width", function(d) { return x(+d); })
+          .attr("vector-effect", "non-scaling-stroke")
       ;
-      // enableTooltips();
-  } // my()
+  } // stampify()
+
+  function boxify(notes) {
+      pitches = d3.extent(notes.map(function(d) { return d.pitch.b7; }));
+      times = [notes[0], notes[notes.length - 1]];
+  } // boxify()
 
   /*
   ** API - Getter/Setter Fynctions
@@ -46,6 +100,21 @@ function Score() {
       y = _;
       return my;
     } // my.y()
+  ;
+  my.defs = function(_) {
+      if(!arguments.length) return stamps;
+      stamps = _;
+      return my;
+    } // my.stamps()
+  ;
+  my.bbox = function() {
+      return [
+          pitches[0]
+        , times[0].starttime[0]
+        , pitches[1] - pitches[0]
+        , times[1].starttime[0] + times[1].duration - times[0].starttime[0]
+      ];
+    } // my.bbox()
   ;
   // This is ALWAYS the last thing returned
   return my;
