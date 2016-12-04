@@ -2,18 +2,18 @@ function NotesBook() {
   /*
   ** Private Variables
   */
-  var bezel, svg, lens, markings
-    , data
+  var data
+    , svg, backplane
+    , width
+    , height
     , viewbox
-    , margin = { top: 50, right: 25, bottom: 50, left: 50 }
-    , width = 960
-    , height = 500
     , fullheight
-    , barlinesAxis = d3.axisTop()
-    , barlines
-    , bars
-    , measuresAxis = d3.axisBottom()
-    , measures
+    , margin = { top: 50, right: 25, bottom: 50, left: 50 }
+    , x = d3.scaleLinear()
+    , y = d3.scaleBand().padding(0.2)
+    , score  = Score()
+    , ribbon = Ribbon()
+    , lifeSize = 10 // default height and width of notes
     , mensurationCodes = {
             "O"  : ""
           , "O|" : ""
@@ -25,68 +25,69 @@ function NotesBook() {
           , "C|" : ""
           , "C|r": ""
         }
-    , mensurationsAxis = d3.axisTop()
-    , mensurations
-    , sensor = d3.voronoi()
     , dispatch
   ;
 
   /*
   ** Main Function Object
   */
-  function my() {
-      w = width / (width + margin.left + margin.right) * 100;
-      wp = margin.left / width * 100;
-      h = height / (height + margin.top + margin.bottom) * 100;
-      hp = margin.top / height * 100;
-
-      bezel.selectAll("*").remove();
-      svg = bezel.append("svg")
-          .attr("class", "bezel")
-          // .attr("width", width + margin.left + margin.right)
-          // .attr("height", height + margin.top + margin.bottom)
+    function my() {
+      svg
+          .attr("class", "lens")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("preserveAspectRatio", "none")
           .style("width", "100%")
           .style("height", "100%")
-          .attr("width", 100)
-          .attr("height", 100)
-          .attr("viewBox", "0 0 100 100")
+      ;
+      backplane = svg
+        .append("svg")
+          .attr("class", "backplane")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
       ;
-      lens = svg
-          .call(canvas.render)
-        .select("svg")
-          .attr("x", 7)
-          .attr("y", 7)
-          .attr("width",  93)
-          .attr("height", 93)
+      defs = backplane
+        .append("defs")
       ;
-      viewbox = lens.attr("viewBox").split(' ');
-      height = Math.abs(viewbox[3] - viewbox[1]);
-      fullheight = lens.selectAll(".voicebox").size() * height;
-      svg.selectAll(".markings")
-          .data(["markings"], function(d) { return d; })
-        .enter().append("svg")
-          .attr("class", "markings")
-            .attr("width", 100)
-            .attr("height", 93)
-            .attr("x", 0)
-            .attr("y", 7)
-//            .attr("viewBox", viewbox.join(' '))
-            //.attr("preserveAspectRatio", "xMinYMin slice")
-            .call(render_reflines)
-          .selectAll(".tick line")
-            .attr("x1", "100%")
+      score
+          .x(x)
+          .y(y)
+          .defs(defs.append("g").attr("id", "notestamps"))
       ;
-      //markings = svg.call(canvas.render_reflines);
+      ribbon
+          .x(x)
+          .y(y)
+          .defs(defs.append("g").attr("id", "ribbonstamps"))
+      ;
+      var voice = backplane.selectAll(".voice")
+          .data(data.partdata, function(d) { return d.partindex; })
+      ;
+      voice = voice.enter()
+        .append("svg")
+          .attr("class", function(d) { return "voice voice" + d.partindex; })
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", viewbox.join(' '))
+          .attr("preserveAspectRatio", "xMinYMid slice")
+          .each(function() {
+              d3.select(this)
+                  .call(score)
+                  .call(ribbon)
+              ;
+            })
+        .merge(voice)
+      ;
+      backplane.selectAll(".ribbon")
+          .style("display", "none")
       ;
   } // my() - Main function object
 
   /*
   ** Helper Functions
   */
-  function update() {
-  } // update()
-
   function mensurationsRender(selection) {
       selection
           .call(mensurationsAxis)
@@ -130,9 +131,28 @@ function NotesBook() {
   /*
   ** API (Getter/Setter) Functions
   */
+  my.svg = function (value){
+      if(!arguments.length) return svg;
+      svg = value;
+      return my;
+    } // my.svg()
+  ;
   my.data = function (value){
-      if(arguments.length === 0) return data;
+      if(!arguments.length) return data;
       data = value;
+
+      x.domain([0, data.scorelength[0]]);
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
+
+      var scaleup = function(d) { return d * lifeSize; };
+      x.range(x.domain().map(scaleup));
+      y.range(d3.extent(y.domain()).reverse().map(scaleup));
+
+      width   = Math.abs(x.range()[1] - x.range()[0]);
+      height  = Math.abs(y.range()[1] - y.range()[0]);
+      fullheight = height * data.partcount;
+      viewbox = [x.range()[0], y.range()[1], width, height];
+
       return my;
     } // my.data()
   ;
@@ -144,58 +164,69 @@ function NotesBook() {
   ;
   my.hilite = function(_) {
         if(!_[0])
-            lens.selectAll("svg.subdued")
+            backplane.selectAll(".subdued")
                 .classed("subdued", false)
         else
-            lens.selectAll("svg")
+            backplane.selectAll("svg")
                 .classed("subdued", function(d, i) { return i !== _[1]; })
             ;
       return my;
     } // my.hilite()
   ;
+  my.extremes = function() {
+      var xtrms = backplane.selectAll(".extreme").empty();
+      backplane.selectAll(".extreme-plain")
+          .classed("extreme", xtrms)
+      ;
+    } // my.extremes()
+  ;
   my.zoom = function(_) {
-      var vb = lens.attr("viewBox").split(' ');
+      var vb = svg.attr("viewBox").split(' ');
       if(!arguments.length) return vb;
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
 
-      lens.attr("viewBox", vb.join(' ') );
+      svg.attr("viewBox", vb.join(' ') );
 
       return my;
     } // my.zoom()
   ;
   my.separate = function(_) {
-      var vb = lens.attr("viewBox").split(' ');
+      // Art-direct the various voice SVGs
+      var vb = backplane.attr("viewBox").split(' ');
       vb[3] = _ ? fullheight : height;
 
-      lens
+      backplane
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
-        .selectAll(".voicebox")
+        .selectAll(".voice")
           .attr("y", function(d, i) { return _ ? i * height : 0; })
       ;
       return my;
     } // my.separate()
   ;
-  my.div = function(_) {
-      if(!arguments.length) return bezel;
-      bezel = _;
-      return my;
-    } // my.div()
+  my.notes = function() { // toggles the notes on/off
+      var music = backplane.selectAll(".notes")
+        , vis = music.style("display")
+      ;
+      music.style("display", vis === "inline" ? "none" : "inline");
+    } // my.notes()
+  ;
+  my.ribbons = function(arg) {
+      backplane.selectAll(".ribbon")
+          .style("display", function(d) {
+              return d.toLowerCase() === arg ? "inline" : "none";
+            })
+      ;
+    } // my.ribbons()
   ;
   my.viewbox = function(_) {
       if(!arguments.length) return viewbox;
 
       viewbox = _;
       return my;
-    } // my.viewbox()
-  ;
-  my.canvas = function(_) {
-      if(!arguments.length) return canvas;
-      canvas = _;
-      return my;
-    } // my.canvas()
+    } // my.viewbox())
   ;
 
   // This is always the last thing returned
