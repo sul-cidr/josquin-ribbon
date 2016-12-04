@@ -14,15 +14,11 @@ header {
 #main {
     height: 100vh;
 }
-#book {
+#viewer {
     height: 70vh;
 }
-#nav {
+#navigator {
     height: 20vh;
-}
-.svg-container {
-    margin: 1rem;
-    padding: 1rem;
 }
 .mensuration {
     font-family: 'BravuraText';
@@ -40,7 +36,7 @@ header {
       fill-opacity 0.5s linear,
       stroke-opacity 0.5s linear;
 }
-rect.note {
+.note {
     fill: currentColor;
     stroke: currentColor;
     fill-opacity: 0.5;
@@ -49,7 +45,7 @@ rect.note {
 .subdued {
     opacity: 0.1;
 }
-rect.extreme {
+.extreme {
   stroke: red;
   stroke-width: 2;
 }
@@ -62,12 +58,6 @@ rect.extreme {
 .brush .selection {
     stroke: darkgrey;
 }
-/*
-path.domain {
-    fill: none;
-    stroke: none;
-}
-*/
 .tick line {
     stroke: lightgray;
 }
