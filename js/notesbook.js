@@ -221,13 +221,10 @@ function NotesBook() {
       ;
     } // my.ribbons()
   ;
-  my.viewbox = function(_) {
-      if(!arguments.length) return viewbox;
 
-      viewbox = _;
-      return my;
-    } // my.viewbox())
-  ;
+  my.viewbox = function(_) { return viewbox; };
+  my.x = function() { return x; };
+  my.y = function() { return y; };
 
   // This is always the last thing returned
   return my;
