@@ -123,12 +123,12 @@ function chartify(data) {
     colorLegend();
 
     signal
-        .on("zoom", notesBook.zoom)
-        .on("separate", notesBook.separate)
-        .on("hilite", notesBook.hilite)
+        .on("notes",    notesBook.notes)
         .on("extremes", notesBook.extremes)
-        .on("notes", notesBook.notes)
-        .on("ribbons", notesBook.ribbons)
+        .on("hilite",   notesBook.hilite)
+        .on("ribbons",  notesBook.ribbons)
+        .on("separate", notesBook.separate)
+        .on("zoom",     notesBook.zoom)
     ;
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")
