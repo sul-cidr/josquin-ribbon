@@ -20,10 +20,35 @@
     ** Main function Object
     */
     function my() {
-        svg.call(canvas.render);
-        svg = svg.select("svg")
+        x.range([viewbox[0], viewbox[2]]);
+        y.range([viewbox[3], viewbox[1]]);
+        width  = Math.abs(viewbox[2]);
+        height = Math.abs(viewbox[3]);
+
+        brush.extent([[0, 0], [width, height]]);
+
+        // svg.selectAll(".brush")
+        //   .transition(d3.transition())
+        //     .call(brush.move, [viewbox[0], viewbox[2]])
+        // ;
+        svg
             .style("width", "100%")
             .style("height", "100%")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
+            .attr("preserveAspectRatio", "none")
+        ;
+        svg
+          .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
+            .attr("preserveAspectRatio", "xMinYMid slice")
+          // .append("use")
+          //   .attr("xlink:href", "#lens")
+          //   .attr("width", width)
+          //   .attr("height", height)
         ;
         var g = svg.selectAll("g").data(["brush"]);
         g = g
@@ -58,23 +83,6 @@
         if(dispatch) dispatch.call("zoom", this, extent);
     } // brushed()
 
-    function recenter(clickX) {
-          var extent = brush.extent()()
-                .map(function(b) { return b[0]; })
-            , center = [clickX - brush.width / 2, clickX + brush.width / 2]
-          ;
-          if(center[0] < extent[0])
-              center = [extent[0], brush.width];
-          if(center[1] > extent[1])
-              center  = [extent[1] - brush.width, extent[1]];
-
-          return center;
-    } // recenter()
-
-    function update() {
-        console.log(arguments.length);
-    } // update()
-
     function move() {
         brush.selection.call(brush.move([0, 0], [width, height]));
     } // move()
@@ -105,17 +113,6 @@
         if(!arguments.length) return viewbox;
 
         viewbox = _;
-        x.range([viewbox[0], viewbox[2]]);
-        y.range([viewbox[3], viewbox[1]]);
-        width  = Math.abs(viewbox[2] - viewbox[0]);
-        height = Math.abs(viewbox[3] - viewbox[1]);
-
-        brush.extent([[0, 0], [width, height]]);
-
-        svg.selectAll(".brush")
-          .transition(d3.transition())
-            .call(brush.move, [viewbox[0], viewbox[2]])
-        ;
         return my;
       } // my.extent()
     ;
