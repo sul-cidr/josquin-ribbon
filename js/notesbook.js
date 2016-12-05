@@ -3,7 +3,7 @@ function NotesBook() {
   ** Private Variables
   */
   var data
-    , svg, backplane
+    , svg, backplane, lens
     , width
     , height
     , viewbox
@@ -13,6 +13,7 @@ function NotesBook() {
     , y = d3.scaleBand().padding(0.2)
     , score  = Score()
     , ribbon = Ribbon()
+    , reflines = Reflines()
     , lifeSize = 10 // default height and width of notes
     , mensurationCodes = {
             "O"  : ""
@@ -33,15 +34,29 @@ function NotesBook() {
   */
     function my() {
       svg
-          .attr("class", "lens")
-          .attr("width", width)
-          .attr("height", height)
-          .attr("viewBox", [0, 0, width, height].join(' '))
-          .attr("preserveAspectRatio", "none")
+          .attr("class", "markings")
           .style("width", "100%")
           .style("height", "100%")
+          .attr("width", 100)
+          .attr("height", 100)
+          .attr("viewBox", "0 0 100 100")
+          .attr("preserveAspectRatio", "none")
       ;
-      backplane = svg
+      markings = svg
+        .append("svg")
+          .attr("class", "markings")
+          .attr("viewBox", [0, 0, margin.left, height].join(' '))
+      lens = svg
+        .append("svg")
+          .attr("class", "lens")
+          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("preserveAspectRatio", "none")
+          .attr("x", 7)
+          .attr("y", 7)
+          .attr("width", "90")
+          .attr("height", "90")
+      ;
+      backplane = lens
         .append("svg")
           .attr("class", "backplane")
           .attr("width", width)
@@ -124,7 +139,6 @@ function NotesBook() {
       sel.select("g").selectAll("path, line")
           .attr("vector-effect", "non-scaling-stroke")
       ;
-      console.log(sel, y.domain(), y.range());
   } // render_reflines()
 
 
@@ -181,13 +195,13 @@ function NotesBook() {
     } // my.extremes()
   ;
   my.zoom = function(_) {
-      var vb = svg.attr("viewBox").split(' ');
+      var vb = lens.attr("viewBox").split(' ');
       if(!arguments.length) return vb;
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
 
-      svg.attr("viewBox", vb.join(' ') );
+      lens.attr("viewBox", vb.join(' ') );
 
       return my;
     } // my.zoom()
