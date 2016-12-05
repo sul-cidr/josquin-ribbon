@@ -88,10 +88,15 @@ function chartify(data) {
         .svg(d3.select("#viewer").select("svg"))
         .data(data)
         .connect(signal)
+      ()
     ;
     notesNav
-        .svg(d3.select("#nav"))
+        .svg(d3.select("#navigator").append("svg"))
+        .x(notesBook.x())
+        .y(notesBook.y())
+        .viewbox(notesBook.viewbox())
         .connect(signal)
+      ()
     ;
     d3.select("#separate-ui")
         .datum(combineButton)
@@ -114,13 +119,8 @@ function chartify(data) {
     ;
 
     // Render views.
-    // notesNav();
-    notesBook();
     notesUI();
     colorLegend();
-
-    // Hide ribbons initially
-    d3.selectAll(".ribbon g").style("display", "none");
 
     signal
         .on("zoom", notesBook.zoom)
