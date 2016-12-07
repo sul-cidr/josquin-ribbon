@@ -36,6 +36,11 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
+      svg
+          .attr("class", "bezel")
+          .style("width", "100%")
+          .style("height", "100%")
+      ;
       x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
 
@@ -48,14 +53,13 @@ function NotesBook() {
       fullheight = height * data.partcount;
       viewbox = [x.range()[0], y.range()[1], width, height];
 
-      var w = 500, h = 500
+      var sw = parseFloat(svg.style("width"))
+        , sh = parseFloat(svg.style("height"))
+        , w = 500, h = Math.round(w * sh / sw)
         , fw = w + margin.left + margin.right
         , fh = h + margin.top + margin.bottom
       ;
       svg
-          .attr("class", "bezel")
-          .style("width", "100%")
-          .style("height", "100%")
           .attr("width", fw)
           .attr("height", fh)
           .attr("viewBox", [0, 0, fw, fh].join(' '))
@@ -86,10 +90,14 @@ function NotesBook() {
           .scale(barlinesScale.clamp(true))
           .tickSize(0)
       ;
-      mensurationsLocs = data.barlines.filter(function(d) { return d.mensuration; });
+      mensurationsLocs = data.barlines
+          .filter(function(d) { return d.mensuration; })
+      ;
       mensurationsScale = d3.scaleOrdinal()
           .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
-          .range(mensurationsLocs.map(function(d) { return mensurationCodes[d.mensuration] || d.mensuration; }))
+          .range(mensurationsLocs.map(function(d) {
+              return mensurationCodes[d.mensuration] || d.mensuration;
+            }))
       ;
       mensurationsAxis = d3.axisTop()
           .scale(barlinesScale.clamp(false))
@@ -102,6 +110,9 @@ function NotesBook() {
           .attr("class", "barlines haxis")
           .attr("transform", "translate(0," + margin.top + ")")
           .call(barlinesAxis)
+      ;
+      barlines.selectAll(".tick")
+          .classed("terminal", function(d) { console.log(d.terminal); return d.terminal; })
       ;
       measures = markings
         .append("g")
@@ -228,7 +239,8 @@ function NotesBook() {
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
-      barlinesScale.domain([x.invert(vb[0]),x.invert(vb[0] + vb[2])]);
+      barlinesScale.domain([vb[0], vb[0] + vb[2]].map(x.invert));
+
       barlines.call(barlinesAxis.scale(barlinesScale.clamp(true)));
       measures.call(measuresAxis.scale(barlinesScale.clamp(true)));
       mensurations.call(mensurationsAxis.scale(barlinesScale.clamp(false)));
