@@ -70,7 +70,7 @@ function Ribbon() {
                 var windowStart = x - interval / 2
                   , windowEnd   = x + interval / 2
                   , noteStart = d.starttime[0]
-                  , noteEnd   = d.starttime[0] + d.duration
+                  , noteEnd   = d.starttime[0] + d.duration[0]
                 ;
 
                 // Consider a note to be "inside the window"
