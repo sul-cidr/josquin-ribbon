@@ -68,10 +68,10 @@ function Score() {
       // Create notes of various widths, as found in the notedata
       var noteHeight = y.bandwidth()
         , durations = d3.nest()
-            .key(function(n) { return n.duration[0]; })
-            .map(data.notedata)
+              .key(function(n) { return n.duration[0]; })
+              .map(data.notedata)
             .keys()
-            .sort(d3.ascending)
+              .sort(d3.ascending)
       ;
       stamps.selectAll("rect")
           .data(durations)
