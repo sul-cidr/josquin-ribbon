@@ -78,6 +78,23 @@ function NotesBook() {
               .attr("class", "barlines")
               .attr("transform", "translate(0," + margin.top + ")")
               .call(barlinesAxis.scale(barlinesScale))
+        , measures = svg
+            .append("g")
+              .attr("class", "measures")
+              .attr("transform", "translate(0," + (fh - margin.bottom) + ")")
+              .call(d3.axisBottom().scale(barlinesScale).tickSize(0))
+        , mensurations = svg
+            .append("g")
+              .attr("class", "mensurations")
+              .attr("transform", "translate(0," + margin.top + ")")
+              .call(d3.axisTop().scale(barlinesScale))
+            .selectAll(".tick")
+              .each(function(d, i) {
+                  var sym = data.barlines[i].mensuration;
+                  d3.select(this).select("text")
+                      .text(mensurationCodes[sym] || null)
+                  ;
+                })
       ;
       lens = svg
         .append("svg")
@@ -141,44 +158,6 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
-  function mensurationsRender(selection) {
-      selection
-          .call(mensurationsAxis)
-        .selectAll(".tick")
-          .each(function(d, i) {
-              var self = d3.select(this)
-                , sym = data.barlines[i].mensuration
-              ;
-              self.select("text")
-                  .text(mensurationCodes[sym] || null)
-              ;
-            })
-      ;
-  } // mensurationsRender()
-
-
-  function render_reflines(sel) {
-      var lines = d3.scaleOrdinal()
-            .domain([32, 28, 24])
-            .range(["G", "C4", "F"])
-        , y = canvas.y().range([93, 0])
-        , axis = d3.axisLeft()
-            .scale(y)
-            .tickValues(lines.domain())
-            .tickFormat(lines)
-      ;
-      sel
-        .append("g")
-          .call(axis)
-        .selectAll(".tick")
-          .attr("class", function(d) {
-              return "tick refline refline--" + lines(d);
-            })
-      sel.select("g").selectAll("path, line")
-          .attr("vector-effect", "non-scaling-stroke")
-      ;
-  } // render_reflines()
-
 
   /*
   ** API (Getter/Setter) Functions
