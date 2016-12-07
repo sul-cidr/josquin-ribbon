@@ -8,7 +8,7 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: 20, right: 20, bottom: 20, left: 50 }
+    , margin = { top: 25, right: 5, bottom: 40, left: 25 }
     , x = d3.scaleLinear()
     , y = d3.scaleBand().padding(0.2)
     , score  = Score()
@@ -69,10 +69,16 @@ function NotesBook() {
           // .attr("height", h)
           .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
       ;
-      barlines = svg
-        .append("g")
-          .attr("class", "barlines")
-
+      var barlinesScale  = x.copy().range([margin.left, fw - margin.right])
+        , barlinesAxis = d3.axisTop()
+              .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+              .tickSize(-h)
+        , barlines = svg
+            .append("g")
+              .attr("class", "barlines")
+              .attr("transform", "translate(0," + margin.top + ")")
+              .call(barlinesAxis.scale(barlinesScale))
+      ;
       lens = svg
         .append("svg")
         .attr("class", "lens")
