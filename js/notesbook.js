@@ -8,7 +8,7 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: 50, right: 25, bottom: 50, left: 50 }
+    , margin = { top: 20, right: 20, bottom: 20, left: 50 }
     , x = d3.scaleLinear()
     , y = d3.scaleBand().padding(0.2)
     , score  = Score()
@@ -32,29 +32,56 @@ function NotesBook() {
   /*
   ** Main Function Object
   */
-    function my() {
+  function my() {
+      x.domain([0, data.scorelength[0]]);
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
+
+      var scaleup = function(d) { return d * lifeSize; };
+      x.range(x.domain().map(scaleup));
+      y.range(d3.extent(y.domain()).reverse().map(scaleup));
+
+      width   = Math.abs(x.range()[1] - x.range()[0]);
+      height  = Math.abs(y.range()[1] - y.range()[0]);
+      fullheight = height * data.partcount;
+      viewbox = [x.range()[0], y.range()[1], width, height];
+
+      var w = 500, h = 500
+        , fw = w + margin.left + margin.right
+        , fh = h + margin.top + margin.bottom
+      ;
       svg
-          .attr("class", "markings")
+          .attr("class", "bezel")
           .style("width", "100%")
           .style("height", "100%")
-          .attr("width", 100)
-          .attr("height", 100)
-          .attr("viewBox", "0 0 100 100")
+          .attr("width", fw)
+          .attr("height", fh)
+          .attr("viewBox", [0, 0, fw, fh].join(' '))
           .attr("preserveAspectRatio", "none")
       ;
       markings = svg
-        .append("svg")
+        .append("g")
           .attr("class", "markings")
-          .attr("viewBox", [0, 0, margin.left, height].join(' '))
+          // .attr("viewBox", [x.range()[0], y.range()[1], width, height].join(' '))
+          // .attr("preserveAspectRatio", "none")
+          // .attr("x", 0)
+          // .attr("y", margin.top)
+          // .attr("width", fw)
+          // .attr("height", h)
+          .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
+      ;
+      barlines = svg
+        .append("g")
+          .attr("class", "barlines")
+
       lens = svg
         .append("svg")
-          .attr("class", "lens")
+        .attr("class", "lens")
           .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
-          .attr("x", 7)
-          .attr("y", 7)
-          .attr("width", "90")
-          .attr("height", "90")
+          .attr("x", margin.left)
+          .attr("y", margin.top )
+          .attr("width", w)
+          .attr("height", h)
       ;
       backplane = lens
         .append("svg")
@@ -77,6 +104,10 @@ function NotesBook() {
           .y(y)
           .defs(defs.append("g").attr("id", "ribbonstamps"))
       ;
+      // reflines
+      //     .x(x)
+      //     .y(y)
+      // ;
       var voice = backplane.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
       ;
@@ -89,6 +120,7 @@ function NotesBook() {
           .attr("preserveAspectRatio", "xMinYMid slice")
           .each(function() {
               d3.select(this)
+                  // .call(reflines)
                   .call(score)
                   .call(ribbon)
               ;
@@ -145,28 +177,15 @@ function NotesBook() {
   /*
   ** API (Getter/Setter) Functions
   */
-  my.svg = function (value){
+  my.svg = function (_){
       if(!arguments.length) return svg;
-      svg = value;
+      svg = _;
       return my;
     } // my.svg()
   ;
-  my.data = function (value){
+  my.data = function (_){
       if(!arguments.length) return data;
-      data = value;
-
-      x.domain([0, data.scorelength[0]]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
-
-      var scaleup = function(d) { return d * lifeSize; };
-      x.range(x.domain().map(scaleup));
-      y.range(d3.extent(y.domain()).reverse().map(scaleup));
-
-      width   = Math.abs(x.range()[1] - x.range()[0]);
-      height  = Math.abs(y.range()[1] - y.range()[0]);
-      fullheight = height * data.partcount;
-      viewbox = [x.range()[0], y.range()[1], width, height];
-
+      data = _;
       return my;
     } // my.data()
   ;
