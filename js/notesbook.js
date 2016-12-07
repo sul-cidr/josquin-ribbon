@@ -26,6 +26,9 @@ function NotesBook() {
           , "C|" : ""
           , "C|r": ""
         }
+    , barlines, barlinesScale, barlinesAxis
+    , measures, measuresAxis
+    , mensurations, mensurationsAxis
     , dispatch
   ;
 
@@ -61,6 +64,10 @@ function NotesBook() {
       markings = svg
         .append("g")
           .attr("class", "markings")
+      ;
+      markings
+        .append("g")
+          .attr("class", "reflines")
           // .attr("viewBox", [x.range()[0], y.range()[1], width, height].join(' '))
           // .attr("preserveAspectRatio", "none")
           // .attr("x", 0)
@@ -69,32 +76,43 @@ function NotesBook() {
           // .attr("height", h)
           .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
       ;
-      var barlinesScale  = x.copy().range([margin.left, fw - margin.right])
-        , barlinesAxis = d3.axisTop()
-              .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-              .tickSize(-h)
-        , barlines = svg
-            .append("g")
-              .attr("class", "barlines")
-              .attr("transform", "translate(0," + margin.top + ")")
-              .call(barlinesAxis.scale(barlinesScale))
-        , measures = svg
-            .append("g")
-              .attr("class", "measures")
-              .attr("transform", "translate(0," + (fh - margin.bottom) + ")")
-              .call(d3.axisBottom().scale(barlinesScale).tickSize(0))
-        , mensurations = svg
-            .append("g")
-              .attr("class", "mensurations")
-              .attr("transform", "translate(0," + margin.top + ")")
-              .call(d3.axisTop().scale(barlinesScale).tickSize(0))
-            .selectAll(".tick")
-              .each(function(d, i) {
-                  var sym = data.barlines[i].mensuration;
-                  d3.select(this).select("text")
-                      .text(mensurationCodes[sym] || null)
-                  ;
-                })
+      barlinesScale  = x.copy().range([margin.left, fw - margin.right]).clamp(true);
+      barlinesAxis = d3.axisTop()
+          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+          .tickSize(-h)
+      ;
+      measuresAxis = d3.axisBottom()
+          .scale(barlinesScale)
+          .tickSize(0)
+      ;
+      mensurationsAxis = d3.axisTop()
+          .scale(barlinesScale)
+          .tickSize(0)
+      ;
+      barlines = markings
+        .append("g")
+          .attr("class", "barlines haxis")
+          .attr("transform", "translate(0," + margin.top + ")")
+            .call(barlinesAxis.scale(barlinesScale))
+      ;
+      measures = markings
+        .append("g")
+          .attr("class", "measures haxis")
+          .attr("transform", "translate(0," + (fh - margin.bottom) + ")")
+          .call(measuresAxis)
+      ;
+      mensurations = markings
+        .append("g")
+          .attr("class", "mensurations haxis")
+          .attr("transform", "translate(0," + margin.top + ")")
+          .call(mensurationsAxis)
+        .selectAll(".tick")
+          .each(function(d, i) {
+              var sym = data.barlines[i].mensuration;
+              d3.select(this).select("text")
+                  .text(mensurationCodes[sym] || null)
+              ;
+            })
       ;
       lens = svg
         .append("svg")
@@ -204,8 +222,13 @@ function NotesBook() {
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
+      barlinesScale.domain([x.invert(vb[0]),x.invert(vb[0] + vb[2])]);
+      barlines.call(barlinesAxis.scale(barlinesScale));
+      measures.call(measuresAxis.scale(barlinesScale));
+      mensurations.call(mensurationsAxis.scale(barlinesScale));
 
       lens.attr("viewBox", vb.join(' ') );
+
 
       return my;
     } // my.zoom()
