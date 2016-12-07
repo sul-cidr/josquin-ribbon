@@ -87,7 +87,7 @@ function NotesBook() {
             .append("g")
               .attr("class", "mensurations")
               .attr("transform", "translate(0," + margin.top + ")")
-              .call(d3.axisTop().scale(barlinesScale))
+              .call(d3.axisTop().scale(barlinesScale).tickSize(0))
             .selectAll(".tick")
               .each(function(d, i) {
                   var sym = data.barlines[i].mensuration;
