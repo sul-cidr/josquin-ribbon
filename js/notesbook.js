@@ -76,14 +76,14 @@ function NotesBook() {
           // .attr("height", h)
           .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
       ;
-      barlinesScale  = x.copy().range([margin.left, fw - margin.right]).clamp(true);
+      barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
       barlinesAxis = d3.axisTop()
-          .scale(barlinesScale)
+          .scale(barlinesScale.clamp(true))
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
           .tickSize(-h)
       ;
       measuresAxis = d3.axisBottom()
-          .scale(barlinesScale)
+          .scale(barlinesScale.clamp(true))
           .tickSize(0)
       ;
       mensurationsLocs = data.barlines.filter(function(d) { return d.mensuration; });
@@ -92,7 +92,7 @@ function NotesBook() {
           .range(mensurationsLocs.map(function(d) { return mensurationCodes[d.mensuration] || d.mensuration; }))
       ;
       mensurationsAxis = d3.axisTop()
-          .scale(barlinesScale)
+          .scale(barlinesScale.clamp(false))
           .tickSize(0)
           .tickValues(mensurationsScale.domain())
           .tickFormat(mensurationsScale)
@@ -101,7 +101,7 @@ function NotesBook() {
         .append("g")
           .attr("class", "barlines haxis")
           .attr("transform", "translate(0," + margin.top + ")")
-            .call(barlinesAxis)
+          .call(barlinesAxis)
       ;
       measures = markings
         .append("g")
@@ -224,9 +224,9 @@ function NotesBook() {
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
       barlinesScale.domain([x.invert(vb[0]),x.invert(vb[0] + vb[2])]);
-      barlines.call(barlinesAxis.scale(barlinesScale));
-      measures.call(measuresAxis.scale(barlinesScale));
-      mensurations.call(mensurationsAxis.scale(barlinesScale));
+      barlines.call(barlinesAxis.scale(barlinesScale.clamp(true)));
+      measures.call(measuresAxis.scale(barlinesScale.clamp(true)));
+      mensurations.call(mensurationsAxis.scale(barlinesScale.clamp(false)));
 
       lens.attr("viewBox", vb.join(' ') );
 
