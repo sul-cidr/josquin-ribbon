@@ -144,6 +144,7 @@ function NotesBook() {
       backplane = lens
         .append("svg")
           .attr("class", "backplane")
+          .attr("id", "backplane")
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
