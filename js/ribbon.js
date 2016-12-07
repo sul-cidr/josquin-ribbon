@@ -41,6 +41,7 @@ function Ribbon() {
               ;
               path
                 .enter().append("path")
+                  .attr("vector-effect", "non-scaling-stroke")
                 .merge(path)
                   .attr("d", area)
               ;
