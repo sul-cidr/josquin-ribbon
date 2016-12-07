@@ -115,6 +115,11 @@ function NotesBook() {
           .attr("transform", "translate(0," + margin.top + ")")
           .call(mensurationsAxis)
       ;
+      mensurations.selectAll(".tick text")
+          .attr("dy", function(d) {
+              return isNaN(mensurationsScale(d)) ? "-0.5em" : "-0.2em";
+            })
+      ;
       lens = svg
         .append("svg")
         .attr("class", "lens")
