@@ -45,10 +45,10 @@
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
             .attr("preserveAspectRatio", "xMinYMid slice")
-          // .append("use")
-          //   .attr("xlink:href", "#lens")
-          //   .attr("width", width)
-          //   .attr("height", height)
+          .append("use")
+            .attr("xlink:href", "#backplane")
+            .attr("width", width)
+            .attr("height", height)
         ;
         var g = svg.selectAll("g").data(["brush"]);
         g = g
