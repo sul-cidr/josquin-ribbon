@@ -38,7 +38,7 @@ function NotesUI(){
                 toolbar.select("ul")
                     .style("visibility", vis == "visible" ? "hidden" : "visible")
                 ;
-                dispatch.call(d.callback, self);
+                dispatch.call(d.callback, this, vis !== "visible");
               })
           .append("i")
             .attr("class", "material-icons")

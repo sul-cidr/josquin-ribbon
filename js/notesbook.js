@@ -2,18 +2,19 @@ function NotesBook() {
   /*
   ** Private Variables
   */
-  var bezel, svg, lens, markings
-    , data
+  var data
+    , svg, backplane, lens
+    , width
+    , height
     , viewbox
-    , margin = { top: 50, right: 25, bottom: 50, left: 50 }
-    , width = 960
-    , height = 500
     , fullheight
-    , barlinesAxis = d3.axisTop()
-    , barlines
-    , bars
-    , measuresAxis = d3.axisBottom()
-    , measures
+    , margin = { top: 25, right: 5, bottom: 40, left: 25 }
+    , x = d3.scaleLinear()
+    , y = d3.scaleBand().padding(0.2)
+    , score  = Score()
+    , ribbon = Ribbon()
+    , reflines = Reflines()
+    , lifeSize = 10 // default height and width of notes
     , mensurationCodes = {
             "O"  : ""
           , "O|" : ""
@@ -25,9 +26,9 @@ function NotesBook() {
           , "C|" : ""
           , "C|r": ""
         }
-    , mensurationsAxis = d3.axisTop()
-    , mensurations
-    , sensor = d3.voronoi()
+    , barlines, barlinesScale, barlinesAxis
+    , measures, measuresAxis
+    , mensurations, mensurationsLocs, mensurationsAxis
     , dispatch
   ;
 
@@ -35,104 +36,177 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-      w = width / (width + margin.left + margin.right) * 100;
-      wp = margin.left / width * 100;
-      h = height / (height + margin.top + margin.bottom) * 100;
-      hp = margin.top / height * 100;
-
-      bezel.selectAll("*").remove();
-      svg = bezel.append("svg")
+      svg
           .attr("class", "bezel")
-          // .attr("width", width + margin.left + margin.right)
-          // .attr("height", height + margin.top + margin.bottom)
           .style("width", "100%")
           .style("height", "100%")
-          .attr("width", 100)
-          .attr("height", 100)
-          .attr("viewBox", "0 0 100 100")
+      ;
+      x.domain([0, data.scorelength[0]]);
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
+
+      var scaleup = function(d) { return d * lifeSize; };
+      x.range(x.domain().map(scaleup));
+      y.range(d3.extent(y.domain()).reverse().map(scaleup));
+
+      width   = Math.abs(x.range()[1] - x.range()[0]);
+      height  = Math.abs(y.range()[1] - y.range()[0]);
+      fullheight = height * data.partcount;
+      viewbox = [x.range()[0], y.range()[1], width, height];
+
+      var sw = parseFloat(svg.style("width"))
+        , sh = parseFloat(svg.style("height"))
+        , w = 500, h = Math.round(w * sh / sw)
+        , fw = w + margin.left + margin.right
+        , fh = h + margin.top + margin.bottom
+      ;
+      svg
+          .attr("width", fw)
+          .attr("height", fh)
+          .attr("viewBox", [0, 0, fw, fh].join(' '))
           .attr("preserveAspectRatio", "none")
       ;
-      lens = svg
-          .call(canvas.render)
-        .select("svg")
-          .attr("x", 7)
-          .attr("y", 7)
-          .attr("width",  93)
-          .attr("height", 93)
-      ;
-      viewbox = lens.attr("viewBox").split(' ');
-      height = Math.abs(viewbox[3] - viewbox[1]);
-      fullheight = lens.selectAll(".voicebox").size() * height;
-      svg.selectAll(".markings")
-          .data(["markings"], function(d) { return d; })
-        .enter().append("svg")
+      markings = svg
+        .append("g")
           .attr("class", "markings")
-            .attr("width", 100)
-            .attr("height", 93)
-            .attr("x", 0)
-            .attr("y", 7)
-//            .attr("viewBox", viewbox.join(' '))
-            //.attr("preserveAspectRatio", "xMinYMin slice")
-            .call(render_reflines)
-          .selectAll(".tick line")
-            .attr("x1", "100%")
       ;
-      //markings = svg.call(canvas.render_reflines);
+      markings
+        .append("g")
+          .attr("class", "reflines")
+          // .attr("viewBox", [x.range()[0], y.range()[1], width, height].join(' '))
+          // .attr("preserveAspectRatio", "none")
+          // .attr("x", 0)
+          // .attr("y", margin.top)
+          // .attr("width", fw)
+          // .attr("height", h)
+          .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
+      ;
+      barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
+      barlinesAxis = d3.axisTop()
+          .scale(barlinesScale.clamp(true))
+          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
+          .tickSize(-h)
+      ;
+      measuresAxis = d3.axisBottom()
+          .scale(barlinesScale.clamp(true))
+          .tickSize(0)
+      ;
+      mensurationsLocs = data.barlines
+          .filter(function(d) { return d.mensuration; })
+      ;
+      mensurationsScale = d3.scaleOrdinal()
+          .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
+          .range(mensurationsLocs.map(function(d) {
+              return mensurationCodes[d.mensuration] || d.mensuration;
+            }))
+      ;
+      mensurationsAxis = d3.axisTop()
+          .scale(barlinesScale.clamp(false))
+          .tickSize(0)
+          .tickValues(mensurationsScale.domain())
+          .tickFormat(mensurationsScale)
+      ;
+      barlines = markings
+        .append("g")
+          .attr("class", "barlines haxis")
+          .attr("transform", "translate(0," + margin.top + ")")
+          .call(barlinesAxis)
+      ;
+      barlines.selectAll(".tick")
+          .classed("terminal", function(d) { console.log(d.terminal); return d.terminal; })
+      ;
+      measures = markings
+        .append("g")
+          .attr("class", "measures haxis")
+          .attr("transform", "translate(0," + (fh - margin.bottom) + ")")
+          .call(measuresAxis)
+      ;
+      mensurations = markings
+        .append("g")
+          .attr("class", "mensurations haxis")
+          .attr("transform", "translate(0," + margin.top + ")")
+          .call(mensurationsAxis)
+      ;
+      mensurations.selectAll(".tick text")
+          .attr("dy", function(d) {
+              return isNaN(mensurationsScale(d)) ? "-0.5em" : "-0.2em";
+            })
+      ;
+      lens = svg
+        .append("svg")
+        .attr("class", "lens")
+          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("preserveAspectRatio", "none")
+          .attr("x", margin.left)
+          .attr("y", margin.top )
+          .attr("width", w)
+          .attr("height", h)
+      ;
+      backplane = lens
+        .append("svg")
+          .attr("class", "backplane")
+          .attr("id", "backplane")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("preserveAspectRatio", "none")
+      ;
+      defs = backplane
+        .append("defs")
+      ;
+      score
+          .x(x)
+          .y(y)
+          .defs(defs.append("g").attr("id", "notestamps"))
+      ;
+      ribbon
+          .x(x)
+          .y(y)
+          .defs(defs.append("g").attr("id", "ribbonstamps"))
+      ;
+      // reflines
+      //     .x(x)
+      //     .y(y)
+      // ;
+      var voice = backplane.selectAll(".voice")
+          .data(data.partdata, function(d) { return d.partindex; })
+      ;
+      voice = voice.enter()
+        .append("svg")
+          .attr("class", function(d) { return "voice voice" + d.partindex; })
+          .attr("width", width)
+          .attr("height", height)
+          .attr("viewBox", viewbox.join(' '))
+          .attr("preserveAspectRatio", "xMinYMid slice")
+          .each(function() {
+              d3.select(this)
+                  // .call(reflines)
+                  .call(score)
+                  .call(ribbon)
+              ;
+            })
+        .merge(voice)
+      ;
+      backplane.selectAll(".ribbon")
+          .style("display", "none")
       ;
   } // my() - Main function object
 
   /*
   ** Helper Functions
   */
-  function update() {
-  } // update()
-
-  function mensurationsRender(selection) {
-      selection
-          .call(mensurationsAxis)
-        .selectAll(".tick")
-          .each(function(d, i) {
-              var self = d3.select(this)
-                , sym = data.barlines[i].mensuration
-              ;
-              self.select("text")
-                  .text(mensurationCodes[sym] || null)
-              ;
-            })
-      ;
-  } // mensurationsRender()
-
-
-  function render_reflines(sel) {
-      var lines = d3.scaleOrdinal()
-            .domain([32, 28, 24])
-            .range(["G", "C4", "F"])
-        , y = canvas.y().range([93, 0])
-        , axis = d3.axisLeft()
-            .scale(y)
-            .tickValues(lines.domain())
-            .tickFormat(lines)
-      ;
-      sel
-        .append("g")
-          .call(axis)
-        .selectAll(".tick")
-          .attr("class", function(d) {
-              return "tick refline refline--" + lines(d);
-            })
-      sel.select("g").selectAll("path, line")
-          .attr("vector-effect", "non-scaling-stroke")
-      ;
-      console.log(sel, y.domain(), y.range());
-  } // render_reflines()
-
 
   /*
   ** API (Getter/Setter) Functions
   */
-  my.data = function (value){
-      if(arguments.length === 0) return data;
-      data = value;
+  my.svg = function (_){
+      if(!arguments.length) return svg;
+      svg = _;
+      return my;
+    } // my.svg()
+  ;
+  my.data = function (_){
+      if(!arguments.length) return data;
+      data = _;
       return my;
     } // my.data()
   ;
@@ -144,14 +218,21 @@ function NotesBook() {
   ;
   my.hilite = function(_) {
         if(!_[0])
-            lens.selectAll("svg.subdued")
+            backplane.selectAll(".subdued")
                 .classed("subdued", false)
         else
-            lens.selectAll("svg")
+            backplane.selectAll("svg")
                 .classed("subdued", function(d, i) { return i !== _[1]; })
             ;
       return my;
     } // my.hilite()
+  ;
+  my.extremes = function() {
+      var xtrms = backplane.selectAll(".extreme").empty();
+      backplane.selectAll(".extreme-plain")
+          .classed("extreme", xtrms)
+      ;
+    } // my.extremes()
   ;
   my.zoom = function(_) {
       var vb = lens.attr("viewBox").split(' ');
@@ -159,6 +240,11 @@ function NotesBook() {
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
+      barlinesScale.domain([vb[0], vb[0] + vb[2]].map(x.invert));
+
+      barlines.call(barlinesAxis.scale(barlinesScale.clamp(true)));
+      measures.call(measuresAxis.scale(barlinesScale.clamp(true)));
+      mensurations.call(mensurationsAxis.scale(barlinesScale.clamp(false)));
 
       lens.attr("viewBox", vb.join(' ') );
 
@@ -166,37 +252,38 @@ function NotesBook() {
     } // my.zoom()
   ;
   my.separate = function(_) {
-      var vb = lens.attr("viewBox").split(' ');
+      // Art-direct the various voice SVGs
+      var vb = backplane.attr("viewBox").split(' ');
       vb[3] = _ ? fullheight : height;
 
-      lens
+      backplane
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
-        .selectAll(".voicebox")
+        .selectAll(".voice")
           .attr("y", function(d, i) { return _ ? i * height : 0; })
       ;
       return my;
     } // my.separate()
   ;
-  my.div = function(_) {
-      if(!arguments.length) return bezel;
-      bezel = _;
-      return my;
-    } // my.div()
+  my.notes = function() { // toggles the notes on/off
+      var music = backplane.selectAll(".notes")
+        , vis = music.style("display")
+      ;
+      music.style("display", vis === "inline" ? "none" : "inline");
+    } // my.notes()
   ;
-  my.viewbox = function(_) {
-      if(!arguments.length) return viewbox;
+  my.ribbons = function(arg) {
+      backplane.selectAll(".ribbon")
+          .style("display", function(d) {
+              return d.toLowerCase() === arg ? "inline" : "none";
+            })
+      ;
+    } // my.ribbons()
+  ;
 
-      viewbox = _;
-      return my;
-    } // my.viewbox()
-  ;
-  my.canvas = function(_) {
-      if(!arguments.length) return canvas;
-      canvas = _;
-      return my;
-    } // my.canvas()
-  ;
+  my.viewbox = function(_) { return viewbox; };
+  my.x = function() { return x; };
+  my.y = function() { return y; };
 
   // This is always the last thing returned
   return my;

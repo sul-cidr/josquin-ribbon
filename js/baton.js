@@ -1,7 +1,5 @@
 var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
-  , canvas = NotesCanvas()
-      .svg(d3.select("body").append("svg").attr("id", "unrendered"))
   , notesNav = NotesNav()
   , notesBook = NotesBook()
   , notesUI = NotesUI()
@@ -39,35 +37,38 @@ d3.queue()
 ;
 
 function parseJSON(proll) {
-    var remix = {}; // new container for notes data
-
     proll.partdata.forEach(function(part) {
-        var voice = proll.partnames[part.partindex]
-          , notes = []
-          , extent = d3.extent(part.notedata, function(d){ return d.pitch.b7; })
-        ;
-        part.notedata.forEach(function(note) {
-            var pitch = note.pitch.b7;
-            notes.push({
-                  pitch: pitch
-                , note: note.pitch.name
-                , time: note.starttime[0]
-                , duration: note.duration[0]
-                , extreme: pitch === extent[0] || pitch === extent[1]
-            });
-        });
-        remix[voice] = {
-              index: part.partindex
-            , notes: notes
-            , range: d3.extent(notes, function(d) { return d.pitch; })
-          }
-        ;
-    });
-    proll.notes = d3.entries(remix)
-        .sort(function(a, b) {
-            return d3.ascending(a.value.index, b.value.index);
-          })
-    ;
+        part.voice = proll.partnames[part.partindex];
+      })
+    // var remix = {}; // new container for notes data
+    //
+    // proll.partdata.forEach(function(part) {
+    //     var voice = proll.partnames[part.partindex]
+    //       , notes = []
+    //       , extent = d3.extent(part.notedata, function(d){ return d.pitch.b7; })
+    //     ;
+    //     part.notedata.forEach(function(note) {
+    //         var pitch = note.pitch.b7;
+    //         notes.push({
+    //               pitch: pitch
+    //             , note: note.pitch.name
+    //             , time: note.starttime[0]
+    //             , duration: note.duration[0]
+    //             , extreme: pitch === extent[0] || pitch === extent[1]
+    //         });
+    //     });
+    //     remix[voice] = {
+    //           index: part.partindex
+    //         , notes: notes
+    //         , range: d3.extent(notes, function(d) { return d.pitch; })
+    //       }
+    //     ;
+    // });
+    // proll.notes = d3.entries(remix)
+    //     .sort(function(a, b) {
+    //         return d3.ascending(a.value.index, b.value.index);
+    //       })
+    // ;
     return proll;
 } // parseJSON()
 
@@ -83,28 +84,19 @@ function chartify(data) {
             , "notes"
           )
     ;
-    canvas.svg()
-        .style("display", "none") // Hide the source svg
-    ;
-    canvas
-        .data(data) // draw things in the shadow DOM.
+    notesBook
+        .svg(d3.select("#viewer").select("svg"))
+        .data(data)
+        .connect(signal)
       ()
     ;
-
-    var viewbox = canvas.viewbox();
-    viewbox[0] = viewbox[1] = 0;
-
-    notesBook
-        .div(d3.select("#book"))
-        .viewbox(viewbox)
-        .canvas(canvas)
-        .connect(signal)
-    ;
     notesNav
-        .svg(d3.select("#nav"))
-        .viewbox(viewbox)
-        .canvas(canvas)
+        .svg(d3.select("#navigator").append("svg"))
+        .x(notesBook.x())
+        .y(notesBook.y())
+        .viewbox(notesBook.viewbox())
         .connect(signal)
+      ()
     ;
     d3.select("#separate-ui")
         .datum(combineButton)
@@ -127,21 +119,16 @@ function chartify(data) {
     ;
 
     // Render views.
-    notesNav();
-    notesBook();
     notesUI();
     colorLegend();
 
-    // Hide ribbons initially
-    d3.selectAll(".ribbon g").style("display", "none");
-
     signal
-        .on("zoom", notesBook.zoom)
+        .on("notes",    notesBook.notes)
+        .on("extremes", notesBook.extremes)
+        .on("hilite",   notesBook.hilite)
+        .on("ribbons",  notesBook.ribbons)
         .on("separate", notesBook.separate)
-        .on("hilite", notesBook.hilite)
-        .on("extremes", canvas.extremes)
-        .on("ribbons", canvas.ribbons)
-        .on("notes", canvas.notes)
+        .on("zoom",     notesBook.zoom)
     ;
     // Titles and other UI polishes
     var titles = divMeta.selectAll(".panel-title")

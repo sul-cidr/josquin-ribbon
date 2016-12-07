@@ -1,9 +1,11 @@
 function Ribbon() {
     /* Private Variables */
-    var interval = 12 // Interval size for the sliding window, in units of beats
+    var datum
+      , x, y
+      , stamps
+      , interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
-      , x, y
       , area = function(data) {
             return d3.area()
                 .x(function (d){ return x(d.x); })
@@ -16,37 +18,45 @@ function Ribbon() {
       , modes = {}
     ;
 
-
     /*
     ** Main Function Object
     */
     function my(svg){
-        var data = svg.datum()
-          , ribbon = svg.selectAll("g")
+        datum = svg.datum();
+        svg = svg
+          .append("g")
+            .attr("class", "ribbons")
+        ;
+        var ribbon = svg.selectAll("g")
               .data(d3.keys(modes), function(m) { return m; })
         ;
         ribbon.exit().remove();
         ribbon
           .enter().append("g")
-            .attr("class", function(d) { return d.toLowerCase(); })
+            .attr("class", function(d) { return "ribbon " + d.toLowerCase(); })
           .merge(ribbon)
           .each(function(m) {
               var path = d3.select(this).selectAll("path")
-                  .data([modes[m](data)]) // call the mode function
+                  .data([modes[m](datum.notedata)]) // call the mode function
               ;
               path
                 .enter().append("path")
+                  .attr("vector-effect", "non-scaling-stroke")
                 .merge(path)
                   .attr("d", area)
               ;
             })
         ;
+        boxify();
     } // Main Function Object
 
+    /*
+    ** Main Calculation Functions
+    */
     modes.STANDARD_DEVIATION = function(data) {
         // For steps in which there are no notes in the interval,
         // An empty interval at the previous average is used.
-        var previousMean = data[0].pitch;
+        var previousMean = data[0].pitch.b7;
 
         return d3.range(x.domain()[0], x.domain()[1], step)
           .map(function (x){
@@ -59,15 +69,15 @@ function Ribbon() {
                 // Consider the interval to be centered on the x value.
                 var windowStart = x - interval / 2
                   , windowEnd   = x + interval / 2
-                  , noteStart = d.time
-                  , noteEnd   = d.time + d.duration
+                  , noteStart = d.starttime[0]
+                  , noteEnd   = d.starttime[0] + d.duration[0]
                 ;
 
                 // Consider a note to be "inside the window"
                 // if any part of it falls inside the window.
                 return (noteStart < windowEnd) && (noteEnd > windowStart);
               })
-              .map(function (d){ return d.pitch; })
+              .map(function (d){ return d.pitch.b7; })
             ;
 
             // At each iteration of this function,
@@ -124,8 +134,7 @@ function Ribbon() {
 
       // For steps in which there are no notes in the interval,
       // An empty interval at the previous average is used.
-      var previousMean = data[0].pitch;
-
+      var previousMean = data[0].pitch.b7;
       return d3.range(x.domain()[0], x.domain()[1], step)
         .map(function (x){
 
@@ -138,14 +147,14 @@ function Ribbon() {
               // so it aligns with measures.
               var windowStart = x
                 , windowEnd   = x + interval
-                , noteStart = d.time
+                , noteStart = d.starttime[0]
               ;
 
               // Consider a note to be "inside the window"
               // only if its attack time falls inside the window.
               return (noteStart < windowEnd) && (noteStart >= windowStart);
             })
-            .map(function (d){ return d.pitch; })
+            .map(function (d){ return d.pitch.b7; })
           ;
 
           // At each iteration of this function,
@@ -194,6 +203,16 @@ function Ribbon() {
         });
     } // modes.ATTACK_DENSITY()
 
+    /*
+    ** Internal Helper Functions
+    */
+    // Calculate bounding box
+    function boxify() {
+    } // boxify()
+
+    /*
+    **  API - Getters/Setters
+    */
     my.interval = function(value) {
         if(!arguments.length)
             return interval;
@@ -222,19 +241,31 @@ function Ribbon() {
       } // my.modes()
     ;
     my.x = function(_) {
-        if(!arguments.length) return x;
+        if(!arguments.length)
+            return x;
         x = _;
         return my;
       } // my.x()
     ;
     my.y = function(_) {
-        if(!arguments.length) return y;
+        if(!arguments.length)
+            return y;
         // The passed in scale is Ordinal, and we need Linear here
         y = d3.scaleLinear().domain(d3.extent(_.domain())).range(_.range());
         return my;
       } // my.y()
     ;
-
+    my.defs = function(_) {
+        if(!arguments.length)
+            return stamps;
+        stamps = _;
+        return my;
+      } // my.stamps()
+    ;
+    my.bbox = function() {
+        return [];
+      } // my.bbox()
+    ;
     // This is ALWAYS the last thing returned
     return my;
 } // Ribbon()
