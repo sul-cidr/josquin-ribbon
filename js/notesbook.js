@@ -28,7 +28,7 @@ function NotesBook() {
         }
     , barlines, barlinesScale, barlinesAxis
     , measures, measuresAxis
-    , mensurations, mensurationsAxis
+    , mensurations, mensurationsLocs, mensurationsAxis
     , dispatch
   ;
 
@@ -78,6 +78,7 @@ function NotesBook() {
       ;
       barlinesScale  = x.copy().range([margin.left, fw - margin.right]).clamp(true);
       barlinesAxis = d3.axisTop()
+          .scale(barlinesScale)
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
           .tickSize(-h)
       ;
@@ -85,15 +86,22 @@ function NotesBook() {
           .scale(barlinesScale)
           .tickSize(0)
       ;
+      mensurationsLocs = data.barlines.filter(function(d) { return d.mensuration; });
+      mensurationsScale = d3.scaleOrdinal()
+          .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
+          .range(mensurationsLocs.map(function(d) { return mensurationCodes[d.mensuration] || d.mensuration; }))
+      ;
       mensurationsAxis = d3.axisTop()
           .scale(barlinesScale)
           .tickSize(0)
+          .tickValues(mensurationsScale.domain())
+          .tickFormat(mensurationsScale)
       ;
       barlines = markings
         .append("g")
           .attr("class", "barlines haxis")
           .attr("transform", "translate(0," + margin.top + ")")
-            .call(barlinesAxis.scale(barlinesScale))
+            .call(barlinesAxis)
       ;
       measures = markings
         .append("g")
@@ -106,13 +114,6 @@ function NotesBook() {
           .attr("class", "mensurations haxis")
           .attr("transform", "translate(0," + margin.top + ")")
           .call(mensurationsAxis)
-        .selectAll(".tick")
-          .each(function(d, i) {
-              var sym = data.barlines[i].mensuration;
-              d3.select(this).select("text")
-                  .text(mensurationCodes[sym] || null)
-              ;
-            })
       ;
       lens = svg
         .append("svg")
@@ -228,7 +229,6 @@ function NotesBook() {
       mensurations.call(mensurationsAxis.scale(barlinesScale));
 
       lens.attr("viewBox", vb.join(' ') );
-
 
       return my;
     } // my.zoom()
