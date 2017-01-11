@@ -127,6 +127,8 @@ function NotesBook() {
           .call(mensurationsAxis)
       ;
       mensurations.selectAll(".tick text")
+          .attr("font-family", "BravuraText")
+          .attr("font-size", "1.4em")
           .attr("dy", function(d) {
               return isNaN(mensurationsScale(d)) ? "-0.5em" : "-0.2em";
             })
