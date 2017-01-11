@@ -27,10 +27,6 @@
 
         brush.extent([[0, 0], [width, height]]);
 
-        // svg.selectAll(".brush")
-        //   .transition(d3.transition())
-        //     .call(brush.move, [viewbox[0], viewbox[2]])
-        // ;
         svg
             .style("width", "100%")
             .style("height", "100%")
