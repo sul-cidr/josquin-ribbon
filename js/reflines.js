@@ -15,8 +15,6 @@ function Reflines() {
   */
   function my(sel) {
       sel
-        // .append("g")
-        //   .attr("class", "reflines")
         .append("g")
           .attr("transform", "translate(" + margin.left + ",0)")
           .call(axis.scale(y).tickSize(x.range()[0] - x.range()[1]))
@@ -25,7 +23,7 @@ function Reflines() {
             return "tick refline refline--" + lines(d);
           })
       ;
-      sel.select("g .domain")
+      sel.select("g > .domain")
           .style("display", "none")
       ;
   } // main function object
