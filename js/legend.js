@@ -5,7 +5,6 @@ function ColorLegend(){
     var div
       , data
       , hilite
-      , colorScale
       , noteHeight
       , roundedCornerSize
       , dispatch
@@ -15,20 +14,17 @@ function ColorLegend(){
     ** Main function object
     */
     function my() {
-        colorScale.domain(data);
-
         var legend = div.selectAll("ul").data([1]);
         legend = legend.enter().append("ul")
             .attr("class", "list-unstyled")
           .merge(legend)
         ;
-
         var row = legend.selectAll("li")
-                .data(colorScale.domain())
+                .data(data)
         ;
         row.enter()
           .append("li")
-            .each(function(c) {
+            .each(function(c, i) {
                 var self = d3.select(this);
                 self
                   .append("svg")
@@ -36,16 +32,11 @@ function ColorLegend(){
                     .attr("y", noteHeight)
                     .attr("width", 22)
                     .attr("height", noteHeight)
-                  .append("rect")
-                    .attr("class", c.toLowerCase())
-                    .classed("note", true)
-                    .attr("x", 0)
-                    .attr("rx", roundedCornerSize)
-                    .attr("width", "100%")
-                    .attr("y", 0)
-                    .attr("ry", roundedCornerSize)
-                    .attr("height", "100%")
-                    .style("color", colorScale(c))
+                    .attr("class", "voice" + i)
+                  .append("use")
+                    .attr("x", 1)
+                    .attr("xlink:href", "#note-2")
+                    .attr("class", "note")
                 ;
                 self
                   .append("text")
@@ -104,12 +95,6 @@ function ColorLegend(){
         data = value;
         return my;
       } // my.data()
-    ;
-    my.colorScale = function (value){
-        if(arguments.length === 0) return colorScale;
-        colorScale = value;
-        return my;
-      } // my.colorScale()
     ;
 
     return my;
