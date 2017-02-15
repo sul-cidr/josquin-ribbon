@@ -11,9 +11,6 @@ header {
     background-repeat: no-repeat;
     background-size: contain;
 }
-#main {
-    height: 100vh;
-}
 #viewer {
     height: 70vh;
 }
@@ -31,7 +28,7 @@ header {
     margin-left: 1em;
 }
 
-.subdued {
+svg {
     transition: opacity 0.5s linear,
       fill-opacity 0.5s linear,
       stroke-opacity 0.5s linear;
@@ -70,6 +67,10 @@ path.domain {
 .barlines .tick text {
     display: none;
     fill: none;
+}
+.terminal {
+    stroke: black;
+    stroke-width: 2;
 }
 /* Tooltip styling inspired by http://bl.ocks.org/Caged/6476579 */
 .d3-tip {
@@ -148,4 +149,15 @@ select[disabled] {
 }
 .refline--C4 line {
     stroke-dasharray: 4 4;
+}
+/*
+** Override bootstrap styling
+*/
+.well {
+    padding: 0;
+    margin-left: 1em;
+    background-color: white;
+}
+#navigator {
+    margin-right: 1em;
 }

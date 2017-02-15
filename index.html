@@ -32,17 +32,16 @@
       <div class="row">
         <div id="main" class="notes col-md-9 col-lg-9">
           <div class="row">
-            <div id="viewer">
+            <div id="viewer" class="well">
               <svg></svg>
             </div><!--/#viewer-->
-            <div id="navigator"></div>
           </div><!--.row-->
-        </div><!--.notes-->
+        </div><!--/#main-->
         <div id="meta" class="col-md-3 col-lg-3">
           <div class="panel panel-default">
             <div class="panel-heading text-center">
-              <h3 class="panel-title"></h3>
               <h4 class="panel-title"></h4>
+              <h5 class="panel-title"></h5>
             </div><!--.panel-heading-->
             <div class="panel-body">
               <div id="legend"></div>
@@ -53,26 +52,14 @@
               <div id="ribbons-ui"></div>
             </div><!--.panel-footer-->
           </div><!--.panel-->
-        </div><!--.col-xs-12.col-lg-2-->
+        </div><!--/#meta-->
+      </div><!--.row-->
+      <div class="row">
+        <div id="navigator" class="well"></div>
       </div><!--.row-->
     </div><!--.container-->
   </article>
 
-  <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js">
-  </script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js">
-  </script>
-  <script src="js/legend.js"></script>
-  <script src="js/reflines.js"></script>
-  <script src="js/ribbon.js"></script>
-  <script src="js/score.js"></script>
-  <script src="js/notescanvas.js"></script>
-  <script src="js/notesbook.js"></script>
-  <script src="js/notesnav.js"></script>
-  <script src="js/toggleUI.js"></script>
-  <script src="js/notesUI.js"></script>
-  <script src="js/baton.js"></script>
+  <script src="js/vendors.js"></script>
+  <script src="js/josquin.js"></script>
 </body>
