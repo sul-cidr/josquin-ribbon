@@ -118,7 +118,7 @@ function NotesBook() {
           .call(renderBarlines)
       ;
       barlines.selectAll(".tick")
-          .classed("terminal", function(d) { console.log(d.terminal); return d.terminal; })
+          .classed("terminal", function(d) { return d.terminal; })
       ;
       mensurations = markings
         .append("g")
