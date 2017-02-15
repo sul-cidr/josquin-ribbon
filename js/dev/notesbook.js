@@ -26,7 +26,7 @@ function NotesBook() {
           , "C|" : ""
           , "C|r": ""
         }
-    , barlines, barlinesScale, barlinesAxis
+    , barlines, barlinesScale, barlinesAxis, barLabels, barLabelCount = 15
     , mensurations, mensurationsLocs, mensurationsAxis
     , dispatch
   ;
@@ -86,9 +86,13 @@ function NotesBook() {
           .scale(barlinesScale.clamp(true))
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
           .tickFormat(function (d, i){
-              return data.barlines[i].label;
+
+              // barLabels is a dictionary for the "ticks" to include.
+              // It is computed inside renderBarlines before rendering the axis.
+              var label = data.barlines[i].label;
+              return barLabels[label] ? label : "";
           })
-          .tickSize(h)
+          .tickSize(h) // Make the line span the vertical space.
       ;
 
       // Locations for changes in mensuration.
@@ -192,23 +196,32 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
+
+  // This function renders the bar lines and labels.
   function renderBarlines(selection){
 
       // Compute the set of bar labels to show.
       var t0 = barlinesScale.domain()[0],
           t1 = barlinesScale.domain()[1],
-          visibleBarsExtent = d3.extent(
+          labelsExtent = d3.extent(
               data.barlines.filter(function(b){
                   var t = b.time[0];
-                  return b.label && t > t0 && t < t1;
+                  return b.label && t >= t0 && t <= t1;
               })
               .map(function(b){ return +b.label; })
-          );
-          
-      console.log(visibleBarsExtent);
+          ),
+          ticks = d3.ticks(labelsExtent[0], labelsExtent[1], barLabelCount);
 
+      // Store the collection of label "ticks" in barLabels,
+      // which is used in the tickFormat function of barlinesAxis.
+      barLabels = {};
+      ticks.forEach(function (tick){
+          barLabels[tick] = true;
+      });
+
+      // Render the axis, which includes both lines and labels.
       selection.call(barlinesAxis);
-  }
+  } // renderBarlines()
 
 
   /*
