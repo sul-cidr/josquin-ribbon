@@ -1,0 +1,34 @@
+{
+  "name": "josquin-ribbon",
+  "version": "1.0.0",
+  "description": "Visualization of Josquin vocal music.",
+  "main": "josquin.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "d3-tip": "^0.7.1"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "d3-tip": "^0.7.1",
+    "font-awesome": "^4.7.0",
+    "jquery": "^1.9.1",
+    "mdl": "^0.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sul-cidr/josquin-ribbon.git"
+  },
+  "keywords": [
+    "music",
+    "d3"
+  ],
+  "author": "Curran Kelleher & Seemant Kulleen",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/sul-cidr/josquin-ribbon/issues"
+  },
+  "homepage": "https://github.com/sul-cidr/josquin-ribbon#readme"
+}
