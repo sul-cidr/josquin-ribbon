@@ -81,11 +81,13 @@ function NotesBook() {
       ;
       barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
 
-      // This axis is used for rendering the bar lines (always a fixed number of lines).
+      // This axis is used for rendering the bar lines and labels.
       barlinesAxis = d3.axisBottom()
           .scale(barlinesScale.clamp(true))
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-          .tickFormat(function (d, i){ return data.barlines[i].label; })
+          .tickFormat(function (d, i){
+              return data.barlines[i].label;
+          })
           .tickSize(h)
       ;
 
@@ -109,7 +111,7 @@ function NotesBook() {
         .append("g")
           .attr("class", "barlines haxis")
           .attr("transform", "translate(0," + margin.top + ")")
-          .call(barlinesAxis)
+          .call(renderBarlines)
       ;
       barlines.selectAll(".tick")
           .classed("terminal", function(d) { console.log(d.terminal); return d.terminal; })
@@ -190,6 +192,24 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
+  function renderBarlines(selection){
+
+      // Compute the set of bar labels to show.
+      var t0 = barlinesScale.domain()[0],
+          t1 = barlinesScale.domain()[1],
+          visibleBarsExtent = d3.extent(
+              data.barlines.filter(function(b){
+                  var t = b.time[0];
+                  return b.label && t > t0 && t < t1;
+              })
+              .map(function(b){ return +b.label; })
+          );
+          
+      console.log(visibleBarsExtent);
+
+      selection.call(barlinesAxis);
+  }
+
 
   /*
   ** API (Getter/Setter) Functions
@@ -238,8 +258,8 @@ function NotesBook() {
       vb[2] = Math.abs(_[1] - _[0]);
       barlinesScale.domain([vb[0], vb[0] + vb[2]].map(x.invert));
 
-      barlines.call(barlinesAxis.scale(barlinesScale.clamp(true)));
-      measures.call(measuresAxis.scale(barlinesScale.clamp(true)));
+      barlinesAxis.scale(barlinesScale.clamp(true))
+      barlines.call(renderBarlines);
       mensurations.call(mensurationsAxis.scale(barlinesScale.clamp(false)));
 
       lens.attr("viewBox", vb.join(' ') );
