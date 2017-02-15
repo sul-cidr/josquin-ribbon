@@ -6,7 +6,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
       .div(divMeta.select("#notes-ui"))
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
-  , colorScale = d3.scaleOrdinal(d3.schemeCategory10)
   , combineButton = [{
           callback: "separate"
         , icon: "format_line_spacing" // label
@@ -78,11 +77,7 @@ function chartify(data) {
         .call(ToggleUI().connect(signal))
     ;
     notesUI.connect(signal);
-    colorScale
-        .domain(data.partnames)
-    ;
     colorLegend
-        .colorScale(colorScale)
         .noteHeight(10)
         .roundedCornerSize(5)
         .data(data.partnames)
