@@ -27,7 +27,6 @@ function NotesBook() {
           , "C|r": ""
         }
     , barlines, barlinesScale, barlinesAxis
-    , measures, measuresAxis
     , mensurations, mensurationsLocs, mensurationsAxis
     , dispatch
   ;
@@ -81,15 +80,16 @@ function NotesBook() {
           .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
       ;
       barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
-      barlinesAxis = d3.axisTop()
+
+      // This axis is used for rendering the bar lines (always a fixed number of lines).
+      barlinesAxis = d3.axisBottom()
           .scale(barlinesScale.clamp(true))
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-          .tickSize(-h)
+          .tickFormat(function (d, i){ return data.barlines[i].label; })
+          .tickSize(h)
       ;
-      measuresAxis = d3.axisBottom()
-          .scale(barlinesScale.clamp(true))
-          .tickSize(0)
-      ;
+
+      // Locations for changes in mensuration.
       mensurationsLocs = data.barlines
           .filter(function(d) { return d.mensuration; })
       ;
@@ -113,12 +113,6 @@ function NotesBook() {
       ;
       barlines.selectAll(".tick")
           .classed("terminal", function(d) { console.log(d.terminal); return d.terminal; })
-      ;
-      measures = markings
-        .append("g")
-          .attr("class", "measures haxis")
-          .attr("transform", "translate(0," + (fh - margin.bottom) + ")")
-          .call(measuresAxis)
       ;
       mensurations = markings
         .append("g")
