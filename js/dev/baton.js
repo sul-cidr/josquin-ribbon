@@ -2,8 +2,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
   , notesNav = NotesNav()
   , notesBook = NotesBook()
-  , notesUI = NotesUI()
-      .div(divMeta.select("#notes-ui"))
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
   , combineButton = [{
@@ -76,7 +74,6 @@ function chartify(data) {
         .datum(ribbonButtons)
         .call(ToggleUI().connect(signal))
     ;
-    notesUI.connect(signal);
     colorLegend
         .noteHeight(10)
         .roundedCornerSize(5)
@@ -85,7 +82,6 @@ function chartify(data) {
     ;
 
     // Render views.
-    notesUI();
     colorLegend();
 
     signal
@@ -96,8 +92,17 @@ function chartify(data) {
         .on("separate", notesBook.separate)
         .on("zoom",     notesBook.zoom)
     ;
-    // Titles and other UI polishes
-    var titles = divMeta.selectAll(".panel-title")
+    // Connect the UI control elements
+    d3.select("#notes-ui").selectAll(".btn")
+        .datum(function(d) {
+            return this.id.split("-")[1]; // names are: show-notes and show-extremesS
+          })
+        .on("click", function(d) {
+            signal.call(d3.select(this).datum(), this, null);
+          })
+    ;
+    // Titles and polish
+    var titles = divMeta.select(".panel-heading").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
     ;
     titles.text(function(d) { return d.split('_').join(' '); });
