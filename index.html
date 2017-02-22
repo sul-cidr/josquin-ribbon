@@ -28,14 +28,14 @@
   <article>
     <div class="container-fluid">
       <div class="row">
-        <div id="main" class="notes col-md-9 col-lg-9">
+        <div id="main" class="notes col-md-8 col-lg-8">
           <div class="row">
             <div id="viewer" class="well">
               <svg></svg>
             </div><!--/#viewer-->
           </div><!--.row-->
         </div><!--.notes-->
-        <div id="meta" class="col-md-3 col-lg-3">
+        <div id="meta" class="col-md-4 col-lg-4">
           <div class="panel panel-default">
             <div class="panel-heading text-center">
               <h3 class="panel-title"></h3>
@@ -45,16 +45,34 @@
               <div id="legend"></div>
             </div><!--.panel-body-->
             <div class="panel-footer">
-              <div id="separate-ui"></div>
+              <div id="separate-ui" class="btn-group" data-toggle="buttons">
+                <label id="separate-voices" class="btn btn-default">
+                  <input type="checkbox" autocomplete="off"> Separate Voices
+                </label>
+              </div>
+              <div></div>
               <div id="notes-ui" class="btn-group" data-toggle="buttons">
-                <label id="show-notes" class="btn btn-primary active">
+                <label id="show-notes" class="btn btn-default active">
                   <input type="checkbox" autocomplete="off" checked> Show Notes
                 </label>
-                <label id="show-extremes" class="btn btn-primary">
+                <label id="show-extremes" class="btn btn-default">
                   <input type="checkbox" autocomplete="off"> Extreme Notes
                 </label>
               </div><!--.btn-group#notes-ui-->
-              <div id="ribbons-ui"></div>
+              <div id="ribbons-ui" class="btn-group" role="group" data-toggle="buttons">
+                <label id="show-ribbons" class="choice-all btn btn-default active">
+                  <input type="radio" value="all" checked>Hide Ribbons
+                </label>
+                <label id="select-ribbon" class="choice-pick btn btn-default">
+                  <input type="radio" value="">
+                  <select>
+                    <optgroup label="Show a Ribbon">
+                      <option value="standard_deviation">Standard Deviation</option>
+                      <option value="attack_density">Attack Density</option>
+                    </optgroup>
+                  </select>
+                </label>
+              </div><!--/#ribbons-ui-->
             </div><!--.panel-footer-->
           </div><!--.panel-->
         </div><!--.col-xs-12.col-lg-2-->
@@ -79,8 +97,7 @@
   <script src="js/dev/notescanvas.js"></script>
   <script src="js/dev/notesbook.js"></script>
   <script src="js/dev/notesnav.js"></script>
-  <script src="js/dev/toggleUI.js"></script>
-  <script src="js/dev/notesUI.js"></script>
+  <script src="js/dev/askus.js"></script>
   <script src="js/dev/baton.js"></script>
 {% else %}
   <script src="js/vendors.js"></script>
