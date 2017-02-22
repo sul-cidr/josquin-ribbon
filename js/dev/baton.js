@@ -4,11 +4,7 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , notesBook = NotesBook()
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
-  , combineButton = [{
-          callback: "separate"
-        , icon: "format_line_spacing" // label
-        , options: null // no dropdown
-      }]
+  , ribbonsUI = askus()
   , ribbonButtons = [{
           callback: "ribbons"
         , icon: null
@@ -66,14 +62,6 @@ function chartify(data) {
         .connect(signal)
       ()
     ;
-    d3.select("#separate-ui")
-        .datum(combineButton)
-        .call(ToggleUI().connect(signal))
-    ;
-    d3.select("#ribbons-ui")
-        .datum(ribbonButtons)
-        .call(ToggleUI().connect(signal))
-    ;
     colorLegend
         .noteHeight(10)
         .roundedCornerSize(5)
@@ -93,6 +81,7 @@ function chartify(data) {
         .on("zoom",     notesBook.zoom)
     ;
     // Connect the UI control elements
+    // Show/Hide Notes and Extreme Notes
     d3.select("#notes-ui").selectAll(".btn")
         .datum(function(d) {
             return this.id.split("-")[1]; // names are: show-notes and show-extremesS
@@ -101,6 +90,15 @@ function chartify(data) {
             signal.call(d3.select(this).datum(), this, null);
           })
     ;
+    // Combine/Separate Voices
+    d3.select("#separate-ui")
+        .on("click", function(d) {
+            var checked = d3.select(this).select("input").node().checked;
+            signal.call("separate", this, !checked)
+        })
+    ;
+    // Show/Hide ribbons
+    d3.select("#ribbons-ui").call(ribbonsUI.connect(signal));
     // Titles and polish
     var titles = divMeta.select(".panel-heading").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
