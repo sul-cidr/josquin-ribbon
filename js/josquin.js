@@ -7,6 +7,5 @@
 {% include_relative dev/notescanvas.js %}
 {% include_relative dev/notesbook.js %}
 {% include_relative dev/notesnav.js %}
-{% include_relative dev/toggleUI.js %}
-{% include_relative dev/notesUI.js %}
+{% include_relative dev/askus.js %}
 {% include_relative dev/baton.js %}
