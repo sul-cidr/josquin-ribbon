@@ -109,8 +109,10 @@ function chartify(data) {
 
     d3.selectAll("#export-svg-button")
         .on("click", function (){
-          var svgsaver = new SvgSaver();
-          svgsaver.asSvg(d3.select(".bezel").node());
+          var node = d3.select(".bezel").node()
+            , filename = "josquin-export-" + work + ".svg"
+          ;
+          new SvgSaver().asSvg(node, filename);
         });
 } // chartify()
 
