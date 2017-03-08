@@ -45,34 +45,41 @@
               <div id="legend"></div>
             </div><!--.panel-body-->
             <div class="panel-footer">
-              <div id="separate-ui" class="btn-group" data-toggle="buttons">
-                <label id="separate-voices" class="btn btn-default">
-                  <input type="checkbox" autocomplete="off"> Separate Voices
-                </label>
-              </div>
-              <div></div>
-              <div id="notes-ui" class="btn-group" data-toggle="buttons">
-                <label id="show-notes" class="btn btn-default active">
-                  <input type="checkbox" autocomplete="off" checked> Show Notes
-                </label>
-                <label id="show-extremes" class="btn btn-default">
-                  <input type="checkbox" autocomplete="off"> Extreme Notes
-                </label>
-              </div><!--.btn-group#notes-ui-->
-              <div id="ribbons-ui" class="btn-group" role="group" data-toggle="buttons">
-                <label id="show-ribbons" class="choice-all btn btn-default active">
-                  <input type="radio" value="all" checked>Hide Ribbons
-                </label>
-                <label id="select-ribbon" class="choice-pick btn btn-default">
-                  <input type="radio" value="">
-                  <select>
-                    <optgroup label="Show a Ribbon">
-                      <option value="standard_deviation">Standard Deviation</option>
-                      <option value="attack_density">Attack Density</option>
-                    </optgroup>
-                  </select>
-                </label>
-              </div><!--/#ribbons-ui-->
+              <div class="list-group">
+                <!-- <div class="panel-body"> -->
+                  <div id="separate-ui">
+                    <label for="separate-voices">
+                      <input id="separate-voices" type="checkbox" autocomplete="off"> Separate Voices
+                    </label>
+                  </div>
+                <!-- </div> -->
+              </div><!--.list-group-->
+              <div class="list-group">
+                <!-- <div class="panel-body"> -->
+                  <div id="notes-ui">
+                    <label for="show-notes">
+                      <input id="show-notes" type="checkbox" autocomplete="off" checked> Show Notes
+                    </label>
+                    <label for="show-extremes">
+                      <input id="show-extremes" type="checkbox" autocomplete="off"> Show Extreme Notes
+                    </label>
+                  </div><!--.btn-group#notes-ui-->
+                <!-- </div> -->
+              </div><!--.list-group-->
+              <div class="list-group">
+                <!-- <div class="panel-body"> -->
+                  <div id="ribbons-ui">
+                    <label for="show-ribbon">
+                      <input id="show-ribbon" type="checkbox" value="all">  <select id="select-ribbon" disabled>
+                        <optgroup label="Select a Ribbon">
+                          <option value="standard_deviation">Standard Deviation</option>
+                          <option value="attack_density">Attack Density</option>
+                        </optgroup>
+                      </select>
+                    </label>
+                  </div><!--/#ribbons-ui-->
+                <!-- </div> -->
+              </div><!--.list-group-->
             </div><!--.panel-footer-->
           </div><!--.panel-->
         </div><!--.col-xs-12.col-lg-2-->
