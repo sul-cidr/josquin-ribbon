@@ -4,15 +4,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , notesBook = NotesBook()
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
-  , ribbonsUI = askus()
-  , ribbonButtons = [{
-          callback: "ribbons"
-        , icon: null
-        , options: {
-                "standard_deviation": "Standard Deviation"
-              , "attack_density": "Attack Density"
-            } // dropdown
-      }]
 ;
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
@@ -41,11 +32,11 @@ function chartify(data) {
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
-            , "separate"
+            , "separate-voices"
             , "selected"
-            , "extremes"
-            , "ribbons"
-            , "notes"
+            , "show-extremes"
+            , "show-ribbon"
+            , "show-notes"
           )
     ;
     notesBook
@@ -73,32 +64,32 @@ function chartify(data) {
     colorLegend();
 
     signal
-        .on("notes",    notesBook.notes)
-        .on("extremes", notesBook.extremes)
+        .on("show-notes",    notesBook.notes)
+        .on("show-extremes", notesBook.extremes)
         .on("hilite",   notesBook.hilite)
-        .on("ribbons",  notesBook.ribbons)
-        .on("separate", notesBook.separate)
+        .on("show-ribbon",  notesBook.ribbons)
+        .on("separate-voices", notesBook.separate)
         .on("zoom",     notesBook.zoom)
     ;
     // Connect the UI control elements
-    // Show/Hide Notes and Extreme Notes
-    d3.select("#notes-ui").selectAll(".btn")
-        .datum(function(d) {
-            return this.id.split("-")[1]; // names are: show-notes and show-extremesS
-          })
-        .on("click", function(d) {
-            signal.call(d3.select(this).datum(), this, null);
-          })
-    ;
     // Combine/Separate Voices
-    d3.select("#separate-ui")
-        .on("click", function(d) {
-            var checked = d3.select(this).select("input").node().checked;
-            signal.call("separate", this, !checked)
+    d3.select("#separate-ui").selectAll("input")
+        .on("change", function(d) {
+            signal.call(this.id, this, this.checked)
         })
     ;
+    // Show/Hide Notes and Extreme Notes
+    d3.select("#notes-ui").selectAll("input")
+        .on("change", function(d) {
+            signal.call(this.id, this, null);
+          })
+    ;
     // Show/Hide ribbons
-    d3.select("#ribbons-ui").call(ribbonsUI.connect(signal));
+    d3.select("#ribbons-ui").selectAll("input")
+        .on("change", function(d) {
+            signal.call(this.id, this, this.value);
+        })
+    ;
     // Titles and polish
     var titles = divMeta.select(".panel-heading").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
