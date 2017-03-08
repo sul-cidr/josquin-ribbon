@@ -90,8 +90,11 @@ function chartify(data) {
         , choice = d3.select(this).select("select")
         , callback = check.node().id // callback name == checkbox 'id'
       ;
+      // Hide the ribbon dropdown initially
+      choice.style("display", "none");
+
       check.on("change", function(d) {
-          choice.property("disabled", !this.checked);
+          choice.style("display", this.checked ? null : "none");
           signal.call(callback, this, this.checked ? choice.node().value: this.value);
         })
       ;
