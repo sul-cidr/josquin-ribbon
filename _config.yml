@@ -1,1 +1,2 @@
 debugging: true
+exclude: [bower_components, node_modules, glyphs]
