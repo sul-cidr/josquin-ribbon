@@ -28,7 +28,6 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
-    console.log(data);
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
