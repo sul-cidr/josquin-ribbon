@@ -10,6 +10,7 @@ var defaultWork = "Jos2721-La_Bernardina"
   , work = hash.id || defaultWork
   , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
 ;
+
 d3.queue()
     .defer(d3.json, jsonURL)
     .await(function(error, proll) {
@@ -28,7 +29,6 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function chartify(data) {
-    console.log(data);
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
@@ -113,9 +113,13 @@ function chartify(data) {
     ;
     titles.text(function(d) { return d.split('_').join(' '); });
 
-    /*
-    ** Helper functions for chartify's scope only
-    */
+    d3.selectAll("#export-svg-button")
+        .on("click", function (){
+          var node = d3.select(".bezel").node()
+            , filename = "josquin-export-" + work + ".svg"
+          ;
+          new SvgSaver().asSvg(node, filename);
+        });
 } // chartify()
 
 /// Capture URL query param
