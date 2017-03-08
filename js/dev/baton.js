@@ -81,6 +81,9 @@ function chartify(data) {
     // Show/Hide Notes and Extreme Notes
     d3.select("#notes-ui").selectAll("input")
         .on("change", function(d) {
+            d3.select(this.parentNode.nextElementSibling)
+                .style("display", this.checked ? null : "none")
+            ;
             signal.call(this.id, this, null);
           })
     ;
@@ -90,8 +93,11 @@ function chartify(data) {
         , choice = d3.select(this).select("select")
         , callback = check.node().id // callback name == checkbox 'id'
       ;
+      // Hide the ribbon dropdown initially
+      choice.style("display", "none");
+
       check.on("change", function(d) {
-          choice.property("disabled", !this.checked);
+          choice.style("display", this.checked ? null : "none");
           signal.call(callback, this, this.checked ? choice.node().value: this.value);
         })
       ;
