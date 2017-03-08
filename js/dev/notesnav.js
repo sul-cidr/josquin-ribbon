@@ -10,7 +10,6 @@
       , x = d3.scaleLinear()
       , y = d3.scaleLinear()
       , brush = d3.brushX()
-          .handleSize(20)
           .on("brush", brushed)
           .on("end"  , brushed)
       , dispatch
@@ -24,8 +23,6 @@
         y.range([viewbox[3], viewbox[1]]);
         width  = Math.abs(viewbox[2]);
         height = Math.abs(viewbox[3]);
-
-        brush.extent([[0, 0], [width, height]]);
 
         svg
             .style("width", "100%")
@@ -46,12 +43,17 @@
             .attr("width", width)
             .attr("height", height)
         ;
+
+        brush
+          .extent([[0, 0], [width, height]])
+          .handleSize(width / 200);
+
         var g = svg.selectAll("g").data(["brush"]);
         g = g
           .enter().append("g")
             .attr("class", function(d) { return d; })
-            .call(brush)
           .merge(g)
+            .call(brush)
         ;
         g
             .call(brush.move, x.range())
