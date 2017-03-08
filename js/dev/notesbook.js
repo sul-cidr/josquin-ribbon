@@ -26,8 +26,7 @@ function NotesBook() {
           , "C|" : ""
           , "C|r": ""
         }
-    , barlines, barlinesScale, barlinesAxis
-    , measures, measuresAxis
+    , barlines, barlinesScale, barlinesAxis, barLabels, barLabelCount = 15
     , mensurations, mensurationsLocs, mensurationsAxis
     , dispatch
   ;
@@ -81,15 +80,22 @@ function NotesBook() {
           .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
       ;
       barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
-      barlinesAxis = d3.axisTop()
+
+      // This axis is used for rendering the bar lines and labels.
+      barlinesAxis = d3.axisBottom()
           .scale(barlinesScale.clamp(true))
           .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-          .tickSize(-h)
+          .tickFormat(function (d, i){
+
+              // barLabels is a dictionary for the "ticks" to include.
+              // It is computed inside renderBarlines before rendering the axis.
+              var label = data.barlines[i].label;
+              return barLabels[label] ? label : "";
+          })
+          .tickSize(h) // Make the line span the vertical space.
       ;
-      measuresAxis = d3.axisBottom()
-          .scale(barlinesScale.clamp(true))
-          .tickSize(0)
-      ;
+
+      // Locations for changes in mensuration.
       mensurationsLocs = data.barlines
           .filter(function(d) { return d.mensuration; })
       ;
@@ -109,16 +115,10 @@ function NotesBook() {
         .append("g")
           .attr("class", "barlines haxis")
           .attr("transform", "translate(0," + margin.top + ")")
-          .call(barlinesAxis)
+          .call(renderBarlines)
       ;
       barlines.selectAll(".tick")
-          .classed("terminal", function(d) { console.log(d.terminal); return d.terminal; })
-      ;
-      measures = markings
-        .append("g")
-          .attr("class", "measures haxis")
-          .attr("transform", "translate(0," + (fh - margin.bottom) + ")")
-          .call(measuresAxis)
+          .classed("terminal", function(d) { return d.terminal; })
       ;
       mensurations = markings
         .append("g")
@@ -197,6 +197,33 @@ function NotesBook() {
   ** Helper Functions
   */
 
+  // This function renders the bar lines and labels.
+  function renderBarlines(selection){
+
+      // Compute the set of bar labels to show.
+      var t0 = barlinesScale.domain()[0],
+          t1 = barlinesScale.domain()[1],
+          labelsExtent = d3.extent(
+              data.barlines.filter(function(b){
+                  var t = b.time[0];
+                  return b.label && t >= t0 && t <= t1;
+              })
+              .map(function(b){ return +b.label; })
+          ),
+          ticks = d3.ticks(labelsExtent[0], labelsExtent[1], barLabelCount);
+
+      // Store the collection of label "ticks" in barLabels,
+      // which is used in the tickFormat function of barlinesAxis.
+      barLabels = {};
+      ticks.forEach(function (tick){
+          barLabels[tick] = true;
+      });
+
+      // Render the axis, which includes both lines and labels.
+      selection.call(barlinesAxis);
+  } // renderBarlines()
+
+
   /*
   ** API (Getter/Setter) Functions
   */
@@ -244,8 +271,8 @@ function NotesBook() {
       vb[2] = Math.abs(_[1] - _[0]);
       barlinesScale.domain([vb[0], vb[0] + vb[2]].map(x.invert));
 
-      barlines.call(barlinesAxis.scale(barlinesScale.clamp(true)));
-      measures.call(measuresAxis.scale(barlinesScale.clamp(true)));
+      barlinesAxis.scale(barlinesScale.clamp(true))
+      barlines.call(renderBarlines);
       mensurations.call(mensurationsAxis.scale(barlinesScale.clamp(false)));
 
       lens.attr("viewBox", vb.join(' ') );
