@@ -64,10 +64,6 @@ svg {
 path.domain {
     display: none;
 }
-.barlines .tick text {
-    display: none;
-    fill: none;
-}
 .terminal {
     stroke: black;
     stroke-width: 2;
