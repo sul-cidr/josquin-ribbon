@@ -109,7 +109,8 @@ function chartify(data) {
 
     d3.selectAll("#export-svg-button")
         .on("click", function (){
-          console.log("here");
+          var svgsaver = new SvgSaver();
+          svgsaver.asSvg(d3.select(".bezel").node());
         });
 } // chartify()
 
