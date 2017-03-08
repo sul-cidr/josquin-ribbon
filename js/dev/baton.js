@@ -81,6 +81,9 @@ function chartify(data) {
     // Show/Hide Notes and Extreme Notes
     d3.select("#notes-ui").selectAll("input")
         .on("change", function(d) {
+            d3.select(this.parentNode.nextElementSibling)
+                .style("display", this.checked ? null : "none")
+            ;
             signal.call(this.id, this, null);
           })
     ;
