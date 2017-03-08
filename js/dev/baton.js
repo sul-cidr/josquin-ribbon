@@ -85,11 +85,22 @@ function chartify(data) {
           })
     ;
     // Show/Hide ribbons
-    d3.select("#ribbons-ui").selectAll("input")
-        .on("change", function(d) {
-            signal.call(this.id, this, this.value);
+    d3.select("#ribbons-ui").each(function() {
+      var check = d3.select(this).select("input")
+        , choice = d3.select(this).select("select")
+        , callback = check.node().id // callback name == checkbox 'id'
+      ;
+      check.on("change", function(d) {
+          choice.property("disabled", !this.checked);
+          signal.call(callback, this, this.checked ? choice.node().value: this.value);
         })
-    ;
+      ;
+      choice.on("change", function() {
+          signal.call(callback, this, this.value);
+        })
+      ;
+    });
+
     // Titles and polish
     var titles = divMeta.select(".panel-heading").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
