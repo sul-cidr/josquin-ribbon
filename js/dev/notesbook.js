@@ -8,7 +8,7 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: 25, right: 5, bottom: 40, left: 25 }
+    , margin = { top: 25, right: 5, bottom: 25, left: 25 }
     , x = d3.scaleLinear()
     , y = d3.scaleBand().padding(0.2)
     , score  = Score()
@@ -63,7 +63,7 @@ function NotesBook() {
           .attr("width", fw)
           .attr("height", fh)
           .attr("viewBox", [0, 0, fw, fh].join(' '))
-          .attr("preserveAspectRatio", "xMinYMid slice")
+          .attr("preserveAspectRatio", "none")
       ;
       markings = svg
         .append("g")
