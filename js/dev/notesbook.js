@@ -8,9 +8,9 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: 25, right: 5, bottom: 25, left: 25 }
+    , margin = { top: "5%", right: "5%", bottom: "5%", left: "5%" }
     , x = d3.scaleLinear()
-    , y = d3.scaleBand().padding(0.2)
+    , y = d3.scaleBand()
     , score  = Score()
     , ribbon = Ribbon()
     , markings = Markings()
@@ -22,15 +22,16 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
+    console.log(data);
       svg
           .attr("class", "notesbook")
           .style("height", "100%")
           .style("width", "100%")
       ;
       x.domain([0, data.scorelength[0]]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
-
-      console.log(data);
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
+          .padding(0.2)
+      ;
       var scaleup = function(d) { return d * lifeSize; };
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
@@ -46,10 +47,13 @@ function NotesBook() {
         , fw = w + margin.left + margin.right
         , fh = h + margin.top + margin.bottom
       ;
+
       svg
         .append("svg")
           .attr("class", "markings")
-          .call(markings.data(data.barlines).x(x.copy()).y(y.copy()))
+          .style("width", "100%")
+          .style("height", "100%")
+          .call(markings.data(data.barlines).x(x).y(y))
       ;
       lens = svg
         .append("svg")
@@ -58,8 +62,8 @@ function NotesBook() {
           .attr("preserveAspectRatio", "none")
           .attr("x", margin.left)
           .attr("y", margin.top )
-          .attr("width", "100%")
-          .attr("height", "100%")
+          .attr("width", "95%")
+          .attr("height", "90%")
       ;
       defs = lens
         .append("defs")
@@ -85,8 +89,8 @@ function NotesBook() {
           .attr("preserveAspectRatio", "xMinYMid slice")
           .each(function() {
               d3.select(this)
-              .call(score.x(x).y(y).defs(defs.append("g").attr("id", "notestamps")))
-              .call(ribbon.x(x).y(y))
+                  .call(score.x(x).y(y).defs(defs.append("g").attr("id", "notestamps")))
+                  .call(ribbon.x(x).y(y))
               ;
             })
         .merge(voice)
