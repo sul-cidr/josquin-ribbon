@@ -73,16 +73,6 @@ function NotesBook() {
           .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
       ;
-      score
-          .x(x)
-          .y(y)
-          .defs(defs.append("g").attr("id", "notestamps"))
-      ;
-      ribbon
-          .x(x)
-          .y(y)
-          .defs(defs.append("g").attr("id", "ribbonstamps"))
-      ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
       ;
@@ -95,8 +85,8 @@ function NotesBook() {
           .attr("preserveAspectRatio", "xMinYMid slice")
           .each(function() {
               d3.select(this)
-                  .call(score)
-                  .call(ribbon)
+              .call(score.x(x).y(y).defs(defs.append("g").attr("id", "notestamps")))
+              .call(ribbon.x(x).y(y))
               ;
             })
         .merge(voice)
