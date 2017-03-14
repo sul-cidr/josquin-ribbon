@@ -9,9 +9,7 @@
       , height
       , x = d3.scaleLinear()
       , y = d3.scaleLinear()
-      , brush = d3.brushX()
-          .on("brush", brushed)
-          .on("end"  , brushed)
+      , brush = d3.brushX().on("brush end", brushed)
       , dispatch
     ;
 
@@ -39,7 +37,7 @@
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
             .attr("preserveAspectRatio", "xMinYMid slice")
           .append("use")
-            .attr("xlink:href", "#backplane")
+            .attr("xlink:href", "#voices")
             .attr("width", width)
             .attr("height", height)
         ;

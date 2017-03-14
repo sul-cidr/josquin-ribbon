@@ -3,7 +3,7 @@ function NotesBook() {
   ** Private Variables
   */
   var data
-    , svg, backplane, lens
+    , svg, voices, lens
     , width
     , height
     , viewbox
@@ -36,7 +36,7 @@ function NotesBook() {
   */
   function my() {
       svg
-          .attr("class", "bezel")
+          .attr("class", "notesbook")
           .style("width", "100%")
           .style("height", "100%")
       ;
@@ -62,7 +62,6 @@ function NotesBook() {
           .attr("width", fw)
           .attr("height", fh)
           .attr("viewBox", [0, 0, fw, fh].join(' '))
-          // .attr("preserveAspectRatio", "none")
       ;
       markings = svg
         .append("g")
@@ -71,12 +70,6 @@ function NotesBook() {
       markings
         .append("g")
           .attr("class", "reflines")
-          // .attr("viewBox", [x.range()[0], y.range()[1], width, height].join(' '))
-          // .attr("preserveAspectRatio", "none")
-          // .attr("x", 0)
-          // .attr("y", margin.top)
-          // .attr("width", fw)
-          // .attr("height", h)
           .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
       ;
       barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
@@ -143,16 +136,16 @@ function NotesBook() {
           .attr("width", w)
           .attr("height", h)
       ;
-      backplane = lens
+      voices = lens
         .append("svg")
-          .attr("class", "backplane")
-          .attr("id", "backplane")
+          .attr("class", "voices")
+          .attr("id", "voices")
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
       ;
-      defs = backplane
+      defs = voices
         .append("defs")
       ;
       score
@@ -169,7 +162,7 @@ function NotesBook() {
       //     .x(x)
       //     .y(y)
       // ;
-      var voice = backplane.selectAll(".voice")
+      var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
       ;
       voice = voice.enter()
@@ -188,7 +181,7 @@ function NotesBook() {
             })
         .merge(voice)
       ;
-      backplane.selectAll(".ribbon")
+      voices.selectAll(".ribbon")
           .style("display", "none")
       ;
   } // my() - Main function object
@@ -247,18 +240,18 @@ function NotesBook() {
   ;
   my.hilite = function(_) {
         if(!_[0])
-            backplane.selectAll(".subdued")
+            voices.selectAll(".subdued")
                 .classed("subdued", false)
         else
-            backplane.selectAll("svg")
+            voices.selectAll("svg")
                 .classed("subdued", function(d, i) { return i !== _[1]; })
             ;
       return my;
     } // my.hilite()
   ;
   my.extremes = function() {
-      var xtrms = backplane.selectAll(".extreme").empty();
-      backplane.selectAll(".extreme-plain")
+      var xtrms = voices.selectAll(".extreme").empty();
+      voices.selectAll(".extreme-plain")
           .classed("extreme", xtrms)
       ;
     } // my.extremes()
@@ -282,10 +275,10 @@ function NotesBook() {
   ;
   my.separate = function(_) {
       // Art-direct the various voice SVGs
-      var vb = backplane.attr("viewBox").split(' ');
+      var vb = voices.attr("viewBox").split(' ');
       vb[3] = _ ? fullheight : height;
 
-      backplane
+      voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
         .selectAll(".voice")
@@ -295,14 +288,14 @@ function NotesBook() {
     } // my.separate()
   ;
   my.notes = function() { // toggles the notes on/off
-      var music = backplane.selectAll(".notes")
+      var music = voices.selectAll(".notes")
         , vis = music.style("display")
       ;
       music.style("display", vis === "inline" ? "none" : "inline");
     } // my.notes()
   ;
   my.ribbons = function(arg) {
-      backplane.selectAll(".ribbon")
+      voices.selectAll(".ribbon")
           .style("display", function(d) {
               return d.toLowerCase() === arg ? "inline" : "none";
             })
