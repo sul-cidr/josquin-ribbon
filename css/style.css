@@ -151,6 +151,7 @@ select[disabled] {
 .well {
     padding: 0;
     margin-left: 1em;
+    margin-bottom: 0;
     background-color: white;
 }
 #navigator {
