@@ -62,7 +62,7 @@ function NotesBook() {
           .attr("width", fw)
           .attr("height", fh)
           .attr("viewBox", [0, 0, fw, fh].join(' '))
-          .attr("preserveAspectRatio", "none")
+          // .attr("preserveAspectRatio", "none")
       ;
       markings = svg
         .append("g")
