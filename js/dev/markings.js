@@ -29,13 +29,10 @@ function Markings() {
   ** Main Function Object
   */
   function my(el) {
-      svg = el
-          .style("width", "100%")
-          .style("height", "100%")
-      ;
+      svg = el;
       width = svg.node().width.baseVal.value;
       height = svg.node().height.baseVal.value;
-      console.log(width, height);
+      console.log(el);
 
       barlinesScale = x.range([margin.left, width - margin.right]);
       // This axis is used for rendering the bar lines and labels.
@@ -136,7 +133,7 @@ function Markings() {
   ;
   my.x = function(_) {
       if(!arguments.length) return x;
-      x = _;
+      x = _.copy();
       return my;
     } // my.x()
   ;
@@ -152,7 +149,7 @@ function Markings() {
   ;
   my.y = function(_) {
       if(!arguments.length) return y;
-      y = _;
+      y = _.copy();
       return my;
     } // my.y()
   ;
