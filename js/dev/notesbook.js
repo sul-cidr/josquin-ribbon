@@ -61,6 +61,9 @@ function NotesBook() {
           .attr("width", "100%")
           .attr("height", "100%")
       ;
+      defs = lens
+        .append("defs")
+      ;
       voices = lens
         .append("svg")
           .attr("class", "voices")
@@ -69,9 +72,6 @@ function NotesBook() {
           .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
-      ;
-      defs = voices
-        .append("defs")
       ;
       score
           .x(x)
