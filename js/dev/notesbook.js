@@ -13,21 +13,8 @@ function NotesBook() {
     , y = d3.scaleBand().padding(0.2)
     , score  = Score()
     , ribbon = Ribbon()
-    , reflines = Reflines()
+    , markings = Markings()
     , lifeSize = 10 // default height and width of notes
-    , mensurationCodes = {
-            "O"  : ""
-          , "O|" : ""
-          , "O|.": ""
-          , "C." : ""
-          , "C"  : ""
-          , "Cr" : ""
-          , "C|.": ""
-          , "C|" : ""
-          , "C|r": ""
-        }
-    , barlines, barlinesScale, barlinesAxis, barLabels, barLabelCount = 15
-    , mensurations, mensurationsLocs, mensurationsAxis
     , dispatch
   ;
 
@@ -37,12 +24,13 @@ function NotesBook() {
   function my() {
       svg
           .attr("class", "notesbook")
-          .style("width", "100%")
           .style("height", "100%")
+          .style("width", "100%")
       ;
       x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
 
+      console.log(data);
       var scaleup = function(d) { return d * lifeSize; };
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
@@ -59,82 +47,19 @@ function NotesBook() {
         , fh = h + margin.top + margin.bottom
       ;
       svg
-          .attr("width", fw)
-          .attr("height", fh)
-          .attr("viewBox", [0, 0, fw, fh].join(' '))
-      ;
-      markings = svg
-        .append("g")
+        .append("svg")
           .attr("class", "markings")
-      ;
-      markings
-        .append("g")
-          .attr("class", "reflines")
-          .call(reflines.x(x).y(y.copy().range([fh - margin.bottom, margin.top])))
-      ;
-      barlinesScale  = x.copy().range([margin.left, fw - margin.right]);
-
-      // This axis is used for rendering the bar lines and labels.
-      barlinesAxis = d3.axisBottom()
-          .scale(barlinesScale.clamp(true))
-          .tickValues(data.barlines.map(function(b) { return b.time[0]; }))
-          .tickFormat(function (d, i){
-
-              // barLabels is a dictionary for the "ticks" to include.
-              // It is computed inside renderBarlines before rendering the axis.
-              var label = data.barlines[i].label;
-              return barLabels[label] ? label : "";
-          })
-          .tickSize(h) // Make the line span the vertical space.
-      ;
-
-      // Locations for changes in mensuration.
-      mensurationsLocs = data.barlines
-          .filter(function(d) { return d.mensuration; })
-      ;
-      mensurationsScale = d3.scaleOrdinal()
-          .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
-          .range(mensurationsLocs.map(function(d) {
-              return mensurationCodes[d.mensuration] || d.mensuration;
-            }))
-      ;
-      mensurationsAxis = d3.axisTop()
-          .scale(barlinesScale.clamp(false))
-          .tickSize(0)
-          .tickValues(mensurationsScale.domain())
-          .tickFormat(mensurationsScale)
-      ;
-      barlines = markings
-        .append("g")
-          .attr("class", "barlines haxis")
-          .attr("transform", "translate(0," + margin.top + ")")
-          .call(renderBarlines)
-      ;
-      barlines.selectAll(".tick")
-          .classed("terminal", function(d) { return d.terminal; })
-      ;
-      mensurations = markings
-        .append("g")
-          .attr("class", "mensurations haxis")
-          .attr("transform", "translate(0," + margin.top + ")")
-          .call(mensurationsAxis)
-      ;
-      mensurations.selectAll(".tick text")
-          .attr("font-family", "BravuraText")
-          .attr("font-size", "1.4em")
-          .attr("dy", function(d) {
-              return isNaN(mensurationsScale(d)) ? "-0.5em" : "-0.2em";
-            })
+          .call(markings.data(data.barlines).x(x.copy()).y(y.copy()))
       ;
       lens = svg
         .append("svg")
-        .attr("class", "lens")
+        .attr("class", "lens music")
           .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
           .attr("x", margin.left)
           .attr("y", margin.top )
-          .attr("width", w)
-          .attr("height", h)
+          .attr("width", "100%")
+          .attr("height", "100%")
       ;
       voices = lens
         .append("svg")
@@ -158,10 +83,6 @@ function NotesBook() {
           .y(y)
           .defs(defs.append("g").attr("id", "ribbonstamps"))
       ;
-      // reflines
-      //     .x(x)
-      //     .y(y)
-      // ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
       ;
@@ -174,7 +95,6 @@ function NotesBook() {
           .attr("preserveAspectRatio", "xMinYMid slice")
           .each(function() {
               d3.select(this)
-                  // .call(reflines)
                   .call(score)
                   .call(ribbon)
               ;
@@ -189,32 +109,6 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
-
-  // This function renders the bar lines and labels.
-  function renderBarlines(selection){
-
-      // Compute the set of bar labels to show.
-      var t0 = barlinesScale.domain()[0],
-          t1 = barlinesScale.domain()[1],
-          labelsExtent = d3.extent(
-              data.barlines.filter(function(b){
-                  var t = b.time[0];
-                  return b.label && t >= t0 && t <= t1;
-              })
-              .map(function(b){ return +b.label; })
-          ),
-          ticks = d3.ticks(labelsExtent[0], labelsExtent[1], barLabelCount);
-
-      // Store the collection of label "ticks" in barLabels,
-      // which is used in the tickFormat function of barlinesAxis.
-      barLabels = {};
-      ticks.forEach(function (tick){
-          barLabels[tick] = true;
-      });
-
-      // Render the axis, which includes both lines and labels.
-      selection.call(barlinesAxis);
-  } // renderBarlines()
 
 
   /*
@@ -262,11 +156,7 @@ function NotesBook() {
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
-      barlinesScale.domain([vb[0], vb[0] + vb[2]].map(x.invert));
-
-      barlinesAxis.scale(barlinesScale.clamp(true))
-      barlines.call(renderBarlines);
-      mensurations.call(mensurationsAxis.scale(barlinesScale.clamp(false)));
+      markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
 
       lens.attr("viewBox", vb.join(' ') );
 
