@@ -40,7 +40,7 @@ function chartify(data) {
           )
     ;
     notesBook
-        .svg(d3.select("#viewer").select("svg"))
+        .svg(d3.select("#notesbook").select("svg"))
         .data(data)
         .connect(signal)
       ()
