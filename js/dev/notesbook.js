@@ -53,7 +53,7 @@ function NotesBook() {
           .attr("class", "markings")
           .style("width", "100%")
           .style("height", "100%")
-          .call(markings.data(data.barlines).x(x).y(y))
+          .call(markings.data(data.barlines).voices(data.partnames).x(x).y(y))
       ;
       reticle = svg
         .append("svg")
@@ -169,6 +169,7 @@ function NotesBook() {
         .selectAll(".voice")
           .attr("y", function(d, i) { return _ ? i * height : 0; })
       ;
+      markings.separate(_);
       return my;
     } // my.separate()
   ;
