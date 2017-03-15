@@ -151,9 +151,12 @@ select[disabled] {
 .well {
     padding: 0;
     margin-left: 1em;
-    margin-bottom: 0;
+    margin-bottom: 1em;
     background-color: white;
 }
 #navigator {
     margin-right: 1em;
+}
+#notesbook {
+  margin-bottom: 2em;
 }
