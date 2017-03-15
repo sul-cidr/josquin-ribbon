@@ -115,7 +115,7 @@ function chartify(data) {
 
     d3.selectAll("#export-svg-button")
         .on("click", function (){
-          var node = d3.select(".bezel").node()
+          var node = d3.select(".reticle").node()
             , filename = "josquin-export-" + work + ".svg"
           ;
           new SvgSaver().asSvg(node, filename);
