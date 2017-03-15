@@ -3,12 +3,13 @@ function NotesBook() {
   ** Private Variables
   */
   var data
-    , svg, voices, lens
+    , svg, voices, reticle
     , width
     , height
     , viewbox
     , fullheight
     , margin = { top: "5%", right: "5%", bottom: "5%", left: "5%" }
+    , percents = { left: 5, top: 5, right: 5, bottom: 5}
     , x = d3.scaleLinear()
     , y = d3.scaleBand()
     , score  = Score()
@@ -54,20 +55,20 @@ function NotesBook() {
           .style("height", "100%")
           .call(markings.data(data.barlines).x(x).y(y))
       ;
-      lens = svg
+      reticle = svg
         .append("svg")
-        .attr("class", "lens music")
+        .attr("class", "reticle music")
           .attr("viewBox", [0, 0, width, height].join(' '))
           .attr("preserveAspectRatio", "none")
-          .attr("x", margin.left)
-          .attr("y", margin.top )
-          .attr("width", "90%")
-          .attr("height", "90%")
+          .attr("x", percents.left + "%")
+          .attr("y", percents.top + "%" )
+          .attr("width", (100 - percents.left - percents.right) + "%")
+          .attr("height", (100 - percents.top - percents.bottom) + "%")
       ;
-      defs = lens
+      defs = reticle
         .append("defs")
       ;
-      voices = lens
+      voices = reticle
         .append("svg")
           .attr("class", "voices")
           .attr("id", "voices")
@@ -145,14 +146,14 @@ function NotesBook() {
     } // my.extremes()
   ;
   my.zoom = function(_) {
-      var vb = lens.attr("viewBox").split(' ');
+      var vb = reticle.attr("viewBox").split(' ');
       if(!arguments.length) return vb;
 
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
       markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
 
-      lens.attr("viewBox", vb.join(' ') );
+      reticle.attr("viewBox", vb.join(' ') );
 
       return my;
     } // my.zoom()
