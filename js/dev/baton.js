@@ -31,21 +31,28 @@ function parseJSON(proll) {
 function fixedMeasureScaling(proll){
     var measuresToBeats = computeMeasuresToBeats(proll),
         beatsToTime = [],
+        beatsToTimeSignature = [],
         time = 0;
 
     measuresToBeats.forEach(function (numBeats, i){
-
-
-        console.log(i + " (measure)");
+        //console.log(i + " (measure)");
 
         // Old school for loop to save on Array and closure allocations.
         for(var i = 0; i < numBeats; i++){
             beatsToTime.push(time);
-            console.log("  " + time + " (beat)");
+            beatsToTimeSignature.push(numBeats);
+            //console.log("  " + time + " (beat)");
             time += 1 / numBeats;
         }
     });
-    console.log(measuresToBeats);
+
+    // Replace the starttime values (in beats) with our computed absolute time values.
+    proll.partdata.forEach(function (part){
+        part.notedata.forEach(function (d){
+            d.starttime[0] = beatsToTime[d.starttime[0]];
+            //d.duration[0] = d.duration[0] / beatsToTimeSignature;
+        })
+    });
 
     return proll;
 } // fixedMeasureScaling
