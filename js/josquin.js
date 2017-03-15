@@ -1,7 +1,6 @@
 ---
 ---
 {% include_relative dev/legend.js %}
-{% include_relative dev/reflines.js %}
 {% include_relative dev/ribbon.js %}
 {% include_relative dev/score.js %}
 {% include_relative dev/markings.js %}
