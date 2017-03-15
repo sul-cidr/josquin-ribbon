@@ -29,12 +29,25 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function fixedMeasureScaling(proll){
-  //var beatsToMensuration;
+
+  var beatsToMensuration;
+
+  // Keeps track of the last seen mensuration value.
   var mensuration;
-  console.log(proll.barlines.map(function (d, i){
-    return mensuration = (d.mensuration || mensuration);
-  }));
-//  console.log(proll);
+
+  // Each entry in this array corresponts to a single measure,
+  // and the value is the number of beats in that measure.
+  var measuresToBeats = proll.barlines
+    .map(function (d, i){
+
+      // Fill in "undefined" mensuration values with last seen value.
+      mensuration = (d.mensuration || mensuration);
+
+      // Convert from mensuration symbols to their numeric time signature equivalents.
+      return beatsPerMeasure(mensuration);
+    });
+
+  console.log(measuresToBeats);
   return proll;
 } // fixedMeasureScaling
 
