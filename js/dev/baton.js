@@ -17,7 +17,7 @@ d3.queue()
         if(error) throw error;
         // Set the URL history to the current song
         history.pushState(null, null, '?id=' + work);
-        chartify(parseJSON(proll));
+        chartify(fixedMeasureScaling(parseJSON(proll)));
       })
 ;
 
@@ -27,6 +27,11 @@ function parseJSON(proll) {
       })
     return proll;
 } // parseJSON()
+
+function fixedMeasureScaling(proll){
+  console.log(proll);
+  return proll;
+} // fixedMeasureScaling
 
 function chartify(data) {
     var signal = d3.dispatch(
