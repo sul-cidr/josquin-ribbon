@@ -3,12 +3,12 @@ function Markings() {
   ** Private Variables
   */
   var svg
+    , data
     , x, y
     , width, height
     , percents = { left: 5, top: 5, right: 5, bottom: 5}
     , margin = { left: 5, top: 5, right: 5, bottom: 5}
-    , data
-    , reflines
+    , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
           .domain([32, 28, 24])
           .range(["G", "C4", "F"])
@@ -31,6 +31,7 @@ function Markings() {
           , "C|" : ""
           , "C|r": ""
         }
+    , separate
     , dispatch
   ;
 
@@ -66,11 +67,14 @@ function Markings() {
         .append("g")
           .attr("class", "mensurations haxis")
       ;
-      reflines = svg
-        .append("g")
-          .attr("class", "reflines")
+      reflines = svg.selectAll(".reflines")
+          .data(voices.domain(), function(d) { return d; })
       ;
-
+      reflines = reflines
+        .enter().append("g")
+          .attr("class", function(d, i) { return "refline voice-" + i; })
+        .merge(reflines)
+      ;
 
       if(!width || !height) resize();
       // render();
@@ -86,15 +90,14 @@ function Markings() {
       margin.bottom = (percents.bottom * height) / 100;
       margin.left = (percents.left * width) / 100;
 
-      y.range([height - margin.bottom, margin.top]);
       barlinesScale = x.range([margin.left, width - margin.right]);
+      y.range([height - margin.bottom, margin.top]);
+      voices.range(y.range());
 
       reflines.call(renderReflines);
       barlines.call(renderBarlines);
       mensurations.call(renderMensurations);
   } // resize()
-
-
 
   /*
   ** Helper Functions
@@ -153,21 +156,29 @@ function Markings() {
 
   } // renderMensurations()
 
-  function renderReflines(sel) {
+  function renderReflines() {
       reflinesAxis
-          .scale(y)
           .tickSize(x.range()[0] - x.range()[1])
       ;
-      sel
-          .attr("transform", "translate(" + margin.left + ",0)")
-          .call(reflinesAxis)
+      reflines
+        .each(function(d, i) {
+            var self = d3.select(this)
+              , myscale = separate
+                  ? y.copy().range([voices(d), voices(d) + voices.bandwidth()])
+                  : y
+            ;
+            self.attr("transform", "translate(" + margin.left + ",0)");
+
+            self.transition().call(reflinesAxis.scale(myscale));
+
+            self.select("g > .domain")
+                .style("display", "none")
+            ;
+          })
         .selectAll(".tick")
           .attr("class", function(d) {
             return "tick refline refline--" + reflinesScale(d);
           })
-      ;
-      sel.select("g > .domain")
-          .style("display", "none")
       ;
   } // renderReflines
 
@@ -180,6 +191,12 @@ function Markings() {
       data = _;
       return my;
     } // my.data()
+  ;
+  my.voices = function (_) {
+      if(!arguments.length) return voices.domain();
+      voices.domain(_);
+      return my;
+    } // my.voices()
   ;
   my.x = function(_) {
       if(!arguments.length) return x;
@@ -211,6 +228,16 @@ function Markings() {
     } // my.connect()
   ;
 
+  // API Method. Respond to combine/separate button signal
+  my.separate = function(_) {
+      if(!arguments.length) return separate;
+
+      separate = _;
+      renderReflines();
+
+      return my;
+    } // my.separate()
+  ;
   // API Method. Expensive, because it causes a rerender.
   my.calibrate = resize;
 
