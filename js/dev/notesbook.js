@@ -22,7 +22,6 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-    console.log(data);
       svg
           .attr("class", "notesbook")
           .style("height", "100%")
@@ -98,6 +97,7 @@ function NotesBook() {
       voices.selectAll(".ribbon")
           .style("display", "none")
       ;
+      window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
   /*
