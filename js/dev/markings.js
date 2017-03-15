@@ -204,16 +204,15 @@ function Markings() {
       return my;
     } // my.y()
   ;
-  my.resize = function() {
-      return resize;
-    } // my.resize()
-  ;
   my.connect = function(_) {
       if(!arguments.length) return dispatch;
       dispatch = _;
       return my;
     } // my.connect()
   ;
+
+  // API Method. Expensive, because it causes a rerender.
+  my.calibrate = resize;
 
   // This is ALWAYS the last thing returned
   return my;
