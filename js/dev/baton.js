@@ -29,9 +29,22 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function fixedMeasureScaling(proll){
-  console.log(proll);
+  //var beatsToMensuration;
+  var mensuration;
+  console.log(proll.barlines.map(function (d, i){
+    return mensuration = (d.mensuration || mensuration);
+  }));
+//  console.log(proll);
   return proll;
 } // fixedMeasureScaling
+
+function beatsPerMeasure(mensuration){
+  if(mensuration === "C|"){
+    return 4;
+  } else {
+    return +mensuration;
+  }
+}
 
 function chartify(data) {
     var signal = d3.dispatch(
