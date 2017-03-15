@@ -29,7 +29,22 @@ function parseJSON(proll) {
 } // parseJSON()
 
 function fixedMeasureScaling(proll){
-    var measuresToBeats = computeMeasuresToBeats(proll);
+    var measuresToBeats = computeMeasuresToBeats(proll),
+        beatsToTime = [],
+        time = 0;
+
+    measuresToBeats.forEach(function (numBeats, i){
+
+
+        console.log(i + " (measure)");
+
+        // Old school for loop to save on Array and closure allocations.
+        for(var i = 0; i < numBeats; i++){
+            beatsToTime.push(time);
+            console.log("  " + time + " (beat)");
+            time += 1 / numBeats;
+        }
+    });
     console.log(measuresToBeats);
 
     return proll;
@@ -52,11 +67,11 @@ function computeMeasuresToBeats(proll){
 
 // Converts from mensuration symbols to their numeric time signature equivalents.
 function beatsPerMeasure(mensuration){
-  if(mensuration === "C|"){
-    return 4;
-  } else {
-    return +mensuration;
-  }
+    if(mensuration === "C|"){
+        return 4;
+    } else {
+        return +mensuration;
+    }
 }
 
 function chartify(data) {
