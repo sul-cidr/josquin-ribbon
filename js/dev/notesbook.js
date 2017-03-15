@@ -62,7 +62,7 @@ function NotesBook() {
           .attr("preserveAspectRatio", "none")
           .attr("x", margin.left)
           .attr("y", margin.top )
-          .attr("width", "95%")
+          .attr("width", "90%")
           .attr("height", "90%")
       ;
       defs = lens
