@@ -254,7 +254,7 @@ function Ribbon() {
         // The passed in scale is Ordinal, and we need Linear here
         y = d3.scaleLinear()
           .domain([
-            d3.min(_.domain()),
+            d3.min(_.domain()) - 1,
             d3.max(_.domain()) + 1,
           ])
           .range([
