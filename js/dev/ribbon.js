@@ -250,8 +250,17 @@ function Ribbon() {
     my.y = function(_) {
         if(!arguments.length)
             return y;
+        console.log(_.domain());
         // The passed in scale is Ordinal, and we need Linear here
-        y = d3.scaleLinear().domain(d3.extent(_.domain())).range(_.range());
+        y = d3.scaleLinear()
+          .domain([
+            d3.min(_.domain()),
+            d3.max(_.domain()) + 1,
+          ])
+          .range([
+            _.range()[0] + _.paddingOuter() + _.bandwidth() / 2,
+            _.range()[1] - _.paddingOuter() - _.bandwidth() / 2
+          ]);
         return my;
       } // my.y()
     ;
