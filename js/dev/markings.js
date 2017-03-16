@@ -164,13 +164,14 @@ function Markings() {
         .each(function(d, i) {
             var self = d3.select(this)
               , myscale = separate
-                  ? y.copy().range([voices(d), voices(d) + voices.bandwidth()])
+                  ? y.copy().range([voices(d) + voices.bandwidth(), voices(d)])
                   : y
             ;
-            self.attr("transform", "translate(" + margin.left + ",0)");
-
-            self.transition().call(reflinesAxis.scale(myscale));
-
+            self
+                .attr("transform", "translate(" + margin.left + ",0)")
+              .transition()
+                .call(reflinesAxis.scale(myscale))
+            ;
             self.select("g > .domain")
                 .style("display", "none")
             ;
