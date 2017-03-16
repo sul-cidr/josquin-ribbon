@@ -156,11 +156,8 @@ function Markings() {
       selection.selectAll(".tick text")
           .attr("font-family", "BravuraText")
           .attr("font-size", "1.4em")
-          .attr("dy", function(d) {
-              return isNaN(mensurationsScale(d)) ? "-0.5em" : "-0.2em";
-            })
+          .attr("dy", "-0.2em")
       ;
-
   } // renderMensurations()
 
   function renderReflines() {
