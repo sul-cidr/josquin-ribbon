@@ -107,13 +107,12 @@ function Markings() {
       // Compute the set of bar labels to show.
       var t0 = barlinesScale.domain()[0]
         , t1 = barlinesScale.domain()[1]
-        , labelsExtent = d3.extent(
-              data.filter(function(b){
-                      var t = b.time[0];
-                      return b.label && t >= t0 && t <= t1;
-                    })
-                  .map(function(b){ return +b.label; })
-                )
+        , labelsExtent = d3.extent(data
+              .filter(function(b){
+                  return b.label && isBetween(b.time[0], barlinesScale.domain());
+                })
+              .map(function(b){ return +b.label; })
+            )
         , ticks = d3.ticks(labelsExtent[0], labelsExtent[1], barLabelCount)
       ;
       // Store the collection of label "ticks" in barLabels,
@@ -135,11 +134,19 @@ function Markings() {
       ;
   } // renderBarlines()
 
+  function isBetween(num, extent) {
+      return (num >= extent[0]) && (num <= extent[1]);
+  } // isBetween()
+
   function renderMensurations(selection) {
       mensurationsAxis
-          .scale(barlinesScale.clamp(false))
+          .scale(barlinesScale.clamp(true))
           .tickSize(0)
-          .tickValues(mensurationsScale.domain())
+          .tickValues(
+              mensurationsScale.domain()
+                .filter(function(d) {
+                    return isBetween(d, barlinesScale.domain());
+                  }))
           .tickFormat(mensurationsScale)
       ;
       selection
@@ -149,11 +156,8 @@ function Markings() {
       selection.selectAll(".tick text")
           .attr("font-family", "BravuraText")
           .attr("font-size", "1.4em")
-          .attr("dy", function(d) {
-              return isNaN(mensurationsScale(d)) ? "-0.5em" : "-0.2em";
-            })
+          .attr("dy", "-0.2em")
       ;
-
   } // renderMensurations()
 
   function renderReflines() {
@@ -164,13 +168,14 @@ function Markings() {
         .each(function(d, i) {
             var self = d3.select(this)
               , myscale = separate
-                  ? y.copy().range([voices(d), voices(d) + voices.bandwidth()])
+                  ? y.copy().range([voices(d) + voices.bandwidth(), voices(d)])
                   : y
             ;
-            self.attr("transform", "translate(" + margin.left + ",0)");
-
-            self.transition().call(reflinesAxis.scale(myscale));
-
+            self
+                .attr("transform", "translate(" + margin.left + ",0)")
+              .transition()
+                .call(reflinesAxis.scale(myscale))
+            ;
             self.select("g > .domain")
                 .style("display", "none")
             ;
@@ -209,7 +214,7 @@ function Markings() {
       x.domain(_);
       barlinesAxis.scale(barlinesScale.clamp(true));
       barlines.call(renderBarlines);
-      mensurationsAxis.scale(barlinesScale.clamp(false));
+      mensurationsAxis.scale(barlinesScale.clamp(true));
       mensurations.call(renderMensurations);
 
       return my;
