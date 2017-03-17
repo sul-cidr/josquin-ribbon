@@ -5,30 +5,63 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , colorLegend = ColorLegend()
       .div(divMeta.select("#legend"))
 ;
-var defaultWork = "Jos2721-La_Bernardina"
-  , hash = getQueryVariables()
-  , work = hash.id || defaultWork
-  , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
+var jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f="
+  , catURL='http://josquin.stanford.edu/cgi-bin/jrp?a=list'
 ;
+
+d3.select("#load_song").on("click", function() {
+    load_song(d3.select("input#josquin_catalog").node().value);
+  })
+;
+
+window.onload = function() {
+    var defaultWork = "jos2721"
+      , hash = getQueryVariables()
+      , work = hash.id || defaultWork
+    ;
+    d3.select("input#josquin_catalog").node().value = work;
+    d3.select("#load_song").node().click();
+} // window.onload()
 
 d3.queue()
-    .defer(d3.json, jsonURL)
-    .await(function(error, proll) {
-        if(error) throw error;
-        // Set the URL history to the current song
-        history.pushState(null, null, '?id=' + work);
-        chartify(parseJSON(proll));
+    .defer(d3.text, catURL)
+    .await(function(error, list) {
+        if(error) throw(error);
+        var data = d3.nest()
+                    .key(function(k) { return k.split('-')[0].slice(0,7); })
+                    .map(list.split('\n'))
+                    .keys()
+          , opt = d3.select("#catalog").selectAll("option")
+            .data(data, function(d) { return d; })
+        ;
+        opt = opt.enter()
+          .append("option")
+            .property("value", function(d) { return d; })
+          .merge(opt)
+        ;
       })
 ;
 
-function parseJSON(proll) {
-    proll.partdata.forEach(function(part) {
-        part.voice = proll.partnames[part.partindex];
-      })
-    return proll;
-} // parseJSON()
+function load_song(work) {
+    d3.queue()
+        .defer(d3.json, jsonURL + work)
+        .await(function(error, proll) {
+            if(error) throw error;
+            // Set the URL history to the current song
+            history.pushState(null, null, '?id=' + work);
+            chartify(parseJSON(proll));
+          })
+    ;
 
+    function parseJSON(proll) {
+        proll.partdata.forEach(function(part) {
+            part.voice = proll.partnames[part.partindex];
+          })
+        return proll;
+    } // parseJSON()
+}
 function chartify(data) {
+    console.log(data); // TODO: Remove before handover
     var signal = d3.dispatch(
               "hilite"
             , "zoom"
