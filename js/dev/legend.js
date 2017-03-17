@@ -6,7 +6,6 @@ function ColorLegend(){
       , data
       , hilite
       , noteHeight
-      , roundedCornerSize
       , dispatch
     ;
 
@@ -72,12 +71,6 @@ function ColorLegend(){
         return my;
     };
 
-    my.roundedCornerSize = function (value){
-        if(arguments.length === 0) return roundedCornerSize;
-        roundedCornerSize = value;
-        return my;
-      }
-    ;
     my.connect = function(value){
         if(!arguments.length) return dispatch;
         dispatch = value;
