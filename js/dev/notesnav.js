@@ -27,14 +27,11 @@
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
         ;
-        svg
-          .append("svg")
+        svg.select("svg")
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
-            .attr("preserveAspectRatio", "xMinYMid slice")
-          .append("use")
-            .attr("xlink:href", "#voices")
+          .select("use")
             .attr("width", width)
             .attr("height", height)
         ;
@@ -63,11 +60,15 @@
     /*
     ** Helper Functions
     */
-    function initSVG(sel) {
-        return sel
+    function initialize_SVG() {
+        svg
             .style("width", "100%")
             .style("height", "100%")
             .attr("preserveAspectRatio", "none")
+          .append("svg")
+            .attr("preserveAspectRatio", "xMinYMid slice")
+          .append("use")
+            .attr("xlink:href", "#voices")
         ;
     } // initSVG()
 
@@ -110,7 +111,8 @@
     ;
     my.svg = function(_) {
         if(!arguments.length) return svg;
-        svg = initSVG(_);
+        svg = _;
+        initialize_SVG();
         return my;
       } // my.svg()
     ;
