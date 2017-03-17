@@ -134,17 +134,13 @@ function Markings() {
       ;
   } // renderBarlines()
 
-  function isBetween(num, extent) {
-      return (num >= extent[0]) && (num <= extent[1]);
-  } // isBetween()
-
   function renderMensurations(selection) {
       mensurationsAxis
           .scale(barlinesScale.clamp(true))
           .tickSize(0)
           .tickValues(
               mensurationsScale.domain()
-                .filter(function(d) {
+                .map(function(d) {
                     return isBetween(d, barlinesScale.domain());
                   }))
           .tickFormat(mensurationsScale)
@@ -186,6 +182,13 @@ function Markings() {
           })
       ;
   } // renderReflines
+
+  /*
+  ** Utility Functions
+  */
+  function isBetween(num, extent) {
+      return (num >= extent[0]) && (num <= extent[1]);
+  } // isBetween()
 
 
   /*
