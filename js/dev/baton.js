@@ -164,14 +164,8 @@ function chartify(data) {
     ** 1. Connect the appropriate data
     ** 2. Activate
     */
-    notesBook
-        .data(data)
-      ()
-    ;
-    colorLegend
-        .data(data.partnames)
-      ()
-    ;
+    notesBook.data(data)();
+    colorLegend.data(data.partnames)();
     /*
     ** 1. Set scales and dimensions
     ** 2. Activate
