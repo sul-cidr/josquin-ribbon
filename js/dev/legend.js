@@ -5,7 +5,7 @@ function ColorLegend(){
     var div
       , data
       , hilite
-      , noteHeight
+      , noteHeight = 10
       , dispatch
     ;
 
