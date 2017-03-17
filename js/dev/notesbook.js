@@ -16,6 +16,7 @@ function NotesBook() {
     , ribbon = Ribbon()
     , markings = Markings()
     , lifeSize = 10 // default height and width of notes
+    , scaleup = function(d) { return d * lifeSize; }
     , dispatch
   ;
 
@@ -23,16 +24,10 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-      svg
-          .attr("class", "notesbook")
-          .style("height", "100%")
-          .style("width", "100%")
-      ;
       x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
-      var scaleup = function(d) { return d * lifeSize; };
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
@@ -48,34 +43,24 @@ function NotesBook() {
         , fh = h + margin.top + margin.bottom
       ;
 
-      svg
-        .append("svg")
-          .attr("class", "markings")
-          .style("width", "100%")
-          .style("height", "100%")
-          .call(markings.data(data.barlines).voices(data.partnames).x(x).y(y))
+      markings
+          .data(data.barlines)
+          .voices(data.partnames)
+          .x(x)
+          .y(y)
       ;
-      reticle = svg
-        .append("svg")
-        .attr("class", "reticle music")
+      svg.select(".markings")
+          .call(markings)
+      ;
+      reticle
           .attr("viewBox", [0, 0, width, height].join(' '))
-          .attr("preserveAspectRatio", "none")
-          .attr("x", percents.left + "%")
-          .attr("y", percents.top + "%" )
           .attr("width", (100 - percents.left - percents.right) + "%")
           .attr("height", (100 - percents.top - percents.bottom) + "%")
       ;
-      defs = reticle
-        .append("defs")
-      ;
-      voices = reticle
-        .append("svg")
-          .attr("class", "voices")
-          .attr("id", "voices")
+      voices
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
-          .attr("preserveAspectRatio", "none")
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
@@ -95,6 +80,8 @@ function NotesBook() {
             })
         .merge(voice)
       ;
+      voice.exit().remove();
+
       voices.selectAll(".ribbon")
           .style("display", "none")
       ;
@@ -104,7 +91,34 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
-
+  function initialize_SVG() {
+      svg
+          .attr("class", "notesbook")
+          .style("height", "100%")
+          .style("width", "100%")
+      ;
+      svg.append("svg")
+        .attr("class", "markings")
+        .style("width", "100%")
+        .style("height", "100%")
+      ;
+      reticle = svg
+        .append("svg")
+        .attr("class", "reticle music")
+        .attr("preserveAspectRatio", "none")
+        .attr("x", percents.left + "%")
+        .attr("y", percents.top + "%" )
+      ;
+      defs = reticle
+        .append("defs")
+      ;
+      voices = reticle
+        .append("svg")
+          .attr("class", "voices")
+          .attr("id", "voices")
+          .attr("preserveAspectRatio", "none")
+      ;
+  } // initialize_SVG()
 
   /*
   ** API (Getter/Setter) Functions
@@ -112,6 +126,7 @@ function NotesBook() {
   my.svg = function (_){
       if(!arguments.length) return svg;
       svg = _;
+      initialize_SVG()
       return my;
     } // my.svg()
   ;
