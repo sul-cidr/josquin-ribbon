@@ -1,4 +1,4 @@
- function NotesNav() {
+function NotesNav() {
     /*
     ** Private Variables - only used inside this object
     */
