@@ -23,12 +23,9 @@
         height = Math.abs(viewbox[3]);
 
         svg
-            .style("width", "100%")
-            .style("height", "100%")
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
-            .attr("preserveAspectRatio", "none")
         ;
         svg
           .append("svg")
@@ -62,8 +59,20 @@
         ;
     } // my() - Main Function Object
 
+
     /*
     ** Helper Functions
+    */
+    function initSVG(sel) {
+        return sel
+            .style("width", "100%")
+            .style("height", "100%")
+            .attr("preserveAspectRatio", "none")
+        ;
+    } // initSVG()
+
+    /*
+    ** Callback Functions
     */
     function brushed() {
         var extent = (!d3.event || !d3.event.selection)
@@ -101,7 +110,7 @@
     ;
     my.svg = function(_) {
         if(!arguments.length) return svg;
-        svg = _;
+        svg = initSVG(_);
         return my;
       } // my.svg()
     ;
