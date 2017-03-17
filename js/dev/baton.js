@@ -1,21 +1,68 @@
 var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , divMeta = d3.select("#meta")
-  , notesNav = NotesNav()
-  , notesBook = NotesBook()
-  , colorLegend = ColorLegend()
-      .div(divMeta.select("#legend"))
-;
-var jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f="
-  , catURL='http://josquin.stanford.edu/cgi-bin/jrp?a=list'
+  , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
+  , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
+  , colorLegend = ColorLegend().div(divMeta.select("#legend"))
 ;
 
+/*
+** Visualization's signaling system
+*/
+
+var signal = d3.dispatch(
+        // List of signals we accept
+        "hilite"
+        , "zoom"
+        , "separate-voices"
+        , "selected"
+        , "show-extremes"
+        , "show-ribbon"
+        , "show-notes"
+      )
+;
+
+/*
+** Where to find individual songs and the list of songs
+*/
+var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
+  , catURL = baseURL + 'a=list'
+  , jsonURL = baseURL + 'a=proll-json&f='
+;
+
+/*
+** Load the list of available songs
+*/
+d3.queue()
+    .defer(d3.text, catURL)
+    .await(function(error, list) {
+        if(error) throw(error);
+        var data = d3.nest()
+                    // the first 3 letters + next 4 digits are the id
+                    .key(function(k) { return k.split('-')[0].slice(0,7); })
+                    .map(list.split('\n'))
+                    .keys()
+          , opt = d3.select("#catalog").selectAll("option")
+                    .data(data, function(d) { return d; })
+        ;
+        opt.enter()
+          .append("option")
+            .property("value", function(d) { return d; })
+        ;
+      })
+;
+/*
+**  Activate the "Load button"
+*/
 d3.select("#load_song").on("click", function() {
     load_song(d3.select("input#josquin_catalog").node().value);
   })
 ;
 
+/*
+** Load the song sent in via URL or a default
+*/
 window.onload = function() {
-    var defaultWork = "jos2721"
+    var defaultWork = "Jos2721"
       , hash = getQueryVariables()
       , work = hash.id || defaultWork
     ;
@@ -23,24 +70,12 @@ window.onload = function() {
     d3.select("#load_song").node().click();
 } // window.onload()
 
-d3.queue()
-    .defer(d3.text, catURL)
-    .await(function(error, list) {
-        if(error) throw(error);
-        var data = d3.nest()
-                    .key(function(k) { return k.split('-')[0].slice(0,7); })
-                    .map(list.split('\n'))
-                    .keys()
-          , opt = d3.select("#catalog").selectAll("option")
-            .data(data, function(d) { return d; })
-        ;
-        opt = opt.enter()
-          .append("option")
-            .property("value", function(d) { return d; })
-          .merge(opt)
-        ;
-      })
-;
+
+/*
+** Setup the domain
+*/
+setupDispatcher();
+
 
 function load_song(work) {
     d3.queue()
@@ -60,42 +95,15 @@ function load_song(work) {
         return proll;
     } // parseJSON()
 }
-function chartify(data) {
-    console.log(data); // TODO: Remove before handover
-    var signal = d3.dispatch(
-              "hilite"
-            , "zoom"
-            , "separate-voices"
-            , "selected"
-            , "show-extremes"
-            , "show-ribbon"
-            , "show-notes"
-          )
-    ;
-    notesBook
-        .svg(d3.select("#notesbook").select("svg"))
-        .data(data)
-        .connect(signal)
-      ()
-    ;
-    notesNav
-        .svg(d3.select("#navigator").append("svg"))
-        .x(notesBook.x())
-        .y(notesBook.y())
-        .viewbox(notesBook.viewbox())
-        .connect(signal)
-      ()
-    ;
-    colorLegend
-        .noteHeight(10)
-        .roundedCornerSize(5)
-        .data(data.partnames)
-        .connect(signal)
-    ;
 
-    // Render views.
-    colorLegend();
 
+function setupDispatcher() {
+    createSignals();
+    connectSignalsToDOM();
+    connectSignalsToViz();
+} // setupDispatcher()
+
+function createSignals() {
     signal
         .on("show-notes",    notesBook.notes)
         .on("show-extremes", notesBook.extremes)
@@ -104,6 +112,9 @@ function chartify(data) {
         .on("separate-voices", notesBook.separate)
         .on("zoom",     notesBook.zoom)
     ;
+} // createSignals()
+
+function connectSignalsToDOM() {
     // Connect the UI control elements
     // Combine/Separate Voices
     d3.select("#separate-ui").selectAll("input")
@@ -139,6 +150,39 @@ function chartify(data) {
         })
       ;
     });
+} // connectSignalsToDOM()
+
+function connectSignalsToViz() {
+    notesBook.connect(signal);
+    notesNav.connect(signal);
+    colorLegend.connect(signal);
+} // connectSignalsToViz()
+
+
+function chartify(data) {
+    /*
+    ** 1. Connect the appropriate data
+    ** 2. Activate
+    */
+    notesBook
+        .data(data)
+      ()
+    ;
+    colorLegend
+        .data(data.partnames)
+      ()
+    ;
+    /*
+    ** 1. Set scales and dimensions
+    ** 2. Activate
+    */
+    notesNav
+        .x(notesBook.x())
+        .y(notesBook.y())
+        .viewbox(notesBook.viewbox())
+      ()
+    ;
+
 
     // Titles and polish
     var titles = divMeta.select(".panel-heading").selectAll("*")
