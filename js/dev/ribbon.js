@@ -250,7 +250,6 @@ function Ribbon() {
     my.y = function(_) {
         if(!arguments.length)
             return y;
-        console.log(_.domain());
         // The passed in scale is Ordinal, and we need Linear here
         y = d3.scaleLinear()
           .domain([
