@@ -113,10 +113,10 @@ function Score() {
   ;
   my.bbox = function() {
       return [
-          pitches[0]
-        , times[0].starttime[0]
-        , pitches[1] - pitches[0]
+          times[0].starttime[0]
+        , pitches[0]
         , times[1].starttime[0] + times[1].duration - times[0].starttime[0]
+        , pitches[1] - pitches[0]
       ];
     } // my.bbox()
   ;
