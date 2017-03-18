@@ -67,14 +67,6 @@ function Markings() {
         .append("g")
           .attr("class", "mensurations haxis")
       ;
-      reflines = svg.selectAll(".reflines")
-          .data(voices.domain(), function(d) { return d; })
-      ;
-      reflines = reflines
-        .enter().append("g")
-          .attr("class", function(d, i) { return "refline voice-" + i; })
-        .merge(reflines)
-      ;
 
       if(!width || !height) resize();
       // render();
@@ -94,7 +86,7 @@ function Markings() {
       y.range([height - margin.bottom, margin.top]);
       voices.range(y.range());
 
-      reflines.call(renderReflines);
+      renderReflines();
       barlines.call(renderBarlines);
       mensurations.call(renderMensurations);
   } // resize()
@@ -160,6 +152,14 @@ function Markings() {
       reflinesAxis
           .tickSize(x.range()[0] - x.range()[1])
       ;
+      reflines = svg.selectAll(".refline")
+          .data(voices.domain(), function(d, i) { return d; })
+      ;
+      reflines = reflines
+        .enter().append("g")
+          .attr("class", function(d, i) { return "refline voice-" + i; })
+        .merge(reflines)
+      ;
       reflines
         .each(function(d, i) {
             var self = d3.select(this)
@@ -181,6 +181,7 @@ function Markings() {
             return "tick refline refline--" + reflinesScale(d);
           })
       ;
+      reflines.exit().remove();
   } // renderReflines
 
   /*
@@ -196,7 +197,10 @@ function Markings() {
   */
   my.data = function (_){
       if(!arguments.length) return data;
+
+      if(reflines) reflines.selectAll(".refline").remove();
       data = _;
+      height = width = null;
       return my;
     } // my.data()
   ;
