@@ -3,7 +3,7 @@ function NotesBook() {
   ** Private Variables
   */
   var data
-    , svg, voices, reticle
+    , svg, voices, reticle, rulers
     , width
     , height
     , viewbox
@@ -49,7 +49,7 @@ function NotesBook() {
           .x(x)
           .y(y)
       ;
-      svg.select(".markings")
+      rulers
           .call(markings)
       ;
       reticle
@@ -64,6 +64,9 @@ function NotesBook() {
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
+      ;
+      voice.exit()
+        .remove()
       ;
       voice = voice.enter()
         .append("svg")
@@ -80,7 +83,6 @@ function NotesBook() {
             })
         .merge(voice)
       ;
-      voice.exit().remove();
 
       voices.selectAll(".ribbon")
           .style("display", "none")
@@ -92,12 +94,17 @@ function NotesBook() {
   ** Helper Functions
   */
   function initialize_SVG() {
+      // Set up the SVG nested structure:
+      //   - Using %s allows the SVGs to be responsive in dimension
+      //       and relative placement
+      //   - The preserveAspectRatio settings cause the image to fill
+     //        the viewport, distorting the image if necessary.
       svg
           .attr("class", "notesbook")
           .style("height", "100%")
           .style("width", "100%")
       ;
-      svg.append("svg")
+      rulers = svg.append("svg")
         .attr("class", "markings")
         .style("width", "100%")
         .style("height", "100%")
@@ -204,7 +211,10 @@ function NotesBook() {
     } // my.ribbons()
   ;
 
-  my.viewbox = function(_) { return viewbox; };
+  /*
+  ** API - Getter-only Methods
+  */
+  my.viewbox = function() { return viewbox; };
   my.x = function() { return x; };
   my.y = function() { return y; };
 
