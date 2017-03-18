@@ -142,7 +142,8 @@ function connectSignalsToDOM() {
 
       check.on("change", function(d) {
           choice.style("display", this.checked ? null : "none");
-          signal.call(callback, this, this.checked ? choice.node().value: this.value);
+          var value = choice.node().value;
+          signal.call(callback, this, this.checked ? value : this.value);
         })
       ;
       choice.on("change", function() {
