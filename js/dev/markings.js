@@ -6,8 +6,8 @@ function Markings() {
     , data
     , x, y
     , width, height
-    , percents = { left: 5, top: 5, right: 5, bottom: 5}
-    , margin = { left: 5, top: 5, right: 5, bottom: 5}
+    , percents = { left: 5, top: 10, right: 5, bottom: 5}
+    , margin = { left: 5, top: 10, right: 5, bottom: 5}
     , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
           .domain([32, 28, 24])
@@ -31,6 +31,9 @@ function Markings() {
           , "C|" : ""
           , "C|r": ""
         }
+    , sections, sectionsLocs
+    , sectionsScale = d3.scaleOrdinal()
+    , sectionsAxis = d3.axisTop()
     , separate
     , dispatch
   ;
@@ -41,15 +44,6 @@ function Markings() {
   function my(el) {
       svg = el;
 
-      barlinesAxis
-          .tickValues(data.map(function(b) { return b.time[0]; }))
-          .tickFormat(function (d, i){
-              // barLabels is a dictionary for the "ticks" to include.
-              // It is computed inside renderBarlines before rendering the axis.
-              var label = data[i].label;
-              return barLabels[label] ? label : "";
-            })
-      ;
       barlines = barlines || svg
         .append("g")
           .attr("class", "barlines haxis")
@@ -66,6 +60,17 @@ function Markings() {
       mensurations = mensurations || svg
         .append("g")
           .attr("class", "mensurations haxis")
+      ;
+
+      // Locations for section labels
+      sectionsLocs = data.filter(function(d) { return d.sectionlabel; });
+      sectionsScale
+          .domain(sectionsLocs.map(function(d) { return d.time[0]; }))
+          .range(sectionsLocs.map(function(d) { return d.sectionlabel; }))
+      ;
+      sections = sections || svg
+        .append("g")
+          .attr("class", "sections haxis")
       ;
 
       if(!width || !height) resize();
@@ -89,6 +94,7 @@ function Markings() {
       renderReflines();
       barlines.call(renderBarlines);
       mensurations.call(renderMensurations);
+      sections.call(renderSections);
   } // resize()
 
   /*
@@ -115,6 +121,12 @@ function Markings() {
 
       barlinesAxis
           .scale(barlinesScale.clamp(true))
+          .tickValues(data.map(function(b) { return b.time[0]; }))
+          .tickFormat(function (d, i){
+              // barLabels is a dictionary for the "ticks" to include.
+              var label = data[i].label;
+              return barLabels[label] ? label : "";
+            })
           .tickSize(height - margin.bottom - margin.top)
       ;
       // Render the axis, which includes both lines and labels.
@@ -147,6 +159,23 @@ function Markings() {
           .attr("dy", "-0.2em")
       ;
   } // renderMensurations()
+
+  function renderSections(selection) {
+    console.log(sectionsScale.domain(), sectionsScale.range());
+      sectionsAxis
+          .scale(barlinesScale.clamp(true))
+          .tickSize(0)
+          .tickValues(
+              sectionsScale.domain()
+                .map(function(d) { return isBetween(d, barlinesScale.domain());
+            }))
+          .tickFormat(sectionsScale)
+      ;
+      selection
+          .attr("transform", "translate(0," + (margin.top / 2) + ")")
+          .call(sectionsAxis)
+      ;
+  } // renderSectionLabels()
 
   function renderReflines() {
       reflinesAxis
