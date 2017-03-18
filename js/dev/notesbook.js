@@ -8,8 +8,8 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: "5%", right: "5%", bottom: "5%", left: "5%" }
-    , percents = { left: 5, top: 5, right: 5, bottom: 5}
+    , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
+    , percents = { left: 5, top: 10, right: 5, bottom: 5}
     , x = d3.scaleLinear()
     , y = d3.scaleBand()
     , score  = Score()
