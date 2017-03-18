@@ -252,6 +252,7 @@ function Markings() {
       barlines.call(renderBarlines);
       mensurationsAxis.scale(barlinesScale.clamp(true));
       mensurations.call(renderMensurations);
+      sections.call(renderSections);
 
       return my;
     } // my.x()
