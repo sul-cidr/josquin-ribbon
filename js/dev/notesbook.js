@@ -71,21 +71,22 @@ function NotesBook() {
       voice = voice.enter()
         .append("svg")
           .attr("class", function(d) { return "voice voice" + d.partindex; })
+          .attr("preserveAspectRatio", "xMinYMid slice")
+        .merge(voice)
+      ;
+      voice
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
-          .attr("preserveAspectRatio", "xMinYMid slice")
           .each(function() {
               d3.select(this)
-                  .call(score.x(x).y(y).defs(defs.append("g").attr("id", "notestamps")))
+                  .call(score.x(x).y(y).defs(defs.select("#notestamps")))
                   .call(ribbon.x(x).y(y))
+              // Initially, don't show the ribbons
+                .selectAll(".ribbon")
+                    .style("display", "none")
               ;
             })
-        .merge(voice)
-      ;
-
-      voices.selectAll(".ribbon")
-          .style("display", "none")
       ;
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
@@ -119,6 +120,9 @@ function NotesBook() {
       defs = reticle
         .append("defs")
       ;
+      // Create a space for the note rectangles of various time durations
+      defs.append("g").attr("id", "notestamps");
+
       voices = reticle
         .append("svg")
           .attr("class", "voices")
