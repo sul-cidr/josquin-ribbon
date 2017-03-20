@@ -38,6 +38,7 @@ function Ribbon() {
               var path = d3.select(this).selectAll("path")
                   .data([modes[m](datum.notedata)]) // call the mode function
               ;
+              path.exit().remove();
               path
                 .enter().append("path")
                   .attr("vector-effect", "non-scaling-stroke")
