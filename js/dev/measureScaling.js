@@ -1,11 +1,14 @@
+// This module is all about scaling the notes
+// such that a single measure has a fixed width in "absolute time".
 var measureScaling = (function (){
 
     // Each entry in the returned array corresponts to a single measure,
-    // and the value is the number of beats in that measure (typically 3 or 4).
+    // and the value is the number of beats in that measure.
     function computeMeasuresToBeats(proll){
 
         // Keeps track of the last seen mensuration value.
         var mensuration;
+
         return proll.barlines.map(function (d, i){
 
             // Fill in "undefined" mensuration values with last seen value.
@@ -18,9 +21,10 @@ var measureScaling = (function (){
     // Converts from mensuration symbols to their numeric time signature equivalents.
     function beatsPerMeasure(mensuration){
         if(mensuration === "C|"){
-            return 4;
+            return 8;
         } else {
-            return +mensuration;
+            // TODO cover all possible cases.
+            return +mensuration; // e.g. "3"
         }
     }
 
@@ -45,7 +49,12 @@ var measureScaling = (function (){
         // Replace the starttime values (in beats) with our computed absolute time values.
         proll.partdata.forEach(function (part){
             part.notedata.forEach(function (d){
-                d.starttime[0] = beatsToTime[d.starttime[0]];
+                var startBeat = Math.floor(d.starttime[0]),
+                    offsetBeatFraction = d.starttime[0] - startBeat,
+                    beatsInThisMeasure = beatsToTimeSignature[startBeat];
+                d.startBeatTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
+                d.starttime[0] = d.startBeatTime * 8;
+                //d.starttime[0] = d.startBeatTime;
                 //d.duration[0] = d.duration[0] / beatsToTimeSignature;
             })
         });
