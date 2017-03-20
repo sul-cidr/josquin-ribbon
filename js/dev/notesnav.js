@@ -1,15 +1,15 @@
- function NotesNav() {
+function NotesNav() {
     /*
     ** Private Variables - only used inside this object
     */
     var svg
-      , data
       , viewbox
       , width
       , height
       , x = d3.scaleLinear()
       , y = d3.scaleLinear()
       , brush = d3.brushX().on("brush end", brushed)
+      , brushG
       , dispatch
     ;
 
@@ -23,47 +23,54 @@
         height = Math.abs(viewbox[3]);
 
         svg
-            .style("width", "100%")
-            .style("height", "100%")
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
-            .attr("preserveAspectRatio", "none")
         ;
-        svg
-          .append("svg")
+        svg.select("svg")
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
-            .attr("preserveAspectRatio", "xMinYMid slice")
-          .append("use")
-            .attr("xlink:href", "#voices")
+          .select("use")
             .attr("width", width)
             .attr("height", height)
         ;
-
         brush
           .extent([[0, 0], [width, height]])
           .handleSize(width / 200);
-
-        var g = svg.selectAll("g").data(["brush"]);
-        g = g
-          .enter().append("g")
-            .attr("class", function(d) { return d; })
-          .merge(g)
-            .call(brush)
         ;
-        g
+        brushG
+            .call(brush)
             .call(brush.move, x.range())
         ;
-        g.selectAll("rect")
+        brushG.selectAll("rect")
             .attr("y", 0)
             .attr("height", height)
         ;
     } // my() - Main Function Object
 
+
     /*
     ** Helper Functions
+    */
+    function initialize_SVG() {
+        // Create the structure of the SVG to fill up the space with
+        // an image of the main viz.
+        svg
+            .style("width", "100%")
+            .style("height", "100%")
+            .attr("preserveAspectRatio", "none")
+          .append("svg")
+            .attr("preserveAspectRatio", "xMinYMid slice")
+          .append("use")
+            .attr("xlink:href", "#voices")
+        ;
+        // Attach an element for the d3.brush()
+        brushG = svg.append("g").attr("class", "brush");
+    } // initSVG()
+
+    /*
+    ** Callback Functions
     */
     function brushed() {
         var extent = (!d3.event || !d3.event.selection)
@@ -93,15 +100,10 @@
         return my;
       } // my.connect()
     ;
-    my.data = function (_){
-        if(!arguments.length) return data;
-        data = _;
-        return my;
-      } // my.data()
-    ;
     my.svg = function(_) {
         if(!arguments.length) return svg;
         svg = _;
+        initialize_SVG();
         return my;
       } // my.svg()
     ;

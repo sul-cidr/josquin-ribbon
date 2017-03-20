@@ -60,6 +60,7 @@ svg {
 }
 .tick text {
     fill: gray;
+    font-size: 1.4em;
 }
 path.domain {
     display: none;

@@ -3,19 +3,20 @@ function NotesBook() {
   ** Private Variables
   */
   var data
-    , svg, voices, reticle
+    , svg, voices, reticle, rulers
     , width
     , height
     , viewbox
     , fullheight
-    , margin = { top: "5%", right: "5%", bottom: "5%", left: "5%" }
-    , percents = { left: 5, top: 5, right: 5, bottom: 5}
+    , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
+    , percents = { left: 5, top: 10, right: 5, bottom: 5}
     , x = d3.scaleLinear()
     , y = d3.scaleBand()
     , score  = Score()
     , ribbon = Ribbon()
     , markings = Markings()
     , lifeSize = 10 // default height and width of notes
+    , scaleup = function(d) { return d * lifeSize; }
     , dispatch
   ;
 
@@ -23,16 +24,10 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-      svg
-          .attr("class", "notesbook")
-          .style("height", "100%")
-          .style("width", "100%")
-      ;
       x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
-      var scaleup = function(d) { return d * lifeSize; };
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
@@ -48,55 +43,50 @@ function NotesBook() {
         , fh = h + margin.top + margin.bottom
       ;
 
-      svg
-        .append("svg")
-          .attr("class", "markings")
-          .style("width", "100%")
-          .style("height", "100%")
-          .call(markings.data(data.barlines).voices(data.partnames).x(x).y(y))
+      markings
+          .data(data.barlines)
+          .voices(data.partnames)
+          .x(x)
+          .y(y)
       ;
-      reticle = svg
-        .append("svg")
-        .attr("class", "reticle music")
+      rulers
+          .call(markings)
+      ;
+      reticle
           .attr("viewBox", [0, 0, width, height].join(' '))
-          .attr("preserveAspectRatio", "none")
-          .attr("x", percents.left + "%")
-          .attr("y", percents.top + "%" )
           .attr("width", (100 - percents.left - percents.right) + "%")
           .attr("height", (100 - percents.top - percents.bottom) + "%")
       ;
-      defs = reticle
-        .append("defs")
-      ;
-      voices = reticle
-        .append("svg")
-          .attr("class", "voices")
-          .attr("id", "voices")
+      voices
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
-          .attr("preserveAspectRatio", "none")
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
       ;
+      voice.exit()
+        .remove()
+      ;
       voice = voice.enter()
         .append("svg")
           .attr("class", function(d) { return "voice voice" + d.partindex; })
+          .attr("preserveAspectRatio", "xMinYMid slice")
+        .merge(voice)
+      ;
+      voice
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
-          .attr("preserveAspectRatio", "xMinYMid slice")
           .each(function() {
               d3.select(this)
-                  .call(score.x(x).y(y).defs(defs.append("g").attr("id", "notestamps")))
+                  .call(score.x(x).y(y).defs(defs))
                   .call(ribbon.x(x).y(y))
+              // Initially, don't show the ribbons
+                .selectAll(".ribbon")
+                    .style("display", "none")
               ;
             })
-        .merge(voice)
-      ;
-      voices.selectAll(".ribbon")
-          .style("display", "none")
       ;
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
@@ -104,7 +94,42 @@ function NotesBook() {
   /*
   ** Helper Functions
   */
+  function initialize_SVG() {
+      // Set up the SVG nested structure:
+      //   - Using %s allows the SVGs to be responsive in dimension
+      //       and relative placement
+      //   - The preserveAspectRatio settings cause the image to fill
+     //        the viewport, distorting the image if necessary.
+      svg
+          .attr("class", "notesbook")
+          .style("height", "100%")
+          .style("width", "100%")
+      ;
+      rulers = svg.append("svg")
+        .attr("class", "markings")
+        .style("width", "100%")
+        .style("height", "100%")
+      ;
+      reticle = svg
+        .append("svg")
+        .attr("class", "reticle music")
+        .attr("preserveAspectRatio", "none")
+        .attr("x", percents.left + "%")
+        .attr("y", percents.top + "%" )
+      ;
+      defs = reticle
+        .append("defs")
+      ;
+      // Create a space for the note rectangles of various time durations
+      defs.append("g").attr("id", "notestamps");
 
+      voices = reticle
+        .append("svg")
+          .attr("class", "voices")
+          .attr("id", "voices")
+          .attr("preserveAspectRatio", "none")
+      ;
+  } // initialize_SVG()
 
   /*
   ** API (Getter/Setter) Functions
@@ -112,6 +137,7 @@ function NotesBook() {
   my.svg = function (_){
       if(!arguments.length) return svg;
       svg = _;
+      initialize_SVG()
       return my;
     } // my.svg()
   ;
@@ -189,7 +215,10 @@ function NotesBook() {
     } // my.ribbons()
   ;
 
-  my.viewbox = function(_) { return viewbox; };
+  /*
+  ** API - Getter-only Methods
+  */
+  my.viewbox = function() { return viewbox; };
   my.x = function() { return x; };
   my.y = function() { return y; };
 
