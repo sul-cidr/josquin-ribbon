@@ -34,34 +34,34 @@ function Score() {
         .remove()
       ;
       notes.enter()
-          .append("use")
-            .attr("x", function(d) { return x(d.starttime[0]); })
-            .attr("y", function(d) { return y(d.pitch.b7); })
-            .attr("xlink:href", function(d) {
-                return "#note-" + d.duration[0];
-              })
-            .attr("class", "note")
-            .classed("extreme-plain", function(d) {
-                return ~pitches.indexOf(d.pitch.b7);
-              })
-            .each(function(d) {
-                /*
-                ** a11y: screen readers will find all the information about the
-                **      note here.
-                ** side-effect: browser tooltips in ff and chrome.
-                */
-                var self = d3.select(this)
-                  , title = d.pitch.name + " : "
-                      + d.duration + " beats"
-                      + " (" + data.voice + ")"
-                ;
-                self.append("title")
-                    .text(title)
-                ;
-                self.append("desc")
-                    .text(title)
-                ;
-              })
+        .append("use")
+          .attr("x", function(d) { return x(d.starttime[0]); })
+          .attr("y", function(d) { return y(d.pitch.b7); })
+          .attr("xlink:href", function(d) {
+              return "#note-" + d.duration[0];
+            })
+          .attr("class", "note")
+          .classed("extreme-plain", function(d) {
+              return ~pitches.indexOf(d.pitch.b7);
+            })
+          .each(function(d) {
+              /*
+              ** a11y: screen readers will find all the information about the
+              **      note here.
+              ** side-effect: browser tooltips in ff and chrome.
+              */
+              var self = d3.select(this)
+                , title = d.pitch.name + " : "
+                    + d.duration + " beats"
+                    + " (" + data.voice + ")"
+              ;
+              self.append("title")
+                  .text(title)
+              ;
+              self.append("desc")
+                  .text(title)
+              ;
+            })
       ;
   } // my()
 
@@ -78,7 +78,7 @@ function Score() {
               .sort(d3.ascending)
       ;
       stamps.selectAll("rect")
-          .data(durations)
+          .data(durations, function(d) { return d; })
         .enter().append("rect")
           .attr("id", function(d) { return "note-" + d; })
           .attr("rx", noteHeight / 2)
@@ -87,6 +87,7 @@ function Score() {
           .attr("width", function(d) { return x(+d); })
           .attr("vector-effect", "non-scaling-stroke")
       ;
+      stamps.exit().remove();
   } // stampify()
 
   function boxify(notes) {
