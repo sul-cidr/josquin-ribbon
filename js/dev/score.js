@@ -13,21 +13,25 @@ function Score() {
   /*
   ** Main Function Object
   */
-  function my(svg) {
-      data = svg.datum();
+  function my(sel) {
+      data = sel.datum();
       stampify();
       boxify(data.notedata);
 
-      svg = svg
-        .append("g")
-          .attr("class", "notes")
-          .attr("data-bbox", my.bbox())
+      var svg = sel.select(".notes");
+      if(!svg.size()) svg = sel.append("g").attr("class", "notes");
+
+      svg
+        .attr("data-bbox", my.bbox())
       ;
       var notes = svg.selectAll(".note")
           .data(
                 function(d) { return d.notedata; }
               , function(d) { return d.starttime[0]; }
             )
+      ;
+      notes.exit()
+        .remove()
       ;
       notes.enter()
           .append("use")
@@ -107,7 +111,7 @@ function Score() {
   ;
   my.defs = function(_) {
       if(!arguments.length) return stamps;
-      stamps = _;
+      stamps = _.select("#notestamps");
       return my;
     } // my.stamps()
   ;

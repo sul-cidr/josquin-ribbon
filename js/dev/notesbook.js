@@ -80,7 +80,7 @@ function NotesBook() {
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
               d3.select(this)
-                  .call(score.x(x).y(y).defs(defs.select("#notestamps")))
+                  .call(score.x(x).y(y).defs(defs))
                   .call(ribbon.x(x).y(y))
               // Initially, don't show the ribbons
                 .selectAll(".ribbon")
