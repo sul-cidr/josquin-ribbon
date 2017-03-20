@@ -23,7 +23,11 @@
 <body>
   <header class="page-header text-center">
     <h1>Josquin Music Project</h1>
-    <h2>Work in Progress</h2>
+    <h2>
+      <input id="josquin_catalog" name="josquin_catalog" type="text" list="catalog">
+      </input><button id="load_song">Load</button>
+      <datalist id="catalog"></datalist>
+    </h2>
   </header>
   <article>
     <div class="container-fluid">
@@ -88,7 +92,9 @@
         </div><!--.col-xs-12.col-lg-2-->
       </div><!--.row-->
       <div class="row">
-        <div id="navigator" class="well"></div>
+        <div id="navigator" class="well">
+          <svg></svg>
+        </div><!--.well#navigator-->
       </div><!--.row-->
     </div><!--.container-->
   </article>

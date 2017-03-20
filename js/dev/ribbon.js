@@ -21,12 +21,11 @@ function Ribbon() {
     /*
     ** Main Function Object
     */
-    function my(svg){
-        datum = svg.datum();
-        svg = svg
-          .append("g")
-            .attr("class", "ribbons")
-        ;
+    function my(sel){
+        datum = sel.datum();
+        var svg = sel.select(".ribbons");
+        if(!svg.size()) svg = sel.append("g").attr("class", "ribbons");
+
         var ribbon = svg.selectAll("g")
               .data(d3.keys(modes), function(m) { return m; })
         ;
@@ -39,6 +38,7 @@ function Ribbon() {
               var path = d3.select(this).selectAll("path")
                   .data([modes[m](datum.notedata)]) // call the mode function
               ;
+              path.exit().remove();
               path
                 .enter().append("path")
                   .attr("vector-effect", "non-scaling-stroke")
@@ -250,7 +250,6 @@ function Ribbon() {
     my.y = function(_) {
         if(!arguments.length)
             return y;
-        console.log(_.domain());
         // The passed in scale is Ordinal, and we need Linear here
         y = d3.scaleLinear()
           .domain([
