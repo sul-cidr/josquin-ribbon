@@ -144,7 +144,7 @@ function Markings() {
           .tickSize(0)
           .tickValues(
               mensurationsScale.domain()
-                .map(function(d) {
+                .filter(function(d) {
                     return isBetween(d, barlinesScale.domain());
                   }))
           .tickFormat(mensurationsScale)
@@ -161,13 +161,13 @@ function Markings() {
   } // renderMensurations()
 
   function renderSections(selection) {
-    console.log(sectionsScale.domain(), sectionsScale.range());
       sectionsAxis
           .scale(barlinesScale.clamp(true))
           .tickSize(0)
           .tickValues(
               sectionsScale.domain()
-                .map(function(d) { return isBetween(d, barlinesScale.domain());
+                .filter(function(d) { return isBetween(d, barlinesScale.domain())
+              ;
             }))
           .tickFormat(sectionsScale)
       ;
