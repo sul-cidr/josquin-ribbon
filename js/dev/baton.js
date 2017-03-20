@@ -1,115 +1,62 @@
 var margin = { top: 20, right: 20, bottom: 20, left: 20 }
-  , divMeta = d3.select("#meta")
-  , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
-  , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
-  , colorLegend = ColorLegend().div(divMeta.select("#legend"))
-;
+    , divMeta = d3.select("#meta")
+    , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
+    , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
+    , colorLegend = ColorLegend().div(divMeta.select("#legend"))
+  ;
 
-/*
-** Visualization's signaling system
-*/
+  /*
+  ** Visualization's signaling system
+  */
 
-var signal = d3.dispatch(
-        // List of signals we accept
-        "hilite"
-        , "zoom"
-        , "separate-voices"
-        , "selected"
-        , "show-extremes"
-        , "show-ribbon"
-        , "show-notes"
-      )
-;
+  var signal = d3.dispatch(
+          // List of signals we accept
+          "hilite"
+          , "zoom"
+          , "separate-voices"
+          , "selected"
+          , "show-extremes"
+          , "show-ribbon"
+          , "show-notes"
+        )
+  ;
 
-/*
-** Where to find individual songs and the list of songs
-*/
-var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
-  , catURL = baseURL + 'a=list'
-  , jsonURL = baseURL + 'a=proll-json&f='
-;
+  /*
+  ** Where to find individual songs and the list of songs
+  */
+  var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
+    , catURL = baseURL + 'a=list'
+    , jsonURL = baseURL + 'a=proll-json&f='
+  ;
 
-/*
-** Load the list of available songs
-*/
-d3.queue()
-    .defer(d3.text, catURL)
-    .await(function(error, list) {
-        if(error) throw(error);
-        var data = d3.nest()
-                    // the first 3 letters + next 4 digits are the id
-                    .key(function(k) { return k.split('-')[0].slice(0,7); })
-                    .map(list.split('\n'))
-                    .keys()
-          , opt = d3.select("#catalog").selectAll("option")
-                    .data(data, function(d) { return d; })
-        ;
-        opt.enter()
-          .append("option")
-            .property("value", function(d) { return d; })
-        ;
-      })
-;
-/*
-**  Activate the "Load button"
+  /*
+  ** Load the list of available songs
+  */
+  d3.queue()
+      .defer(d3.text, catURL)
+      .await(function(error, list) {
+          if(error) throw(error);
+          var data = d3.nest()
+                      // the first 3 letters + next 4 digits are the id
+                      .key(function(k) { return k.split('-')[0].slice(0,7); })
+                      .map(list.split('\n'))
+                      .keys()
+            , opt = d3.select("#catalog").selectAll("option")
+                      .data(data, function(d) { return d; })
+          ;
+          opt.enter()
+            .append("option")
+              .property("value", function(d) { return d; })
+          ;
+        })
+  ;
+  /*
+  **  Activate the "Load button"
 */
 d3.select("#load_song").on("click", function() {
     load_song(d3.select("input#josquin_catalog").node().value);
   })
 ;
-
-function fixedMeasureScaling(proll){
-    var measuresToBeats = computeMeasuresToBeats(proll),
-        beatsToTime = [],
-        beatsToTimeSignature = [],
-        time = 0;
-
-    measuresToBeats.forEach(function (numBeats, i){
-        //console.log(i + " (measure)");
-
-        // Old school for loop to save on Array and closure allocations.
-        for(var i = 0; i < numBeats; i++){
-            beatsToTime.push(time);
-            beatsToTimeSignature.push(numBeats);
-            //console.log("  " + time + " (beat)");
-            time += 1 / numBeats;
-        }
-    });
-
-    // Replace the starttime values (in beats) with our computed absolute time values.
-    proll.partdata.forEach(function (part){
-        part.notedata.forEach(function (d){
-            d.starttime[0] = beatsToTime[d.starttime[0]];
-            //d.duration[0] = d.duration[0] / beatsToTimeSignature;
-        })
-    });
-
-    return proll;
-} // fixedMeasureScaling
-
-// Each entry in the returned array corresponts to a single measure,
-// and the value is the number of beats in that measure (typically 3 or 4).
-function computeMeasuresToBeats(proll){
-
-    // Keeps track of the last seen mensuration value.
-    var mensuration;
-    return proll.barlines.map(function (d, i){
-
-        // Fill in "undefined" mensuration values with last seen value.
-        mensuration = (d.mensuration || mensuration);
-
-        return beatsPerMeasure(mensuration);
-    });
-}
-
-// Converts from mensuration symbols to their numeric time signature equivalents.
-function beatsPerMeasure(mensuration){
-    if(mensuration === "C|"){
-        return 4;
-    } else {
-        return +mensuration;
-    }
-}
 
 /*
 ** Load the song sent in via URL or a default
@@ -137,8 +84,10 @@ function load_song(work) {
             if(error) throw error;
             // Set the URL history to the current song
             history.pushState(null, null, '?id=' + work);
-            chartify(parseJSON(proll));
-            //chartify(fixedMeasureScaling(parseJSON(proll)));
+
+            // Parse the raw JSON
+            // and apply measure-based fixed scaling calculations.
+            chartify(measureScaling(parseJSON(proll)));
           })
     ;
 
