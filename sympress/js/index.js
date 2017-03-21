@@ -36,6 +36,6 @@ function chartify(error, data) {
 						self.attr('viewBox', d3.values(path.node().getBBox()).join(' '))
 					})
 		;
-
+		d3.select("textarea").text(d3.select("body>svg").node().outerHTML)
 		console.log(tgtsvg);
 } // chartify()
