@@ -22,9 +22,15 @@ var measureScaling = (function (){
     function beatsPerMeasure(mensuration){
         if(mensuration === "C|"){
             return 8;
+        } else if(mensuration === "3"){
+            return 12;
         } else {
-            // TODO cover all possible cases.
-            return +mensuration; // e.g. "3"
+
+            // Flag unknown mensuration values, for developers to
+            // cover all cases over time.
+            console.warn("Unknown mensuration value: " + mensuration);
+
+            return 8;
         }
     }
 
@@ -34,7 +40,7 @@ var measureScaling = (function (){
             beatsToTimeSignature = [],
             time = 0;
 
-        measuresToBeats.forEach(function (numBeats, i){
+        measuresToBeats.forEach(function (numBeats){
             //console.log(i + " (measure)");
 
             // Old school for loop to save on Array and closure allocations.
@@ -53,7 +59,7 @@ var measureScaling = (function (){
                     offsetBeatFraction = d.starttime[0] - startBeat,
                     beatsInThisMeasure = beatsToTimeSignature[startBeat];
                 d.startBeatTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
-                d.starttime[0] = d.startBeatTime * 8;
+                //d.starttime[0] = d.startBeatTime * 8
                 //d.starttime[0] = d.startBeatTime;
                 //d.duration[0] = d.duration[0] / beatsToTimeSignature;
             })
