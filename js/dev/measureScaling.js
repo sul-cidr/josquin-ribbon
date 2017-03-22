@@ -52,16 +52,15 @@ var measureScaling = (function (){
             }
         });
 
-        // Replace the starttime values (in beats) with our computed absolute time values.
+        // Compute absolute starttime and duration values.
         proll.partdata.forEach(function (part){
             part.notedata.forEach(function (d){
                 var startBeat = Math.floor(d.starttime[0]),
                     offsetBeatFraction = d.starttime[0] - startBeat,
                     beatsInThisMeasure = beatsToTimeSignature[startBeat];
-                d.startBeatTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
-                //d.starttime[0] = d.startBeatTime * 8
-                //d.starttime[0] = d.startBeatTime;
-                //d.duration[0] = d.duration[0] / beatsToTimeSignature;
+
+                d.starttimeAbsolute = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
+                d.durationAbsolute = d.duration[0] / beatsInThisMeasure;
             })
         });
 
