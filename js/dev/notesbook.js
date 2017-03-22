@@ -214,6 +214,10 @@ function NotesBook() {
       ;
     } // my.ribbons()
   ;
+  my.measureScaling = function(_) { // toggles the measureScaling on/off
+      console.log(_);
+    } // my.measureScaling()
+  ;
 
   /*
   ** API - Getter-only Methods

@@ -18,6 +18,7 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
           , "show-extremes"
           , "show-ribbon"
           , "show-notes"
+          , "measure-based-scaling"
         )
   ;
 
@@ -108,23 +109,26 @@ function setupDispatcher() {
 
 function createSignals() {
     signal
-        .on("show-notes",    notesBook.notes)
-        .on("show-extremes", notesBook.extremes)
-        .on("hilite",   notesBook.hilite)
-        .on("show-ribbon",  notesBook.ribbons)
-        .on("separate-voices", notesBook.separate)
-        .on("zoom",     notesBook.zoom)
+        .on("show-notes",            notesBook.notes)
+        .on("show-extremes",         notesBook.extremes)
+        .on("hilite",                notesBook.hilite)
+        .on("show-ribbon",           notesBook.ribbons)
+        .on("separate-voices",       notesBook.separate)
+        .on("zoom",                  notesBook.zoom)
+        .on("measure-based-scaling", notesBook.measureScaling)
     ;
 } // createSignals()
 
+// Connect the UI control elements
 function connectSignalsToDOM() {
-    // Connect the UI control elements
+
     // Combine/Separate Voices
     d3.select("#separate-ui").selectAll("input")
         .on("change", function(d) {
             signal.call(this.id, this, this.checked)
         })
     ;
+
     // Show/Hide Notes and Extreme Notes
     d3.select("#notes-ui").selectAll("input")
         .on("change", function(d) {
@@ -134,6 +138,7 @@ function connectSignalsToDOM() {
             signal.call(this.id, this, null);
           })
     ;
+
     // Show/Hide ribbons
     d3.select("#ribbons-ui").each(function() {
       var check = d3.select(this).select("input")
@@ -154,6 +159,13 @@ function connectSignalsToDOM() {
         })
       ;
     });
+
+    // Measure-based Scaling
+    d3.select("#measure-based-scaling-ui").selectAll("input")
+        .on("change", function(d) {
+            signal.call(this.id, this, this.checked);
+        })
+    ;
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {
