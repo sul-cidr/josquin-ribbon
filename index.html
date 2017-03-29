@@ -23,11 +23,6 @@
 <body>
   <header class="page-header text-center">
     <h1>Josquin Music Project</h1>
-    <h2>
-      <input id="josquin_catalog" name="josquin_catalog" type="text" list="catalog">
-      </input><button id="load_song">Load</button>
-      <datalist id="catalog"></datalist>
-    </h2>
   </header>
   <article>
     <div class="container-fluid">
@@ -42,8 +37,15 @@
         <div id="meta" class="col-md-4 col-lg-4">
           <div class="panel panel-default">
             <div class="panel-heading text-center">
-              <h3 class="panel-title"></h3>
-              <h4 class="panel-title"></h4>
+              <div class="meta-titles">
+                <h3></h3>
+                <h4></h4>
+              </div>
+              <div>
+                <input id="josquin_catalog" name="josquin_catalog" type="text" list="catalog">
+                </input><button id="load_song">Load</button>
+                <datalist id="catalog"></datalist>
+              </div>
             </div><!--.panel-heading-->
             <div class="panel-body">
               <div id="legend"></div>
