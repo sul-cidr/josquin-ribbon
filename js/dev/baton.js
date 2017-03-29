@@ -8,7 +8,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
 /*
 ** Visualization's signaling system
 */
-
 var signal = d3.dispatch(
         // List of signals we accept
         "hilite"
@@ -41,7 +40,8 @@ d3.queue()
                     .key(function(k) { return k.split('-')[0].slice(0,7); })
                     .map(list.split('\n'))
                     .keys()
-          , opt = d3.select("#catalog").selectAll("option")
+          , catalog = d3.select("#catalog")
+          , opt = catalog.selectAll("option")
                     .data(data, function(d) { return d; })
         ;
         opt.enter()
@@ -61,7 +61,7 @@ d3.select("#load_song").on("click", function() {
 /*
 ** Load the song sent in via URL or a default
 */
-window.onload = function() {
+window.onpopstate = function(event) {
     var defaultWork = "Jos2721"
       , hash = getQueryVariables()
       , work = hash.id || defaultWork
@@ -69,7 +69,7 @@ window.onload = function() {
     d3.select("input#josquin_catalog").node().value = work;
     d3.select("#load_song").node().click();
 } // window.onload()
-
+window.onpopstate();
 
 /*
 ** Setup the domain
@@ -197,7 +197,7 @@ function chartify(data) {
 /// Capture URL query param
 function getQueryVariables() {
     var inits = {}
-      , query = window.location.search.substring(1).toLowerCase().split("&")
+      , query = window.location.search.substring(1).split("&")
       , arg // loop variable
 
     ;

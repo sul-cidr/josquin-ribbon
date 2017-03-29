@@ -24,15 +24,17 @@ function Score() {
       svg
         .attr("data-bbox", my.bbox())
       ;
+      svg.selectAll(".note").remove(); // Clear out all existing notes
+
       var notes = svg.selectAll(".note")
           .data(
                 function(d) { return d.notedata; }
               , function(d) { return d.starttime[0]; }
             )
       ;
-      notes.exit()
-        .remove()
-      ;
+
+      notes.exit().remove();
+
       notes.enter()
         .append("use")
           .attr("x", function(d) { return x(d.starttime[0]); })

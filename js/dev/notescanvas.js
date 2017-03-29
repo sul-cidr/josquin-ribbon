@@ -56,6 +56,8 @@ function NotesCanvas() {
         var sheet = sel.selectAll("svg")
             .data([sel.attr("id")], function(d) { return d; })
         ;
+        sheet.exit().remove();
+
         sheet = sheet.enter()
           .append("svg")
             .call(sizeit)
@@ -69,6 +71,7 @@ function NotesCanvas() {
             var voice = d3.select(this).selectAll("svg")
                 .data(data.partnames, function(d) { return d; })
             ;
+            voice.exit().remove();
             voice.enter()
               .append("svg")
                 .call(sizeit)

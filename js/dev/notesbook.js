@@ -42,7 +42,6 @@ function NotesBook() {
         , fw = w + margin.left + margin.right
         , fh = h + margin.top + margin.bottom
       ;
-
       markings
           .data(data.barlines)
           .voices(data.partnames)
@@ -99,7 +98,7 @@ function NotesBook() {
       //   - Using %s allows the SVGs to be responsive in dimension
       //       and relative placement
       //   - The preserveAspectRatio settings cause the image to fill
-     //        the viewport, distorting the image if necessary.
+      //       the viewport, distorting the image if necessary.
       svg
           .attr("class", "notesbook")
           .style("height", "100%")
