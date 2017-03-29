@@ -180,7 +180,7 @@ function chartify(data) {
 
 
     // Titles and polish
-    var titles = divMeta.select(".panel-heading").selectAll("*")
+    var titles = divMeta.select(".meta-titles").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
     ;
     titles.text(function(d) { return d.split('_').join(' '); });
