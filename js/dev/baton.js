@@ -59,7 +59,7 @@ d3.select("#load_song").on("click", function() {
 ;
 
 /*
-** Load the song sent in via URL or a default
+** Define what happens on page load
 */
 window.onpopstate = function(event) {
     var defaultWork = "Jos2721"
@@ -68,7 +68,11 @@ window.onpopstate = function(event) {
     ;
     d3.select("input#josquin_catalog").node().value = work;
     d3.select("#load_song").node().click();
-} // window.onload()
+}
+
+/*
+** START: Load the page now
+*/
 window.onpopstate();
 
 /*
@@ -92,6 +96,7 @@ function load_song(work) {
         proll.partdata.forEach(function(part) {
             part.voice = proll.partnames[part.partindex];
           })
+        ;
         return proll;
     } // parseJSON()
 }
