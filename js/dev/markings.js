@@ -17,7 +17,7 @@ function Markings() {
     , barlines, barlinesScale, barlinesAxis = d3.axisBottom()
     , barLabels, barLabelCount = 15
     , mensurations, mensurationsLocs
-    , mensurationsScale = d3.scaleOrdinal()
+    , mensurationsScale = d3.scaleThreshold()
     , mensurationsAxis = d3.axisTop()
     , mensurationCodes = {
             "O"  : ""
@@ -31,9 +31,10 @@ function Markings() {
           , "C|r": ""
         }
     , sections, sectionsLocs
-    , sectionsScale = d3.scaleOrdinal()
+    , sectionsScale = d3.scaleThreshold()
     , sectionsAxis = d3.axisTop()
     , separate
+    , scorelength
     , dispatch
   ;
 
@@ -51,10 +52,8 @@ function Markings() {
       // Locations for changes in mensuration.
       mensurationsLocs = data.filter(function(d) { return d.mensuration; });
       mensurationsScale
-          .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
-          .range(mensurationsLocs.map(function(d) {
-              return mensurationCodes[d.mensuration] || d.mensuration;
-            }))
+          .domain(mensurationsLocs.map(function(d) { return d.time[0]; }).concat([scorelength]))
+          .range(mensurationsLocs.map(function(d) { return d.mensuration; }))
       ;
       mensurations = mensurations || svg
         .append("g")
@@ -78,7 +77,7 @@ function Markings() {
       // Locations for section labels
       sectionsLocs = data.filter(function(d) { return d.sectionlabel; });
       sectionsScale
-          .domain(sectionsLocs.map(function(d) { return d.time[0]; }))
+          .domain(sectionsLocs.map(function(d) { return d.time[0]; }).concat([scorelength]))
           .range(sectionsLocs.map(function(d) { return d.sectionlabel; }))
       ;
       sections = sections || svg
@@ -274,6 +273,12 @@ function Markings() {
       dispatch = _;
       return my;
     } // my.connect()
+  ;
+  my.scorelength = function(_) {
+      if(!arguments.length) return scorelength;
+      scorelength = _;
+      return my;
+    } // my.scorelength()
   ;
 
   // API Method. Respond to combine/separate button signal
