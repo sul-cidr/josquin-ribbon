@@ -1,8 +1,8 @@
 var margin = { top: 20, right: 20, bottom: 20, left: 20 }
-    , divMeta = d3.select("#meta")
-    , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
-    , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
-    , colorLegend = ColorLegend().div(divMeta.select("#legend"))
+  , divMeta = d3.select("#meta")
+  , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
+  , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
+  , colorLegend = ColorLegend().div(divMeta.select("#legend"))
   ;
 
   /*
@@ -53,8 +53,8 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   ;
   /*
   **  Activate the "Load button"
-*/
-d3.select("#load_song").on("click", function() {
+  */
+  d3.select("#load_song").on("click", function() {
     load_song(d3.select("input#josquin_catalog").node().value);
   })
 ;
@@ -62,7 +62,7 @@ d3.select("#load_song").on("click", function() {
 /*
 ** Load the song sent in via URL or a default
 */
-window.onload = function() {
+window.onpopstate = function(event) {
     var defaultWork = "Jos2721"
       , hash = getQueryVariables()
       , work = hash.id || defaultWork
@@ -70,7 +70,7 @@ window.onload = function() {
     d3.select("input#josquin_catalog").node().value = work;
     d3.select("#load_song").node().click();
 } // window.onload()
-
+window.onpopstate();
 
 /*
 ** Setup the domain
@@ -195,7 +195,7 @@ function chartify(data) {
 
 
     // Titles and polish
-    var titles = divMeta.select(".panel-heading").selectAll("*")
+    var titles = divMeta.select(".meta-titles").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
     ;
     titles.text(function(d) { return d.split('_').join(' '); });
@@ -212,7 +212,7 @@ function chartify(data) {
 /// Capture URL query param
 function getQueryVariables() {
     var inits = {}
-      , query = window.location.search.substring(1).toLowerCase().split("&")
+      , query = window.location.search.substring(1).split("&")
       , arg // loop variable
 
     ;
