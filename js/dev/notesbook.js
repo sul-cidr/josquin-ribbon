@@ -45,6 +45,7 @@ function NotesBook() {
       markings
           .data(data.barlines)
           .voices(data.partnames)
+          .scorelength(x.domain()[1])
           .x(x)
           .y(y)
       ;
