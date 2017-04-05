@@ -88,7 +88,7 @@ function load_song(work) {
 
             // Parse the raw JSON
             // and apply measure-based fixed scaling calculations.
-            chartify(measureScaling(parseJSON(proll)));
+            chartify(parseJSON(proll));
           })
     ;
 
@@ -207,6 +207,11 @@ function chartify(data) {
           ;
           new SvgSaver().asSvg(node, filename);
         });
+
+
+    var measureScalingTransforms = measureScaling(data);
+
+    console.log(measureScalingTransforms);
 } // chartify()
 
 /// Capture URL query param

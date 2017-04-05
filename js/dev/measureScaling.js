@@ -52,18 +52,20 @@ var measureScaling = (function (){
             }
         });
 
-        // Compute absolute starttime and duration values.
-        proll.partdata.forEach(function (part){
-            part.notedata.forEach(function (d){
+        return {
+            startTime: function (d){
                 var startBeat = Math.floor(d.starttime[0]),
                     offsetBeatFraction = d.starttime[0] - startBeat,
                     beatsInThisMeasure = beatsToTimeSignature[startBeat];
+                return beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
+            },
+            duration: function (d){
+                var startBeat = Math.floor(d.starttime[0]),
+                    offsetBeatFraction = d.starttime[0] - startBeat,
+                    beatsInThisMeasure = beatsToTimeSignature[startBeat];
+                return d.duration[0] / beatsInThisMeasure;
+            }
+        };
 
-                d.starttimeAbsolute = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
-                d.durationAbsolute = d.duration[0] / beatsInThisMeasure;
-            })
-        });
-
-        return proll;
     } // measureScaling()
 }());
