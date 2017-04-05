@@ -28,7 +28,7 @@ function NotesBook() {
       }
     , measureScalingAccessors 
     , startTimeAccessor = rawAccessors.startTime
-    , durationAccessor = rawAccessors.startTime
+    , durationAccessor = rawAccessors.duration
   ;
 
   /*
@@ -236,11 +236,11 @@ function NotesBook() {
   ;
   my.measureScaling = function(_) { // toggles the measureScaling on/off
       if(_){
-         startTimeAccessor = rawAccessors.startTime;
-         durationAccessor = rawAccessors.startTime;
-      } else {
          startTimeAccessor = measureScalingAccessors.startTime;
-         durationAccessor = measureScalingAccessors.startTime;
+         durationAccessor = measureScalingAccessors.duration;
+      } else {
+         startTimeAccessor = rawAccessors.startTime;
+         durationAccessor = rawAccessors.duration;
       }
     } // my.measureScaling()
   ;
