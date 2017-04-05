@@ -9,6 +9,8 @@ function Score() {
     , pitches
     , times
     , stamps
+    , startTimeAccessor
+    , durationAccessor
   ;
   /*
   ** Main Function Object
@@ -37,7 +39,7 @@ function Score() {
 
       notes.enter()
         .append("use")
-          .attr("x", function(d) { return x(d.starttime[0]); })
+          .attr("x", function(d) { return x(startTimeAccessor(d)); })
           .attr("y", function(d) { return y(d.pitch.b7); })
           .attr("xlink:href", function(d) {
               return "#note-" + d.duration[0];
@@ -126,6 +128,18 @@ function Score() {
         , pitches[1] - pitches[0]
       ];
     } // my.bbox()
+  ;
+  my.startTimeAccessor = function(_) {
+      if(!arguments.length) return startTimeAccessor;
+      startTimeAccessor = _;
+      return my;
+    } // my.startTimeAccessor()
+  ;
+  my.durationAccessor = function(_) {
+      if(!arguments.length) return durationAccessor;
+      durationAccessor = _;
+      return my;
+    } // my.durationAccessor()
   ;
   // This is ALWAYS the last thing returned
   return my;

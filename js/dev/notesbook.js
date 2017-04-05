@@ -18,6 +18,17 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , rawAccessors = {
+          startTime: function (d){
+              return d.starttime[0];
+          },
+          duration: function (d){
+              return d.duration[0];
+          }
+      }
+    , measureScalingAccessors 
+    , startTimeAccessor = rawAccessors.startTime
+    , durationAccessor = rawAccessors.startTime
   ;
 
   /*
@@ -78,12 +89,21 @@ function NotesBook() {
           .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
+
+              score
+                .x(x)
+                .y(y)
+                .defs(defs)
+                .startTimeAccessor(startTimeAccessor)
+                .durationAccessor(durationAccessor)
+              ;
+
               d3.select(this)
-                  .call(score.x(x).y(y).defs(defs))
+                  .call(score)
                   .call(ribbon.x(x).y(y))
               // Initially, don't show the ribbons
                 .selectAll(".ribbon")
-                    .style("display", "none")
+                  .style("display", "none")
               ;
             })
       ;
@@ -143,6 +163,7 @@ function NotesBook() {
   my.data = function (_){
       if(!arguments.length) return data;
       data = _;
+      measureScalingAccessors = measureScaling(data);
       return my;
     } // my.data()
   ;
@@ -214,7 +235,13 @@ function NotesBook() {
     } // my.ribbons()
   ;
   my.measureScaling = function(_) { // toggles the measureScaling on/off
-      console.log(_);
+      if(_){
+         startTimeAccessor = rawAccessors.startTime;
+         durationAccessor = rawAccessors.startTime;
+      } else {
+         startTimeAccessor = measureScalingAccessors.startTime;
+         durationAccessor = measureScalingAccessors.startTime;
+      }
     } // my.measureScaling()
   ;
 

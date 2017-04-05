@@ -86,8 +86,7 @@ function load_song(work) {
             // Set the URL history to the current song
             history.pushState(null, null, '?id=' + work);
 
-            // Parse the raw JSON
-            // and apply measure-based fixed scaling calculations.
+            // Parse the raw JSON and pass it to chartify.
             chartify(parseJSON(proll));
           })
     ;
@@ -208,10 +207,6 @@ function chartify(data) {
           new SvgSaver().asSvg(node, filename);
         });
 
-
-    var measureScalingTransforms = measureScaling(data);
-
-    console.log(measureScalingTransforms);
 } // chartify()
 
 /// Capture URL query param
