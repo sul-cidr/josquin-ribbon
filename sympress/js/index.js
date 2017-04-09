@@ -18,7 +18,6 @@ function chartify(error, data) {
 			, tgtsvg = d3.select("body").append("svg")
 						.attr("class", "todownload")
 						.style("display", "none")
-					.append("defs")
 		;
 
 		var defs = srcsvg.select("defs")
@@ -33,7 +32,7 @@ function chartify(error, data) {
 							, shape = srcsvg.select("glyph[glyph-name='" + d + "']").attr("d")
 							, path = self.append("path").attr("d", shape)
 						;
-						self.attr('viewBox', d3.values(path.node().getBBox()).join(' '))
+						self.attr('viewBox', d3.values(path.node().getBBox()).map(Math.round).join(' '))
 					})
 		;
 		d3.select("textarea").text(d3.select("body>svg").node().outerHTML)
