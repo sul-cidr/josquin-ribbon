@@ -29,10 +29,16 @@ function chartify(error, data) {
 				.attr("id", function(d) { return d; })
 				.each(function(d, i) {
 						var self = d3.select(this)
-							, shape = srcsvg.select("glyph[glyph-name='" + d + "']").attr("d")
-							, path = self.append("path").attr("d", shape)
+							, src = srcsvg.select("glyph[glyph-name='" + d + "']")
+							, shape = src.attr("d")
+							, path = self.append("path")
+										.attr("d", shape)
+										.attr("transform", src.attr("transform"))
+							, vb = d3.values(path.node().getBBox()).map(Math.round).join(' ')
 						;
-						self.attr('viewBox', d3.values(path.node().getBBox()).map(Math.round).join(' '))
+						console.log(src.attr("transform"), src)
+						self
+								.attr('viewBox', vb)
 					})
 		;
 		d3.select("textarea").text(d3.select("body>svg").node().outerHTML)
