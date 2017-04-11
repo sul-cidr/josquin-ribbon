@@ -1,4 +1,4 @@
-var glyphids = d3.range(910, 920).map(function(n) { return "uniE" + n; })
+var glyphids = d3.range(2320, 2331).map(function(g) { return "e" + g.toString(16); })
 
 d3.select("#upload-input").on("click", function() {
 	d3.select("#hidden-file-upload").node().click();
@@ -20,27 +20,50 @@ function chartify(error, data) {
 						.style("display", "none")
 		;
 
-		var defs = srcsvg.select("defs")
+		var defs = srcsvg.select("defs>font")
 			, license = srcsvg.select("metadata").text()
 		;
-		tgtsvg.selectAll("symbol")
-				.data(glyphids, function(d) { return d; })
-			.enter().append("symbol")
-				.attr("id", function(d) { return d; })
-				.each(function(d, i) {
+		defs.selectAll("glyph")
+				.each(function() {
 						var self = d3.select(this)
-							, src = srcsvg.select("glyph[glyph-name='" + d + "']")
-							, shape = src.attr("d")
-							, path = self.append("path")
-										.attr("d", shape)
-										.attr("transform", src.attr("transform"))
-							, vb = d3.values(path.node().getBBox()).map(Math.round).join(' ')
+							, code = self.attr("unicode")
 						;
-						console.log(src.attr("transform"), src)
-						self
-								.attr('viewBox', vb)
-					})
+						if(!code) return;
+
+						code = code.charCodeAt(0).toString(16);
+						if(!~glyphids.indexOf(code)) return;
+
+						var shape = self.attr("d")
+						 	, sym = tgtsvg.append("symbol")
+									.attr("id", function() { return "uni" + code.toUpperCase(); })
+							, path = sym.append("path")
+									.attr("d", shape)
+							, viewbox = d3.values(path.node().getBBox()).map(Math.round)
+						;
+						sym.attr("viewBox", viewbox.join(' '));
+				})
 		;
+		// tgtsvg.selectAll("symbol")
+		// 		.data(glyphids, function(d) { return d; })
+		// 	.enter().append("symbol")
+		// 		.attr("id", function(d) { return d; })
+		// 		.each(function(d, i) {
+		// 				var self = d3.select(this)
+		// 					, srcer = "&#xe" + d + ";"
+		// 					, src = srcsvg.select("defs>font>glyph[unicode='+ srcer + ']")
+		// 				;
+		// 				var blah
+		// 					, shape = src.attr("d")
+		// 					, path = self.append("path")
+		// 								.attr("d", shape)
+		// 								.attr("transform", src.attr("transform"))
+		// 					, vb = d3.values(path.node().getBBox()).map(Math.round).join(' ')
+		// 				;
+		// 				console.log(src.attr("transform"), src)
+		// 				self
+		// 						.attr('viewBox', vb)
+		// 			})
+		// ;
 		d3.select("textarea").text(d3.select("body>svg").node().outerHTML)
 		console.log(tgtsvg);
 } // chartify()
