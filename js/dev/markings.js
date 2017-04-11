@@ -193,9 +193,10 @@ function Markings() {
               .attr("xlink:href", "#uni" + sym.text())
               .attr("x", -7)
               .attr("y", -7)
-              .attr("height", "14")
+              .attr("height", "18")
               .attr("width", "14")
           ;
+          console.log(sym.text())
         })
       ;
   } // renderMensurations()
