@@ -1,4 +1,6 @@
-var glyphids = d3.range(2320, 2331).map(function(g) { return "e" + g.toString(16); })
+var glyphids = d3.range(2320, 2331).concat(d3.range(2342, 2346))
+			.map(function(g) { return "e" + g.toString(16); })
+;
 
 d3.select("#upload-input").on("click", function() {
 	d3.select("#hidden-file-upload").node().click();
