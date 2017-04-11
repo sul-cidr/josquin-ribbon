@@ -6,7 +6,7 @@ function Markings() {
     , data
     , x, y
     , width, height
-    , percents = { left: 5, top: 10, right: 5, bottom: 5}
+    , percents = { left: 5, top: 20, right: 5, bottom: 5}
     , margin = { left: 5, top: 10, right: 5, bottom: 5}
     , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
