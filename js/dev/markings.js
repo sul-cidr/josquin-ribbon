@@ -27,6 +27,7 @@ function Markings() {
           , "C." : "E914"
           , "C"  : "E915"
           , "Cr" : "E916"
+          , "C.|": "E917"
           , "C|.": "E917"
           , "C|" : "E918"
           , "C|r": "E919"
@@ -190,10 +191,10 @@ function Markings() {
           ;
           use
               .attr("xlink:href", "#uni" + sym.text())
-              .attr("x", 0)
-              .attr("y", 0)
-              .attr("height", "1em")
-              .attr("width", "1em")
+              .attr("x", -7)
+              .attr("y", -7)
+              .attr("height", "14")
+              .attr("width", "14")
           ;
         })
       ;
