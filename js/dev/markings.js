@@ -20,20 +20,27 @@ function Markings() {
     , mensurationsScale = d3.scaleOrdinal()
     , mensurationsAxis = d3.axisTop()
     , mensurationCodes = {
-            "O"  : ""
-          , "O|" : ""
-          , "O|.": ""
-          , "C." : ""
-          , "C"  : ""
-          , "Cr" : ""
-          , "C|.": ""
-          , "C|" : ""
-          , "C|r": ""
+            "O." : "E910"
+          , "O"  : "E911"
+          , "O|" : "E912"
+          , "O|.": "E913"
+          , "C." : "E914"
+          , "C"  : "E915"
+          , "Cr" : "E916"
+          , "C|.": "E917"
+          , "C|" : "E918"
+          , "C|r": "E919"
+          , "C.r": "E91A"
+          , "1"  : "E926"
+          , "2"  : "E927"
+          , "3"  : "E928"
+          , "4"  : "E929"
         }
     , sections, sectionsLocs
     , sectionsScale = d3.scaleOrdinal()
     , sectionsAxis = d3.axisTop()
     , separate
+    , scorelength
     , dispatch
   ;
 
@@ -56,6 +63,7 @@ function Markings() {
               return mensurationCodes[d.mensuration] || d.mensuration;
             }))
       ;
+
       mensurations = mensurations || svg
         .append("g")
           .attr("class", "mensurations haxis")
@@ -166,10 +174,28 @@ function Markings() {
           .attr("transform", "translate(0," + margin.top + ")")
           .call(mensurationsAxis)
       ;
-      selection.selectAll(".tick text")
-          .attr("font-family", "BravuraText")
-          .attr("font-size", "1.4em")
-          .attr("dy", "-0.2em")
+      selection.selectAll(".tick").each(function() {
+          var self = d3.select(this);
+          var sym = self.select("text");
+          self.select("text")
+              .style("visibility", "hidden")
+          ;
+          var use = self.selectAll("use")
+              .data([sym.text()], function(d) { return d; })
+          ;
+          use = use.enter()
+            .append("use")
+              .attr("class", "mensuration")
+            .merge(use)
+          ;
+          use
+              .attr("xlink:href", "#uni" + sym.text())
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("height", "1em")
+              .attr("width", "1em")
+          ;
+        })
       ;
   } // renderMensurations()
 
@@ -274,6 +300,12 @@ function Markings() {
       dispatch = _;
       return my;
     } // my.connect()
+  ;
+  my.scorelength = function(_) {
+      if(!arguments.length) return scorelength;
+      scorelength = _;
+      return my;
+    } // my.scorelength()
   ;
 
   // API Method. Respond to combine/separate button signal
