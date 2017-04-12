@@ -63,8 +63,7 @@ svg {
     font-size: 1.4em;
 }
 .mensuration {
-  stroke: red;
-  fill: black;
+  fill: gray;
 }
 path.domain {
     display: none;
