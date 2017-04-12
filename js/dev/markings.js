@@ -6,7 +6,7 @@ function Markings() {
     , data
     , x, y
     , width, height
-    , percents = { left: 5, top: 20, right: 5, bottom: 5}
+    , percents = { left: 5, top: 15, right: 5, bottom: 5}
     , margin = { left: 5, top: 10, right: 5, bottom: 5}
     , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
@@ -60,9 +60,7 @@ function Markings() {
       mensurationsLocs = data.filter(function(d) { return d.mensuration; });
       mensurationsScale
           .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
-          .range(mensurationsLocs.map(function(d) {
-              return mensurationCodes[d.mensuration] || d.mensuration;
-            }))
+          .range(mensurationsLocs.map(function(d) { return d.mensuration; }))
       ;
 
       mensurations = mensurations || svg
@@ -176,27 +174,29 @@ function Markings() {
           .call(mensurationsAxis)
       ;
       selection.selectAll(".tick").each(function() {
-          var self = d3.select(this);
-          var sym = self.select("text");
-          self.select("text")
-              .style("visibility", "hidden")
+          var self = d3.select(this)
+            , sym = self.select("text")
+            , code = mensurationCodes[sym.text()]
           ;
-          var use = self.selectAll("use")
-              .data([sym.text()], function(d) { return d; })
-          ;
-          use = use.enter()
-            .append("use")
-              .attr("class", "mensuration")
-            .merge(use)
-          ;
-          use
-              .attr("xlink:href", "#uni" + sym.text())
-              .attr("x", -7)
-              .attr("y", -7)
-              .attr("height", "18")
-              .attr("width", "14")
-          ;
-          console.log(sym.text())
+          if(code) {
+              // Hide the text
+              sym.style("visibility", "hidden")
+              // Show the SVG symbol
+              var use = self.selectAll("use")
+                  .data([sym.text()], function(d) { return d; })
+              use = use.enter()
+                .append("use")
+                  .attr("class", "mensuration")
+                .merge(use)
+              ;
+              use
+                  .attr("xlink:href", "#uni" + code)
+                  .attr("x", -7)
+                  .attr("y", -24)
+                  .attr("height", "18")
+                  .attr("width", "14")
+              ;
+          }
         })
       ;
   } // renderMensurations()
