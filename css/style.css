@@ -62,6 +62,9 @@ svg {
     fill: gray;
     font-size: 1.4em;
 }
+.mensuration {
+  fill: gray;
+}
 path.domain {
     display: none;
 }

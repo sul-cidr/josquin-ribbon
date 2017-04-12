@@ -1,0 +1,129 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+        content="Ribbon and notes visualization for Josquin music.">
+  <meta name="author" content="Seemant Kulleen">
+  <meta name="author" content="Curran Kelleher">
+
+  <title>Josquin Music Project</title>
+
+  <!-- Bootstrap
+    For reset and grid layout.
+    from http://getbootstrap.com/customize/?id=c9c26f4080624c8af8ea9d80a6a64013
+  -->
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <svg id="mensuration-table" width="960" height="500" style="path { stroke: black; }">
+    <symbol id="uniE910" viewBox="1 -266 531 531">
+<path d="M266 -266q-109 0 -187 78t-78 188q0 109 78 187t187 78q110 0 188 -78t78 -187q0 -110 -78 -188t-188 -78zM266 217q-89 0 -153 -64t-64 -153q0 -90 64 -154t153 -64q90 0 154 64t64 154q0 89 -64 153t-154 64zM266 62q26 0 44.5 -18t18.5 -44t-18.5 -44.5t-44.5 -18.5 t-44 18.5t-18 44.5t18 44t44 18z">
+</path>
+</symbol>
+<symbol id="uniE911" viewBox="1 -266 531 531">
+<path d="M266 -266q-109 0 -187 78t-78 188q0 109 78 187t187 78q110 0 188 -78t78 -187q0 -110 -78 -188t-188 -78zM266 217q-89 0 -153 -64t-64 -153q0 -90 64 -154t153 -64q90 0 154 64t64 154q0 89 -64 153t-154 64z">
+</path>
+</symbol>
+<symbol id="uniE912" viewBox="1 -380 531 743">
+<path d="M266 -380q-10 0 -17 7t-7 17v91q-95 9 -163 77q-78 78 -78 188q0 109 78 187q66 67 163 77v75q0 10 7 17t17 7t17 -7t7 -17v-75q98 -9 164 -77q78 -78 78 -187q0 -110 -78 -188q-68 -68 -164 -77v-91q0 -10 -7 -17t-17 -7zM290 216v-432q76 8 130 62q64 64 64 154 q0 89 -64 153q-52 53 -130 63zM242 216q-77 -9 -129 -63q-64 -64 -64 -153q0 -90 64 -154q54 -54 129 -62v432z">
+</path>
+</symbol>
+<symbol id="uniE913" viewBox="0 -380 531 743">
+<path d="M531 0q0 -110 -78 -188q-68 -68 -164 -77v-91q0 -10 -7 -17t-17 -7t-17 7t-7 17v91q-95 9 -163 77q-78 78 -78 188q0 109 78 187q66 67 163 77v75q0 10 7 17t17 7t17 -7t7 -17v-75q98 -9 164 -77q78 -78 78 -187zM112 -154q54 -54 129 -62v158q-38 17 -38 58t38 58v158 q-77 -9 -129 -63q-64 -64 -64 -153q0 -90 64 -154zM289 -216q76 8 130 62q64 64 64 154q0 89 -64 153q-52 53 -130 63v-158q39 -17 39 -58t-39 -58v-158z">
+</path>
+</symbol>
+<symbol id="uniE914" viewBox="0 -266 494 531">
+<path d="M266 -266q-110 0 -188 78t-78 188q0 109 78 187t188 78q67 0 125.5 -32t95.5 -88q5 -7 5 -14q0 -13 -11 -19q-5 -4 -13 -4q-13 0 -21 11q-30 46 -78 72t-103 26q-90 0 -154 -64t-64 -153q0 -90 64 -154t154 -64q56 0 107 28q48 28 77 75q6 11 20 11q8 0 13 -4 q11 -8 11 -21q0 -6 -3 -12q-38 -59 -95 -91q-60 -34 -130 -34zM268 62q26 0 44.5 -18t18.5 -44t-18.5 -44.5t-44.5 -18.5t-44 18.5t-18 44.5t18 44t44 18z">
+</path>
+</symbol>
+<symbol id="uniE915" viewBox="0 -266 494 531">
+<path d="M266 -266q-110 0 -188 78t-78 188q0 109 78 187t188 78q67 0 125.5 -32t95.5 -88q5 -7 5 -14q0 -13 -11 -19q-5 -4 -13 -4q-13 0 -21 11q-30 46 -78 72t-103 26q-90 0 -154 -64t-64 -153q0 -90 64 -154t154 -64q56 0 107 28q48 28 77 75q6 11 20 11q8 0 13 -4 q11 -8 11 -21q0 -6 -3 -12q-38 -59 -95 -91q-60 -34 -130 -34z">
+</path>
+</symbol>
+<symbol id="uniE916" viewBox="-3 -250 495 531">
+<path d="M226 -250q-70 0 -130 34q-59 33 -95 91q-4 8 -4 13q0 12 12 20q5 4 13 4q14 0 20 -11q29 -47 77 -75q51 -28 107 -28q90 0 154 64t64 154q0 89 -64 153t-154 64q-55 0 -103 -26t-79 -72q-6 -11 -20 -11q-8 0 -13 4q-11 6 -11 20q0 8 4 13q38 56 96.5 88t125.5 32 q110 0 188 -78t78 -187q0 -110 -78 -188t-188 -78z">
+</path>
+</symbol>
+<symbol id="uniE917" viewBox="1 -380 494 743">
+<path d="M484 -108q11 -8 11 -21q0 -6 -3 -12q-39 -60 -95 -90q-51 -29 -104 -33v-92q0 -10 -7 -17t-17 -7t-17 7t-7 17v91q-97 8 -166 77q-78 78 -78 188q0 109 78 187q69 69 166 77v75q0 10 7 17t17 7t17 -7t7 -17v-75q126 -13 195 -119q5 -7 5 -14q0 -13 -11 -19q-5 -4 -13 -4 q-13 0 -21 11q-55 85 -155 96v-157q39 -17 39 -58t-39 -58v-158q42 4 81 26q48 28 77 75q6 11 20 11q8 0 13 -4zM113 -154q55 -55 132 -63v159q-38 17 -38 58t38 58v158q-77 -8 -132 -63q-64 -64 -64 -153q0 -90 64 -154z">
+</path>
+</symbol>
+<symbol id="uniE918" viewBox="1 -380 494 743">
+<path d="M269 -380q-10 0 -17 7t-7 17v91q-97 8 -166 77q-78 78 -78 188q0 109 78 187q69 69 166 77v75q0 10 7 17t17 7t17 -7t7 -17v-75q126 -13 195 -119q5 -7 5 -14q0 -13 -11 -19q-5 -4 -13 -4q-13 0 -21 11q-55 85 -155 96v-431q42 4 81 26q48 28 77 75q6 11 20 11q8 0 13 -4 q11 -8 11 -21q0 -6 -3 -12q-39 -60 -95 -90q-51 -29 -104 -33v-92q0 -10 -7 -17t-17 -7zM245 216q-77 -8 -132 -63q-64 -64 -64 -153q0 -90 64 -154q55 -55 132 -63v433z">
+</path>
+</symbol>
+<symbol id="uniE919" viewBox="0 -380 495 743">
+<path d="M226 -380q-10 0 -17 7t-7 17v92q-54 4 -103 33q-59 32 -95 90q-4 8 -4 13q0 12 12 20q5 4 13 4q14 0 20 -11q29 -47 77 -75q38 -22 80 -26v431q-98 -11 -155 -96q-6 -11 -20 -11q-8 0 -13 4q-11 6 -11 20q0 8 4 13q70 106 195 119v75q0 10 7 17t17 7t17 -7t7 -17v-75 q98 -8 167 -77q78 -78 78 -187q0 -110 -78 -188q-69 -69 -167 -77v-91q0 -10 -7 -17t-17 -7zM250 216v-433q78 8 133 63q64 64 64 154q0 89 -64 153q-55 55 -133 63z">
+</path>
+</symbol>
+<symbol id="uniE91A" viewBox="0 -267 495 531">
+<path d="M229 -267q-70 0 -130 34q-59 33 -95 91q-4 8 -4 13q0 13 12 20q5 4 13 4q14 0 20 -11q29 -47 77 -75q51 -28 107 -28q90 0 154 64t64 154q0 89 -64 153t-154 64q-55 0 -103 -26t-79 -72q-6 -11 -20 -11q-8 0 -13 4q-11 6 -11 20q0 8 4 13q38 56 96.5 88t125.5 32 q110 0 188 -78t78 -187q0 -110 -78 -188t-188 -78zM164 -1q0 25 18 43.5t44 18.5t44.5 -18t18.5 -44t-18.5 -44.5t-44.5 -18.5t-44 18.5t-18 44.5z">
+</path>
+</symbol>
+<symbol id="uniE926" viewBox="0 -250 249 503">
+<path d="M249 -215v-24q0 -11 -12 -11h-227q-10 0 -10 8v25q0 8 7 8q62 0 75 12.5t13 60.5v251q0 34 -9.5 41.5t-42.5 7.5q-5 -1 -10 -1q-16 0 -16 8l1 20q5 11 15 11q14 0 43.5 10.5t52.5 33.5q9 7 17 7q13 0 13 -24v-366q0 -47 15 -59.5t65 -12.5q10 0 10 -6z">
+</path>
+</symbol>
+<symbol id="uniE927" viewBox="0 -250 331 503">
+<path d="M297 -127h26q6 -1 6 -11q0 -15 1 -46.5t1 -47.5q0 -18 -20 -18h-302q-9 4 -9 14l12 40q4 10 15 17q19 13 43 31t72.5 60t80 89.5t31.5 88.5q0 42 -21.5 70.5t-67.5 28.5q-16 0 -32 -6.5t-28.5 -16t-24.5 -21.5t-19.5 -21.5t-13.5 -17.5l-6 -8q-10 -10 -16 -10q-3 0 -4 1 q-14 7 -14 23q0 13 9 26q1 1 2.5 3t3 4.5t2.5 3.5q16 23 27 35.5t31 31.5t43.5 28t51.5 9q63 0 107.5 -46t44.5 -110q0 -82 -78 -156l-124 -112q-22 -14 -22 -23q0 -8 22 -8q11 0 74 1t66 1q6 0 17 47q6 26 13 26z">
+</path>
+</symbol>
+<symbol id="uniE928" viewBox="0 -250 294 503">
+<path d="M80 2v16q0 9 6 9q26 0 65 33t39 94q0 48 -64 48q-11 0 -23 -4.5t-22 -13t-17 -14.5t-14 -14l-8 -9q-6 -6 -9 -6q-2 0 -11.5 13.5t-9.5 17.5q0 3 14 17q61 64 118 64q45 0 77 -28t32 -73q0 -27 -16 -52t-32 -36l-16 -12q-5 -2 -5 -4q0 -3 5 -4h1l2 -1q102 -31 102 -120 q0 -68 -67.5 -120.5t-148.5 -52.5q-32 0 -55 13.5t-23 33.5v45q0 5 8 5q9 0 30 -19q2 -2 7.5 -9.5t10 -11t18.5 -7.5t34 -4q44 0 81 37t37 81q0 80 -116 80h-22q-8 0 -8 8z">
+</path>
+</symbol>
+<symbol id="uniE929" viewBox="0 -250 379 500">
+<path d="M202 -28v163q0 3 -1 3l-8 -8q-100 -133 -111 -149q-5 -6 -5 -11l5 -4h111q3 0 5.5 1.5t3.5 2.5v2zM379 -38v-49q0 -8 -7 -8h-86q-7 -3 -7 -11v-138q-1 -6 -7 -6h-67q-5 3 -5 12l2 135q0 10 -9 10h-183q-10 1 -10 8v17q2 9 8 17l223 293q5 8 14 8h22q12 0 12 -11v-263 q0 -8 9 -8h86q5 0 5 -6z">
+</path>
+</symbol>
+    <use xlink:href="#uniE910" x="0" width="50">
+      <title>uniE910</title>
+    </use>
+    <use xlink:href="#uniE911" x="60" width="50">
+      <title>uniE911</title>
+    </use>
+    <use xlink:href="#uniE912" x="120" width="50">
+      <title>uniE912</title>
+    </use>
+    <use xlink:href="#uniE913" x="180" width="50">
+      <title>uniE913</title>
+    </use>
+    <use xlink:href="#uniE914" x="240" width="50">
+      <title>uniE914</title>
+    </use>
+    <use xlink:href="#uniE915" x="300" width="50">
+      <title>uniE915</title>
+    </use>
+    <use xlink:href="#uniE916" x="360" width="50">
+      <title>uniE916</title>
+    </use>
+    <use xlink:href="#uniE917" x="420" width="50">
+      <title>uniE917</title>
+    </use>
+    <use xlink:href="#uniE918" x="480" width="50">
+      <title>uniE918</title>
+    </use>
+    <use xlink:href="#uniE919" x="540" width="50">
+      <title>uniE919</title>
+    </use>
+    <use xlink:href="#uniE91A" x="600" width="50">
+      <title>uniE91A</title>
+    </use>
+    <use xlink:href="#uniE926" x="660" width="50">
+      <title>uniE926</title>
+    </use>
+    <use xlink:href="#uniE927" x="720" width="50">
+      <title>uniE927</title>
+    </use>
+    <use xlink:href="#uniE928" x="780" width="50">
+      <title>uniE928</title>
+    </use>
+    <use xlink:href="#uniE929" x="840" width="50">
+      <title>uniE929</title>
+    </use>
+  </svg>
+</body>
