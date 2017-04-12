@@ -184,6 +184,10 @@ function Markings() {
               // Show the SVG symbol
               var use = self.selectAll("use")
                   .data([sym.text()], function(d) { return d; })
+              ;
+              use.exit()
+                .remove()
+              ;
               use = use.enter()
                 .append("use")
                   .attr("class", "mensuration")
