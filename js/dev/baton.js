@@ -105,12 +105,12 @@ function setupDispatcher() {
 
 function createSignals() {
     signal
-        .on("show-notes",    notesBook.notes)
-        .on("show-extremes", notesBook.extremes)
-        .on("hilite",   notesBook.hilite)
-        .on("show-ribbon",  notesBook.ribbons)
+        .on("show-notes",      notesBook.notes)
+        .on("show-ribbon",     notesBook.ribbons)
+        .on("show-extremes",   notesBook.extremes)
         .on("separate-voices", notesBook.separate)
-        .on("zoom",     notesBook.zoom)
+        .on("hilite",          notesBook.hilite)
+        .on("zoom",            notesBook.zoom)
     ;
 } // createSignals()
 

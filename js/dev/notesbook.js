@@ -17,8 +17,9 @@ function NotesBook() {
     , markings = Markings()
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
+    , separate = false // store the separation state
+    , hilite = {}
     , dispatch
-    , separate // store the separation state
   ;
 
   /*
@@ -154,8 +155,11 @@ function NotesBook() {
     } // my.connect()
   ;
   my.hilite = function(_) {
+      if(!arguments.length) return [hilite.voice, hilite.index];
+      hilite.voice = _[0];
+      hilite.index = _[1];
       voices.selectAll("svg")
-          .classed("subdued", _[0] && function(d, i) { return i !== _[1]; })
+          .classed("subdued", hilite.voice && function(d, i) { return i !== hilite.index; })
       ;
       return my;
     } // my.hilite()
