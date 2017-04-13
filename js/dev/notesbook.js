@@ -154,13 +154,9 @@ function NotesBook() {
     } // my.connect()
   ;
   my.hilite = function(_) {
-        if(!_[0])
-            voices.selectAll(".subdued")
-                .classed("subdued", false)
-        else
-            voices.selectAll("svg")
-                .classed("subdued", function(d, i) { return i !== _[1]; })
-            ;
+      voices.selectAll("svg")
+          .classed("subdued", _[0] && function(d, i) { return i !== _[1]; })
+      ;
       return my;
     } // my.hilite()
   ;
