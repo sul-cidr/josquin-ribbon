@@ -134,6 +134,9 @@ function NotesBook() {
   } // initialize_SVG()
 
   function restage() {
+      // Set the markings off to update
+      markings.separate(separate && !hilite.voice);
+
       // Place the SVGs depending on the separation state
       var vb = voices.attr("viewBox").split(' ');
       vb[3] = (separate && !hilite.voice) ? fullheight : height;
@@ -211,8 +214,6 @@ function NotesBook() {
       if(!arguments.length) return separate;
       separate = _ ? true : false;
 
-      // Set the markings off to update
-      markings.separate(separate);
       highlight();
 
       return my;
