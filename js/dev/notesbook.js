@@ -18,6 +18,7 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , separate // store the separation state
   ;
 
   /*
@@ -185,17 +186,20 @@ function NotesBook() {
     } // my.zoom()
   ;
   my.separate = function(_) {
+      if(!arguments.length) return separate;
+      separate = _ ? true : false;
+
       // Art-direct the various voice SVGs
       var vb = voices.attr("viewBox").split(' ');
-      vb[3] = _ ? fullheight : height;
+      vb[3] = separate ? fullheight : height;
 
+      markings.separate(separate); // set this one off
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
         .selectAll(".voice")
-          .attr("y", function(d, i) { return _ ? i * height : 0; })
+          .attr("y", function(d, i) { return separate ? i * height : 0; })
       ;
-      markings.separate(_);
       return my;
     } // my.separate()
   ;
