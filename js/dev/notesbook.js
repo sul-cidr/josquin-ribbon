@@ -133,6 +133,33 @@ function NotesBook() {
       ;
   } // initialize_SVG()
 
+  function restage() {
+      // Place the SVGs depending on the separation state
+      var vb = voices.attr("viewBox").split(' ');
+      vb[3] = (separate && !hilite.voice) ? fullheight : height;
+      vb[1] = (separate && hilite.voice) ? height * hilite.index : 0;
+
+      voices
+        .transition()
+          .attr("viewBox", vb.join(' '));
+        ;
+
+      voices
+        .transition()
+          .attr("viewBox", vb.join(' '))
+        .selectAll(".voice")
+          .attr("y", function(d, i) { return separate ? i * height : 0; })
+      ;
+  } // restage()
+
+  function highlight() {
+      voices.selectAll("svg")
+          .classed("subdued", hilite.voice &&
+              function(d, i) { return i !== hilite.index; })
+      ;
+      restage();
+  } // highlight()
+
   /*
   ** API (Getter/Setter) Functions
   */
@@ -155,17 +182,6 @@ function NotesBook() {
       return my;
     } // my.connect()
   ;
-  my.hilite = function(_) {
-      if(!arguments.length) return [hilite.voice, hilite.index];
-      hilite.voice = _[0];
-      hilite.index = _[1];
-      voices.selectAll("svg")
-          .classed("subdued", hilite.voice &&
-              function(d, i) { return i !== hilite.index; })
-      ;
-      return my;
-    } // my.hilite()
-  ;
   my.extremes = function() {
       var xtrms = voices.selectAll(".extreme").empty();
       voices.selectAll(".extreme-plain")
@@ -187,23 +203,23 @@ function NotesBook() {
       return my;
     } // my.zoom()
   ;
+  my.hilite = function(_) {
+      if(!arguments.length) return [hilite.voice, hilite.index];
+      hilite.voice = _[0];
+      hilite.index = _[1];
+      highlight();
+
+      return my;
+    } // my.hilite()
+  ;
   my.separate = function(_) {
       if(!arguments.length) return separate;
       separate = _ ? true : false;
 
       // Set the markings off to update
       markings.separate(separate);
+      highlight();
 
-      // Meanwhile, art-direct the various voice SVGs
-      var vb = voices.attr("viewBox").split(' ');
-      vb[3] = separate ? fullheight : height;
-
-      voices
-        .transition(d3.transition())
-          .attr("viewBox", vb.join(' '))
-        .selectAll(".voice")
-          .attr("y", function(d, i) { return separate ? i * height : 0; })
-      ;
       return my;
     } // my.separate()
   ;
