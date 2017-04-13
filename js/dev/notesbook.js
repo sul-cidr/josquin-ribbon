@@ -141,11 +141,6 @@ function NotesBook() {
 
       voices
         .transition()
-          .attr("viewBox", vb.join(' '));
-        ;
-
-      voices
-        .transition()
           .attr("viewBox", vb.join(' '))
         .selectAll(".voice")
           .attr("y", function(d, i) { return separate ? i * height : 0; })
