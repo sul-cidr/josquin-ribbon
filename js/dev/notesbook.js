@@ -19,6 +19,7 @@ function NotesBook() {
     , scaleup = function(d) { return d * lifeSize; }
     , separate = false // store the separation state
     , hilite = {}
+    , display = { notes: true, ribbons: false}
     , dispatch
   ;
 
@@ -159,7 +160,8 @@ function NotesBook() {
       hilite.voice = _[0];
       hilite.index = _[1];
       voices.selectAll("svg")
-          .classed("subdued", hilite.voice && function(d, i) { return i !== hilite.index; })
+          .classed("subdued", hilite.voice &&
+              function(d, i) { return i !== hilite.index; })
       ;
       return my;
     } // my.hilite()
@@ -180,7 +182,7 @@ function NotesBook() {
       vb[2] = Math.abs(_[1] - _[0]);
       markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
 
-      reticle.attr("viewBox", vb.join(' ') );
+      reticle.attr("viewBox", vb.join(' '));
 
       return my;
     } // my.zoom()
@@ -203,17 +205,21 @@ function NotesBook() {
       return my;
     } // my.separate()
   ;
-  my.notes = function() { // toggles the notes on/off
+  my.notes = function(_) { // toggles the notes on/off
+      if(!arguments.length) return display.notes;
       var music = voices.selectAll(".notes")
         , vis = music.style("display")
       ;
-      music.style("display", vis === "inline" ? "none" : "inline");
+      display.notes = vis === "inline" ? "none" : "inline";
+      music.style("display", display.notes);
     } // my.notes()
   ;
-  my.ribbons = function(arg) {
+  my.ribbons = function(_) {
+      if(!arguments.length) return display.ribbons;
+      display.ribbons = _;
       voices.selectAll(".ribbon")
           .style("display", function(d) {
-              return d.toLowerCase() === arg ? "inline" : "none";
+              return d.toLowerCase() === display.ribbons ? "inline" : "none";
             })
       ;
     } // my.ribbons()
