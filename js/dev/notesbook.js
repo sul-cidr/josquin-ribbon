@@ -191,11 +191,13 @@ function NotesBook() {
       if(!arguments.length) return separate;
       separate = _ ? true : false;
 
-      // Art-direct the various voice SVGs
+      // Set the markings off to update
+      markings.separate(separate);
+
+      // Meanwhile, art-direct the various voice SVGs
       var vb = voices.attr("viewBox").split(' ');
       vb[3] = separate ? fullheight : height;
 
-      markings.separate(separate); // set this one off
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
