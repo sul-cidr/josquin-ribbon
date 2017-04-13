@@ -168,6 +168,7 @@ function NotesBook() {
       voices.selectAll(".extreme-plain")
           .classed("extreme", xtrms)
       ;
+      return my;
     } // my.extremes()
   ;
   my.zoom = function(_) {
