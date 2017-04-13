@@ -9,7 +9,7 @@ function NotesBook() {
     , viewbox
     , fullheight
     , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
-    , percents = { left: 5, top: 15, right: 5, bottom: 5}
+    , percents = { left: 5, top: 15, right: 5, bottom: 5 }
     , x = d3.scaleLinear()
     , y = d3.scaleBand()
     , score  = Score()
@@ -25,10 +25,10 @@ function NotesBook() {
   */
   function my() {
       x.domain([0, data.scorelength[0]]);
+      x.range(x.domain().map(scaleup));
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
-      x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
       width   = Math.abs(x.range()[1] - x.range()[0]);
