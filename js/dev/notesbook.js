@@ -138,9 +138,7 @@ function NotesBook() {
       markings.separate(separate && !hilite.voice);
 
       // Place the SVGs depending on the separation state
-      var vb = voices.attr("viewBox").split(' ')
-        , rvb = reticle.attr("viewBox").split(' ')
-      ;
+      var vb = voices.attr("viewBox").split(' ');
       vb[3] = separate ? fullheight : height;
 
       var transition = d3.transition();
@@ -152,12 +150,13 @@ function NotesBook() {
         .selectAll(".voice")
           .attr("y", function(d, i) { return separate ? i * height : 0; })
       ;
+      var rvb = vb;
       rvb[1] = (separate && hilite.voice) ? height * hilite.index : 0;
       rvb[3] = (separate && !hilite.voice) ? fullheight : height;
       reticle
         .transition(transition)
           .attr("viewBox", rvb.join(' '))
-
+      ;
   } // restage()
 
   function highlight() {
