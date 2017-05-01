@@ -2,6 +2,12 @@
 // such that a single measure has a fixed width in "absolute time".
 var measureScaling = (function (){
 
+    // Each measure is stretched out to be this many time units.
+    // This is required so that the measure-based scaling doesn't
+    // squish notes vertically into circles.
+    // The reason for this factor in the scaling is purely aesthetic.
+    var stretchFactor = 8;
+
     // Each entry in the returned array corresponts to a single measure,
     // and the value is the number of beats in that measure.
     function computeMeasuresToBeats(proll){
@@ -54,16 +60,20 @@ var measureScaling = (function (){
 
         return {
             startTime: function (d){
-                var startBeat = Math.floor(d.starttime[0]),
-                    offsetBeatFraction = d.starttime[0] - startBeat,
-                    beatsInThisMeasure = beatsToTimeSignature[startBeat];
-                return beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction;
+                var startBeat = Math.floor(d.starttime[0])
+                  , offsetBeatFraction = d.starttime[0] - startBeat
+                  , beatsInThisMeasure = beatsToTimeSignature[startBeat]
+                  , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction
+                ;
+                return startTime * stretchFactor;
             },
             duration: function (d){
-                var startBeat = Math.floor(d.starttime[0]),
-                    offsetBeatFraction = d.starttime[0] - startBeat,
-                    beatsInThisMeasure = beatsToTimeSignature[startBeat];
-                return d.duration[0] / beatsInThisMeasure;
+                var startBeat = Math.floor(d.starttime[0])
+                  , offsetBeatFraction = d.starttime[0] - startBeat
+                  , beatsInThisMeasure = beatsToTimeSignature[startBeat]
+                  , duration = d.duration[0] / beatsInThisMeasure
+                ;
+                return duration * stretchFactor;
             }
         };
 
