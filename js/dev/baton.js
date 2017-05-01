@@ -29,6 +29,14 @@ var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
   , jsonURL = baseURL + 'a=proll-json&f='
   , work // the currently displayed song
 ;
+var mensurationsLUT = {{ site.data.mensurations | jsonify }}
+      .map(function(m) {
+          m.symbols = (m.symbols || m.sign).split(';');
+          m.num_beats = +m.num_beats;
+          m.num_quarter_notes = +m.num_quarter_notes;
+          return m;
+        })
+console.log(mensurationsLUT)
 
 /*
 ** Load the list of available songs
@@ -196,7 +204,6 @@ function chartify(data) {
         .viewbox(notesBook.viewbox())
       ()
     ;
-
 
     // Titles and polish
     var titles = divMeta.select(".meta-titles").selectAll("*")
