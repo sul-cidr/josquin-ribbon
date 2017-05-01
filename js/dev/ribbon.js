@@ -38,9 +38,8 @@ function Ribbon() {
                   .data([modes[m](datum.notedata)]) // call the mode function
               ;
               path.exit().remove();
-              path
-                .enter().append("path")
-                  .attr("vector-effect", "non-scaling-stroke")
+              path.enter()
+                .append("path")
                 .merge(path)
                   .attr("d", area)
               ;
