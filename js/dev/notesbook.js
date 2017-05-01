@@ -242,6 +242,7 @@ function NotesBook() {
          startTimeAccessor = rawAccessors.startTime;
          durationAccessor = rawAccessors.duration;
       }
+      my();
     } // my.measureScaling()
   ;
 

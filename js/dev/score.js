@@ -40,7 +40,6 @@ function Score() {
           .attr("x", function(d) { return x(startTimeAccessor(d)); })
           .attr("y", function(d) { return y(d.pitch.b7); })
           .attr("xlink:href", function(d) {
-              console.log(durationAccessor(d));
               return "#note-" + d.duration[0];
             })
           .attr("class", "note")
