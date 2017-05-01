@@ -20,10 +20,10 @@ function NotesBook() {
     , dispatch
     , rawAccessors = {
           startTime: function (d){
-              return d.starttime[0];
+              return +d.starttime[0];
           },
           duration: function (d){
-              return d.duration[0];
+              return +d.duration[0];
           }
       }
     , measureScalingAccessors 
@@ -94,13 +94,12 @@ function NotesBook() {
               score
                 .x(x)
                 .y(y)
-                .defs(defs)
                 .startTimeAccessor(startTimeAccessor)
                 .durationAccessor(durationAccessor)
               ;
 
               d3.select(this)
-                  .call(score.x(x).y(y))
+                  .call(score)
                   .call(ribbon.x(x).y(y))
               // Initially, don't show the ribbons
                 .selectAll(".ribbon")

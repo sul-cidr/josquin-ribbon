@@ -40,14 +40,12 @@ function Score() {
       var noteEnter = note.enter()
         .append("rect")
           .attr("class", "note")
-          .attr("x", function(d) { return x(d.starttime[0]); })
-          // TODO try this out
-          //.attr("x", function(d) { return x(startTimeAccessor(d)); })
+          .attr("x", function(d) { return x(startTimeAccessor(d)); })
           .attr("y", function(d) { return y(d.pitch.b7); })
           .attr("rx", noteHeight / 2)
           .attr("ry", noteHeight / 2)
           .attr("height", noteHeight)
-          .attr("width", function(d) { return x(+d.duration[0]); })
+          .attr("width", function(d) { return x(durationAccessor(d)); })
           .classed("extreme-plain", function(d) {
               return ~pitches.indexOf(d.pitch.b7);
             })
