@@ -19,7 +19,10 @@ function NotesBook() {
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
     , rawAccessors = {
-          startTime: function (d){
+          timeTransform: function (d){
+              return d;
+          }
+        , startTime: function (d){
               return +d.starttime[0];
           }
         , duration: function (d){
@@ -29,12 +32,15 @@ function NotesBook() {
     , measureScalingAccessors 
     , startTimeAccessor = rawAccessors.startTime
     , durationAccessor = rawAccessors.duration
+    , timeTransform = rawAccessors.timeTransform
   ;
 
   /*
   ** Main Function Object
   */
   function my() {
+      if(!data) return;
+
       x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
@@ -227,16 +233,13 @@ function NotesBook() {
       ;
     } // my.ribbons()
   ;
-  my.measureScaling = function(_) { // toggles the measureScaling on/off
-      if(_){
-         startTimeAccessor = measureScalingAccessors.startTime;
-         durationAccessor = measureScalingAccessors.duration;
-         markings.timeTransform(measureScalingAccessors.timeTransform);
-      } else {
-         startTimeAccessor = rawAccessors.startTime;
-         durationAccessor = rawAccessors.duration;
-         markings.timeTransform(function (d){ return d; });
-      }
+  // Setter only, accepts a boolean value.
+  // Toggles the measure-based scaling on/off.
+  my.measureScaling = function(_) {
+      var accessors = _ ? measureScalingAccessors : rawAccessors;
+      startTimeAccessor = accessors.startTime;
+      durationAccessor = accessors.duration;
+      markings.timeTransform(accessors.timeTransform);
       my();
     } // my.measureScaling()
   ;

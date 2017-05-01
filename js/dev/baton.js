@@ -164,9 +164,12 @@ function connectSignalsToDOM() {
     // Measure-based Scaling
     d3.select("#measure-based-scaling-ui").selectAll("input")
         .on("change", function(d) {
-            signal.call(this.id, this, this.checked);
+            signal.call("measure-based-scaling", null, this.checked);
         })
     ;
+
+    // Initialize to false.
+    signal.call("measure-based-scaling", null, false);
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {

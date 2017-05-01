@@ -43,7 +43,7 @@ function Markings() {
     , separate
     , scorelength
     , dispatch
-    , timeTransform = function (d){ return d; }
+    , timeTransform
   ;
 
   /*
