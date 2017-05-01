@@ -88,7 +88,9 @@ function Markings() {
       // Locations for section labels
       sectionsLocs = data.filter(function(d) { return d.sectionlabel; });
       sectionsScale
-          .domain(sectionsLocs.map(function(d) { return d.time[0]; }))
+          .domain(sectionsLocs.map(function(d) {
+              return timeTransform(d.time[0]);
+          }))
           .range(sectionsLocs.map(function(d) { return d.sectionlabel; }))
       ;
       sections = sections || svg
