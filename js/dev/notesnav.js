@@ -27,14 +27,6 @@ function NotesNav() {
             .attr("height", height)
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
         ;
-        svg.select("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
-          .select("use")
-            .attr("width", width)
-            .attr("height", height)
-        ;
         brush
           .extent([[0, 0], [width, height]])
           .handleSize(width / 200);
@@ -61,7 +53,6 @@ function NotesNav() {
             .style("height", "100%")
             .attr("preserveAspectRatio", "none")
           .append("svg")
-            .attr("preserveAspectRatio", "xMinYMid slice")
           .append("use")
             .attr("xlink:href", "#voices")
         ;
