@@ -8,14 +8,12 @@ function Score() {
     , y // scale for global domain
     , pitches
     , times
-    , stamps
   ;
   /*
   ** Main Function Object
   */
   function my(sel) {
       data = sel.datum();
-      stampify();
       boxify(data.notedata);
 
       var svg = sel.select(".notes");
@@ -26,43 +24,27 @@ function Score() {
       ;
       svg.selectAll(".note").remove(); // Clear out all existing notes
 
-      var notes = svg.selectAll(".note")
+      var note = svg.selectAll(".note")
           .data(
                 function(d) { return d.notedata; }
               , function(d) { return d.starttime[0]; }
             )
       ;
+      note.exit().remove();
 
-      notes.exit().remove();
+      var noteHeight = y.bandwidth();
 
-      notes.enter()
-        .append("use")
+      note = note.enter()
+        .append("rect")
+          .attr("class", "note")
           .attr("x", function(d) { return x(d.starttime[0]); })
           .attr("y", function(d) { return y(d.pitch.b7); })
-          .attr("xlink:href", function(d) {
-              return "#note-" + d.duration[0];
-            })
-          .attr("class", "note")
+          .attr("rx", noteHeight / 2)
+          .attr("ry", noteHeight / 2)
+          .attr("height", noteHeight)
+          .attr("width", function(d) { return x(+d.duration[0]); })
           .classed("extreme-plain", function(d) {
               return ~pitches.indexOf(d.pitch.b7);
-            })
-          .each(function(d) {
-              /*
-              ** a11y: screen readers will find all the information about the
-              **      note here.
-              ** side-effect: browser tooltips in ff and chrome.
-              */
-              var self = d3.select(this)
-                , title = d.pitch.name + " : "
-                    + d.duration + " beats"
-                    + " (" + data.voice + ")"
-              ;
-              self.append("title")
-                  .text(title)
-              ;
-              self.append("desc")
-                  .text(title)
-              ;
             })
       ;
   } // my()
@@ -70,28 +52,6 @@ function Score() {
   /*
   ** Helper Functions
   */
-  function stampify() {
-      // Create notes of various widths, as found in the notedata
-      var noteHeight = y.bandwidth()
-        , durations = d3.nest()
-              .key(function(n) { return n.duration[0]; })
-              .map(data.notedata)
-            .keys()
-              .sort(d3.ascending)
-      ;
-      stamps.selectAll("rect")
-          .data(durations, function(d) { return d; })
-        .enter().append("rect")
-          .attr("id", function(d) { return "note-" + d; })
-          .attr("rx", noteHeight / 2)
-          .attr("ry", noteHeight / 2)
-          .attr("height", noteHeight)
-          .attr("width", function(d) { return x(+d); })
-          .attr("vector-effect", "non-scaling-stroke")
-      ;
-      stamps.exit().remove();
-  } // stampify()
-
   function boxify(notes) {
       pitches = d3.extent(notes.map(function(d) { return d.pitch.b7; }));
       times = [notes[0], notes[notes.length - 1]];
@@ -111,12 +71,6 @@ function Score() {
       y = _;
       return my;
     } // my.y()
-  ;
-  my.defs = function(_) {
-      if(!arguments.length) return stamps;
-      stamps = _.select("#notestamps");
-      return my;
-    } // my.stamps()
   ;
   my.bbox = function() {
       return [
