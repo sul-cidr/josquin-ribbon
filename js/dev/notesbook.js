@@ -58,8 +58,6 @@ function NotesBook() {
           .attr("height", (100 - percents.top - percents.bottom) + "%")
       ;
       voices
-          .attr("width", width)
-          .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
       ;
       var voice = voices.selectAll(".voice")
@@ -107,8 +105,6 @@ function NotesBook() {
       ;
       rulers = svg.append("svg")
         .attr("class", "markings")
-        .style("width", "100%")
-        .style("height", "100%")
       ;
       reticle = svg
         .append("svg")
