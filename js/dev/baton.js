@@ -8,7 +8,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   /*
   ** Visualization's signaling system
   */
-
   var signal = d3.dispatch(
           // List of signals we accept
           "hilite"
@@ -22,39 +21,41 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
         )
   ;
 
-  /*
-  ** Where to find individual songs and the list of songs
-  */
-  var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
-    , catURL = baseURL + 'a=list'
-    , jsonURL = baseURL + 'a=proll-json&f='
-  ;
+/*
+** Where to find individual songs and the list of songs
+*/
+var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
+  , catURL = baseURL + 'a=list'
+  , jsonURL = baseURL + 'a=proll-json&f='
+  , work // the currently displayed song
+;
 
-  /*
-  ** Load the list of available songs
-  */
-  d3.queue()
-      .defer(d3.text, catURL)
-      .await(function(error, list) {
-          if(error) throw(error);
-          var data = d3.nest()
-                      // the first 3 letters + next 4 digits are the id
-                      .key(function(k) { return k.split('-')[0].slice(0,7); })
-                      .map(list.split('\n'))
-                      .keys()
-            , opt = d3.select("#catalog").selectAll("option")
-                      .data(data, function(d) { return d; })
-          ;
-          opt.enter()
-            .append("option")
-              .property("value", function(d) { return d; })
-          ;
-        })
-  ;
-  /*
-  **  Activate the "Load button"
-  */
-  d3.select("#load_song").on("click", function() {
+/*
+** Load the list of available songs
+*/
+d3.queue()
+    .defer(d3.text, catURL)
+    .await(function(error, list) {
+        if(error) throw(error);
+        var data = d3.nest()
+                    // the first 3 letters + next 4 digits are the id
+                    .key(function(k) { return k.split('-')[0].slice(0,7); })
+                    .map(list.split('\n'))
+                    .keys()
+          , catalog = d3.select("#catalog")
+          , opt = catalog.selectAll("option")
+                    .data(data, function(d) { return d; })
+        ;
+        opt.enter()
+          .append("option")
+            .property("value", function(d) { return d; })
+        ;
+      })
+;
+/*
+**  Activate the "Load button"
+*/
+d3.select("#load_song").on("click", function() {
     load_song(d3.select("input#josquin_catalog").node().value);
   })
 ;
@@ -65,8 +66,9 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
 window.onpopstate = function(event) {
     var defaultWork = "Jos2721"
       , hash = getQueryVariables()
-      , work = hash.id || defaultWork
     ;
+    work = hash.id || defaultWork;
+
     d3.select("input#josquin_catalog").node().value = work;
     d3.select("#load_song").node().click();
 } // window.onload()

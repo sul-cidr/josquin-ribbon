@@ -5,7 +5,6 @@ function ColorLegend(){
     var div
       , data
       , hilite
-      , noteHeight = 10
       , dispatch
     ;
 
@@ -13,6 +12,12 @@ function ColorLegend(){
     ** Main function object
     */
     function my() {
+        var width = 22
+          , noteWidth = width - 2
+          , height = noteWidth / 2
+          , noteHeight = height - 2
+          , radius = noteHeight / 2
+        ;
         var legend = div.selectAll("ul").data([1]);
         legend = legend.enter().append("ul")
             .attr("class", "list-unstyled")
@@ -28,13 +33,17 @@ function ColorLegend(){
                 self
                   .append("svg")
                     .attr("x", 0)
-                    .attr("y", noteHeight)
-                    .attr("width", 22)
-                    .attr("height", noteHeight)
+                    .attr("y", 0)
+                    .attr("width", width)
+                    .attr("height", height)
                     .attr("class", "voice" + i)
-                  .append("use")
+                  .append("rect")
                     .attr("x", 1)
-                    .attr("xlink:href", "#note-2")
+                    .attr("y", 1)
+                    .attr("rx", radius)
+                    .attr("ry", radius)
+                    .attr("height", noteHeight)
+                    .attr("width", noteWidth)
                     .attr("class", "note")
                 ;
                 self
@@ -63,14 +72,8 @@ function ColorLegend(){
         if(arguments.length === 0) return height;
         height = value;
         return my;
-    };
-
-    my.noteHeight = function (value){
-        if(arguments.length === 0) return noteHeight;
-        noteHeight = value;
-        return my;
-    };
-
+      }
+    ;
     my.connect = function(value){
         if(!arguments.length) return dispatch;
         dispatch = value;

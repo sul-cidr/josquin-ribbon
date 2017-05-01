@@ -9,9 +9,9 @@ function NotesBook() {
     , viewbox
     , fullheight
     , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
-    , percents = { left: 5, top: 10, right: 5, bottom: 5}
+    , percents = { left: 5, top: 15, right: 5, bottom: 5}
     , x = d3.scaleLinear()
-    , y = d3.scaleBand()
+    , y = d3.scaleBand().round(true)
     , score  = Score()
     , ribbon = Ribbon()
     , markings = Markings()
@@ -64,6 +64,7 @@ function NotesBook() {
       ;
       reticle
           .attr("viewBox", [0, 0, width, height].join(' '))
+        // Make room for the markings around
           .attr("width", (100 - percents.left - percents.right) + "%")
           .attr("height", (100 - percents.top - percents.bottom) + "%")
       ;
@@ -99,7 +100,7 @@ function NotesBook() {
               ;
 
               d3.select(this)
-                  .call(score)
+                  .call(score.x(x).y(y))
                   .call(ribbon.x(x).y(y))
               // Initially, don't show the ribbons
                 .selectAll(".ribbon")
@@ -126,8 +127,6 @@ function NotesBook() {
       ;
       rulers = svg.append("svg")
         .attr("class", "markings")
-        .style("width", "100%")
-        .style("height", "100%")
       ;
       reticle = svg
         .append("svg")
@@ -136,12 +135,6 @@ function NotesBook() {
         .attr("x", percents.left + "%")
         .attr("y", percents.top + "%" )
       ;
-      defs = reticle
-        .append("defs")
-      ;
-      // Create a space for the note rectangles of various time durations
-      defs.append("g").attr("id", "notestamps");
-
       voices = reticle
         .append("svg")
           .attr("class", "voices")
