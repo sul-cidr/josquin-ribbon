@@ -85,18 +85,19 @@ function NotesBook() {
           .attr("preserveAspectRatio", "xMinYMid slice")
         .merge(voice)
       ;
+
+      score
+        .x(x)
+        .y(y)
+        .startTimeAccessor(startTimeAccessor)
+        .durationAccessor(durationAccessor)
+      ;
+
       voice
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
-
-              score
-                .x(x)
-                .y(y)
-                .startTimeAccessor(startTimeAccessor)
-                .durationAccessor(durationAccessor)
-              ;
 
               d3.select(this)
                   .call(score)
