@@ -43,6 +43,7 @@ function Markings() {
     , separate
     , scorelength
     , dispatch
+    , timeTransform = function (d){ return d; }
   ;
 
   /*
@@ -59,7 +60,9 @@ function Markings() {
       // Locations for changes in mensuration.
       mensurationsLocs = data.filter(function(d) { return d.mensuration; });
       mensurationsScale
-          .domain(mensurationsLocs.map(function(d) { return d.time[0]; }))
+          .domain(mensurationsLocs.map(function(d) {
+              return timeTransform(d.time[0]);
+          }))
           .range(mensurationsLocs.map(function(d) { return d.mensuration; }))
       ;
 
@@ -326,6 +329,12 @@ function Markings() {
   ;
   // API Method. Expensive, because it causes a rerender.
   my.calibrate = resize;
+
+  // Setter only.
+  my.timeTransform = function(_){
+      timeTransform = _;
+      return my;
+  };
 
   // This is ALWAYS the last thing returned
   return my;

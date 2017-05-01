@@ -21,8 +21,8 @@ function NotesBook() {
     , rawAccessors = {
           startTime: function (d){
               return +d.starttime[0];
-          },
-          duration: function (d){
+          }
+        , duration: function (d){
               return +d.duration[0];
           }
       }
@@ -235,7 +235,7 @@ function NotesBook() {
       } else {
          startTimeAccessor = rawAccessors.startTime;
          durationAccessor = rawAccessors.duration;
-         markings.timeTransform(null);
+         markings.timeTransform(function (d){ return d; });
       }
       my();
     } // my.measureScaling()
