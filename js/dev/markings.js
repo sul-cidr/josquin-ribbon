@@ -146,7 +146,9 @@ function Markings() {
 
       barlinesAxis
           .scale(barlinesScale.clamp(true))
-          .tickValues(data.map(function(b) { return b.time[0]; }))
+          .tickValues(data.map(function(d) {
+              return timeTransform(d.time[0]);
+          }))
           .tickFormat(function (d, i){
               // barLabels is a dictionary for the "ticks" to include.
               var label = data[i].label;
