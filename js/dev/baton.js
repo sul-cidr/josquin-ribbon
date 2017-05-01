@@ -26,6 +26,7 @@ var signal = d3.dispatch(
 var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
   , catURL = baseURL + 'a=list'
   , jsonURL = baseURL + 'a=proll-json&f='
+  , work // the currently displayed song
 ;
 
 /*
@@ -64,8 +65,9 @@ d3.select("#load_song").on("click", function() {
 window.onpopstate = function(event) {
     var defaultWork = "Jos2721"
       , hash = getQueryVariables()
-      , work = hash.id || defaultWork
     ;
+    work = hash.id || defaultWork;
+
     d3.select("input#josquin_catalog").node().value = work;
     d3.select("#load_song").node().click();
 } // window.onload()
