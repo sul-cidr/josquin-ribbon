@@ -34,7 +34,7 @@ function Score() {
 
       var noteHeight = y.bandwidth();
 
-      note = note.enter()
+      var noteEnter = note.enter()
         .append("rect")
           .attr("class", "note")
           .attr("x", function(d) { return x(d.starttime[0]); })
@@ -47,6 +47,13 @@ function Score() {
               return ~pitches.indexOf(d.pitch.b7);
             })
       ;
+
+      noteEnter.append("title")
+        .merge(note.select("title"))
+        .text(function (d){
+            return d.pitch.name + " : " + d.duration + " beats" + " (" + data.voice + ")";
+        });
+
   } // my()
 
   /*
