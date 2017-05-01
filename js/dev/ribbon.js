@@ -2,7 +2,6 @@ function Ribbon() {
     /* Private Variables */
     var datum
       , x, y
-      , stamps
       , interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
@@ -12,7 +11,7 @@ function Ribbon() {
                 .y0(function (d){ return y(d.y0); })
                 .y1(function (d){ return y(d.y1); })
                 .curve(d3.curveBasis)
-                (data)
+              (data)
             ;
           }
       , modes = {}
@@ -39,9 +38,8 @@ function Ribbon() {
                   .data([modes[m](datum.notedata)]) // call the mode function
               ;
               path.exit().remove();
-              path
-                .enter().append("path")
-                  .attr("vector-effect", "non-scaling-stroke")
+              path.enter()
+                .append("path")
                 .merge(path)
                   .attr("d", area)
               ;
@@ -262,13 +260,6 @@ function Ribbon() {
           ]);
         return my;
       } // my.y()
-    ;
-    my.defs = function(_) {
-        if(!arguments.length)
-            return stamps;
-        stamps = _;
-        return my;
-      } // my.stamps()
     ;
     my.bbox = function() {
         return [];
