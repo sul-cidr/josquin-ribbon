@@ -23,8 +23,10 @@ function NotesNav() {
         height = Math.abs(viewbox[3]);
 
         svg
+          // Set the width and height as a coordinate system for the brush
             .attr("width", width)
             .attr("height", height)
+          // Set the viewbox to ensure that the nested SVG below will fit exactly
             .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
         ;
         brush
@@ -49,11 +51,14 @@ function NotesNav() {
         // Create the structure of the SVG to fill up the space with
         // an image of the main viz.
         svg
+          // Makes the container SVG responsive
             .style("width", "100%")
             .style("height", "100%")
+          // Stretch/distort to fit into the parent div
             .attr("preserveAspectRatio", "none")
           .append("svg")
           .append("use")
+          // Show the voices SVG here
             .attr("xlink:href", "#voices")
         ;
         // Attach an element for the d3.brush()
