@@ -58,6 +58,8 @@ function NotesBook() {
           .attr("height", (100 - percents.top - percents.bottom) + "%")
       ;
       voices
+          .attr("width", width)
+          .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
       ;
       var voice = voices.selectAll(".voice")
