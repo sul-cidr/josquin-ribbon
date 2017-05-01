@@ -29,7 +29,14 @@ function Score() {
 
       var note = svg.selectAll(".note")
           .data(
+
+                // Each "d" here is an object representing a single voice.
+                // d.notedata is an array of notes, for that voice.
                 function(d) { return d.notedata; }
+
+                // Here we use the starttime as the key function,
+                // because within a voice, there can only be a single note
+                // starting at any given time.
               , function(d) { return d.starttime[0]; }
             )
       ;
