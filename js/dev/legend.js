@@ -32,9 +32,13 @@ function ColorLegend(){
                     .attr("width", 22)
                     .attr("height", noteHeight)
                     .attr("class", "voice" + i)
-                  .append("use")
+                  .append("rect")
                     .attr("x", 1)
-                    .attr("xlink:href", "#note-2")
+                    .attr("y", 0)
+                    .attr("rx", noteHeight / 2)
+                    .attr("ry", noteHeight / 2)
+                    .attr("height", noteHeight)
+                    .attr("width", noteHeight * 2)
                     .attr("class", "note")
                 ;
                 self
