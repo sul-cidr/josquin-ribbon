@@ -11,7 +11,7 @@ function NotesBook() {
     , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
     , percents = { left: 5, top: 15, right: 5, bottom: 5}
     , x = d3.scaleLinear()
-    , y = d3.scaleBand()
+    , y = d3.scaleBand().round(true)
     , score  = Score()
     , ribbon = Ribbon()
     , markings = Markings()
