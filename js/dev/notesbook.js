@@ -89,26 +89,37 @@ function NotesBook() {
   ** Helper Functions
   */
   function initialize_SVG() {
-      // Set up the SVG nested structure:
-      //   - Using %s allows the SVGs to be responsive in dimension
-      //       and relative placement
-      //   - The preserveAspectRatio settings cause the image to fill
-      //       the viewport, distorting the image if necessary.
+    /*
+    ** Set up the SVG nested structure:
+    **  - Using %s allows the SVGs to be responsive in dimension
+    **      and relative placement
+    **  - The preserveAspectRatio settings cause the image to fill
+    **      the viewport, distorting the image if necessary.
+    */
+      // Container SVG
       svg
           .attr("class", "notesbook")
+          // Make it responsive
           .style("height", "100%")
           .style("width", "100%")
       ;
+      // SVG to hold the axes (barlines, reflines, etc)
       rulers = svg.append("svg")
         .attr("class", "markings")
       ;
+      // SVG to contain the music.  This SVG acts as a lens around the music
+      // and allows us to view the whole piece or zoom in on any portion of it.
       reticle = svg
         .append("svg")
         .attr("class", "reticle music")
+        // Stretch/distort its contents to fit
         .attr("preserveAspectRatio", "none")
+        // Offset the reticle to allow space around it for markings
+        // Make them %ages to be responsive.
         .attr("x", percents.left + "%")
         .attr("y", percents.top + "%" )
       ;
+      // Finally, an SVG container to hold the voice SVGs
       voices = reticle
         .append("svg")
           .attr("class", "voices")
