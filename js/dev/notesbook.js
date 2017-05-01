@@ -231,9 +231,11 @@ function NotesBook() {
       if(_){
          startTimeAccessor = measureScalingAccessors.startTime;
          durationAccessor = measureScalingAccessors.duration;
+         markings.timeTransform(measureScalingAccessors.timeTransform);
       } else {
          startTimeAccessor = rawAccessors.startTime;
          durationAccessor = rawAccessors.duration;
+         markings.timeTransform(null);
       }
       my();
     } // my.measureScaling()

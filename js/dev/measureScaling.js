@@ -58,7 +58,7 @@ var measureScaling = (function (){
             }
         });
 
-        function timeScale(starttime){
+        function timeTransform(starttime){
             var startBeat = Math.floor(starttime)
               , offsetBeatFraction = starttime - startBeat
               , beatsInThisMeasure = beatsToTimeSignature[startBeat]
@@ -70,11 +70,11 @@ var measureScaling = (function (){
         return {
 
             // Time transformation scale for use with non-notes, e.g. bar lines, mensuration symbols.
-            timeScale: timeScale
+            timeTransform: timeTransform
 
             // Start time accessor for use with notes.
           , startTime: function (d){
-                return timeScale(d.starttime[0]);
+                return timeTransform(d.starttime[0]);
             }
 
             // Duration accessor for use with notes.
