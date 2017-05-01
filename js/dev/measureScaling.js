@@ -58,16 +58,27 @@ var measureScaling = (function (){
             }
         });
 
+        function timeScale(starttime){
+            var startBeat = Math.floor(starttime)
+              , offsetBeatFraction = starttime - startBeat
+              , beatsInThisMeasure = beatsToTimeSignature[startBeat]
+              , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction
+            ;
+            return startTime * stretchFactor;
+        }
+
         return {
-            startTime: function (d){
-                var startBeat = Math.floor(d.starttime[0])
-                  , offsetBeatFraction = d.starttime[0] - startBeat
-                  , beatsInThisMeasure = beatsToTimeSignature[startBeat]
-                  , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction
-                ;
-                return startTime * stretchFactor;
-            },
-            duration: function (d){
+
+            // Time transformation scale for use with non-notes, e.g. bar lines, mensuration symbols.
+            timeScale: timeScale
+
+            // Start time accessor for use with notes.
+          , startTime: function (d){
+                return timeScale(d.starttime[0]);
+            }
+
+            // Duration accessor for use with notes.
+          , duration: function (d){
                 var startBeat = Math.floor(d.starttime[0])
                   , offsetBeatFraction = d.starttime[0] - startBeat
                   , beatsInThisMeasure = beatsToTimeSignature[startBeat]
