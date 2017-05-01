@@ -36,12 +36,6 @@ function NotesBook() {
       fullheight = height * data.partcount;
       viewbox = [x.range()[0], y.range()[1], width, height];
 
-      var sw = parseFloat(svg.style("width"))
-        , sh = parseFloat(svg.style("height"))
-        , w = 500, h = Math.round(w * sh / sw)
-        , fw = w + margin.left + margin.right
-        , fh = h + margin.top + margin.bottom
-      ;
       markings
           .data(data.barlines)
           .voices(data.partnames)
