@@ -69,8 +69,6 @@ function NotesBook() {
         .merge(voice)
       ;
       voice
-          .attr("width", width)
-          .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
               d3.select(this)
