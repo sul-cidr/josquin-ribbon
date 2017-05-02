@@ -1,11 +1,3 @@
-@font-face {
-  font-family: 'BravuraText';
-  src: url('fonts/BravuraText.eot'); /* IE 5-8 */
-  src: local(':)'), /* trick IE to ignore the rest */
-      url('fonts/BravuraText.woff') format('woff'), /* IE9, old FF, Chrome */
-      url('fonts/BravuraText.ttf') format('truetype'), /* Opera, Safari */
-      url('fonts/BravuraText.svg') format('svg'); /* iOS */
-}
 header {
     background-image: url('/img/josquin.jpg');
     background-repeat: no-repeat;
@@ -16,10 +8,6 @@ header {
 }
 #navigator {
     height: 20vh;
-}
-.mensuration {
-    font-family: 'BravuraText';
-    font-size: xx-large;
 }
 #legend li {
     cursor: pointer;
@@ -117,22 +105,6 @@ path.domain {
 .voice9 {
     color: #17becf;
 }
-.fixed-action-button {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-}
-.fixed-action-button > button {
-    margin: 0;
-}
-ul.fab {
-    flex: 0 0 auto;
-    list-style: none;
-    display: flex;
-    align-items: center;
-}
-
 li {
     flex: 0 0 auto;
 }
