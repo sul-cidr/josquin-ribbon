@@ -16,7 +16,6 @@ function NotesBook() {
     , ribbon = Ribbon()
     , markings = Markings()
     , lifeSize = 10 // default height and width of notes
-    , scaleup = function(d) { return d * lifeSize; }
     , dispatch
   ;
 
@@ -24,12 +23,7 @@ function NotesBook() {
   ** Main Function Object
   */
   function my() {
-      x.domain([0, data.scorelength[0]]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
-          .padding(0.2)
-      ;
-      x.range(x.domain().map(scaleup));
-      y.range(d3.extent(y.domain()).reverse().map(scaleup));
+      initialize_scales();
 
       width   = Math.abs(x.range()[1] - x.range()[0]);
       height  = Math.abs(y.range()[1] - y.range()[0]);
@@ -53,7 +47,6 @@ function NotesBook() {
       ;
       voices
           .attr("width", width)
-          .attr("height", height)
           .attr("viewBox", [0, 0, width, height].join(' '))
       ;
       var voice = voices.selectAll(".voice")
@@ -69,6 +62,8 @@ function NotesBook() {
         .merge(voice)
       ;
       voice
+          .attr("width", width)
+          .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
               d3.select(this)
@@ -125,6 +120,17 @@ function NotesBook() {
           .attr("preserveAspectRatio", "none")
       ;
   } // initialize_SVG()
+
+  function initialize_scales() {
+      var scaleup = function(d) { return d * lifeSize; };
+      x.domain([0, data.scorelength[0]]);
+      x.range(x.domain().map(scaleup));
+
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
+          .padding(0.2)
+      ;
+      y.range(d3.extent(y.domain()).map(function(p) { return scaleup(p - data.minpitch.b7); }).reverse());
+  } // initialize_scales()
 
   /*
   ** API (Getter/Setter) Functions
