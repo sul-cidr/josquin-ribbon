@@ -10,10 +10,12 @@ var measureScaling = (function (){
 
     // Each entry in the returned array corresponts to a single measure,
     // and the value is the number of beats in that measure.
-    function computeMeasuresToBeats(proll){
+    function computeMeasuresToBeats(proll, mensurationsLUT){
 
         // Keeps track of the last seen mensuration value.
         var mensuration;
+
+        var beatsPerMeasure = generateBeatMap(mensurationsLUT);
 
         return proll.barlines.map(function (d, i){
 
@@ -25,23 +27,28 @@ var measureScaling = (function (){
     }
 
     // Converts from mensuration symbols to their numeric time signature equivalents.
-    function beatsPerMeasure(mensuration){
-        if(mensuration === "C|"){
-            return 8;
-        } else if(mensuration === "3"){
-            return 12;
-        } else {
+    function generateBeatMap(mensurationsLUT){
+        var mensurationsToBeats = {};
+        mensurationsLUT.forEach(function (d){
+            mensurationsToBeats[d.sign] = d.num_quarter_notes;
+        });
+        return function beatsPerMeasure(mensuration){
+            var beats = mensurationsToBeats[mensuration];
+            if(beats){
+                return beats;
+            } else {
 
-            // Flag unknown mensuration values, for developers to
-            // cover all cases over time.
-            console.warn("Unknown mensuration value: " + mensuration);
+                // Flag unknown mensuration values, for developers to
+                // cover all cases over time.
+                console.warn("Unknown mensuration value: " + mensuration);
 
-            return 8;
+                return 8;
+            }
         }
     }
 
-    return function (proll){
-        var measuresToBeats = computeMeasuresToBeats(proll),
+    return function (proll, mensurationsLUT){
+        var measuresToBeats = computeMeasuresToBeats(proll, mensurationsLUT),
             beatsToTime = [],
             beatsToTimeSignature = [],
             time = 0;

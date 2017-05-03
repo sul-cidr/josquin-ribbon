@@ -35,8 +35,7 @@ var mensurationsLUT = {{ site.data.mensurations | jsonify }}
           m.num_beats = +m.num_beats;
           m.num_quarter_notes = +m.num_quarter_notes;
           return m;
-        })
-console.log(mensurationsLUT)
+        });
 
 /*
 ** Load the list of available songs
@@ -188,11 +187,17 @@ function connectSignalsToViz() {
 
 
 function chartify(data) {
+
     /*
     ** 1. Connect the appropriate data
     ** 2. Activate
     */
-    notesBook.data(data)();
+    notesBook
+        .data(data)
+        .measureScalingAccessors(measureScaling(data, mensurationsLUT))
+      ()
+    ;
+
     colorLegend.data(data.partnames)();
     /*
     ** 1. Set scales and dimensions

@@ -162,9 +162,14 @@ function NotesBook() {
   my.data = function (_){
       if(!arguments.length) return data;
       data = _;
-      measureScalingAccessors = measureScaling(data);
       return my;
     } // my.data()
+  ;
+  my.measureScalingAccessors = function (_){
+      if(!arguments.length) return measureScalingAccessors;
+      measureScalingAccessors = _;
+      return my;
+    } // my.measureScalingAccessors()
   ;
   my.connect = function(_) {
       if(!arguments.length) return dispatch;
