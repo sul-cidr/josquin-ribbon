@@ -8,6 +8,9 @@ function Score() {
     , y // scale for global domain
     , pitches
     , times
+    , stamps
+    , startTimeAccessor
+    , durationAccessor
   ;
   /*
   ** Main Function Object
@@ -26,7 +29,14 @@ function Score() {
 
       var note = svg.selectAll(".note")
           .data(
+
+                // Each "d" here is an object representing a single voice.
+                // d.notedata is an array of notes, for that voice.
                 function(d) { return d.notedata; }
+
+                // Here we use the starttime as the key function,
+                // because within a voice, there can only be a single note
+                // starting at any given time.
               , function(d) { return d.starttime[0]; }
             )
       ;
@@ -37,12 +47,12 @@ function Score() {
       var noteEnter = note.enter()
         .append("rect")
           .attr("class", "note")
-          .attr("x", function(d) { return x(d.starttime[0]); })
+          .attr("x", function(d) { return x(startTimeAccessor(d)); })
           .attr("y", function(d) { return y(d.pitch.b7); })
           .attr("rx", noteHeight / 2)
           .attr("ry", noteHeight / 2)
           .attr("height", noteHeight)
-          .attr("width", function(d) { return x(+d.duration[0]); })
+          .attr("width", function(d) { return x(durationAccessor(d)); })
           .classed("extreme-plain", function(d) {
               return ~pitches.indexOf(d.pitch.b7);
             })
@@ -87,6 +97,18 @@ function Score() {
         , pitches[1] - pitches[0]
       ];
     } // my.bbox()
+  ;
+  my.startTimeAccessor = function(_) {
+      if(!arguments.length) return startTimeAccessor;
+      startTimeAccessor = _;
+      return my;
+    } // my.startTimeAccessor()
+  ;
+  my.durationAccessor = function(_) {
+      if(!arguments.length) return durationAccessor;
+      durationAccessor = _;
+      return my;
+    } // my.durationAccessor()
   ;
   // This is ALWAYS the last thing returned
   return my;

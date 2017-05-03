@@ -3,22 +3,23 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
   , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
   , colorLegend = ColorLegend().div(divMeta.select("#legend"))
-;
+  ;
 
-/*
-** Visualization's signaling system
-*/
-var signal = d3.dispatch(
-        // List of signals we accept
-        "hilite"
-        , "zoom"
-        , "separate-voices"
-        , "selected"
-        , "show-extremes"
-        , "show-ribbon"
-        , "show-notes"
-      )
-;
+  /*
+  ** Visualization's signaling system
+  */
+  var signal = d3.dispatch(
+          // List of signals we accept
+          "hilite"
+          , "zoom"
+          , "separate-voices"
+          , "selected"
+          , "show-extremes"
+          , "show-ribbon"
+          , "show-notes"
+          , "measure-based-scaling"
+        )
+  ;
 
 /*
 ** Where to find individual songs and the list of songs
@@ -34,8 +35,7 @@ var mensurationsLUT = {{ site.data.mensurations | jsonify }}
           m.num_beats = +m.num_beats;
           m.num_quarter_notes = +m.num_quarter_notes;
           return m;
-        })
-console.log(mensurationsLUT)
+        });
 
 /*
 ** Load the list of available songs
@@ -94,6 +94,8 @@ function load_song(work) {
             if(error) throw error;
             // Set the URL history to the current song
             history.pushState(null, null, '?id=' + work);
+
+            // Parse the raw JSON and pass it to chartify.
             chartify(parseJSON(proll));
           })
     ;
@@ -115,23 +117,26 @@ function setupDispatcher() {
 
 function createSignals() {
     signal
-        .on("show-notes",    notesBook.notes)
-        .on("show-extremes", notesBook.extremes)
-        .on("hilite",   notesBook.hilite)
-        .on("show-ribbon",  notesBook.ribbons)
-        .on("separate-voices", notesBook.separate)
-        .on("zoom",     notesBook.zoom)
+        .on("show-notes",            notesBook.notes)
+        .on("show-extremes",         notesBook.extremes)
+        .on("hilite",                notesBook.hilite)
+        .on("show-ribbon",           notesBook.ribbons)
+        .on("separate-voices",       notesBook.separate)
+        .on("zoom",                  notesBook.zoom)
+        .on("measure-based-scaling", notesBook.measureScaling)
     ;
 } // createSignals()
 
+// Connect the UI control elements
 function connectSignalsToDOM() {
-    // Connect the UI control elements
+
     // Combine/Separate Voices
     d3.select("#separate-ui").selectAll("input")
         .on("change", function(d) {
             signal.call(this.id, this, this.checked)
         })
     ;
+
     // Show/Hide Notes and Extreme Notes
     d3.select("#notes-ui").selectAll("input")
         .on("change", function(d) {
@@ -141,6 +146,7 @@ function connectSignalsToDOM() {
             signal.call(this.id, this, null);
           })
     ;
+
     // Show/Hide ribbons
     d3.select("#ribbons-ui").each(function() {
       var check = d3.select(this).select("input")
@@ -161,6 +167,16 @@ function connectSignalsToDOM() {
         })
       ;
     });
+
+    // Measure-based Scaling
+    d3.select("#measure-based-scaling-ui").selectAll("input")
+        .on("change", function(d) {
+            signal.call("measure-based-scaling", null, this.checked);
+        })
+    ;
+
+    // Initialize to false.
+    signal.call("measure-based-scaling", null, false);
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {
@@ -171,11 +187,17 @@ function connectSignalsToViz() {
 
 
 function chartify(data) {
+
     /*
     ** 1. Connect the appropriate data
     ** 2. Activate
     */
-    notesBook.data(data)();
+    notesBook
+        .data(data)
+        .measureScalingAccessors(measureScaling(data, mensurationsLUT))
+      ()
+    ;
+
     colorLegend.data(data.partnames)();
     /*
     ** 1. Set scales and dimensions
@@ -201,6 +223,7 @@ function chartify(data) {
           ;
           new SvgSaver().asSvg(node, filename);
         });
+
 } // chartify()
 
 /// Capture URL query param

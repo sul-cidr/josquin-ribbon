@@ -18,12 +18,29 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , rawAccessors = {
+          timeTransform: function (d){
+              return d;
+          }
+        , startTime: function (d){
+              return +d.starttime[0];
+          }
+        , duration: function (d){
+              return +d.duration[0];
+          }
+      }
+    , measureScalingAccessors 
+    , startTimeAccessor = rawAccessors.startTime
+    , durationAccessor = rawAccessors.duration
+    , timeTransform = rawAccessors.timeTransform
   ;
 
   /*
   ** Main Function Object
   */
   function my() {
+      if(!data) return;
+
       x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
@@ -74,17 +91,26 @@ function NotesBook() {
           .attr("preserveAspectRatio", "xMinYMid slice")
         .merge(voice)
       ;
+
+      score
+        .x(x)
+        .y(y)
+        .startTimeAccessor(startTimeAccessor)
+        .durationAccessor(durationAccessor)
+      ;
+
       voice
           .attr("width", width)
           .attr("height", height)
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
+
               d3.select(this)
-                  .call(score.x(x).y(y))
+                  .call(score)
                   .call(ribbon.x(x).y(y))
               // Initially, don't show the ribbons
                 .selectAll(".ribbon")
-                    .style("display", "none")
+                  .style("display", "none")
               ;
             })
       ;
@@ -138,6 +164,12 @@ function NotesBook() {
       data = _;
       return my;
     } // my.data()
+  ;
+  my.measureScalingAccessors = function (_){
+      if(!arguments.length) return measureScalingAccessors;
+      measureScalingAccessors = _;
+      return my;
+    } // my.measureScalingAccessors()
   ;
   my.connect = function(_) {
       if(!arguments.length) return dispatch;
@@ -205,6 +237,16 @@ function NotesBook() {
             })
       ;
     } // my.ribbons()
+  ;
+  // Setter only, accepts a boolean value.
+  // Toggles the measure-based scaling on/off.
+  my.measureScaling = function(_) {
+      var accessors = _ ? measureScalingAccessors : rawAccessors;
+      startTimeAccessor = accessors.startTime;
+      durationAccessor = accessors.duration;
+      markings.timeTransform(accessors.timeTransform);
+      my();
+    } // my.measureScaling()
   ;
 
   /*
