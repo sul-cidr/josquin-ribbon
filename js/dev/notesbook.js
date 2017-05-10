@@ -245,6 +245,7 @@ function NotesBook() {
       startTimeAccessor = accessors.startTime;
       durationAccessor = accessors.duration;
       markings.timeTransform(accessors.timeTransform);
+      ribbon.timeTransform(accessors.timeTransform);
       my();
     } // my.measureScaling()
   ;
