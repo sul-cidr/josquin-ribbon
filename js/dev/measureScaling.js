@@ -22,7 +22,10 @@ var measureScaling = (function (){
             // Fill in "undefined" mensuration values with last seen value.
             mensuration = (d.mensuration || mensuration);
 
-            return beatsPerMeasure(mensuration);
+            return {
+                mensuration: mensuration,
+                numBeats: beatsPerMeasure(mensuration)
+            };
         });
     }
 
@@ -53,7 +56,8 @@ var measureScaling = (function (){
             beatsToTimeSignature = [],
             time = 0;
 
-        measuresToBeats.forEach(function (numBeats){
+        measuresToBeats.forEach(function (d){
+            var numBeats = d.numBeats;
             //console.log(i + " (measure)");
 
             // Old school for loop to save on Array and closure allocations.
