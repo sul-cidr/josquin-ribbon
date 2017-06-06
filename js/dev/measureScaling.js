@@ -114,7 +114,8 @@ var measureScaling = (function (){
                 var startBeat = Math.floor(d.starttime[0])
                   , offsetBeatFraction = d.starttime[0] - startBeat
                   , beatsInThisMeasure = beatsToTimeSignature[startBeat]
-                  , duration = d.duration[0] / beatsInThisMeasure
+                  , relativeDuration = beatsToRelativeDuration[startBeat]
+                  , duration = d.duration[0] / beatsInThisMeasure * relativeDuration
                 ;
                 return duration * stretchFactor;
             }
