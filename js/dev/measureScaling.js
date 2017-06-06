@@ -8,6 +8,27 @@ var measureScaling = (function (){
     // The reason for this factor in the scaling is purely aesthetic.
     var stretchFactor = 8;
 
+    // This function parses a value from the relative_measure_duration
+    // column of the lookup table into a number.
+    function parseRelativeDuration(str){
+
+        // If no value is defined, assume 1.
+        if(!str){
+            return 1;
+        }
+
+        // If it is a fraction, parse it and do the division.
+        var slashIndex = str.indexOf("/");
+        if(slashIndex !== -1){
+            var numerator = +str.substr(0, slashIndex);
+            var denominator = +str.substr(slashIndex + 1);
+            return numerator / denominator;
+        }
+
+        // Otherwise it's a single number, probably 1.
+        return +str;
+    }
+
     // Each entry in the returned array corresponts to a single measure,
     // and the value is the number of beats in that measure.
     function annotateMeasures(proll, mensurationsLUT){
@@ -15,10 +36,12 @@ var measureScaling = (function (){
         // Keeps track of the last seen mensuration value.
         var mensuration;
 
-        // Create an index from the lookup table.
+        // Create indices from the lookup table.
         var mensurationsToBeats = {};
+        var mensurationsToRelativeDuration = {};
         mensurationsLUT.forEach(function (d){
             mensurationsToBeats[d.sign] = d.num_quarter_notes;
+            mensurationsToRelativeDuration[d.sign] = parseRelativeDuration(d.relative_measure_duration);
         });
 
         return proll.barlines.map(function (d, i){
@@ -31,7 +54,8 @@ var measureScaling = (function (){
             // from the mensurationsLUT.
             return {
                 mensuration: mensuration,
-                numBeats: mensurationsToBeats[mensuration]
+                numBeats: mensurationsToBeats[mensuration],
+                relativeDuration: mensurationsToRelativeDuration[mensuration]
             };
         });
     }
@@ -52,6 +76,9 @@ var measureScaling = (function (){
 
         measuresToBeats.forEach(function (d){
             var numBeats = d.numBeats;
+            var relativeDuration = d.relativeDuration;
+
+            //console.log(relativeDuration);
             
             //console.log(i + " (measure)");
 
