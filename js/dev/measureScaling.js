@@ -71,22 +71,20 @@ var measureScaling = (function (){
             // the number of beats per measure within the current mensuration.
             beatsToTimeSignature = [],
 
+            // Maps the beat (quarter note) to the "relative duration"
+            // of the measure that it is in.
+            beatsToRelativeDuration = [],
+
             // This variable is used to increment time as we move through the piece.
             time = 0;
 
         measuresToBeats.forEach(function (d){
             var numBeats = d.numBeats;
             var relativeDuration = d.relativeDuration;
-
-            //console.log(relativeDuration);
-            
-            //console.log(i + " (measure)");
-
-            // Old school for loop to save on Array and closure allocations.
             for(var i = 0; i < numBeats; i++){
                 beatsToTime.push(time);
                 beatsToTimeSignature.push(numBeats);
-                //console.log("  " + time + " (beat)");
+                beatsToRelativeDuration.push(relativeDuration);
                 time += 1 / numBeats;
             }
         });
@@ -95,7 +93,8 @@ var measureScaling = (function (){
             var startBeat = Math.floor(starttime)
               , offsetBeatFraction = starttime - startBeat
               , beatsInThisMeasure = beatsToTimeSignature[startBeat]
-              , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction
+              , relativeDuration = beatsToRelativeDuration[startBeat]
+              , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction * relativeDuration
             ;
             return startTime * stretchFactor;
         }
