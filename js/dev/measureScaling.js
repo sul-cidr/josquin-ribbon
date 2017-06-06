@@ -52,8 +52,15 @@ var measureScaling = (function (){
 
     return function (proll, mensurationsLUT){
         var measuresToBeats = computeMeasuresToBeats(proll, mensurationsLUT),
+
+            // Maps the beat (quarter note) to absolute time.
             beatsToTime = [],
+
+            // Maps the beat (quarter note) to the "time signature", meaning
+            // the number of beats per measure within the current mensuration.
             beatsToTimeSignature = [],
+
+            // This variable is used to increment time as we move through the piece.
             time = 0;
 
         measuresToBeats.forEach(function (d){
