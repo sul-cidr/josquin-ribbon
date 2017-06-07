@@ -8,59 +8,83 @@ var measureScaling = (function (){
     // The reason for this factor in the scaling is purely aesthetic.
     var stretchFactor = 8;
 
+    // This function parses a value from the relative_measure_duration
+    // column of the lookup table into a number.
+    function parseRelativeDuration(str){
+
+        // If no value is defined, assume 1.
+        if(!str){
+            return 1;
+        }
+
+        // If it is a fraction, parse it and do the division.
+        var slashIndex = str.indexOf("/");
+        if(slashIndex !== -1){
+            var numerator = +str.substr(0, slashIndex);
+            var denominator = +str.substr(slashIndex + 1);
+            return numerator / denominator;
+        }
+
+        // Otherwise it's a single number, probably 1.
+        return +str;
+    }
+
     // Each entry in the returned array corresponts to a single measure,
     // and the value is the number of beats in that measure.
-    function computeMeasuresToBeats(proll, mensurationsLUT){
+    function annotateMeasures(proll, mensurationsLUT){
 
         // Keeps track of the last seen mensuration value.
         var mensuration;
 
-        var beatsPerMeasure = generateBeatMap(mensurationsLUT);
+        // Create indices from the lookup table.
+        var mensurationsToBeats = {};
+        var mensurationsToRelativeDuration = {};
+        mensurationsLUT.forEach(function (d){
+            mensurationsToBeats[d.sign] = d.num_quarter_notes;
+            mensurationsToRelativeDuration[d.sign] = parseRelativeDuration(d.relative_measure_duration);
+        });
 
         return proll.barlines.map(function (d, i){
 
             // Fill in "undefined" mensuration values with last seen value.
             mensuration = (d.mensuration || mensuration);
 
-            return beatsPerMeasure(mensuration);
+            // Return an "annotated measure" object, that contains
+            // useful information about each measure based on information
+            // from the mensurationsLUT.
+            return {
+                mensuration: mensuration,
+                numBeats: mensurationsToBeats[mensuration],
+                relativeDuration: mensurationsToRelativeDuration[mensuration]
+            };
         });
     }
 
-    // Converts from mensuration symbols to their numeric time signature equivalents.
-    function generateBeatMap(mensurationsLUT){
-        var mensurationsToBeats = {};
-        mensurationsLUT.forEach(function (d){
-            mensurationsToBeats[d.sign] = d.num_quarter_notes;
-        });
-        return function beatsPerMeasure(mensuration){
-            var beats = mensurationsToBeats[mensuration];
-            if(beats){
-                return beats;
-            } else {
-
-                // Flag unknown mensuration values, for developers to
-                // cover all cases over time.
-                console.warn("Unknown mensuration value: " + mensuration);
-
-                return 8;
-            }
-        }
-    }
 
     return function (proll, mensurationsLUT){
-        var measuresToBeats = computeMeasuresToBeats(proll, mensurationsLUT),
+        var measuresToBeats = annotateMeasures(proll, mensurationsLUT),
+
+            // Maps the beat (quarter note) to absolute time.
             beatsToTime = [],
+
+            // Maps the beat (quarter note) to the "time signature", meaning
+            // the number of beats per measure within the current mensuration.
             beatsToTimeSignature = [],
+
+            // Maps the beat (quarter note) to the "relative duration"
+            // of the measure that it is in.
+            beatsToRelativeDuration = [],
+
+            // This variable is used to increment time as we move through the piece.
             time = 0;
 
-        measuresToBeats.forEach(function (numBeats){
-            //console.log(i + " (measure)");
-
-            // Old school for loop to save on Array and closure allocations.
+        measuresToBeats.forEach(function (d){
+            var numBeats = d.numBeats;
+            var relativeDuration = d.relativeDuration;
             for(var i = 0; i < numBeats; i++){
                 beatsToTime.push(time);
                 beatsToTimeSignature.push(numBeats);
-                //console.log("  " + time + " (beat)");
+                beatsToRelativeDuration.push(relativeDuration);
                 time += 1 / numBeats;
             }
         });
@@ -69,7 +93,8 @@ var measureScaling = (function (){
             var startBeat = Math.floor(starttime)
               , offsetBeatFraction = starttime - startBeat
               , beatsInThisMeasure = beatsToTimeSignature[startBeat]
-              , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction
+              , relativeDuration = beatsToRelativeDuration[startBeat]
+              , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction * relativeDuration
             ;
             return startTime * stretchFactor;
         }
@@ -89,7 +114,8 @@ var measureScaling = (function (){
                 var startBeat = Math.floor(d.starttime[0])
                   , offsetBeatFraction = d.starttime[0] - startBeat
                   , beatsInThisMeasure = beatsToTimeSignature[startBeat]
-                  , duration = d.duration[0] / beatsInThisMeasure
+                  , relativeDuration = beatsToRelativeDuration[startBeat]
+                  , duration = d.duration[0] / beatsInThisMeasure * relativeDuration
                 ;
                 return duration * stretchFactor;
             }
