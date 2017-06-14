@@ -1,26 +1,33 @@
 sign,num_beats,num_quarter_notes,relative_measure_duration,symbols,MUSIC,COMMENTS
-O2,3,8,1/2,,,I'm not sure why this one wasn't on the list: I've just added it.
-C|,2,8,1/2,,,
-O,3,12,1,,,
-C,2,8,2/3,,,
-3,3,12,1/2,,,
-O|,3,12,3/4,,,
-C|3,3,12,1,C|;3;,,
-O/3,3,12,1/2,;O;3,,
-C.,2,12,1,,,"This is effectively ""compound time,"" with the dotted whole note getting the beat. (6/2, like our modern 6/8)."
-O.,3,18,3/2,,,as above
-3/2,3,12,,;3;2,,In which piece(s) does this sign appear?
-C|2,2,16,1/2,C|;2;,,Time signature is 2 double whole notes (!) per measure.
-2,2,16,1/2,,,"depends on the context, but this is probably right. Worth double-checking"
-O3/2,3,12,1,O;3;2,,In which piece(s) does this sign appear?
-O|3/2,3,12,1/2,O|;3;2,,
-O|3,3,12,1/2,O|;3;,,
-C.3/2,2,12,,C.;3;2,,In which piece(s) does this sign appear?
-C|/3,3,12,1/2,;C|;3,http://josquin.stanford.edu/cgi-bin/jrp?id=Jos0406d&a=humdrum,
-C|/2,2,16,1/2,;C|;2,http://josquin.stanford.edu/cgi-bin/jrp?id=Jos0902d&a=humdrum,
-C2/3,2,8,,C;2;3,,In which piece(s) does this sign appear?
-2/1,2,16,1/2,;2;1,,In which piece(s) does this sign appear?
-C|r,2,16,1/2,,http://josquin.stanford.edu/cgi-bin/jrp?id=Bus1001c&a=humdrum,"Ah, this is reverse C, which means 4:3 relative to C."
-4/3,2,16,1/2,;4;3,http://josquin.stanford.edu/cgi-bin/jrp?id=Tin2001&a=humdrum,
-C.3/8,2,12,1/2,C.;3;8,,
-2/3,2,8,1/2,;2;3,http://josquin.stanford.edu/cgi-bin/jrp?id=Tin2001&a=humdrum,
+O2,3,8,1/2,,Jos0401d,I'm not sure why this one wasn't on the list: I've just added it.
+C|,2,8,1/2,,Jos2721,
+O,3,12,1,,Jos2405,
+C,2,8,2/3,,Mar2020,
+3,3,12,1/2,,Mar3020,
+O|,3,12,3/4,,Rue1005e,
+C|3,3,12,1,C|;3;,Rue1007d,
+O/3,3,8,1/2,;O;3,Jap3009,
+C.,2,12,1,,Bus1001a,"This is effectively ""compound time,"" with the dotted whole note getting the beat. (6/2, like our modern 6/8)."
+O.,3,18,3/2,,Bus1001b,as above
+3/2,3,12,,;3;2,Jos1903,
+C|2,2,16,1/2,C|;2;,Ort2004,Time signature is 2 double whole notes (!) per measure.
+2,2,16,1/2,,Jos0402e,"depends on the context, but this is probably right. Worth double-checking"
+O3/2,3,12,1,O;3;2,Tin1001c,
+O|3/2,3,12,1/2,O|;3;2,Jos0903b,
+O|3,3,12,1/2,O|;3;,Jos0903b,
+C.3/2,2,12,,C.;3;2,Mar2079,
+C|/3,3,12,1/2,;C|;3,Jos0406d,
+C|/2,2,16,1/2,;C|;2,Jos0902d,
+C2/3,2,8,,C;2;3,Tin1001b,
+2/1,2,16,1/2,;2;1,Tin1001a,
+C|r,2,16,1/2,,Bus1001c,"Ah, this is reverse C, which means 4:3 relative to C."
+4/3,2,16,1/2,;4;3,Tin2001,
+C.3/8,2,12,1/2,C.;3;8,Tin1001e,
+2/3,2,8,1/2,;2;3,Tin2001,
+C3,2,8,1/2,,Gas2017a,
+O3,,,,,Bru2012,
+Cr,,,,,Rue1001b,
+C.|,,,,,Ock1013e,
+C|.,,,,,Ock1008b,
+6/4,,,,,Tin3006,
+14/18,,,,,Tin3006,
