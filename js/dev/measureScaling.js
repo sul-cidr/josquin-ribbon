@@ -6,7 +6,7 @@ var measureScaling = (function (){
     // This is required so that the measure-based scaling doesn't
     // squish notes vertically into circles.
     // The reason for this factor in the scaling is purely aesthetic.
-    var stretchFactor = 8;
+    var stretchFactor = 4;
 
     // This function parses a value from the relative_measure_duration
     // column of the lookup table into a number.
@@ -29,7 +29,7 @@ var measureScaling = (function (){
         return +str;
     }
 
-    // Each entry in the returned array corresponts to a single measure,
+    // Each entry in the returned array corresponds to a single measure,
     // and the value is the number of beats in that measure.
     function annotateMeasures(proll, mensurationsLUT){
 
@@ -52,17 +52,18 @@ var measureScaling = (function (){
             // Return an "annotated measure" object, that contains
             // useful information about each measure based on information
             // from the mensurationsLUT.
-            return {
+            var annotatedMeasure = {
                 mensuration: mensuration,
                 numBeats: mensurationsToBeats[mensuration],
                 relativeDuration: mensurationsToRelativeDuration[mensuration]
             };
+            return annotatedMeasure;
         });
     }
 
 
     return function (proll, mensurationsLUT){
-        var measuresToBeats = annotateMeasures(proll, mensurationsLUT),
+        var annotatedMeasures = annotateMeasures(proll, mensurationsLUT),
 
             // Maps the beat (quarter note) to absolute time.
             beatsToTime = [],
@@ -78,25 +79,35 @@ var measureScaling = (function (){
             // This variable is used to increment time as we move through the piece.
             time = 0;
 
-        measuresToBeats.forEach(function (d){
+        annotatedMeasures.forEach(function (d){
             var numBeats = d.numBeats;
             var relativeDuration = d.relativeDuration;
             for(var i = 0; i < numBeats; i++){
                 beatsToTime.push(time);
                 beatsToTimeSignature.push(numBeats);
                 beatsToRelativeDuration.push(relativeDuration);
-                time += 1 / numBeats;
+                time += 1 / numBeats / relativeDuration;
             }
         });
 
         function timeTransform(starttime){
             var startBeat = Math.floor(starttime)
-              , offsetBeatFraction = starttime - startBeat
+              , beatOffset = starttime - startBeat
               , beatsInThisMeasure = beatsToTimeSignature[startBeat]
               , relativeDuration = beatsToRelativeDuration[startBeat]
-              , startTime = beatsToTime[startBeat] + beatsInThisMeasure * offsetBeatFraction * relativeDuration
+              , startTime = beatsToTime[startBeat] + beatOffset / beatsInThisMeasure / relativeDuration
             ;
             return startTime * stretchFactor;
+        }
+
+        function durationTransform(starttime, duration){
+            var startBeat = Math.floor(starttime)
+              , beatOffset = starttime - startBeat
+              , beatsInThisMeasure = beatsToTimeSignature[startBeat]
+              , relativeDuration = beatsToRelativeDuration[startBeat]
+              , duration = duration / beatsInThisMeasure / relativeDuration
+            ;
+            return duration * stretchFactor;
         }
 
         return {
@@ -111,13 +122,7 @@ var measureScaling = (function (){
 
             // Duration accessor for use with notes.
           , duration: function (d){
-                var startBeat = Math.floor(d.starttime[0])
-                  , offsetBeatFraction = d.starttime[0] - startBeat
-                  , beatsInThisMeasure = beatsToTimeSignature[startBeat]
-                  , relativeDuration = beatsToRelativeDuration[startBeat]
-                  , duration = d.duration[0] / beatsInThisMeasure * relativeDuration
-                ;
-                return duration * stretchFactor;
+                return durationTransform(d.starttime[0], d.duration[0]);
             }
         };
 
