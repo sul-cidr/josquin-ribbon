@@ -57,6 +57,7 @@ var measureScaling = (function (){
                 numBeats: mensurationsToBeats[mensuration],
                 relativeDuration: mensurationsToRelativeDuration[mensuration]
             };
+            //console.log(JSON.stringify(annotatedMeasure));
             return annotatedMeasure;
         });
     }
