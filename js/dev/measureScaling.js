@@ -40,6 +40,10 @@ var measureScaling = (function (){
         // in the current mensuration, as determined from adjacent barline times.
         var numQuarterNotes;
 
+        // This variable tracks the relative duration of one measure
+        // in the current mensuration, as determined from the lookup table.
+        var relativeDuration;
+
         // Create indices from the lookup table.
         var mensurationsToRelativeDuration = {};
         mensurationsLUT.forEach(function (d){
@@ -70,16 +74,31 @@ var measureScaling = (function (){
                 // and this value will be used for future bars with this mensuration
                 // (as d.mensuration is not defined unless mensuration changes).
                 mensuration = d.mensuration;
+
+                // Look up the relative duration for the current mensuration
+                // from the lookup table loade in from the CSV file.
+                relativeDuration = mensurationsToRelativeDuration[mensuration]
+
+                // If relative duration is missing from the table,
+                if(!relativeDuration){
+                    // Flag it to developers as missing.
+                    console.error("Error: missing value for column relative_measure_duration in mensurations table for sign '" + mensuration + "'. Falling back to a value of 1.");
+
+                    // Fall back to a value of 1, which may be incorrect,
+                    // but it's better than breaking completely and not showing
+                    // any notes in sections with this mensuration.
+                    relativeDuration = 1;
+                }
             }
 
             // Return an "annotated measure" object, that contains
-            // useful information about each measure based on information
-            // from the mensurationsLUT.
+            // information about each measure used for scaling later.
             var annotatedMeasure = {
                 mensuration: mensuration,
                 numBeats: numQuarterNotes,
-                relativeDuration: mensurationsToRelativeDuration[mensuration]
+                relativeDuration: relativeDuration
             };
+
             //console.log(JSON.stringify(annotatedMeasure));
             return annotatedMeasure;
         });
