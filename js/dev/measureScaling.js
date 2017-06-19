@@ -33,28 +33,51 @@ var measureScaling = (function (){
     // and the value is the number of beats in that measure.
     function annotateMeasures(proll, mensurationsLUT){
 
-        // Keeps track of the last seen mensuration value.
+        // Keeps track of the last seen (current) mensuration.
         var mensuration;
 
+        // This variable tracks the number of quarter notes per measure
+        // in the current mensuration, as determined from adjacent barline times.
+        var numQuarterNotes;
+
         // Create indices from the lookup table.
-        var mensurationsToBeats = {};
         var mensurationsToRelativeDuration = {};
         mensurationsLUT.forEach(function (d){
-            mensurationsToBeats[d.sign] = d.num_quarter_notes;
             mensurationsToRelativeDuration[d.sign] = parseRelativeDuration(d.relative_measure_duration);
         });
 
+
         return proll.barlines.map(function (d, i){
 
-            // Fill in "undefined" mensuration values with last seen value.
-            mensuration = (d.mensuration || mensuration);
+            // If we are facing a change in mensuration (or the first bar),
+            if(d.mensuration){
+                // let's use the data to determine how many quarter notes
+                // are in each measure for this particular mensuration.
+                // We do this because we've noticed that the same mensuration in 
+                // different pieces doesn't necessarily have the same number of quarter notes.
+
+                // First, we get the time (which is in units of quarter notes)
+                // from the current bar and the next bar.
+                var bar0Time = +proll.barlines[i].time[0];
+                var bar1Time = +proll.barlines[i + 1].time[0];
+
+                // Then we take the difference between these times, and use that
+                // as the number of quarter notes per measure,
+                // which will not change until the mensuration changes again.
+                numQuarterNotes = bar1Time - bar0Time;
+
+                // Set the current mensuration when the mensuration changes,
+                // and this value will be used for future bars with this mensuration
+                // (as d.mensuration is not defined unless mensuration changes).
+                mensuration = d.mensuration;
+            }
 
             // Return an "annotated measure" object, that contains
             // useful information about each measure based on information
             // from the mensurationsLUT.
             var annotatedMeasure = {
                 mensuration: mensuration,
-                numBeats: mensurationsToBeats[mensuration],
+                numBeats: numQuarterNotes,
                 relativeDuration: mensurationsToRelativeDuration[mensuration]
             };
             //console.log(JSON.stringify(annotatedMeasure));
