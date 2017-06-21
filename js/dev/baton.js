@@ -175,8 +175,12 @@ function connectSignalsToDOM() {
         })
     ;
 
-    // Initialize to false.
-    signal.call("measure-based-scaling", null, false);
+    // TODO Update the checkbox when measure based scaling gets initialized or changed.
+    //signal.on("measure-based-scaling.checkbox", function (d){
+    //    console.log("HHHEre ");
+    //    console.log(d);
+    //});
+
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {
@@ -223,6 +227,9 @@ function chartify(data) {
           ;
           new SvgSaver().asSvg(node, filename);
         });
+
+    // Initialize measure based scaling.
+    signal.call("measure-based-scaling", null, true);
 
 } // chartify()
 
