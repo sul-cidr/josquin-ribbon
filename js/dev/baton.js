@@ -168,18 +168,17 @@ function connectSignalsToDOM() {
       ;
     });
 
-    // Measure-based Scaling
-    d3.select("#measure-based-scaling-ui").selectAll("input")
+    // Respond to when the user checks/unchecks the measure scaling checkbox.
+    d3.select("#measure-based-scaling")
         .on("change", function(d) {
             signal.call("measure-based-scaling", null, this.checked);
         })
     ;
 
-    // TODO Update the checkbox when measure based scaling gets initialized or changed.
-    //signal.on("measure-based-scaling.checkbox", function (d){
-    //    console.log("HHHEre ");
-    //    console.log(d);
-    //});
+    // Update the checkbox when measure based scaling gets initialized or changed.
+    signal.on("measure-based-scaling.checkbox", function (d){
+        d3.select("#measure-based-scaling").node().checked = d;
+    });
 
     // Initialize measure-based-scaling to false.
     // This is required here, so that the timeTransform gets an
