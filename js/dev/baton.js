@@ -168,15 +168,23 @@ function connectSignalsToDOM() {
       ;
     });
 
-    // Measure-based Scaling
-    d3.select("#measure-based-scaling-ui").selectAll("input")
+    // Respond to when the user checks/unchecks the measure scaling checkbox.
+    d3.select("#measure-based-scaling")
         .on("change", function(d) {
             signal.call("measure-based-scaling", null, this.checked);
         })
     ;
 
-    // Initialize to false.
+    // Update the checkbox when measure based scaling gets initialized or changed.
+    signal.on("measure-based-scaling.checkbox", function (d){
+        d3.select("#measure-based-scaling").node().checked = d;
+    });
+
+    // Initialize measure-based-scaling to false.
+    // This is required here, so that the timeTransform gets an
+    // initial value before the first rendering.
     signal.call("measure-based-scaling", null, false);
+
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {
@@ -223,6 +231,9 @@ function chartify(data) {
           ;
           new SvgSaver().asSvg(node, filename);
         });
+
+    // Initialize measure based scaling.
+    signal.call("measure-based-scaling", null, true);
 
 } // chartify()
 
