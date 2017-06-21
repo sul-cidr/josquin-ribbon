@@ -181,6 +181,11 @@ function connectSignalsToDOM() {
     //    console.log(d);
     //});
 
+    // Initialize measure-based-scaling to false.
+    // This is required here, so that the timeTransform gets an
+    // initial value before the first rendering.
+    signal.call("measure-based-scaling", null, false);
+
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {
