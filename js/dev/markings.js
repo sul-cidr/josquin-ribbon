@@ -116,10 +116,12 @@ function Markings() {
       y.range([height - margin.bottom, margin.top]);
       voices.range(y.range());
 
+      // TODO move this block into the render function (my())
       reflines.call(renderReflines);
       barlines.call(renderBarlines);
       mensurations.call(renderMensurations);
       sections.call(renderSections);
+
   } // resize()
 
   /*
@@ -272,7 +274,9 @@ function Markings() {
   my.data = function (_){
       if(!arguments.length) return data;
 
+      // TODO move this into render function, use .exit()
       if(reflines) reflines.selectAll(".refline").remove();
+
       data = _;
       height = width = null;
       return my;
@@ -293,6 +297,8 @@ function Markings() {
   my.xDomain = function(_) {
       if(!arguments.length) return x.domain();
       x.domain(_);
+
+      // TODO move this (entire block) into render function
       barlinesAxis.scale(barlinesScale.clamp(true));
       barlines.call(renderBarlines);
       mensurationsAxis.scale(barlinesScale.clamp(true));
@@ -326,6 +332,8 @@ function Markings() {
       if(!arguments.length) return separate;
 
       separate = _;
+
+      // TODO move this into render function
       reflines.call(renderReflines);
 
       return my;
