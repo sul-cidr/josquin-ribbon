@@ -178,6 +178,8 @@ function NotesBook() {
     } // my.connect()
   ;
   my.hilite = function(_) {
+
+      // TODO move this into render function, introduce variable.
         if(!_[0])
             voices.selectAll(".subdued")
                 .classed("subdued", false)
@@ -185,11 +187,14 @@ function NotesBook() {
             voices.selectAll("svg")
                 .classed("subdued", function(d, i) { return i !== _[1]; })
             ;
+
       return my;
     } // my.hilite()
   ;
   my.extremes = function() {
       var xtrms = voices.selectAll(".extreme").empty();
+
+      // TODO move this into render function, introduce variable.
       voices.selectAll(".extreme-plain")
           .classed("extreme", xtrms)
       ;
@@ -199,10 +204,10 @@ function NotesBook() {
       var vb = reticle.attr("viewBox").split(' ');
       if(!arguments.length) return vb;
 
+      // TODO move this into render function.
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
       markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
-
       reticle.attr("viewBox", vb.join(' ') );
 
       return my;
@@ -213,6 +218,7 @@ function NotesBook() {
       var vb = voices.attr("viewBox").split(' ');
       vb[3] = _ ? fullheight : height;
 
+      // TODO move this into render function.
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
@@ -224,6 +230,8 @@ function NotesBook() {
     } // my.separate()
   ;
   my.notes = function() { // toggles the notes on/off
+
+      // TODO move this into render function, introduce variable.
       var music = voices.selectAll(".notes")
         , vis = music.style("display")
       ;
@@ -231,6 +239,8 @@ function NotesBook() {
     } // my.notes()
   ;
   my.ribbons = function(arg) {
+
+      // TODO move this into render function, introduce variable.
       voices.selectAll(".ribbon")
           .style("display", function(d) {
               return d.toLowerCase() === arg ? "inline" : "none";
