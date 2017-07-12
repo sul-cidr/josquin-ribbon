@@ -6,7 +6,7 @@ var measureScaling = (function (){
     // This is required so that the measure-based scaling doesn't
     // squish notes vertically into circles.
     // The reason for this factor in the scaling is purely aesthetic.
-    var stretchFactor = 4;
+    var stretchFactor = 8;
 
     // This function parses a value from the relative_measure_duration
     // column of the lookup table into a number.
@@ -129,7 +129,7 @@ var measureScaling = (function (){
                 beatsToTime.push(time);
                 beatsToTimeSignature.push(numBeats);
                 beatsToRelativeDuration.push(relativeDuration);
-                time += 1 / numBeats / relativeDuration;
+                time += 1 / numBeats * relativeDuration;
             }
         });
 
@@ -138,7 +138,7 @@ var measureScaling = (function (){
               , beatOffset = starttime - startBeat
               , beatsInThisMeasure = beatsToTimeSignature[startBeat]
               , relativeDuration = beatsToRelativeDuration[startBeat]
-              , startTime = beatsToTime[startBeat] + beatOffset / beatsInThisMeasure / relativeDuration
+              , startTime = beatsToTime[startBeat] + beatOffset / beatsInThisMeasure * relativeDuration
             ;
             return startTime * stretchFactor;
         }
@@ -148,7 +148,7 @@ var measureScaling = (function (){
               , beatOffset = starttime - startBeat
               , beatsInThisMeasure = beatsToTimeSignature[startBeat]
               , relativeDuration = beatsToRelativeDuration[startBeat]
-              , duration = duration / beatsInThisMeasure / relativeDuration
+              , duration = duration / beatsInThisMeasure * relativeDuration
             ;
             return duration * stretchFactor;
         }
