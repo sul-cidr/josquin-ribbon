@@ -33,6 +33,7 @@ function NotesBook() {
     , startTimeAccessor = rawAccessors.startTime
     , durationAccessor = rawAccessors.duration
     , timeTransform = rawAccessors.timeTransform
+    , zoom
   ;
 
   /*
@@ -41,7 +42,6 @@ function NotesBook() {
   function my() {
       if(!data) return;
 
-      x.domain([0, data.scorelength[0]]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
@@ -68,8 +68,19 @@ function NotesBook() {
       rulers
           .call(markings)
       ;
+
+      // Default to being zoomed out completely.
+      var reticleViewbox = [0, 0, width, height];
+
+      // If a zoom has been set in response to brushing,
+      // set the viewBox accordingly.
+      if (zoom) {
+        reticleViewbox[0] = zoom[0];
+        reticleViewbox[2] = Math.abs(zoom[1] - zoom[0]);
+      }
+
       reticle
-          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("viewBox", reticleViewbox.join(' '))
         // Make room for the markings around
           .attr("width", (100 - percents.left - percents.right) + "%")
           .attr("height", (100 - percents.top - percents.bottom) + "%")
@@ -77,7 +88,7 @@ function NotesBook() {
       voices
           .attr("width", width)
           .attr("height", height)
-          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("viewBox", reticleViewbox.join(' '))
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
@@ -162,6 +173,7 @@ function NotesBook() {
   my.data = function (_){
       if(!arguments.length) return data;
       data = _;
+      x.domain([0, data.scorelength[0]]);
       return my;
     } // my.data()
   ;
@@ -200,16 +212,11 @@ function NotesBook() {
       ;
     } // my.extremes()
   ;
+
+  // Setter only (never used as getter).
   my.zoom = function(_) {
-      var vb = reticle.attr("viewBox").split(' ');
-      if(!arguments.length) return vb;
-
-      // TODO move this into render function.
-      vb[0] = _[0];
-      vb[2] = Math.abs(_[1] - _[0]);
-      markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
-      reticle.attr("viewBox", vb.join(' ') );
-
+      zoom = _
+      markings.xDomain(zoom.map(x.invert));
       return my;
     } // my.zoom()
   ;
