@@ -47,12 +47,7 @@ function NotesBook() {
 
       setXScale();
       reWidthToData();
-
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
-          .padding(0.2)
-      ;
-      y.range(d3.extent(y.domain()).reverse().map(scaleup));
-
+      setYScale();
       height  = Math.abs(y.range()[1] - y.range()[0]);
       fullheight = height * data.partcount;
       viewbox = [x.range()[0], y.range()[1], width, height];
@@ -169,6 +164,14 @@ function NotesBook() {
     x.domain([0, rawAccessors.scoreLength()]);
     x.range(x.domain().map(scaleup));
   } // setXScale()
+
+  function setYScale() {
+      if(!data) return;
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
+          .padding(0.2)
+      ;
+      y.range(d3.extent(y.domain()).reverse().map(scaleup));
+  } // setYScale()
 
   function reWidthToData() {
       if(!data) return;
