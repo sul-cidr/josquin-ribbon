@@ -16,7 +16,7 @@ function NotesBook() {
     , ribbon = Ribbon()
     , markings = Markings()
     , lifeSize = 10 // default height and width of notes
-    , scaleup = function(d) { return d * lifeSize; }
+    , scaleup = function (d){ return d * lifeSize; }
     , dispatch
     , rawAccessors = {
           timeTransform: function (d){
@@ -28,8 +28,11 @@ function NotesBook() {
         , duration: function (d){
               return +d.duration[0];
           }
+        , scoreLength: function (){
+              return data.scorelength[0];
+          }
       }
-    , measureScalingAccessors 
+    , measureScalingAccessors
     , startTimeAccessor = rawAccessors.startTime
     , durationAccessor = rawAccessors.duration
     , timeTransform = rawAccessors.timeTransform
