@@ -45,13 +45,14 @@ function NotesBook() {
   function my() {
       if(!data) return;
 
+      setXScale();
+      reWidthToData();
+
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
-      x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
-      width   = Math.abs(x.range()[1] - x.range()[0]);
       height  = Math.abs(y.range()[1] - y.range()[0]);
       fullheight = height * data.partcount;
       viewbox = [x.range()[0], y.range()[1], width, height];
@@ -163,6 +164,17 @@ function NotesBook() {
       ;
   } // initialize_SVG()
 
+  function setXScale() {
+    if(!data) return;
+    x.domain([0, rawAccessors.scoreLength()]);
+    x.range(x.domain().map(scaleup));
+  } // setXScale()
+
+  function reWidthToData() {
+      if(!data) return;
+      width   = Math.abs(x.range()[1] - x.range()[0]);
+  } // reWidthToData()
+
   /*
   ** API (Getter/Setter) Functions
   */
@@ -176,7 +188,6 @@ function NotesBook() {
   my.data = function (_){
       if(!arguments.length) return data;
       data = _;
-      x.domain([0, data.scorelength[0]]);
       return my;
     } // my.data()
   ;
