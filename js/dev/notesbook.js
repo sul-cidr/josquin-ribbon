@@ -49,7 +49,7 @@ function NotesBook() {
       reWidthFromData();
       setYScale();
       reHeightFromData();
-      viewbox = [x.range()[0], y.range()[1], width, height];
+      updateViewbox();
 
       var sw = parseFloat(svg.style("width"))
         , sh = parseFloat(svg.style("height"))
@@ -182,6 +182,16 @@ function NotesBook() {
       height  = Math.abs(y.range()[1] - y.range()[0]);
       fullheight = height * data.partcount;
   } // reHeightFromData()
+
+  function updateViewbox() {
+      viewbox = [x.range()[0], y.range()[1], width, height];
+      reticle
+        .transition(d3.transition())
+          .attr("viewBox", [0, 0, width, height].join(' '))
+      ;
+  } // updateViewbox()
+
+
 
   /*
   ** API (Getter/Setter) Functions
