@@ -48,8 +48,7 @@ function NotesBook() {
       setXScale();
       reWidthToData();
       setYScale();
-      height  = Math.abs(y.range()[1] - y.range()[0]);
-      fullheight = height * data.partcount;
+      reHeightToData();
       viewbox = [x.range()[0], y.range()[1], width, height];
 
       var sw = parseFloat(svg.style("width"))
@@ -177,6 +176,12 @@ function NotesBook() {
       if(!data) return;
       width   = Math.abs(x.range()[1] - x.range()[0]);
   } // reWidthToData()
+
+  function reHeightToData() {
+      if(!data) return;
+      height  = Math.abs(y.range()[1] - y.range()[0]);
+      fullheight = height * data.partcount;
+  } // reHeightToData()
 
   /*
   ** API (Getter/Setter) Functions
