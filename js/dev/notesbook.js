@@ -167,6 +167,8 @@ function NotesBook() {
 
   function setXScale() {
     if(!data) return;
+
+    // TODO take into account the zoom state here.
     x.domain([0, rawAccessors.scoreLength()]);
     x.range(x.domain().map(scaleup));
   } // setXScale()
