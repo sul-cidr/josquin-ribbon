@@ -37,6 +37,7 @@ function NotesBook() {
     , durationAccessor = rawAccessors.duration
     , timeTransform = rawAccessors.timeTransform
     , zoom
+    , extremes
   ;
 
   /*
@@ -235,12 +236,14 @@ function NotesBook() {
       return my;
     } // my.hilite()
   ;
-  my.extremes = function() {
-      var xtrms = voices.selectAll(".extreme").empty();
+  my.extremes = function(_) {
+      if(!arguments.length) return extremes;
+
+      extremes = voices.selectAll(".extreme").empty();
 
       // TODO move this into render function, introduce variable.
       voices.selectAll(".extreme-plain")
-          .classed("extreme", xtrms)
+          .classed("extreme", extremes)
       ;
     } // my.extremes()
   ;
