@@ -203,6 +203,11 @@ function NotesBook() {
       ;
   } // extremify()
 
+  function toggleNotes() {
+      voices.selectAll(".notes")
+          .style("display", show.notes === "inline" ? "none" : "inline")
+      ;
+  } // toggleNotes()
 
   /*
   ** API (Getter/Setter) Functions
@@ -280,12 +285,9 @@ function NotesBook() {
     } // my.separate()
   ;
   my.notes = function() { // toggles the notes on/off
-
-      // TODO move this into render function, introduce variable.
-      var music = voices.selectAll(".notes")
-        , vis = music.style("display")
-      ;
-      music.style("display", vis === "inline" ? "none" : "inline");
+      show.notes = voices.selectAll(".notes").style("display");
+      toggleNotes()
+      return my;
     } // my.notes()
   ;
   my.ribbons = function(arg) {
