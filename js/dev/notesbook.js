@@ -128,6 +128,7 @@ function NotesBook() {
               ;
             })
       ;
+      toggleNotes(); // preserve show/hide of notes
       extremify(); // preserve state of highlighting extreme notes
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
