@@ -37,7 +37,11 @@ function NotesBook() {
     , durationAccessor = rawAccessors.duration
     , timeTransform = rawAccessors.timeTransform
     , zoom
-    , extremes
+    , show = {
+            extremes: false
+          , notes: true
+          , ribbons: false
+        }
   ;
 
   /*
@@ -195,7 +199,7 @@ function NotesBook() {
 
   function extremify() {
       voices.selectAll(".extreme-plain")
-          .classed("extreme", extremes)
+          .classed("extreme", show.extremes)
       ;
   } // extremify()
 
@@ -243,11 +247,10 @@ function NotesBook() {
     } // my.hilite()
   ;
   my.extremes = function(_) {
-      if(!arguments.length) return extremes;
+      if(!arguments.length) return show.extremes;
 
-      extremes = voices.selectAll(".extreme").empty();
+      show.extremes = voices.selectAll(".extreme").empty();
 
-      // TODO move this into render function, introduce variable.
       extremify();
       return my;
     } // my.extremes()
