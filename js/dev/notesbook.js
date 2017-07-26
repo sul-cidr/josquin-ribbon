@@ -192,6 +192,11 @@ function NotesBook() {
       ;
   } // updateViewbox()
 
+  function extremify() {
+      voices.selectAll(".extreme-plain")
+          .classed("extreme", extremes)
+      ;
+  } // extremify()
 
 
   /*
@@ -242,9 +247,8 @@ function NotesBook() {
       extremes = voices.selectAll(".extreme").empty();
 
       // TODO move this into render function, introduce variable.
-      voices.selectAll(".extreme-plain")
-          .classed("extreme", extremes)
-      ;
+      extremify();
+      return my;
     } // my.extremes()
   ;
 
