@@ -18,5 +18,5 @@
 #     http://127.0.0.1:7000
 #
 
-bundle exec jekyll serve --watch --port 7000
+bundle exec jekyll serve --incremental --watch --port 7000
 
