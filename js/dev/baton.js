@@ -17,7 +17,6 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
           , "show-extremes"
           , "show-ribbon"
           , "show-notes"
-          , "measure-based-scaling"
         )
   ;
 
@@ -29,14 +28,6 @@ var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
   , jsonURL = baseURL + 'a=proll-json&f='
   , work // the currently displayed song
 ;
-var mensurationsLUT = {{ site.data.mensurations | jsonify }}
-      .map(function(m) {
-          m.symbols = (m.symbols || m.sign).split(';');
-          m.num_beats = +m.num_beats;
-          m.num_quarter_notes = +m.num_quarter_notes;
-          return m;
-        });
-
 /*
 ** Load the list of available songs
 */
@@ -117,13 +108,12 @@ function setupDispatcher() {
 
 function createSignals() {
     signal
-        .on("show-notes",            notesBook.notes)
-        .on("show-extremes",         notesBook.extremes)
-        .on("hilite",                notesBook.hilite)
-        .on("show-ribbon",           notesBook.ribbons)
-        .on("separate-voices",       notesBook.separate)
-        .on("zoom",                  notesBook.zoom)
-        .on("measure-based-scaling", notesBook.measureScaling)
+        .on("show-notes",      notesBook.notes)
+        .on("show-extremes",   notesBook.extremes)
+        .on("hilite",          notesBook.hilite)
+        .on("show-ribbon",     notesBook.ribbons)
+        .on("separate-voices", notesBook.separate)
+        .on("zoom",            notesBook.zoom)
     ;
 } // createSignals()
 
@@ -167,24 +157,6 @@ function connectSignalsToDOM() {
         })
       ;
     });
-
-    // Respond to when the user checks/unchecks the measure scaling checkbox.
-    d3.select("#measure-based-scaling")
-        .on("change", function(d) {
-            signal.call("measure-based-scaling", null, this.checked);
-        })
-    ;
-
-    // Update the checkbox when measure based scaling gets initialized or changed.
-    signal.on("measure-based-scaling.checkbox", function (d){
-        d3.select("#measure-based-scaling").node().checked = d;
-    });
-
-    // Initialize measure-based-scaling to false.
-    // This is required here, so that the timeTransform gets an
-    // initial value before the first rendering.
-    signal.call("measure-based-scaling", null, false);
-
 } // connectSignalsToDOM()
 
 function connectSignalsToViz() {
@@ -202,7 +174,6 @@ function chartify(data) {
     */
     notesBook
         .data(data)
-        .measureScalingAccessors(measureScaling(data, mensurationsLUT))
       ()
     ;
 
@@ -231,10 +202,6 @@ function chartify(data) {
           ;
           new SvgSaver().asSvg(node, filename);
         });
-
-    // Initialize measure based scaling.
-    signal.call("measure-based-scaling", null, true);
-
 } // chartify()
 
 /// Capture URL query param

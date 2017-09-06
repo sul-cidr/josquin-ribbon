@@ -9,8 +9,6 @@ function Score() {
     , pitches
     , times
     , stamps
-    , startTimeAccessor
-    , durationAccessor
   ;
   /*
   ** Main Function Object
@@ -37,7 +35,7 @@ function Score() {
                 // Here we use the starttime as the key function,
                 // because within a voice, there can only be a single note
                 // starting at any given time.
-              , function(d) { return d.starttime[0]; }
+              , getTime.start
             )
       ;
       note.exit().remove();
@@ -47,12 +45,12 @@ function Score() {
       var noteEnter = note.enter()
         .append("rect")
           .attr("class", "note")
-          .attr("x", function(d) { return x(startTimeAccessor(d)); })
+          .attr("x", function(d) { return x(getTime.start(d)); })
           .attr("y", function(d) { return y(d.pitch.b7); })
           .attr("rx", noteHeight / 2)
           .attr("ry", noteHeight / 2)
           .attr("height", noteHeight)
-          .attr("width", function(d) { return x(durationAccessor(d)); })
+          .attr("width", function(d) { return x(getTime.duration(d)); })
           .classed("extreme-plain", function(d) {
               return ~pitches.indexOf(d.pitch.b7);
             })
@@ -91,25 +89,14 @@ function Score() {
   ;
   my.bbox = function() {
       return [
-          times[0].starttime[0]
+          getTime.start(times[0])
         , pitches[0]
-        , times[1].starttime[0] + times[1].duration - times[0].starttime[0]
+        , getTime.start(times[1]) + getTime.duration(times[1]) - getTime.start(times[0])
         , pitches[1] - pitches[0]
       ];
     } // my.bbox()
   ;
-  my.startTimeAccessor = function(_) {
-      if(!arguments.length) return startTimeAccessor;
-      startTimeAccessor = _;
-      return my;
-    } // my.startTimeAccessor()
-  ;
-  my.durationAccessor = function(_) {
-      if(!arguments.length) return durationAccessor;
-      durationAccessor = _;
-      return my;
-    } // my.durationAccessor()
-  ;
+
   // This is ALWAYS the last thing returned
   return my;
 } // Score()
