@@ -18,21 +18,6 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
-    , rawAccessors = {
-          timeTransform: function (d){
-              return d;
-          }
-        , startTime: function (d){
-              return +d.starttime[0];
-          }
-        , duration: function (d){
-              return +d.duration[0];
-          }
-      }
-    , measureScalingAccessors 
-    , startTimeAccessor = rawAccessors.startTime
-    , durationAccessor = rawAccessors.duration
-    , timeTransform = rawAccessors.timeTransform
   ;
 
   /*
@@ -41,7 +26,7 @@ function NotesBook() {
   function my() {
       if(!data) return;
 
-      x.domain([0, data.scorelength[0]]);
+      x.domain([0, getTime.scoreLength(data)]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
@@ -95,8 +80,6 @@ function NotesBook() {
       score
         .x(x)
         .y(y)
-        .startTimeAccessor(startTimeAccessor)
-        .durationAccessor(durationAccessor)
       ;
 
       voice
@@ -164,12 +147,6 @@ function NotesBook() {
       data = _;
       return my;
     } // my.data()
-  ;
-  my.measureScalingAccessors = function (_){
-      if(!arguments.length) return measureScalingAccessors;
-      measureScalingAccessors = _;
-      return my;
-    } // my.measureScalingAccessors()
   ;
   my.connect = function(_) {
       if(!arguments.length) return dispatch;
@@ -247,17 +224,6 @@ function NotesBook() {
             })
       ;
     } // my.ribbons()
-  ;
-  // Setter only, accepts a boolean value.
-  // Toggles the measure-based scaling on/off.
-  my.measureScaling = function(_) {
-      var accessors = _ ? measureScalingAccessors : rawAccessors;
-      startTimeAccessor = accessors.startTime;
-      durationAccessor = accessors.duration;
-      markings.timeTransform(accessors.timeTransform);
-      ribbon.timeTransform(accessors.timeTransform);
-      my();
-    } // my.measureScaling()
   ;
 
   /*

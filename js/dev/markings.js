@@ -43,7 +43,6 @@ function Markings() {
     , separate
     , scorelength
     , dispatch
-    , timeTransform
   ;
 
   /*
@@ -60,9 +59,7 @@ function Markings() {
       // Locations for changes in mensuration.
       mensurationsLocs = data.filter(function(d) { return d.mensuration; });
       mensurationsScale
-          .domain(mensurationsLocs.map(function(d) {
-              return timeTransform(d.time[0]);
-          }))
+          .domain(mensurationsLocs.map(getTime))
           .range(mensurationsLocs.map(function(d) { return d.mensuration; }))
       ;
 
@@ -88,9 +85,7 @@ function Markings() {
       // Locations for section labels
       sectionsLocs = data.filter(function(d) { return d.sectionlabel; });
       sectionsScale
-          .domain(sectionsLocs.map(function(d) {
-              return timeTransform(d.time[0]);
-          }))
+          .domain(sectionsLocs.map(getTime))
           .range(sectionsLocs.map(function(d) { return d.sectionlabel; }))
       ;
       sections = sections || svg
@@ -134,7 +129,7 @@ function Markings() {
         , t1 = barlinesScale.domain()[1]
         , labelsExtent = d3.extent(data
               .filter(function(b){
-                  return b.label && isBetween(b.time[0], barlinesScale.domain());
+                  return b.label && isBetween(getTime(b), barlinesScale.domain());
                 })
               .map(function(b){ return +b.label; })
             )
@@ -148,9 +143,7 @@ function Markings() {
 
       barlinesAxis
           .scale(barlinesScale.clamp(true))
-          .tickValues(data.map(function(d) {
-              return timeTransform(d.time[0]);
-          }))
+          .tickValues(data.map(getTime))
           .tickFormat(function (d, i){
               // barLabels is a dictionary for the "ticks" to include.
               var label = data[i].label;
@@ -341,12 +334,6 @@ function Markings() {
   ;
   // API Method. Expensive, because it causes a rerender.
   my.calibrate = resize;
-
-  // Setter only.
-  my.timeTransform = function(_){
-      timeTransform = _;
-      return my;
-  };
 
   // This is ALWAYS the last thing returned
   return my;
