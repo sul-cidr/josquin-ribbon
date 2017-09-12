@@ -5,10 +5,9 @@ function Ribbon() {
       , interval = 12 // Interval size for the sliding window, in units of beats
       , step = 1 // How much to slide the window for each iteration.
       , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
-      , timeTransform
       , area = function(data) {
             return d3.area()
-                .x(function (d){ return x(timeTransform(d.x)); })
+                .x(function (d){ return x(d.x); })
                 .y0(function (d){ return y(d.y0); })
                 .y1(function (d){ return y(d.y1); })
                 .curve(d3.curveBasis)
@@ -68,8 +67,8 @@ function Ribbon() {
                 // Consider the interval to be centered on the x value.
                 var windowStart = x - interval / 2
                   , windowEnd   = x + interval / 2
-                  , noteStart = d.starttime[0]
-                  , noteEnd   = d.starttime[0] + d.duration[0]
+                  , noteStart = getTime.start(d)
+                  , noteEnd   = getTime.start(d) + getTime.duration(d);
                 ;
 
                 // Consider a note to be "inside the window"
@@ -146,7 +145,7 @@ function Ribbon() {
               // so it aligns with measures.
               var windowStart = x
                 , windowEnd   = x + interval
-                , noteStart = d.starttime[0]
+                , noteStart = getTime.start(d)
               ;
 
               // Consider a note to be "inside the window"
@@ -266,12 +265,6 @@ function Ribbon() {
         return [];
       } // my.bbox()
     ;
-
-    // Setter only.
-    my.timeTransform = function(_){
-        timeTransform = _;
-        return my;
-    };
 
     // This is ALWAYS the last thing returned
     return my;
