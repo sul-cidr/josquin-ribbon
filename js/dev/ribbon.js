@@ -125,9 +125,9 @@ function Ribbon() {
 
       // Use the following fixed values for the attack density computation,
       // as these specific values were prescribed by Josquin project leads.
-      var interval = 4 // Compute the density for each measure.
-        , step = 4
-        , scaleFactor = 1
+      var interval = 2 // Compute the density for a window of 2 seconds.
+        , step = 1 // Compute values for each second.
+        , scaleFactor = 0.5 // Make the shape a bit thinner.
       ;
 
       // For steps in which there are no notes in the interval,
