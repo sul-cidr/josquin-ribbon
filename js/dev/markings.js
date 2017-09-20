@@ -193,8 +193,8 @@ function Markings() {
                   .attr("xlink:href", "#" + code)
                   .attr("x", -7)
                   .attr("y", -24)
-                  .attr("height", "18")
-                  .attr("width", "14")
+                  .attr("height", "30")
+                  .attr("width", "30")
               ;
           }
         })
