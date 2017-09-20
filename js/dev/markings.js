@@ -19,23 +19,17 @@ function Markings() {
     , mensurations, mensurationsLocs
     , mensurationsScale = d3.scaleOrdinal()
     , mensurationsAxis = d3.axisTop()
-    , mensurationCodes = {
-            "O." : "E910"
-          , "O"  : "E911"
-          , "O|" : "E912"
-          , "O|.": "E913"
-          , "C." : "E914"
-          , "C"  : "E915"
-          , "Cr" : "E916"
-          , "C.|": "E917"
-          , "C|.": "E917"
-          , "C|" : "E918"
-          , "C|r": "E919"
-          , "C.r": "E91A"
-          , "1"  : "E926"
-          , "2"  : "E927"
-          , "3"  : "E928"
-          , "4"  : "E929"
+    , mensurationCodes = function(mentag) {
+            return mentag
+              .replace(/^C/g, "c")
+              .replace(/^O/g, "o")
+              .replace(/r/g, "-reverse")
+              .replace(/\//g, "-over")
+              .replace(/\|/g, "-pipe")
+              .replace(/\./g, "-dot")
+              .replace(/(\d+)/g, "-$1")
+              .replace(/^-/, "n")
+            ;
         }
     , sections, sectionsLocs
     , sectionsScale = d3.scaleOrdinal()
@@ -178,14 +172,14 @@ function Markings() {
       selection.selectAll(".tick").each(function() {
           var self = d3.select(this)
             , sym = self.select("text")
-            , code = mensurationCodes[sym.text()]
+            , code = mensurationCodes(sym.text())
           ;
           if(code) {
               // Hide the text
               sym.style("visibility", "hidden")
               // Show the SVG symbol
               var use = self.selectAll("use")
-                  .data([sym.text()], function(d) { return d; })
+                  .data([code], function(d) { return d; })
               ;
               use.exit()
                 .remove()
@@ -196,7 +190,7 @@ function Markings() {
                 .merge(use)
               ;
               use
-                  .attr("xlink:href", "#uni" + code)
+                  .attr("xlink:href", "#" + code)
                   .attr("x", -7)
                   .attr("y", -24)
                   .attr("height", "18")
