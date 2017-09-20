@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+#
+# Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+# Creation Date: Fri Sep 15 16:06:51 PDT 2017
+# Last Modified: Fri Sep 15 16:32:19 PDT 2017
+# Filename:      josquin-ribbon/_includes/mensuration/makemensurations
+# Syntax:        perl 5
+# vim:           ts=3
+#
+# Description: Create a list of mensuration symbols from the mensuration
+#              sampler page in the documentation pages.
+#
+
+use strict;
+
+my $source = $ARGV[0] || "../../doc/mensuration-sampler";
+
+my @svgs = glob "$source/*.svg";
+@svgs = sort @svgs;
+
+foreach my $svgfile (@svgs) {
+	my $symbol = getSvgSymbol($svgfile);
+	print $symbol;
+}
+
+
+###########################################################################
+
+##############################
+##
+## getSvgSymbol -- Extract the mensuration symbol from a sampler file.
+##     There can only be one symbol in the file.
+##
+
+sub getSvgSymbol {
+	my ($file) = @_;
+	open(FILE, $file) or die "Cannot read $file";
+	my @contents = <FILE>;
+	close FILE;
+
+	my $count = 0;
+	my $state = 0;
+	my $output;
+
+	foreach my $line (@contents) {
+		if ($state && ($line =~ /<\/symbol>/)) {
+			$output .= $line;
+			$state = 0;
+		} elsif ((!$state) && ($line =~ /<symbol\b/)) {
+			$output .= $line;
+			$state = 1;
+			$count++;
+		} elsif ($state) {
+			$output .= $line;
+		} else {
+		}
+	}
+
+	die "Too many symbols in $file" if $count > 1;
+
+	return $output;
+}
+
+
+
+

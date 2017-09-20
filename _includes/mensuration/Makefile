@@ -1,0 +1,5 @@
+
+
+all:
+	./makemensurations > mensuration.symbols
+
