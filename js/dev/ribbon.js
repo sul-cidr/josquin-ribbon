@@ -56,7 +56,7 @@ function Ribbon() {
         // An empty interval at the previous average is used.
         var previousMean = data[0].pitch.b7;
 
-        return d3.range(x.domain()[0], x.domain()[1], step)
+        return d3.range(x.domain()[0], x.domain()[1] + step, step)
           .map(function (x){
 
             // This is a "windowed" computation, so we need to look
@@ -139,7 +139,7 @@ function Ribbon() {
         return d.pitch.b7;
       }));
 
-      return d3.range(x.domain()[0], x.domain()[1], step)
+      return d3.range(x.domain()[0], x.domain()[1] + step, step)
         .map(function (x){
 
           // This is a "windowed" computation, so we need to look
