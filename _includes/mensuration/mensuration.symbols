@@ -1,7 +1,7 @@
 	<symbol id="c-2-over-3" viewBox="0 0 1000 1000" overflow="inherit">
 		<title> C 2/3 mensuration </title>
 		<desc> SMUFL codepoint E915 next to E927 over E928. </desc>
-		<path transform="scale(1,-1), translte(-500, 0)" 
+		<path transform="scale(1,-1), translate(-500, 0)" 
 			d="M266 -266c-71 0 -138 28 -188 78s-78 117 -78 188c0 70 28 137 78 187s117 78 188 78c89 0 172 -45 221 -120c3 -4 5 -9 5 -14c0 -8 -4 -15 -11 -19c-4 -3 -8 -4 -13 -4c-8 0 -16 4 -21 11c-40 61 -108 98 -181 98c-59 0 -113 -23 -154 -64s-64 -95 -64 -153 s23 -113 64 -154s95 -64 154 -64c37 0 74 10 107 28c31 18 58 44 77 75c4 7 12 11 20 11c4 0 9 -1 13 -4c7 -5 11 -13 11 -21c0 -4 -1 -8 -3 -12c-24 -37 -56 -69 -95 -91s-85 -34 -130 -34z"
 		/> 
 		<path transform="scale(0.7,-0.7), translate(770, 250)" 
@@ -34,7 +34,7 @@
 	<symbol id="c-dot-3-over-2" viewBox="0 0 1000 1000" overflow="inherit">
 		<title> C-dot 3/2 mensuration </title>
 		<desc> SMUFL codepoint E914 next to E928 over E927. </desc>
-		<path transform="scale(1,-1), translte(-500, 0)" 
+		<path transform="scale(1,-1), translate(-500, 0)" 
 			d="M266 -266c-71 0 -138 28 -188 78s-78 117 -78 188c0 70 28 137 78 187s117 78 188 78c89 0 172 -45 221 -120c3 -4 5 -9 5 -14c0 -8 -4 -15 -11 -19c-4 -3 -8 -4 -13 -4c-8 0 -16 4 -21 11c-40 61 -108 98 -181 98c-59 0 -113 -23 -154 -64s-64 -95 -64 -153 s23 -113 64 -154s95 -64 154 -64c37 0 74 10 107 28c31 18 58 44 77 75c4 7 12 11 20 11c4 0 9 -1 13 -4c7 -5 11 -13 11 -21c0 -4 -1 -8 -3 -12c-24 -37 -56 -69 -95 -91s-85 -34 -130 -34zM268 62c35 0 63 -28 63 -62c0 -35 -28 -63 -63 -63c-34 0 -62 28 -62 63 c0 34 28 62 62 62z"
 		/> 
 		<path transform="scale(0.7,-0.7), translate(800, 250)" 
@@ -47,7 +47,7 @@
 	<symbol id="c-dot-3-over-8" viewBox="0 0 1000 1000" overflow="inherit">
 		<title> C-dot 3/8 mensuration </title>
 		<desc> SMUFL codepoint E914 next to E928 over "8", with the "8" faked with a forwards and backwards "3". </desc>
-		<path transform="scale(1,-1), translte(-500, 0)" 
+		<path transform="scale(1,-1), translate(-500, 0)" 
 			d="M266 -266c-71 0 -138 28 -188 78s-78 117 -78 188c0 70 28 137 78 187s117 78 188 78c89 0 172 -45 221 -120c3 -4 5 -9 5 -14c0 -8 -4 -15 -11 -19c-4 -3 -8 -4 -13 -4c-8 0 -16 4 -21 11c-40 61 -108 98 -181 98c-59 0 -113 -23 -154 -64s-64 -95 -64 -153 s23 -113 64 -154s95 -64 154 -64c37 0 74 10 107 28c31 18 58 44 77 75c4 7 12 11 20 11c4 0 9 -1 13 -4c7 -5 11 -13 11 -21c0 -4 -1 -8 -3 -12c-24 -37 -56 -69 -95 -91s-85 -34 -130 -34zM268 62c35 0 63 -28 63 -62c0 -35 -28 -63 -63 -63c-34 0 -62 28 -62 63 c0 34 28 62 62 62z"
 		/> 
 		<path transform="scale(0.7,-0.7), translate(800, 139)" 
@@ -245,7 +245,7 @@
 	<symbol id="o-3-over-2" viewBox="0 0 1000 1000" overflow="inherit">
 		<title> Circle 3/2 mensuration </title>
 		<desc> SMUFL codepoint E911 next to E928 over E927. </desc>
-		<path transform="scale(1,-1), translte(-500, 0)" 
+		<path transform="scale(1,-1), translate(-500, 0)" 
 			d="M266 -266c-70 0 -137 28 -187 78s-78 117 -78 188c0 70 28 137 78 187s117 78 187 78c71 0 138 -28 188 -78s78 -117 78 -187c0 -71 -28 -138 -78 -188s-117 -78 -188 -78zM266 217c-58 0 -112 -23 -153 -64s-64 -95 -64 -153s23 -113 64 -154s95 -64 153 -64 s113 23 154 64s64 96 64 154s-23 112 -64 153s-96 64 -154 64z" 
 		/> 
 		<path transform="scale(0.7,-0.7), translate(800, 250)" 
@@ -285,7 +285,7 @@
 	<symbol id="o-pipe-3-over-2" viewBox="0 0 1000 1000" overflow="inherit">
 		<title> Cut-Circle 3/2 mensuration </title>
 		<desc> SMUFL codepoint E912 next to E928 over E927. </desc>
-		<path transform="scale(1,-1), translte(-500, 0)" 
+		<path transform="scale(1,-1), translate(-500, 0)" 
 			d="M266 -380c-13 0 -24 11 -24 24v91c-61 6 -119 33 -163 77c-50 50 -78 117 -78 188c0 70 28 137 78 187c44 45 102 71 163 77v75c0 13 11 24 24 24c14 0 24 -11 24 -24v-75c62 -6 120 -32 164 -77c50 -50 78 -117 78 -187c0 -71 -28 -138 -78 -188 c-44 -44 -102 -71 -164 -77v-91c0 -13 -10 -24 -24 -24zM290 216v-432c49 5 95 27 130 62c41 41 64 96 64 154s-23 112 -64 153c-35 36 -81 57 -130 63zM242 216c-49 -6 -94 -27 -129 -63c-41 -41 -64 -95 -64 -153s23 -113 64 -154c35 -35 80 -57 129 -62v432z"
 		/> 
 		<path transform="scale(0.7,-0.7), translate(800, 250)" 
