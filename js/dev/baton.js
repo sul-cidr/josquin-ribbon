@@ -72,6 +72,19 @@ window.onpopstate = function(event) {
 } // window.onload()
 window.onpopstate();
 
+
+/*
+** Enter key triggers load on chooser widget
+*/
+$("#josquin_catalog").bind('input', function () {
+  var options = $.map($("#catalog option"), function(option) {
+    return option.value;
+  });
+  if (options.indexOf(this.value) >= 0) {
+    load_song(this.value);
+  }
+});
+
 /*
 ** Setup the domain
 */
