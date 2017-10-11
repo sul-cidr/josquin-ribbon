@@ -11,6 +11,7 @@ function NotesNav() {
       , brush = d3.brushX().on("brush end", brushed)
       , brushG
       , dispatch
+      , initialZoomTime = 500 // The amount of time to zoom to on page load.
     ;
 
     /*
@@ -39,10 +40,12 @@ function NotesNav() {
           .extent([[0, 0], [width, height]])
           .handleSize(width / 200);
         ;
-        brushG
-            .call(brush)
-            .call(brush.move, x.range())
-        ;
+
+        brushG.call(brush);
+
+        // Set the initial zoom to a specific length of time.
+        brushG.call(brush.move, [0, Math.min(x.range()[1], initialZoomTime)]);
+
         brushG.selectAll("rect")
             .attr("y", 0)
             .attr("height", height)
