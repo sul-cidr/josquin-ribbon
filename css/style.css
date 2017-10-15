@@ -63,6 +63,7 @@ svg {
 .tick text {
     fill: gray;
     font-size: 1.4em;
+    text-anchor: start;
 }
 .mensuration {
   fill: gray;
