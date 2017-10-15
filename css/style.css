@@ -20,6 +20,7 @@ header {
 .mensuration {
     font-family: 'BravuraText';
     font-size: xx-large;
+    text-anchor: start;
 }
 #legend li {
     cursor: pointer;
