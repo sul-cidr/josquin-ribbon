@@ -133,7 +133,7 @@ function createSignals() {
 
     // Update the duration indicator on zoom.
     signal.on("zoom.durationIndicator", function (extent){
-        var duration = extent[1] - extent[0];
+        var duration = (extent[1] - extent[0]) / 10;
         var message = duration + " seconds selected";
         d3.select("#zoomed-duration-indicator").text(message);
     });
