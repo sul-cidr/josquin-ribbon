@@ -175,6 +175,8 @@ function connectSignalsToDOM() {
         })
       ;
       choice.on("change", function() {
+          console.log("The following value should not be null:");
+          console.log(this.value);
           signal.call(callback, this, this.value);
         })
       ;
