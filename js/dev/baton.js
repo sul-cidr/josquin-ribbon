@@ -120,6 +120,8 @@ function setupDispatcher() {
 } // setupDispatcher()
 
 function createSignals() {
+
+    // Pass each event into notesBook via accessors.
     signal
         .on("show-notes",      notesBook.notes)
         .on("show-extremes",   notesBook.extremes)
@@ -128,6 +130,13 @@ function createSignals() {
         .on("separate-voices", notesBook.separate)
         .on("zoom",            notesBook.zoom)
     ;
+
+    // Update the duration indicator on zoom.
+    signal.on("zoom.durationIndicator", function (extent){
+        var duration = (extent[1] - extent[0]) / 10;
+        var message = duration + " seconds selected";
+        d3.select("#zoomed-duration-indicator").text(message);
+    });
 } // createSignals()
 
 // Connect the UI control elements
