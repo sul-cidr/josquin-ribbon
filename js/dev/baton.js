@@ -169,14 +169,15 @@ function connectSignalsToDOM() {
       choice.style("display", "none");
 
       check.on("change", function(d) {
+          console.log("Checkbox change detected");
           choice.style("display", this.checked ? null : "none");
           var value = choice.node().value;
+          console.log("  Setting value from checkbox change " + (this.checked ? value : this.value));
           signal.call(callback, this, this.checked ? value : this.value);
         })
       ;
       choice.on("change", function() {
-          console.log("The following value should not be null:");
-          console.log(this.value);
+          console.log("Menu change detected");
           signal.call(callback, this, this.value);
         })
       ;
