@@ -4,7 +4,7 @@ This project is about visualizing Renaissance music curated and digitized as par
 
 [Try it out!](https://sul-cidr.github.io/josquin-ribbon/)
 
-[![image](https://cloud.githubusercontent.com/assets/68416/23161307/a61af460-f84f-11e6-8ed6-152d86650eac.png)](https://sul-cidr.github.io/josquin-ribbon/)
+[![image](https://user-images.githubusercontent.com/3487289/32285761-8fde665e-bee8-11e7-958c-ea8db3026639.png)](https://sul-cidr.github.io/josquin-ribbon/)
 
 The visualization methods here are geared towards music researchers who are interested in analyzing the music. All notes of a given piece are presented, colored by voice. A navigational interface for zooming and panning using brushing is provided, making use of the "focus plus context" information visualization pattern.
 
