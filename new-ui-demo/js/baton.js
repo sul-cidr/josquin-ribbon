@@ -19,7 +19,7 @@ var width = 960
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
   , work = hash.id || defaultWork
-  , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
+  , jsonURL = "https://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
 ;
 d3.json(jsonURL, function(error, proll) {
     if(error) throw error;

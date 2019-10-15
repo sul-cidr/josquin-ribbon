@@ -23,7 +23,7 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
 /*
 ** Where to find individual songs and the list of songs
 */
-var baseURL = 'http://josquin.stanford.edu/cgi-bin/jrp?'
+var baseURL = 'https://josquin.stanford.edu/cgi-bin/jrp?'
   , catURL = baseURL + 'a=list'
   , jsonURL = baseURL + 'a=proll-json&f='
   , work // the currently displayed song

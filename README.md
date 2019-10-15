@@ -1,6 +1,6 @@
 # josquin-ribbon
 
-This project is about visualizing Renaissance music curated and digitized as part of the [Josquin Research Project](http://josquin.stanford.edu/about/).
+This project is about visualizing Renaissance music curated and digitized as part of the [Josquin Research Project](https://josquin.stanford.edu/about/).
 
 [Try it out!](https://sul-cidr.github.io/josquin-ribbon/)
 
