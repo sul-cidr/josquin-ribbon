@@ -11,7 +11,7 @@
     "bootstrap": "^3.3.7",
     "d3-tip": "^0.7.1",
     "font-awesome": "^4.7.0",
-    "jquery": "^1.9.1",
+    "jquery": ">=3.4.0",
     "mdl": "^0.1.1"
   },
   "scripts": {
