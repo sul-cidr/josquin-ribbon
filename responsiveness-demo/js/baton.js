@@ -16,7 +16,7 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
 var defaultWork = "Jos2721-La_Bernardina"
   , hash = getQueryVariables()
   , work = hash.id || defaultWork
-  , jsonURL = "http://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
+  , jsonURL = "https://josquin.stanford.edu/cgi-bin/jrp?a=proll-json&f=" + work
 ;
 d3.queue()
     .defer(d3.json, jsonURL)
