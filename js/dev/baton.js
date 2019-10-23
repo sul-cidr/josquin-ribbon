@@ -95,7 +95,10 @@ function load_song(work) {
     d3.queue()
         .defer(d3.json, jsonURL + work)
         .await(function(error, proll) {
-            if(error) throw error;
+            if(error) {
+               console.log("Problem downloading", jsonURL + work);
+               throw error;
+            }
             // Set the URL history to the current song
             history.pushState(null, null, '?id=' + work);
 
