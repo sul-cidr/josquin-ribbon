@@ -5,3 +5,7 @@ _site
 npm-debug.log
 Gemfile.lock
 .jekyll-metadata
+
+# environment normalization
+/.bundle
+/vendor
