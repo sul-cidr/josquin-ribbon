@@ -1,6 +1,6 @@
 debugging: true
 
-exclude: [bower_components, node_modules, glyphs]
+exclude: [bower_components, node_modules, vendor, glyphs]
 
 markdown: kramdown
 kramdown:
