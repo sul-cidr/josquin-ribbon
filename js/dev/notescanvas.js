@@ -144,6 +144,7 @@ function NotesCanvas() {
       } // my.extremes()
     ;
     my.ribbons = function(arg) {
+      console.log("notescanvas ribbons arg",arg);
         svg.selectAll(".ribbon g")
             .style("display", function(d) {
                 return d.toLowerCase() === arg ? "inline" : "none";

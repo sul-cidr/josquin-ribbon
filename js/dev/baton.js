@@ -169,7 +169,7 @@ function connectSignalsToDOM() {
         , callback = check.node().id // callback name == checkbox 'id'
       ;
       // Hide the ribbon dropdown initially
-      choice.style("display", "none");
+      //choice.style("display", "none");
 
       check.on("change", function(d) {
           choice.style("display", this.checked ? null : "none");
