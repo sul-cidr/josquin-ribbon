@@ -91,12 +91,30 @@ function NotesBook() {
               d3.select(this)
                   .call(score)
                   .call(ribbon.x(x).y(y))
-              // Initially, don't show the ribbons
-                .selectAll(".ribbon")
+              // PMB should just check control panel for all of these settings
+                .selectAll(".notes")
                   .style("display", "none")
               ;
+
+              d3.select(this)
+                .selectAll(".standard_deviation")
+                  .style("display", "none")
+              ;
+
             })
       ;
+
+      // PMB
+      var vb = voices.attr("viewBox").split(' ');
+      vb[3] = fullheight;
+
+      voices
+        .attr("viewBox", vb.join(' '))
+        .selectAll(".voice")
+          .attr("y", function(d, i) { return i * height; })
+      ;
+      markings.separate(true);
+
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 

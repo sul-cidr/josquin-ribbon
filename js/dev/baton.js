@@ -169,6 +169,7 @@ function connectSignalsToDOM() {
         , callback = check.node().id // callback name == checkbox 'id'
       ;
       // Hide the ribbon dropdown initially
+      // PMB
       //choice.style("display", "none");
 
       check.on("change", function(d) {
