@@ -97,6 +97,12 @@ function NotesBook() {
                   .call(score)
                   .call(ribbon.x(x).y(y))
               ;
+
+              d3.select(this)
+                .selectAll(".standard_deviation")
+                  .style("display", "none")
+              ;
+
             })
       ;
 
