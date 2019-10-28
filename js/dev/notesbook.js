@@ -272,6 +272,7 @@ function NotesBook() {
             d3.selectAll(".refline")
               .style("display", "none")
             ;
+            document.getElementById("separate-ui").setAttribute("style", "display: none");
           } else {
             d3.selectAll(".refline")
               .style("display", "inline")
