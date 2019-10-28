@@ -111,6 +111,20 @@ function NotesBook() {
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
 
+      if (document.getElementById("show-ribbon").checked) {
+        for (var item of document.getElementById("select-ribbon").getElementsByTagName("option")) {
+          if ((item.value == "attack_density") && (item.selected)) {
+            d3.selectAll(".refline")
+              .style("display", "none")
+            ;
+          } else if ((item.value == "standard_deviation") && (item.selected)) {
+            d3.selectAll(".refline")
+              .style("display", "inline")
+            ;
+          }
+        }
+      }
+
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
