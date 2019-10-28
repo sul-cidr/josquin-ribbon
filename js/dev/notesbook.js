@@ -115,6 +115,20 @@ function NotesBook() {
       ;
       markings.separate(true);
 
+      if (document.getElementById("show-ribbon").checked) {
+        for (var item of document.getElementById("select-ribbon").getElementsByTagName("option")) {
+          if ((item.value == "attack_density") && (item.selected)) {
+            d3.selectAll(".refline")
+              .style("display", "none")
+            ;
+          } else if ((item.value == "standard_deviation") && (item.selected)) {
+            d3.selectAll(".refline")
+              .style("display", "inline")
+            ;
+          }
+        }
+      }
+
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
@@ -187,12 +201,15 @@ function NotesBook() {
     } // my.hilite()
   ;
   my.extremes = function() {
-      var xtrms = voices.selectAll(".extreme").empty();
-
+      //var xtrms = voices.selectAll(".extreme").empty();
       // TODO move this into render function, introduce variable.
-      voices.selectAll(".extreme-plain")
-          .classed("extreme", xtrms)
+      //voices.selectAll(".extreme-plain")
+      //    .classed("extreme", xtrms)
+      //;
+      var music = voices.selectAll(".extreme-plain")
+        , vis = music.style("display")
       ;
+      music.style("display", vis === "inline" ? "none" : "inline");
     } // my.extremes()
   ;
   my.zoom = function(_) {
@@ -211,16 +228,16 @@ function NotesBook() {
   my.separate = function(_) {
       // Art-direct the various voice SVGs
       var vb = voices.attr("viewBox").split(' ');
-      vb[3] = _ ? fullheight : height;
+      vb[3] = !_ ? fullheight : height;
 
       // TODO move this into render function.
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
         .selectAll(".voice")
-          .attr("y", function(d, i) { return _ ? i * height : 0; })
+          .attr("y", function(d, i) { return !_ ? i * height : 0; })
       ;
-      markings.separate(_);
+      markings.separate(!_);
       return my;
     } // my.separate()
   ;
@@ -241,6 +258,28 @@ function NotesBook() {
               return d.toLowerCase() === arg ? "inline" : "none";
             })
       ;
+      if (!document.getElementById("show-ribbon").checked) {
+        document.getElementById("show-notes").checked = true;
+        d3.selectAll(".refline")
+          .style("display", "inline")
+        ;
+        voices.selectAll(".notes")
+          .style("display", "inline")
+        ;
+      } else {
+        for (var item of document.getElementById("select-ribbon").getElementsByTagName("option")) {
+          if ((item.value == "attack_density") && (item.selected)) {
+            d3.selectAll(".refline")
+              .style("display", "none")
+            ;
+          } else {
+            d3.selectAll(".refline")
+              .style("display", "inline")
+            ;
+            document.getElementById("separate-ui").setAttribute("style", "display: inline");
+          }
+        }
+      }
     } // my.ribbons()
   ;
 
