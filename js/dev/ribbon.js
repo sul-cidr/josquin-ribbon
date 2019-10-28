@@ -153,7 +153,6 @@ function Ribbon() {
               var windowStart = Math.max(0, x - (interval / 2))
                 , windowEnd = x + (interval / 2)
                 , noteStart = getTime.start(d)
-              ;
 
               // Consider a note to be "inside the window"
               // only if its attack time falls inside the window.
