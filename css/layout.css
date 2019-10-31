@@ -1,0 +1,50 @@
+header {
+  height: 50px;
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+}
+
+.row:first-child {
+  min-height: calc(85vh - 110px);
+}
+
+.row:last-child {
+  max-height: 15vh;
+}
+
+#main {
+  min-height: 40vh;
+}
+
+#notesbook {
+  height: calc(100% - 2em);
+  min-height: calc(40vh - 2em);
+  display: flex;
+  flex-direction: column;
+}
+
+#notesbook svg {
+  flex: 1 0 auto;
+}
+
+#navigator {
+  flex: 1 0 auto;
+}
+
+@media (min-width: 992px) {
+  .row {
+    flex-direction: row;
+  }
+
+  #main {
+    width: 75%;
+  }
+
+  #meta {
+    width: 25%;
+  }
+}
