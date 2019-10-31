@@ -11,12 +11,6 @@ header {
     background-repeat: no-repeat;
     background-size: contain;
 }
-#notesbook {
-    height: 70vh;
-}
-#navigator {
-    height: 20vh;
-}
 .mensuration {
     font-family: 'BravuraText';
     font-size: xx-large;
@@ -165,5 +159,6 @@ select[disabled] {
     margin-right: 1em;
 }
 #notesbook {
+  margin-left: 0;
   margin-bottom: 2em;
 }
