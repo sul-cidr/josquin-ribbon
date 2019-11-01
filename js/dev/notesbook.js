@@ -18,6 +18,10 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , showNotes = false
+    , combineVoices = false
+    , showRibbon = true
+    , selectedRibbon = "attack_density"
   ;
 
   /*
