@@ -149,8 +149,9 @@ function Ribbon() {
 
               // Consider the interval to start on the x value,
               // so it aligns with measures.
-              var windowStart = x
-                , windowEnd   = x + interval
+              // Shift window .5 intervals to the left for better fit
+              var windowStart = Math.max(0, x - (interval / 2))
+                , windowEnd = x + (interval / 2)
                 , noteStart = getTime.start(d)
               ;
 
