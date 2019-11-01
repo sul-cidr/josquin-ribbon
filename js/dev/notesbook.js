@@ -236,7 +236,7 @@ function NotesBook() {
 
       // If notes are turned off and no ribbon is enabled, show default ribbon
       if (!_ && !showRibbon) {
-        my.ribbons("attack_density");
+        my.ribbons(selectedRibbon);
       }
 
       showNotes = _;
@@ -250,6 +250,35 @@ function NotesBook() {
               return d.toLowerCase() === arg ? "inline" : "none";
             })
       ;
+      if (arg !== "all") {
+        document.getElementById("show-ribbon").checked = true;
+        document.getElementById("select-ribbon").setAttribute("style", "display: inline");
+        if (arg == "attack_density") {
+          // Don't show staves for rhythmic density ribbon if notes are off
+          if (!showNotes) {
+            d3.selectAll(".refline")
+              .style("display", "none")
+            ;
+          }
+          // Disable Combine Voices option for rhythmic density ribbon
+          document.getElementById("combine-voices").checked = false;
+          document.getElementById("combine-ui").setAttribute("style", "display: none");
+          my.combine(false);
+        } else {
+          // Always show staves for melodic ribbon, enable Combine Voices opt
+          d3.selectAll(".refline")
+            .style("display", "inline")
+          ;
+          document.getElementById("combine-ui").setAttribute("style", "display: inline");
+        }
+        showRibbon = true;
+        selectedRibbon = arg;
+      } else {
+        // If no ribbon is displayed, notes and staves should be enabled
+        document.getElementById("show-notes").checked = true;
+        my.notes(true);
+        showRibbon = false;
+      }
     } // my.ribbons()
   ;
 
