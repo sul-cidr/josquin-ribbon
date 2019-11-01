@@ -233,7 +233,7 @@ function NotesBook() {
         ;
       }
 
-      if (!_ && !document.getElementById("show-ribbon").checked) {
+      if (!_ && !showRibbon) {
         my.ribbons("attack_density");
       }
 
