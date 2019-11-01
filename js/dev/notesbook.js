@@ -102,7 +102,7 @@ function NotesBook() {
       my.notes(showNotes);
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
-      
+
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
@@ -175,12 +175,10 @@ function NotesBook() {
     } // my.hilite()
   ;
   my.extremes = function() {
-      var xtrms = voices.selectAll(".extreme").empty();
-
-      // TODO move this into render function, introduce variable.
-      voices.selectAll(".extreme-plain")
-          .classed("extreme", xtrms)
+      var music = voices.selectAll(".extreme-plain")
+        , vis = music.style("display")
       ;
+      music.style("display", vis === "inline" ? "none" : "inline");
     } // my.extremes()
   ;
   my.zoom = function(_) {
