@@ -95,12 +95,14 @@ function NotesBook() {
               d3.select(this)
                   .call(score)
                   .call(ribbon.x(x).y(y))
-              // Initially, don't show the ribbons
-                .selectAll(".ribbon")
-                  .style("display", "none")
               ;
             })
       ;
+
+      my.notes(showNotes);
+      my.combine(combineVoices);
+      my.ribbons(selectedRibbon);
+      
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
