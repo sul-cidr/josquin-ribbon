@@ -146,6 +146,7 @@ function connectSignalsToDOM() {
     // Combine/Separate Voices
     d3.select("#combine-ui").selectAll("input")
         .on("change", function(d) {
+            console.log("changing voice combine settings",this.checked);
             signal.call(this.id, this, this.checked)
         })
     ;

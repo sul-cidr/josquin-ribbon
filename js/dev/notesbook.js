@@ -271,7 +271,9 @@ function NotesBook() {
       showNotes = _;
     } // my.notes()
   ;
+
   my.ribbons = function(arg) {
+      console.log("ribbons",arg);
 
       // TODO move this into render function, introduce variable.
       voices.selectAll(".ribbon")
@@ -307,6 +309,14 @@ function NotesBook() {
         document.getElementById("show-notes").checked = true;
         my.notes(true);
         showRibbon = false;
+      }
+      if (document.getElementById("show-notes").checked) {
+        d3.selectAll(".refline")
+          .style("display", "inline")
+        ;
+        voices.selectAll(".notes")
+          .style("display", "inline")
+        ;
       }
     } // my.ribbons()
   ;
