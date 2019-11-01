@@ -124,21 +124,19 @@
     </div><!--.container-->
   </article>
 
-{% if site.debugging == 'true' %}
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js">
-  </script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js">
-  </script>
+{% if site.debugging %}
+  <script src="js/vendor/d3.min.js"></script>
+  <script src="js/vendor/d3-tip.min.js"></script>
+  <script src="js/vendor/svgsaver.min.js"></script>
+
+  <script src="js/dev/getTime.js"></script>
   <script src="js/dev/legend.js"></script>
-  <script src="js/dev/reflines.js"></script>
   <script src="js/dev/ribbon.js"></script>
   <script src="js/dev/score.js"></script>
+  <script src="js/dev/markings.js"></script>
   <script src="js/dev/notescanvas.js"></script>
   <script src="js/dev/notesbook.js"></script>
   <script src="js/dev/notesnav.js"></script>
-  <script src="js/dev/askus.js"></script>
   <script src="js/dev/baton.js"></script>
 {% else %}
   <script src="js/vendors.js"></script>
