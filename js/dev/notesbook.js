@@ -211,13 +211,35 @@ function NotesBook() {
       return my;
     } // my.separate()
   ;
-  my.notes = function() { // toggles the notes on/off
+  my.notes = function(_) { // toggles the notes on/off
 
       // TODO move this into render function, introduce variable.
       var music = voices.selectAll(".notes")
         , vis = music.style("display")
       ;
-      music.style("display", vis === "inline" ? "none" : "inline");
+      // Argument can be null if menu was previously disabled
+      if (_ === null) {
+        _ = vis !== "inline";
+      }
+
+      music.style("display", _ ? "inline" : "none");
+      // Only display "Hide Extreme Notes" when "Show Notes" is selected
+      d3.select(document.getElementById("show-notes").parentNode.nextElementSibling).style("display", _ ? "inline" : "none");
+
+      // Show staff lines/labels if melodic ribbon is selected
+      // or if no ribbons are shown (meaning notes must be shown)
+      if (!showRibbon || selectedRibbon != "standard_deviation") {
+        d3.selectAll(".refline")
+          .style("display", _ ? "inline" : "none");
+        ;
+      }
+
+      // If notes are turned off and no ribbon is enabled, show default ribbon
+      if (!_ && !showRibbon) {
+        my.ribbons("attack_density");
+      }
+
+      showNotes = _;
     } // my.notes()
   ;
   my.ribbons = function(arg) {
