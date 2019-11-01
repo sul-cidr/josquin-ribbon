@@ -194,19 +194,20 @@ function NotesBook() {
       return my;
     } // my.zoom()
   ;
-  my.separate = function(_) {
+  my.combine = function(_) {
       // Art-direct the various voice SVGs
       var vb = voices.attr("viewBox").split(' ');
-      vb[3] = _ ? fullheight : height;
+      vb[3] = _ ? height : fullheight;
 
       // TODO move this into render function.
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
         .selectAll(".voice")
-          .attr("y", function(d, i) { return _ ? i * height : 0; })
+          .attr("y", function(d, i) { return _ ? 0 : i * height; })
       ;
-      markings.separate(_);
+      markings.separate(!_);
+      combineVoices = _;
       return my;
     } // my.separate()
   ;
