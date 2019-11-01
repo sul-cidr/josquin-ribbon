@@ -12,7 +12,7 @@ var margin = { top: 20, right: 20, bottom: 20, left: 20 }
           // List of signals we accept
           "hilite"
           , "zoom"
-          , "separate-voices"
+          , "combine-voices"
           , "selected"
           , "show-extremes"
           , "show-ribbon"
@@ -128,7 +128,7 @@ function createSignals() {
         .on("show-extremes",   notesBook.extremes)
         .on("hilite",          notesBook.hilite)
         .on("show-ribbon",     notesBook.ribbons)
-        .on("separate-voices", notesBook.separate)
+        .on("combine-voices",  notesBook.combine)
         .on("zoom",            notesBook.zoom)
     ;
 
@@ -144,7 +144,7 @@ function createSignals() {
 function connectSignalsToDOM() {
 
     // Combine/Separate Voices
-    d3.select("#separate-ui").selectAll("input")
+    d3.select("#combine-ui").selectAll("input")
         .on("change", function(d) {
             signal.call(this.id, this, this.checked)
         })
@@ -166,8 +166,6 @@ function connectSignalsToDOM() {
         , choice = d3.select(this).select("select")
         , callback = check.node().id // callback name == checkbox 'id'
       ;
-      // Hide the ribbon dropdown initially
-      choice.style("display", "none");
 
       check.on("change", function(d) {
           choice.style("display", this.checked ? null : "none");
