@@ -273,7 +273,6 @@ function NotesBook() {
   ;
 
   my.ribbons = function(arg) {
-      console.log("ribbons",arg);
 
       // TODO move this into render function, introduce variable.
       voices.selectAll(".ribbon")
