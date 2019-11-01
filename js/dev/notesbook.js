@@ -18,6 +18,10 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , showNotes = false
+    , combineVoices = false
+    , showRibbon = true
+    , selectedRibbon = "attack_density"
   ;
 
   /*
@@ -94,9 +98,9 @@ function NotesBook() {
             })
       ;
 
-      my.notes(false);
-      my.combine(false);
-      my.ribbons("attack_density");
+      my.notes(showNotes);
+      my.combine(combineVoices);
+      my.ribbons(selectedRibbon);
 
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
@@ -170,11 +174,7 @@ function NotesBook() {
     } // my.hilite()
   ;
   my.extremes = function() {
-      //var xtrms = voices.selectAll(".extreme").empty();
-      // TODO move this into render function, introduce variable.
-      //voices.selectAll(".extreme-plain")
-      //    .classed("extreme", xtrms)
-      //;
+      // TODO move this into render function, introduce variable
       var music = voices.selectAll(".extreme-plain")
         , vis = music.style("display")
       ;
@@ -196,7 +196,6 @@ function NotesBook() {
   ;
   my.combine = function(_) {
   
-      console.log("notesbook combining voices",_)
       // Art-direct the various voice SVGs
       var vb = voices.attr("viewBox").split(' ');
       vb[3] = _ ? height : fullheight;
@@ -209,12 +208,11 @@ function NotesBook() {
           .attr("y", function(d, i) { return _ ? 0: i * height; })
       ;
       markings.separate(!_);
+      combineVoices = _;
       return my;
     } // my.separate()
   ;
   my.notes = function(_) { // toggles the notes on/off
-
-    console.log("notes toggle value", _);
 
       // TODO move this into render function, introduce variable.
       var music = voices.selectAll(".notes")
@@ -223,16 +221,13 @@ function NotesBook() {
 
       if (_ === null) {
         _ = vis !== "inline";
-        console.log("notes toggle toggled to", vis, _);
       }
 
       music.style("display", _ ? "inline" : "none");
       d3.select(document.getElementById("show-notes").parentNode.nextElementSibling).style("display", _ ? "inline" : "none");
 
-      var ribbonSelector = document.getElementById("select-ribbon");
-      console.log("selected ribbon in notes is",ribbonSelector.options[ribbonSelector.selectedIndex].value);
-      if (!document.getElementById("show-ribbon").checked ||
-          ribbonSelector.options[ribbonSelector.selectedIndex].value != "standard_deviation") {
+      //var ribbonSelector = document.getElementById("select-ribbon");
+      if (!showRibbon || selectedRibbon != "standard_deviation") {
         d3.selectAll(".refline")
           .style("display", _ ? "inline" : "none");
         ;
@@ -241,11 +236,12 @@ function NotesBook() {
       if (!_ && !document.getElementById("show-ribbon").checked) {
         my.ribbons("attack_density");
       }
+
+      showNotes = _;
     } // my.notes()
   ;
 
   my.ribbons = function(arg) {
-      console.log("ribbons",arg);
 
       // TODO move this into render function, introduce variable.
       voices.selectAll(".ribbon")
@@ -258,7 +254,7 @@ function NotesBook() {
         document.getElementById("select-ribbon").setAttribute("style", "display: inline");
         if (arg == "attack_density") {
           document.getElementById("combine-ui").setAttribute("style", "display: none");
-          if (!document.getElementById("show-notes").checked) {
+          if (!showNotes) {
             d3.selectAll(".refline")
               .style("display", "none")
             ;
@@ -275,40 +271,7 @@ function NotesBook() {
         document.getElementById("show-notes").checked = true;
         my.notes(true);
       }
-
-      /*
-      console.log("ribbon arg",arg);
-      if (!document.getElementById("show-ribbon").checked) {
-        console.log("activating notes menu");
-        var showNotesNode = document.getElementById("show-notes");
-        showNotesNode.checked = true;
-        d3.select(showNotesNode.parentNode.nextElementSibling).style("display", "inline");
-      } else {
-        for (var item of document.getElementById("select-ribbon").getElementsByTagName("option")) {
-          if ((item.value == "attack_density") && (item.selected)) {
-            if (!document.getElementById("show-notes").checked) {
-              d3.selectAll(".refline")
-                .style("display", "none")
-              ;
-            }
-            document.getElementById("combine-ui").setAttribute("style", "display: none");
-          } else {
-            d3.selectAll(".refline")
-              .style("display", "inline")
-            ;
-            document.getElementById("combine-ui").setAttribute("style", "display: inline");
-          }
-        }
-      }
-      if (document.getElementById("show-notes").checked) {
-        d3.selectAll(".refline")
-          .style("display", "inline")
-        ;
-        voices.selectAll(".notes")
-          .style("display", "inline")
-        ;
-      }
-      */
+      selectedRibbon = arg;
     } // my.ribbons()
   ;
 
