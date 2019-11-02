@@ -31,6 +31,30 @@ function NotesBook() {
   function my() {
       if(!data) return;
 
+      console.log(data);
+
+      var combinedData = Object();
+      combinedData['partindex'] = data.partcount;
+      combinedData['voice'] = 'Combined';
+      combinedData['notedata'] = Array();
+      combinedNoteData = Array();
+      for (var v in data.partdata) {
+        for (var n in data.partdata[v].notedata) {
+          combinedNoteData.push(data.partdata[v].notedata[n]);
+          //combinedData['notedata'][v].push(data.partdata.notedata[n]);
+          //combinedData['notedata']
+          //console.log(n);
+        }
+      }
+      combinedNoteData.sort(function(a,b) { return(a.starttimesec <= b.starttimesec ? -1 : 1)});
+      combinedData.notedata = combinedNoteData;
+      data.partcount += 1;
+      //console.log(combinedNoteData);
+      data.partdata.push(combinedData);
+      //console.log(data.partdata);
+
+      //console.log(combinedData);
+
       x.domain([0, getTime.scoreLength(data)]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
@@ -75,6 +99,8 @@ function NotesBook() {
       voice.exit()
         .remove()
       ;
+      console.log(voice.enter().data());
+
       voice = voice.enter()
         .append("svg")
           .attr("class", function(d) { return "voice voice" + d.partindex; })
