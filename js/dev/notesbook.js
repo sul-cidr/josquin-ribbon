@@ -22,6 +22,7 @@ function NotesBook() {
     , combineVoices = false
     , showRibbon = true
     , selectedRibbon = "attack_density"
+    , hideExtremes = false
   ;
 
   /*
@@ -100,6 +101,7 @@ function NotesBook() {
       ;
 
       my.notes(showNotes);
+      my.extremes(hideExtremes);
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
 
@@ -174,11 +176,18 @@ function NotesBook() {
       return my;
     } // my.hilite()
   ;
-  my.extremes = function() {
+  my.extremes = function(_) {
       var music = voices.selectAll(".extreme-plain")
         , vis = music.style("display")
       ;
-      music.style("display", vis === "inline" ? "none" : "inline");
+
+      // Argument can be null if menu was previously disabled
+      if (_ === null) {
+        _ = !hideExtremes;
+      }
+
+      music.style("display", _ ? "none" : "inline");
+      hideExtremes = _;
     } // my.extremes()
   ;
   my.zoom = function(_) {
