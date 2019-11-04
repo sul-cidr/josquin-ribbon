@@ -18,6 +18,11 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , showNotes = false
+    , combineVoices = false
+    , showRibbon = true
+    , selectedRibbon = "attack_density"
+    , hideExtremes = false
   ;
 
   /*
@@ -91,12 +96,15 @@ function NotesBook() {
               d3.select(this)
                   .call(score)
                   .call(ribbon.x(x).y(y))
-              // Initially, don't show the ribbons
-                .selectAll(".ribbon")
-                  .style("display", "none")
               ;
             })
       ;
+
+      my.notes(showNotes);
+      my.extremes(hideExtremes);
+      my.combine(combineVoices);
+      my.ribbons(selectedRibbon);
+
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
@@ -168,13 +176,18 @@ function NotesBook() {
       return my;
     } // my.hilite()
   ;
-  my.extremes = function() {
-      var xtrms = voices.selectAll(".extreme").empty();
-
-      // TODO move this into render function, introduce variable.
-      voices.selectAll(".extreme-plain")
-          .classed("extreme", xtrms)
+  my.extremes = function(_) {
+      var music = voices.selectAll(".extreme-plain")
+        , vis = music.style("display")
       ;
+
+      // Argument can be null if menu was previously disabled
+      if (_ === null) {
+        _ = !hideExtremes;
+      }
+
+      music.style("display", _ ? "none" : "inline");
+      hideExtremes = _;
     } // my.extremes()
   ;
   my.zoom = function(_) {
@@ -190,29 +203,52 @@ function NotesBook() {
       return my;
     } // my.zoom()
   ;
-  my.separate = function(_) {
+  my.combine = function(_) {
       // Art-direct the various voice SVGs
       var vb = voices.attr("viewBox").split(' ');
-      vb[3] = _ ? fullheight : height;
+      vb[3] = _ ? height : fullheight;
 
       // TODO move this into render function.
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
         .selectAll(".voice")
-          .attr("y", function(d, i) { return _ ? i * height : 0; })
+          .attr("y", function(d, i) { return _ ? 0 : i * height; })
       ;
-      markings.separate(_);
+      markings.separate(!_);
+      combineVoices = _;
       return my;
     } // my.separate()
   ;
-  my.notes = function() { // toggles the notes on/off
+  my.notes = function(_) { // toggles the notes on/off
 
       // TODO move this into render function, introduce variable.
       var music = voices.selectAll(".notes")
         , vis = music.style("display")
       ;
-      music.style("display", vis === "inline" ? "none" : "inline");
+      // Argument can be null if menu was previously disabled
+      if (_ === null) {
+        _ = vis !== "inline";
+      }
+
+      music.style("display", _ ? "inline" : "none");
+      // Only display "Hide Extreme Notes" when "Show Notes" is selected
+      d3.select(document.getElementById("show-notes").parentNode.nextElementSibling).style("display", _ ? "inline" : "none");
+
+      // Show staff lines/labels if melodic ribbon is selected
+      // or if no ribbons are shown (meaning notes must be shown)
+      if (!showRibbon || selectedRibbon != "standard_deviation") {
+        d3.selectAll(".refline")
+          .style("display", _ ? "inline" : "none");
+        ;
+      }
+
+      // If notes are turned off and no ribbon is enabled, show default ribbon
+      if (!_ && !showRibbon) {
+        my.ribbons(selectedRibbon);
+      }
+
+      showNotes = _;
     } // my.notes()
   ;
   my.ribbons = function(arg) {
@@ -223,6 +259,35 @@ function NotesBook() {
               return d.toLowerCase() === arg ? "inline" : "none";
             })
       ;
+      if (arg !== "all") {
+        document.getElementById("show-ribbon").checked = true;
+        document.getElementById("select-ribbon").setAttribute("style", "display: inline");
+        if (arg == "attack_density") {
+          // Don't show staves for rhythmic density ribbon if notes are off
+          if (!showNotes) {
+            d3.selectAll(".refline")
+              .style("display", "none")
+            ;
+          }
+          // Disable Combine Voices option for rhythmic density ribbon
+          document.getElementById("combine-voices").checked = false;
+          document.getElementById("combine-ui").setAttribute("style", "display: none");
+          my.combine(false);
+        } else {
+          // Always show staves for melodic ribbon, enable Combine Voices opt
+          d3.selectAll(".refline")
+            .style("display", "inline")
+          ;
+          document.getElementById("combine-ui").setAttribute("style", "display: inline");
+        }
+        showRibbon = true;
+        selectedRibbon = arg;
+      } else {
+        // If no ribbon is displayed, notes and staves should be enabled
+        document.getElementById("show-notes").checked = true;
+        my.notes(true);
+        showRibbon = false;
+      }
     } // my.ribbons()
   ;
 
