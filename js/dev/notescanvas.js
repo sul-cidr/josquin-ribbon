@@ -6,7 +6,7 @@ function NotesCanvas() {
       , data
       , width
       , height
-      , margin = { top: 10, bottom: 10, left: 0, right: 0 }
+      , margin = { top: 0, bottom: 0, left: 0, right: 0 }
       , x = d3.scaleLinear()
       , y = d3.scaleBand().padding(0.2)
       , generator = d3.entries({
@@ -144,7 +144,6 @@ function NotesCanvas() {
       } // my.extremes()
     ;
     my.ribbons = function(arg) {
-      console.log("notescanvas ribbons arg",arg);
         svg.selectAll(".ribbon g")
             .style("display", function(d) {
                 return d.toLowerCase() === arg ? "inline" : "none";

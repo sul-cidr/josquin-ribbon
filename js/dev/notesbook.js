@@ -8,8 +8,12 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
-    , percents = { left: 5, top: 15, right: 5, bottom: 5}
+    // PMB These values are duplicated in markings.js -- not good
+    // Also in notescanvas.js -- though maybe not used there
+    //, margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
+    , margin = { top: "0%", right: "0%", bottom: "0%", left: "0%" }
+    //, percents = { left: 0, top: 15, right: 0, bottom: 5}
+    , percents = { left: 0, top: 0, right: 0, bottom: 0}
     , x = d3.scaleLinear()
     , y = d3.scaleBand().round(true)
     , score  = Score()
@@ -21,7 +25,7 @@ function NotesBook() {
     , showNotes = false
     , combineVoices = false
     , showRibbon = true
-    , selectedRibbon = "attack_density"
+    , selectedRibbon = "attack_density_centered"
     , hideExtremes = false
   ;
 
@@ -31,8 +35,7 @@ function NotesBook() {
   function my() {
       if(!data) return;
 
-      console.log(data);
-
+      /* Build the "Aggregate" voice data */
       var combinedData = Object();
       combinedData['partindex'] = data.partcount;
       combinedData['voice'] = 'Combined';
@@ -41,20 +44,14 @@ function NotesBook() {
       for (var v in data.partdata) {
         for (var n in data.partdata[v].notedata) {
           combinedNoteData.push(data.partdata[v].notedata[n]);
-          //combinedData['notedata'][v].push(data.partdata.notedata[n]);
-          //combinedData['notedata']
-          //console.log(n);
         }
       }
       combinedNoteData.sort(function(a,b) { return(a.starttimesec <= b.starttimesec ? -1 : 1)});
       combinedData.notedata = combinedNoteData;
       data.partcount += 1;
-      //console.log(combinedNoteData);
+      data.partnames.push("Aggregate");
       data.partdata.push(combinedData);
-      //console.log(data.partdata);
-
-      //console.log(combinedData);
-
+ 
       x.domain([0, getTime.scoreLength(data)]);
       y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
@@ -99,7 +96,6 @@ function NotesBook() {
       voice.exit()
         .remove()
       ;
-      console.log(voice.enter().data());
 
       voice = voice.enter()
         .append("svg")
@@ -123,12 +119,6 @@ function NotesBook() {
                   .call(score)
                   .call(ribbon.x(x).y(y))
               ;
-
-              d3.select(this)
-                .selectAll(".standard_deviation")
-                  .style("display", "none")
-              ;
-
             })
       ;
 
@@ -136,20 +126,6 @@ function NotesBook() {
       my.extremes(hideExtremes);
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
-
-      if (document.getElementById("show-ribbon").checked) {
-        for (var item of document.getElementById("select-ribbon").getElementsByTagName("option")) {
-          if ((item.value == "attack_density") && (item.selected)) {
-            d3.selectAll(".refline")
-              .style("display", "none")
-            ;
-          } else if ((item.value == "standard_deviation") && (item.selected)) {
-            d3.selectAll(".refline")
-              .style("display", "inline")
-            ;
-          }
-        }
-      }
 
       window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
@@ -281,40 +257,44 @@ function NotesBook() {
       // Only display "Hide Extreme Notes" when "Show Notes" is selected
       d3.select(document.getElementById("show-notes").parentNode.nextElementSibling).style("display", _ ? "inline" : "none");
 
-      // Show staff lines/labels if melodic ribbon is selected
-      // or if no ribbons are shown (meaning notes must be shown)
+      // Toggle staff lines/labels with notes if rhythmic activity ribbon is
+      // selected. Also, if no ribbon is selected, notes (and therefore)
+      // staff lines/labels will be enabled.
       if (!showRibbon || selectedRibbon != "standard_deviation") {
         d3.selectAll(".refline")
           .style("display", _ ? "inline" : "none");
         ;
       }
 
-      // If notes are turned off and no ribbon is enabled, show default ribbon
-      if (!_ && !showRibbon) {
+      // If notes are turned off and no ribbon is enabled, show default/last ribbon
+      if (!_ && !showRibbon && selectedRibbon) {
         my.ribbons(selectedRibbon);
       }
 
       showNotes = _;
+
+      if (showRibbon && selectedRibbon == "attack_density" && !_) {
+        my.ribbons("attack_density_centered");
+      } else if (showRibbon && selectedRibbon == "attack_density_centered" && _) {
+        my.ribbons("attack_density");
+      }
     } // my.notes()
   ;
 
   my.ribbons = function(arg) {
 
-      // TODO move this into render function, introduce variable.
-      voices.selectAll(".ribbon")
-          .style("display", function(d) {
-              return d.toLowerCase() === arg ? "inline" : "none";
-            })
-      ;
       if (arg !== "all") {
         document.getElementById("show-ribbon").checked = true;
         document.getElementById("select-ribbon").setAttribute("style", "display: inline");
-        if (arg == "attack_density") {
+        if ((arg == "attack_density") || (arg == "attack_density_centered")) {
           // Don't show staves for rhythmic density ribbon if notes are off
           if (!showNotes) {
             d3.selectAll(".refline")
               .style("display", "none")
             ;
+            arg = "attack_density_centered";
+          } else {
+            arg = "attack_density";
           }
           // Disable Combine Voices option for rhythmic density ribbon
           document.getElementById("combine-voices").checked = false;
@@ -332,17 +312,15 @@ function NotesBook() {
       } else {
         // If no ribbon is displayed, notes and staves should be enabled
         document.getElementById("show-notes").checked = true;
-        my.notes(true);
         showRibbon = false;
+        my.notes(true);
       }
-      if (document.getElementById("show-notes").checked) {
-        d3.selectAll(".refline")
-          .style("display", "inline")
-        ;
-        voices.selectAll(".notes")
-          .style("display", "inline")
-        ;
-      }
+      // TODO move this into render function, introduce variable.
+      voices.selectAll(".ribbon")
+        .style("display", function(d) {
+            return d.toLowerCase() === arg ? "inline" : "none";
+          })
+      ;
     } // my.ribbons()
   ;
 
