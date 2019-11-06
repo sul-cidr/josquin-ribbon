@@ -117,7 +117,9 @@ function NotesCanvas() {
         if(!arguments.length) return data;
         data = _;
         x.domain([0, data.scorelength[0]]);
-        y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
+        //y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1));
+        // PMB
+        y.domain(d3.range(16,40));
 
         var scaleup = function(d) { return d * lifeSize; };
         x.range(x.domain().map(scaleup));

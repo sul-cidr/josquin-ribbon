@@ -96,6 +96,7 @@ function Markings() {
 
   // Respond to changes in the viewport's dimensions
   function resize() {
+      console.log("resizing markings");
       width = svg.node().width.baseVal.value;
       height = svg.node().height.baseVal.value;
       margin.top = (percents.top * height) / 100;
@@ -106,6 +107,7 @@ function Markings() {
       barlinesScale = x.range([margin.left, width - margin.right]);
       y.range([height - margin.bottom, margin.top]);
       voices.range(y.range());
+      console.log("Y range is",y.range());
 
       // TODO move this block into the render function (my())
       reflines.call(renderReflines);

@@ -53,11 +53,17 @@ function NotesBook() {
       data.partdata.push(combinedData);
  
       x.domain([0, getTime.scoreLength(data)]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
-          .padding(0.2)
-      ;
+      //y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
+      //    .padding(0.2)
+      //;
+      //console.log(data.minpitch.b7, data.maxpitch.b7 + 1);
+      y.domain(d3.range(16,40)).padding(0.2)
+
+      //y.domain(d3.range())
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
+
+      console.log(y.range()[1], y.range()[0]);
 
       width   = Math.abs(x.range()[1] - x.range()[0]);
       height  = Math.abs(y.range()[1] - y.range()[0]);
@@ -266,25 +272,26 @@ function NotesBook() {
         ;
       }
 
-      // If notes are turned off and no ribbon is enabled, show default/last ribbon
-      if (!_ && !showRibbon && selectedRibbon) {
-        my.ribbons(selectedRibbon);
-      }
-
       showNotes = _;
 
-      if (showRibbon && selectedRibbon == "attack_density" && !_) {
+      if (!_ && !showRibbon) {
+        my.ribbons(selectedRibbon);
+      } else if (showRibbon && selectedRibbon == "attack_density" && !_) {
         my.ribbons("attack_density_centered");
       } else if (showRibbon && selectedRibbon == "attack_density_centered" && _) {
         my.ribbons("attack_density");
       }
+      console.log("notes running recalibration");
+      markings.calibrate();
     } // my.notes()
   ;
 
   my.ribbons = function(arg) {
 
       if (arg !== "all") {
-        document.getElementById("show-ribbon").checked = true;
+        if (!document.getElementById("show-ribbon").checked) {
+          document.getElementById("show-ribbon").checked = true;
+        }
         document.getElementById("select-ribbon").setAttribute("style", "display: inline");
         if ((arg == "attack_density") || (arg == "attack_density_centered")) {
           // Don't show staves for rhythmic density ribbon if notes are off
@@ -313,7 +320,14 @@ function NotesBook() {
         // If no ribbon is displayed, notes and staves should be enabled
         document.getElementById("show-notes").checked = true;
         showRibbon = false;
-        my.notes(true);
+        d3.selectAll(".refline")
+          .style("display", "inline")
+        ;
+        voices.selectAll(".notes")
+          .style("display", "inline")
+        ;
+        showNotes = true;
+        //my.notes(true);
       }
       // TODO move this into render function, introduce variable.
       voices.selectAll(".ribbon")
@@ -321,6 +335,8 @@ function NotesBook() {
             return d.toLowerCase() === arg ? "inline" : "none";
           })
       ;
+      //console.log("ribbons running recalibration");
+      //markings.calibrate();
     } // my.ribbons()
   ;
 
