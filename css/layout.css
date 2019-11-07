@@ -31,6 +31,13 @@ header > div {
   width: 100%;
 }
 
+article {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  padding: .5em 0;  
+}
+
 .meta-titles {
   display: flex;
   align-items: baseline;
@@ -53,10 +60,13 @@ header > div {
 }
 
 #notesbook {
-  height: calc(100% - 2em);
-  min-height: calc(85vh - 210px);
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  height: 500px;  /* this is effectively a min-height, 
+                     as flex-grow ensure it will be larger 
+                     than this if screen real-estate is 
+                     available */
 }
 
 svg.notesbook {
@@ -72,7 +82,7 @@ svg.markings {
 #navigator {
   display: flex;
   flex: 1 1 auto;
-  height: 15vh;
+  max-height: 15vh;
 }
 
 #legend {
