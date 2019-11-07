@@ -19,13 +19,8 @@ function ColorLegend(){
           , radius = noteHeight / 2
         ;
         var legend = div.selectAll("ul").data([1]);
-        legend = legend.enter().append("ul")
-            .attr("class", "list-unstyled")
-          .merge(legend)
-        ;
-        var row = legend.selectAll("li")
-                .data(data)
-        ;
+        legend = legend.enter().append("ul").merge(legend);
+        var row = legend.selectAll("li").data(data);
         row.enter()
           .append("li")
             .each(function(c, i) {

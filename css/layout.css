@@ -30,3 +30,17 @@ svg.markings {
   flex: 1 1 auto;
   max-height: 15vh;
 }
+
+#legend {
+  display: flex;
+}
+
+#legend ul {
+  margin: 1em auto;
+  padding: 0;
+}
+
+#legend li {
+  display: inline-block;
+  padding: 0 2em;
+}
