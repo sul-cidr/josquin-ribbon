@@ -105,13 +105,16 @@ path.domain {
     color: #e377c2;
 }
 .voice7 {
-    color: #7f7f7f;
+    color: #d2b48c;
 }
 .voice8 {
     color: #bcbd22;
 }
 .voice9 {
     color: #17becf;
+}
+.Aggregate {
+    color: #7f7f7f;
 }
 .fixed-action-button {
     display: flex;

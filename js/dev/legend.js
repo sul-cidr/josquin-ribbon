@@ -18,6 +18,7 @@ function ColorLegend(){
           , noteHeight = height - 2
           , radius = noteHeight / 2
         ;
+        console.log(data);
         var legend = div.selectAll("ul").data([1]);
         legend = legend.enter().append("ul")
             .attr("class", "list-unstyled")
@@ -36,7 +37,7 @@ function ColorLegend(){
                     .attr("y", 0)
                     .attr("width", width)
                     .attr("height", height)
-                    .attr("class", "voice" + i)
+                    .attr("class", "voice" + i + " " + data[i])
                   .append("rect")
                     .attr("x", 1)
                     .attr("y", 1)
