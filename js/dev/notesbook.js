@@ -99,8 +99,6 @@ function NotesBook() {
       my.extremes(hideExtremes);
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
-
-      window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
   /*
