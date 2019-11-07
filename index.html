@@ -69,53 +69,36 @@
         <span id="zoomed-duration-indicator"></span>
       </div>
     </div><!--/#viewer-->
-    <div id="meta">
-      <div class="panel panel-default">
-        <div class="panel-heading text-center">
-        </div><!--.panel-heading-->
-        <div class="panel-body">
-          
-        </div><!--.panel-body-->
-        <div class="panel-footer">
-          <div class="list-group">
-            <div id="ribbons-ui">
-              <label for="show-ribbon">
-                <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
-                    <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
-                <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
-                    <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
-                <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
-              </label>
-              <select id="select-ribbon">
-                <optgroup label="Select a Ribbon">
-                  <option value="standard_deviation">Melodic Contour</option>
-                  <option value="attack_density" selected>Rhythmic Activity</option>
-                </optgroup>
-              </select>
-            </div><!--/#ribbons-ui-->
-          </div><!--.list-group-->
-          <div class="list-group">
-            <div id="notes-ui">
-              <label for="show-notes">
-                <input id="show-notes" type="checkbox" autocomplete="off"> Show Notes
-              </label>
-              <label for="show-extremes" style="display: none">
-                <input id="show-extremes" type="checkbox" autocomplete="off"> Hide Extreme Notes
-              </label>
-            </div><!--.btn-group#notes-ui-->
-          </div><!--.list-group-->
-          <div class="list-group">
-            <div id="combine-ui" style="display: none">
-              <label for="combine-voices">
-                <input id="combine-voices" type="checkbox" autocomplete="off"> Combine Voices
-              </label>
-            </div>
-          </div><!--.list-group#combine-ui-->
-          <div class="list-group">
-            <button id="export-svg-button">Export SVG</button>
-          </div><!--.list-group-->
-        </div><!--.panel-footer-->
-      </div><!--.panel-->
+    <div id="meta" class="well">
+      <div>
+        <div id="ribbons-ui">
+          <label for="show-ribbon">
+            <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
+          </label>
+          <select id="select-ribbon">
+            <optgroup label="Select a Ribbon">
+              <option value="standard_deviation">Melodic Contour</option>
+              <option value="attack_density" selected>Rhythmic Activity</option>
+            </optgroup>
+          </select>
+        </div><!--/#ribbons-ui-->
+        <div id="combine-ui" style="display: none">
+          <label for="combine-voices">
+            <input id="combine-voices" type="checkbox" autocomplete="off"> Combine Voices
+          </label>
+        </div>
+        <div id="notes-ui">
+          <label for="show-notes">
+            <input id="show-notes" type="checkbox" autocomplete="off"> Show Notes
+          </label>
+          <label for="show-extremes" style="display: none">
+            <input id="show-extremes" type="checkbox" autocomplete="off"> Hide Extreme Notes
+          </label>
+        </div><!--.btn-group#notes-ui-->
+      </div>
+      <div>
+        <button id="export-svg-button">Export SVG</button>
+      </div>
     </div><!--.col-xs-12.col-lg-2-->
     <div id="navigator" class="well">
       <svg></svg>
