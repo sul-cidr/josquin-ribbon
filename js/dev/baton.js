@@ -1,5 +1,4 @@
-var margin = { top: 20, right: 20, bottom: 20, left: 20 }
-  , divMeta = d3.select("#meta")
+var divMeta = d3.select("#meta")
   , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
   , colorLegend = ColorLegend().div(divMeta.select("#legend"))

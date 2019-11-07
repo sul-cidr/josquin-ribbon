@@ -6,8 +6,8 @@ function Markings() {
     , data
     , x, y
     , width, height
-    , percents = { left: 5, top: 15, right: 5, bottom: 5}
-    , margin = { left: 5, top: 10, right: 5, bottom: 5}
+    , percents = { left: 0, top: 0, right: 0, bottom: 6}
+    , margin = { left: 0, top: 0, right: 0, bottom: 0}
     , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
           .domain([32, 28, 24])
@@ -166,7 +166,6 @@ function Markings() {
           .tickFormat(mensurationsScale)
       ;
       selection
-          .attr("transform", "translate(0," + margin.top + ")")
           .call(mensurationsAxis)
       ;
       selection.selectAll(".tick").each(function() {
@@ -191,8 +190,6 @@ function Markings() {
               ;
               use
                   .attr("xlink:href", "#" + code)
-                  .attr("x", -7)
-                  .attr("y", -24)
                   .attr("height", "30")
                   .attr("width", "30")
               ;
