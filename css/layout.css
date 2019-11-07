@@ -3,48 +3,30 @@ header {
   box-sizing: border-box;
 }
 
-.row {
-  display: flex;
-  flex-direction: column;
-}
-
-.row:first-child {
-  min-height: calc(85vh - 110px);
-}
-
-.row:last-child {
-  max-height: 15vh;
-}
-
-#main {
-  min-height: 40vh;
+#meta {
+  height: 100px;
+  overflow: hidden;
 }
 
 #notesbook {
   height: calc(100% - 2em);
-  min-height: calc(40vh - 2em);
+  min-height: calc(85vh - 210px);
   display: flex;
   flex-direction: column;
 }
 
-#notesbook svg {
+svg.notesbook {
   flex: 1 0 auto;
+  padding: 3em;
+}
+
+svg.notesbook,
+svg.markings {
+  overflow: visible;
 }
 
 #navigator {
+  display: flex;
   flex: 1 1 auto;
-}
-
-@media (min-width: 992px) {
-  .row {
-    flex-direction: row;
-  }
-
-  #main {
-    width: 75%;
-  }
-
-  #meta {
-    width: 25%;
-  }
+  max-height: 15vh;
 }
