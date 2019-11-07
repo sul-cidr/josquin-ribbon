@@ -6,8 +6,6 @@ function Markings() {
     , data
     , x, y
     , width, height
-    , percents = { left: 0, top: 0, right: 0, bottom: 6}
-    , margin = { left: 0, top: 0, right: 0, bottom: 0}
     , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
           .domain([32, 28, 24])
@@ -96,13 +94,8 @@ function Markings() {
   function resize() {
       width = svg.node().width.baseVal.value;
       height = svg.node().height.baseVal.value;
-      margin.top = (percents.top * height) / 100;
-      margin.right = (percents.right * width) / 100;
-      margin.bottom = (percents.bottom * height) / 100;
-      margin.left = (percents.left * width) / 100;
-
-      barlinesScale = x.range([margin.left, width - margin.right]);
-      y.range([height - margin.bottom, margin.top]);
+      barlinesScale = x.range([0, width]);
+      y.range([height, 0]);
       voices.range(y.range());
 
       // TODO move this block into the render function (my())
@@ -143,11 +136,11 @@ function Markings() {
               var label = data[i].label;
               return barLabels[label] ? label : "";
             })
-          .tickSize(height - margin.bottom - margin.top)
+          .tickSize(height)
       ;
       // Render the axis, which includes both lines and labels.
       selection
-          .attr("transform", "translate(0," + margin.top + ")")
+          .attr("transform", "translate(0,0)")
           .call(barlinesAxis)
         .selectAll(".tick")
           .classed("terminal", function(d) { return d.terminal; })
@@ -210,7 +203,7 @@ function Markings() {
           .tickFormat(sectionsScale)
       ;
       selection
-          .attr("transform", "translate(0," + (margin.top / 2) + ")")
+          .attr("transform", "translate(0,0)")
           .call(sectionsAxis)
       ;
   } // renderSectionLabels()
@@ -227,7 +220,7 @@ function Markings() {
                   : y
             ;
             self
-                .attr("transform", "translate(" + margin.left + ",0)")
+                .attr("transform", "translate(0,0)")
               .transition()
                 .call(reflinesAxis.scale(myscale))
             ;
