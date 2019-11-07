@@ -1,6 +1,43 @@
 header {
-  height: 50px;
+  background-image: url('/img/josquin.jpg');
+  background-repeat: no-repeat;
+  background-size: 80px;
+  background-position: left;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
   box-sizing: border-box;
+
+  border-bottom: 1px solid #eee;
+  min-height: 80px;
+  padding: 15px 15px 15px 100px;
+}
+
+header h1,
+header h3,
+header h4 {
+  flex-grow: 1;
+  margin: 0;
+}
+
+header > div {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.meta-titles {
+  display: flex;
+  align-items: baseline;
+}
+
+.meta-titles h4 {
+  margin-left: 20px;
 }
 
 #meta {
@@ -17,7 +54,7 @@ header {
 
 svg.notesbook {
   flex: 1 0 auto;
-  padding: 3em;
+  padding: 2em;
 }
 
 svg.notesbook,
@@ -28,7 +65,7 @@ svg.markings {
 #navigator {
   display: flex;
   flex: 1 1 auto;
-  max-height: 15vh;
+  height: 15vh;
 }
 
 #legend {
@@ -43,4 +80,19 @@ svg.markings {
 #legend li {
   display: inline-block;
   padding: 0 2em;
+}
+
+@media (min-width: 992px) {
+  header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  header > div {
+    width: auto;
+  }
+
+  /* .meta-titles {
+    flex-direction: column;
+  } */
 }

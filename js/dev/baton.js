@@ -1,5 +1,4 @@
-var divMeta = d3.select("#meta")
-  , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
+var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
   , colorLegend = ColorLegend().div(d3.select("#legend"))
   ;
@@ -210,7 +209,7 @@ function chartify(data) {
     ;
 
     // Titles and polish
-    var titles = divMeta.select(".meta-titles").selectAll("*")
+    var titles = d3.select(".meta-titles").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
     ;
     titles.text(function(d) { return d.split('_').join(' '); });
