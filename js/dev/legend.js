@@ -31,7 +31,7 @@ function ColorLegend(){
                     .attr("y", 0)
                     .attr("width", width)
                     .attr("height", height)
-                    .attr("class", "voice" + i)
+                    .attr("class", "voice" + i + " " + data[i])
                   .append("rect")
                     .attr("x", 1)
                     .attr("y", 1)

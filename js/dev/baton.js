@@ -94,8 +94,7 @@ setupDispatcher();
 
 function load_song(work) {
     d3.queue()
-        //.defer(d3.json, jsonURL + work)
-        .defer(d3.json, "http://127.0.0.1:7000/Jos2306.json")
+        .defer(d3.json, jsonURL + work)
         .await(function(error, proll) {
             if(error) {
                console.log("Problem downloading", jsonURL + work);

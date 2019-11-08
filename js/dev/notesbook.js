@@ -30,7 +30,7 @@ function NotesBook() {
       if(!data) return;
 
       x.domain([0, getTime.scoreLength(data)]);
-      y.domain(d3.range(16,40))
+      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
           .padding(0.2)
       ;
       x.range(x.domain().map(scaleup));
@@ -71,7 +71,7 @@ function NotesBook() {
       ;
       voice = voice.enter()
         .append("svg")
-          .attr("class", function(d) { return "voice voice" + d.partindex; })
+          .attr("class", function(d) { return "voice voice" + d.partindex + " " + d.voice; })
           .attr("preserveAspectRatio", "xMinYMid slice")
         .merge(voice)
       ;
