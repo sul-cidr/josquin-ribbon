@@ -30,7 +30,7 @@ function NotesBook() {
       if(!data) return;
 
       x.domain([0, getTime.scoreLength(data)]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
+      y.domain(d3.range(16,40))
           .padding(0.2)
       ;
       x.range(x.domain().map(scaleup));
