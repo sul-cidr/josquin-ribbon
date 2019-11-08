@@ -8,7 +8,6 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , voicesHaxisOffset = 50  // space to leave for horizonal axis labels
     , x = d3.scaleLinear()
     , y = d3.scaleBand().round(true)
     , score  = Score()
@@ -31,7 +30,7 @@ function NotesBook() {
       if(!data) return;
 
       x.domain([0, getTime.scoreLength(data)]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
+      y.domain(d3.range(16,40))
           .padding(0.2)
       ;
       x.range(x.domain().map(scaleup));
@@ -56,13 +55,14 @@ function NotesBook() {
           .call(markings)
       ;
       reticle
-          .attr("viewBox", [0, 0, width, sh - voicesHaxisOffset].join(' '))
-          .attr("height", sh - voicesHaxisOffset)
+          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("height", "100%")
+          .attr("width", "100%")
       ;
       voices
           .attr("width", width)
-          .attr("height", sh - voicesHaxisOffset)
-          .attr("viewBox", [0, 0, width, sh - voicesHaxisOffset].join(' '))
+          .attr("height", height)
+          .attr("viewBox", [0, 0, width, height].join(' '))
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
