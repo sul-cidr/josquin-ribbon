@@ -1,4 +1,4 @@
-/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver */
+/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver, prettifyXml */
 /* exported voicesHaxisOffset */
 
 var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
@@ -244,7 +244,9 @@ function chartify() {
           var node = d3.select(".notesbook").node()
             , filename = "josquin-export-" + work + ".svg"
           ;
-          new SvgSaver().asSvg(node, filename);
+          new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
+            return prettifyXml(clonedSvg.outerHTML);
+          });
         });
 } // chartify()
 

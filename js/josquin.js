@@ -1,5 +1,7 @@
 ---
 ---
+{% include_relative dev/xml-prettyprint.js %}
+
 {% include_relative dev/getTime.js %}
 {% include_relative dev/legend.js %}
 {% include_relative dev/ribbon.js %}
