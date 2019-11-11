@@ -171,7 +171,7 @@ function Markings() {
           ;
           if(code) {
               // Hide the text
-              sym.style("visibility", "hidden")
+              sym.style("display", "none")
               // Show the SVG symbol
               var use = self.selectAll("use")
                   .data([code], function(d) { return d; })
