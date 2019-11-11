@@ -8,7 +8,6 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , voicesHaxisOffset = 50  // space to leave for horizonal axis labels
     , x = d3.scaleLinear()
     , y = d3.scaleBand().round(true)
     , score  = Score()

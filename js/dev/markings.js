@@ -1,3 +1,6 @@
+/* global d3, voicesHaxisOffset */
+/* exported Markings */
+
 function Markings() {
   /*
   ** Private Variables
@@ -220,7 +223,7 @@ function Markings() {
                   : y
             ;
             self
-                .attr("transform", "translate(0,0)")
+                .attr("transform", "translate(0," + -voicesHaxisOffset / 2 + ")")
               .transition()
                 .call(reflinesAxis.scale(myscale))
             ;
