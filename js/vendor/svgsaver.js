@@ -397,14 +397,14 @@ var SvgSaver = (function () {
     }
   }, {
     key: 'asSvgAlt',
-    value: function asSvg(el, filename, processClonedSvg) {
+    value: function asSvg(el, filename, serializeClonedSvg) {
       el = SvgSaver.getSvg(el);
       filename = SvgSaver.getFilename(el, filename, 'svg');
 
       var clonedSvg = this.cloneSVG(el);
-      if (processClonedSvg) processClonedSvg(clonedSvg);
-
-      var html = clonedSvg.outerHTML;
+      var html = (serializeClonedSvg) ? 
+                    serializeClonedSvg(clonedSvg) : 
+                    clonedSvg.outerHTML;
 
       if (isFunction(Blob)) {
         return _fileSaver2["default"].saveAs(
