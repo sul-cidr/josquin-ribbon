@@ -312,8 +312,8 @@ var SvgSaver = (function () {
       svg.setAttribute('version', 1.1);
 
       // height and width needed to download in FireFox
-      svg.setAttribute('width', svg.getAttribute('width') || '500');
-      svg.setAttribute('height', svg.getAttribute('height') || '900');
+      svg.setAttribute('width', el.width.baseVal.value || '500');
+      svg.setAttribute('height', el.height.baseVal.value || '900');
 
       return svg;
     }
