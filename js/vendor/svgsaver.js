@@ -395,6 +395,31 @@ var SvgSaver = (function () {
       }
       return saveUri(this.getUri(el), filename);
     }
+  }, {
+    key: 'asSvgAlt',
+    value: function asSvg(el, filename, processClonedSvg) {
+      el = SvgSaver.getSvg(el);
+      filename = SvgSaver.getFilename(el, filename, 'svg');
+
+      var clonedSvg = this.cloneSVG(el);
+      if (processClonedSvg) processClonedSvg(clonedSvg);
+
+      var html = clonedSvg.outerHTML;
+
+      if (isFunction(Blob)) {
+        return _fileSaver2["default"].saveAs(
+          new Blob([html], { type: "text/xml" }), filename);
+      }
+
+      html = encodeURIComponent(html);
+      var uri;
+      if (isDefined(window.btoa)) {
+        uri = "data:image/svg+xml;base64," + window.btoa(unescape(html));
+      } else {
+        uri = "data:image/svg+xml," + html;
+      }
+      return saveUri(uri, filename);
+    }
 
     /**
     * Gets the SVG as a PNG data URI.
