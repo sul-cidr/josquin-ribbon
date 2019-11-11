@@ -182,6 +182,8 @@ function Markings() {
               use = use.enter()
                 .append("use")
                   .attr("class", "mensuration")
+                  .attr("x", "-7.5px")
+                  .attr("y", "-15px")
                 .merge(use)
               ;
               use
@@ -206,7 +208,7 @@ function Markings() {
           .tickFormat(sectionsScale)
       ;
       selection
-          .attr("transform", "translate(0,0)")
+          .attr("transform", "translate(15,-6)")
           .call(sectionsAxis)
       ;
   } // renderSectionLabels()
