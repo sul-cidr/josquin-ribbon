@@ -245,6 +245,39 @@ function chartify() {
             , filename = "josquin-export-" + work + ".svg"
           ;
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
+            
+            // Export only visible elements
+            clonedSvg.querySelectorAll("[style*='display: none']").forEach(function(elem) {
+              elem.remove();
+            });
+
+            // Remove empty `<text/>` nodes
+            clonedSvg.querySelectorAll('text').forEach(function(textElem) {
+              if (!textElem.textContent) textElem.remove()
+            });
+
+            // Remove unused symbols from `<defs/>`
+            clonedSvg.querySelectorAll('defs > symbol').forEach(function(sym) {
+              if (!clonedSvg.querySelector("use[*|href='#" + sym.id + "']")) sym.remove();
+            });
+
+            // Remove most style attributes
+            clonedSvg.removeAttribute("style");
+            var selectors = [
+              "svg", "g:not(.ribbon)", "path", "defs", "symbol", 
+              "title", "desc", "line", "text"];
+            selectors.forEach(function(selector) {
+              clonedSvg.querySelectorAll(selector).forEach(function(elem) {
+                elem.removeAttribute("style");
+              });              
+            });
+
+            // Remove all class attributes
+            clonedSvg.removeAttribute("class");
+            clonedSvg.querySelectorAll("[class]").forEach(function(elem) {
+              elem.removeAttribute("class");
+            });   
+            
             return prettifyXml(clonedSvg.outerHTML);
           });
         });
