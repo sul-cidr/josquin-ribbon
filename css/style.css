@@ -48,11 +48,7 @@ svg {
 .brush .selection {
     stroke: darkgrey;
 }
-.tick line {
-    stroke: lightgray;
-}
 .tick text {
-    fill: gray;
     font-size: 1.4em;
     text-anchor: start;
 }

@@ -148,6 +148,8 @@ function Markings() {
         .selectAll(".tick")
           .classed("terminal", function(d) { return d.terminal; })
       ;
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderBarlines()
 
   function renderMensurations(selection) {
@@ -194,6 +196,8 @@ function Markings() {
           }
         })
       ;
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderMensurations()
 
   function renderSections(selection) {
@@ -211,6 +215,8 @@ function Markings() {
           .attr("transform", "translate(15,-6)")
           .call(sectionsAxis)
       ;
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderSectionLabels()
 
   function renderReflines(selection) {
@@ -238,6 +244,8 @@ function Markings() {
           })
       ;
       reflines.exit().remove();
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderReflines
 
   /*
