@@ -217,6 +217,9 @@ function Markings() {
       ;
       selection.selectAll("line").attr("stroke", "#d3d3d3");
       selection.selectAll("text").attr("fill", "#808080");
+      selection.selectAll("g")
+        .attr("font-size", "14")
+        .attr("text-anchor", "start");
   } // renderSectionLabels()
 
   function renderReflines(selection) {

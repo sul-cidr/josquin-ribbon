@@ -48,10 +48,6 @@ svg {
 .brush .selection {
     stroke: darkgrey;
 }
-.tick text {
-    font-size: 1.4em;
-    text-anchor: start;
-}
 .mensuration {
   fill: gray;
 }
