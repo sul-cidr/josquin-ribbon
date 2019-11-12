@@ -7,12 +7,6 @@
       url('fonts/BravuraText.svg') format('svg'); /* iOS */
 }
 
-.mensuration {
-    font-family: 'BravuraText';
-    font-size: xx-large;
-    text-anchor: start;
-}
-
 #legend li {
     cursor: pointer;
 }
@@ -47,9 +41,6 @@ svg {
 }
 .brush .selection {
     stroke: darkgrey;
-}
-.mensuration {
-  fill: gray;
 }
 path.domain {
     display: none;
