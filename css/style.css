@@ -41,6 +41,22 @@ svg {
 .brush .selection {
     stroke: darkgrey;
 }
+.zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+.tick line {
+    stroke: lightgray;
+}
+.tick text {
+    fill: gray;
+    font-size: 1.4em;
+    text-anchor: start;
+}
+.mensuration {
+  fill: gray;
+}
 path.domain {
     display: none;
 }

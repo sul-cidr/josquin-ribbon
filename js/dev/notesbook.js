@@ -21,6 +21,8 @@ function NotesBook() {
     , showRibbon = true
     , selectedRibbon = "attack_density_centered"
     , hideExtremes = false
+    , zoom = d3.zoom().on("zoom", wheeled)
+    , zoomG
   ;
 
   /*
@@ -100,6 +102,15 @@ function NotesBook() {
             })
       ;
 
+      console.log("ZOOM HEIGHT",fullheight,"WIDTH",width);
+
+      zoom
+        .scaleExtent([1, Infinity])
+        .translateExtent([[0, 0], [width, fullheight]])
+        .extent([[0, 0], [width, fullheight]])
+      ;
+      zoomG.call(zoom);
+
       my.notes(showNotes);
       my.extremes(hideExtremes);
       my.combine(combineVoices);
@@ -118,6 +129,12 @@ function NotesBook() {
       svg
           .attr("class", "notesbook")
       ;
+      zoomG = svg.append('rect')
+        .attr("class", "zoom")
+        .attr("preserveAspectRatio", "none")
+        .style("width", "100%")
+        .style("height", "100%")
+      ;
       rulers = svg.append("svg")
         .attr("class", "markings")
       ;
@@ -132,7 +149,18 @@ function NotesBook() {
           .attr("id", "voices")
           .attr("preserveAspectRatio", "none")
       ;
+
   } // initialize_SVG()
+
+  function wheeled() {
+    if (d3.event && d3.event.sourceEvent) {
+      console.log("wheel", d3.event.sourceEvent.type);
+    }
+    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+    var t = d3.event.transform;
+    console.log(t);
+  
+  }
 
   /*
   ** API (Getter/Setter) Functions
