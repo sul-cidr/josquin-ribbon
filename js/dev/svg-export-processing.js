@@ -38,16 +38,36 @@ var cleanSvg = function(svg) {
     if (!svg.querySelector("use[*|href='#" + sym.id + "']")) sym.remove();
   });
 
-  // Remove most style attributes
-  svg.removeAttribute("style");
-  var selectors = [
-    "svg", "g:not(.ribbon)", "path", "defs", "symbol", "use",
-    "title", "desc", "line", "text"];
-  selectors.forEach(function(selector) {
-    svg.querySelectorAll(selector).forEach(function(elem) {
-      elem.removeAttribute("style");
-    });              
+  // Remove `<title/>` elems from notes
+  svg.querySelectorAll("rect > title").forEach(function(elem) {
+    elem.remove();
   });
+
+  // Copy needed styles
+  svg.querySelectorAll("g.ribbon").forEach(function(elem) {
+    elem.setAttribute("fill", elem.style.fill);
+    elem.setAttribute("fill-opacity", elem.style.fillOpacity);
+    elem.setAttribute("stroke", elem.style.stroke);
+  });   
+
+  svg.querySelectorAll("g.notes").forEach(function(elem) {
+    var firstNote = elem.querySelector("rect.note");
+    elem.setAttribute("fill", firstNote.style.fill);
+    elem.setAttribute("fill-opacity", firstNote.style.fillOpacity);
+    elem.setAttribute("stroke", firstNote.style.stroke);
+    // This one is hard-coded because:
+    //  1) `SvgSaver` doesn't propagate this attribute
+    //     (it's not white-listed) so it never makes it as far
+    //     as here; and
+    //  2) it never actually changes.
+    elem.setAttribute("vector-effect", "non-scaling-stroke");
+  });   
+
+  // Remove all style attributes
+  svg.removeAttribute("style");
+  svg.querySelectorAll("[style]").forEach(function(elem) {
+    elem.removeAttribute("style");
+  });   
 
   // Remove all class attributes
   svg.removeAttribute("class");
