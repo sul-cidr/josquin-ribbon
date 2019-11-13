@@ -264,7 +264,7 @@ function chartify() {
             // Remove most style attributes
             clonedSvg.removeAttribute("style");
             var selectors = [
-              "svg", "g:not(.ribbon)", "path", "defs", "symbol", 
+              "svg", "g:not(.ribbon)", "path", "defs", "symbol", "use",
               "title", "desc", "line", "text"];
             selectors.forEach(function(selector) {
               clonedSvg.querySelectorAll(selector).forEach(function(elem) {
@@ -276,6 +276,17 @@ function chartify() {
             clonedSvg.removeAttribute("class");
             clonedSvg.querySelectorAll("[class]").forEach(function(elem) {
               elem.removeAttribute("class");
+            });   
+
+            // Remove unnecessary default values
+            clonedSvg.querySelectorAll("[transform='translate(0,0)']").forEach(function(elem) {
+              elem.removeAttribute("transform");
+            });   
+            clonedSvg.querySelectorAll("[fill='none']").forEach(function(elem) {
+              elem.removeAttribute("fill");
+            });   
+            clonedSvg.querySelectorAll("[opacity='1']").forEach(function(elem) {
+              elem.removeAttribute("opacity");
             });   
             
             return prettifyXml(clonedSvg.outerHTML);
