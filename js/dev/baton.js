@@ -1,4 +1,4 @@
-/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver, prettifyXml */
+/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver, prettifyXml, cleanSvg */
 /* exported voicesHaxisOffset */
 
 var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
@@ -245,50 +245,7 @@ function chartify() {
             , filename = "josquin-export-" + work + ".svg"
           ;
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
-            
-            // Export only visible elements
-            clonedSvg.querySelectorAll("[style*='display: none']").forEach(function(elem) {
-              elem.remove();
-            });
-
-            // Remove empty `<text/>` nodes
-            clonedSvg.querySelectorAll('text').forEach(function(textElem) {
-              if (!textElem.textContent) textElem.remove()
-            });
-
-            // Remove unused symbols from `<defs/>`
-            clonedSvg.querySelectorAll('defs > symbol').forEach(function(sym) {
-              if (!clonedSvg.querySelector("use[*|href='#" + sym.id + "']")) sym.remove();
-            });
-
-            // Remove most style attributes
-            clonedSvg.removeAttribute("style");
-            var selectors = [
-              "svg", "g:not(.ribbon)", "path", "defs", "symbol", "use",
-              "title", "desc", "line", "text"];
-            selectors.forEach(function(selector) {
-              clonedSvg.querySelectorAll(selector).forEach(function(elem) {
-                elem.removeAttribute("style");
-              });              
-            });
-
-            // Remove all class attributes
-            clonedSvg.removeAttribute("class");
-            clonedSvg.querySelectorAll("[class]").forEach(function(elem) {
-              elem.removeAttribute("class");
-            });   
-
-            // Remove unnecessary default values
-            clonedSvg.querySelectorAll("[transform='translate(0,0)']").forEach(function(elem) {
-              elem.removeAttribute("transform");
-            });   
-            clonedSvg.querySelectorAll("[fill='none']").forEach(function(elem) {
-              elem.removeAttribute("fill");
-            });   
-            clonedSvg.querySelectorAll("[opacity='1']").forEach(function(elem) {
-              elem.removeAttribute("opacity");
-            });   
-            
+            cleanSvg(clonedSvg);
             return prettifyXml(clonedSvg.outerHTML);
           });
         });

@@ -1,6 +1,6 @@
 ---
 ---
-{% include_relative dev/xml-prettyprint.js %}
+{% include_relative dev/svg-export-processing.js %}
 
 {% include_relative dev/getTime.js %}
 {% include_relative dev/legend.js %}
