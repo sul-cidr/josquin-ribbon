@@ -32,6 +32,7 @@ function NotesNav() {
             .attr("width", width)
             .attr("height", height)
         ;
+
         brush
           .extent([[0, 0], [width, height]])
           .handleSize(width / 200);
@@ -46,6 +47,7 @@ function NotesNav() {
             .attr("y", 0)
             .attr("height", height)
         ;
+
     } // my() - Main Function Object
 
 
@@ -63,6 +65,7 @@ function NotesNav() {
           .append("use")
             .attr("xlink:href", "#voices")
         ;
+
         // Attach an element for the d3.brush()
         brushG = svg.append("g").attr("class", "brush");
     } // initSVG()
@@ -71,6 +74,10 @@ function NotesNav() {
     ** Callback Functions
     */
     function brushed() {
+        if (d3.event.sourceEvent) {
+          console.log("brush", d3.event.sourceEvent.type);
+        }
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") { console.log("zoom event"); return; }
         var extent = (!d3.event || !d3.event.selection)
               ? x.range()
               : d3.event.selection.map(Math.round)
@@ -81,12 +88,8 @@ function NotesNav() {
                 .call(brush.move, x.range())
             ;
         }
-        if(dispatch) dispatch.call("zoom", this, extent);
+        if(dispatch) { console.log("zooming nav"); dispatch.call("zoom", this, extent); }
     } // brushed()
-
-    function move() {
-        brush.selection.call(brush.move([0, 0], [width, height]));
-    } // move()
 
     /*
     ** API - Getters/Setters
