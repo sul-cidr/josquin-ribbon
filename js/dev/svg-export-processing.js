@@ -1,4 +1,4 @@
-/* exported prettifyXml, cleanSvg */
+/* exported prettifyXml, cleanSvg, addSvgPadding */
 var prettifyXml = function(sourceXml) {
   if (!XSLTProcessor) return sourceXml;
   var xmlDoc = new DOMParser().parseFromString(sourceXml, 'application/xml');
@@ -66,3 +66,15 @@ var cleanSvg = function(svg) {
     elem.removeAttribute("opacity");
   });  
 } 
+
+var addSvgPadding = function(svg, hPad=50, vPad=100) {
+  // svg.querySelectorAll(':scope > svg') // ← no IE or Edge support :(
+  svg.querySelectorAll("[xmlns] > svg").forEach(function(elem) {
+    elem.setAttribute("overflow", "visible");
+    elem.setAttribute("x", "25");
+    elem.setAttribute("y", "50");
+    elem.setAttribute("width", svg.width.baseVal.value);
+  })
+  svg.setAttribute("width", svg.width.baseVal.value + hPad);
+  svg.setAttribute("height", svg.height.baseVal.value + vPad);
+}

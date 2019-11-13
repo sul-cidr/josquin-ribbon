@@ -1,4 +1,4 @@
-/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver, prettifyXml, cleanSvg */
+/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver, prettifyXml, cleanSvg, addSvgPadding */
 /* exported voicesHaxisOffset */
 
 var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
@@ -246,6 +246,7 @@ function chartify() {
           ;
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
             cleanSvg(clonedSvg);
+            addSvgPadding(clonedSvg);
             return prettifyXml(clonedSvg.outerHTML);
           });
         });
