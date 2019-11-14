@@ -59,16 +59,8 @@ var cleanSvg = function(svg) {
     elem.setAttribute("fill", firstNote.style.fill);
     elem.setAttribute("fill-opacity", firstNote.style.fillOpacity);
     elem.setAttribute("stroke", firstNote.style.stroke);
+    elem.setAttribute("stroke-width", firstNote.style.strokeWidth);
   });   
-
-  svg.querySelectorAll("rect.note").forEach(function(elem) {
-    // This one is hard-coded because:
-    //  1) `SvgSaver` doesn't propagate this attribute
-    //     (it's not white-listed) so it never makes it as far
-    //     as here; and
-    //  2) it never actually changes.
-    elem.setAttribute("vector-effect", "non-scaling-stroke");
-  });
 
   // Remove all style attributes
   svg.removeAttribute("style");

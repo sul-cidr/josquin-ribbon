@@ -23,8 +23,7 @@ svg {
     fill: currentColor;
     stroke: currentColor;
     fill-opacity: 0.5;
-    stroke-width: 1;
-    vector-effect: non-scaling-stroke;
+    stroke-width: 0.5;
 }
 .subdued {
     opacity: 0.1;
