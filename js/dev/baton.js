@@ -6,6 +6,7 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , colorLegend = ColorLegend().div(d3.select("#legend"))
   , currentScore
   , aggregateVoice
+  , currentWork // the currently displayed song
   ;
 
   /*
@@ -30,7 +31,6 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
 var baseURL = 'https://josquin.stanford.edu/cgi-bin/jrp?'
   , catURL = baseURL + 'a=list'
   , jsonURL = baseURL + 'a=proll-json&f='
-  , work // the currently displayed song
 ;
 /*
 ** Load the list of available songs
@@ -103,6 +103,8 @@ function load_song(work) {
             }
             // Set the URL history to the current song
             history.pushState(null, null, '?id=' + work);
+
+            currentWork = work;
 
             // Parse the raw JSON and pass it to chartify.
             currentScore = parseJSON(proll);
@@ -242,7 +244,7 @@ function chartify() {
     d3.selectAll("#export-svg-button")
         .on("click", function (){
           var node = d3.select(".notesbook").node()
-            , filename = "josquin-export-" + work + ".svg"
+            , filename = "josquin-export-" + currentWork + ".svg"
           ;
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
             cleanSvg(clonedSvg);
