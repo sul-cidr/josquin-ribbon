@@ -92,6 +92,9 @@ var cleanSvg = function(svg) {
   svg.querySelectorAll("[opacity='1']").forEach(function(elem) {
     elem.removeAttribute("opacity");
   });
+  svg.querySelectorAll("[text-anchor='middle']").forEach(function(elem) {
+    elem.removeAttribute("text-anchor");
+  });
 
   // Limit `x` and `width` attributes to a maximum of 5 decimal places
   svg.querySelectorAll("[x]").forEach(function(elem) {
