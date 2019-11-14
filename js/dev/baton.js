@@ -5,7 +5,6 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
   , colorLegend = ColorLegend().div(d3.select("#legend"))
   , currentScore
-  , voicesHaxisOffset = 50  // space to leave for horizonal axis labels
   ;
 
   /*

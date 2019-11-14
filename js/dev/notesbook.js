@@ -55,13 +55,13 @@ function NotesBook() {
           .call(markings)
       ;
       reticle
-          .attr("viewBox", [0, 0, width, sh - voicesHaxisOffset].join(' '))
-          .attr("height", sh - voicesHaxisOffset)
+          .attr("viewBox", [0, 0, width, sh].join(' '))
+          .attr("height", sh)
       ;
       voices
           .attr("width", width)
-          .attr("height", sh - voicesHaxisOffset)
-          .attr("viewBox", [0, 0, width, sh - voicesHaxisOffset].join(' '))
+          .attr("height", sh)
+          .attr("viewBox", [0, 0, width, sh].join(' '))
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
