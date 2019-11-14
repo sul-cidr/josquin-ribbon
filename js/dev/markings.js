@@ -184,8 +184,8 @@ function Markings() {
               use = use.enter()
                 .append("use")
                   .attr("class", "mensuration")
-                  .attr("x", "-7.5px")
-                  .attr("y", "-15px")
+                  .attr("x", "-7.5")
+                  .attr("y", "-15")
                 .merge(use)
               ;
               use
