@@ -74,26 +74,44 @@ function NotesNav() {
     ** Callback Functions
     */
     function brushed() {
-        if (d3.event.sourceEvent) {
-          console.log("brush", d3.event.sourceEvent.type);
+        if (d3.event) {
+          console.log("brush", d3.event);
         }
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") { console.log("zoom event"); return; }
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === "wheel") { console.log("wheel event, skipping zoom"); return; }
         var extent = (!d3.event || !d3.event.selection)
               ? x.range()
               : d3.event.selection.map(Math.round)
         ;
+        console.log("brush xrange",d3.event.selection.map(Math.round));
         if(!d3.event.selection) {
             svg.select(".brush")
               .transition().duration(500)
                 .call(brush.move, x.range())
             ;
         }
-        if(dispatch) { console.log("zooming nav"); dispatch.call("zoom", this, extent); }
+        if(dispatch) { console.log("zooming nav", extent); dispatch.call("zoom", this, extent); }
     } // brushed()
 
     /*
     ** API - Getters/Setters
     */
+    my.pan = function(_) {
+      console.log("notesnav pan", _);
+      //var selectedWidth = _[1] - _[0];
+      brushG.call(brush.move, _);
+      /*svg.select(".brush")
+        .transition().duration(0)
+          .call(brush.move, _);*/
+      //svg.select(".brush").extent([_[0], 0],[selectedWidth, height]);
+      //brush.extent(_);
+      /*brush.extent([_[0], 0],[selectedWidth, height]);
+      console.log("1");
+      brush(svg.select(".brush").transition().duration(0));
+      console.log("2");
+      svg.select(".brush").transition().delay(0).duration(0);
+      console.log("3");*/
+      return my;
+    }
     my.connect = function(_) {
         if(!arguments.length) return dispatch;
 
@@ -118,6 +136,7 @@ function NotesNav() {
     my.x = function(_) {
         if(!arguments.length) return x;
         x = _;
+        console.log("notesnav X now",x);
         return my;
       } // my.x()
     ;
