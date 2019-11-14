@@ -23,11 +23,7 @@ function NotesNav() {
         width  = Math.abs(viewbox[2]);
         height = Math.abs(viewbox[3]);
 
-        svg
-            .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '))
-        ;
+        svg.attr("viewBox", [0, 0, viewbox[2], viewbox[3]].join(' '));
         svg.select("svg")
             .attr("width", width)
             .attr("height", height)
@@ -61,7 +57,6 @@ function NotesNav() {
         // an image of the main viz.
         svg
             .style("width", "100%")
-            .style("height", "100%")
             .attr("preserveAspectRatio", "none")
           .append("svg")
             .attr("preserveAspectRatio", "xMinYMid slice")

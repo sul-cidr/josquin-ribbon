@@ -1,50 +1,118 @@
 header {
-  height: 50px;
-  box-sizing: border-box;
-}
+  background-image: url('/img/josquin.jpg');
+  background-repeat: no-repeat;
+  background-size: 80px;
+  background-position: left;
 
-.row {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #eee;
+  min-height: 80px;
+  padding: 15px 15px 15px 100px;
 }
 
-.row:first-child {
-  min-height: calc(85vh - 110px);
+header h1,
+header h3,
+header h4 {
+  flex-grow: 1;
+  margin: 0;
 }
 
-.row:last-child {
-  max-height: 15vh;
+header > div {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  width: 100%;
 }
 
-#main {
-  min-height: 40vh;
+article {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  padding: .5em 0;  
+}
+
+.meta-titles {
+  display: flex;
+  align-items: baseline;
+}
+
+.meta-titles h4 {
+  margin-left: 20px;
+}
+
+#meta {
+  background-color: #f5f5f5;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#meta > div:last-child {
+  display: flex;
+  align-items: center;
 }
 
 #notesbook {
-  height: calc(100% - 2em);
-  min-height: calc(40vh - 2em);
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  height: 500px;  /* this is effectively a min-height, 
+                     as flex-grow ensure it will be larger 
+                     than this if screen real-estate is 
+                     available */
 }
 
-#notesbook svg {
+svg.notesbook {
   flex: 1 0 auto;
+  padding: 3em 2em 2em;
+}
+
+svg.notesbook,
+svg.markings {
+  overflow: visible;
 }
 
 #navigator {
+  display: flex;
   flex: 1 1 auto;
+  max-height: 15vh;
+}
+
+#legend {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin: 0 2em;
+}
+
+#legend ul {
+  margin: 1em auto;
+  padding: 0;
+}
+
+#legend li {
+  display: inline-block;
+  padding: 0 2em;
 }
 
 @media (min-width: 992px) {
-  .row {
+  header {
     flex-direction: row;
+    align-items: center;
   }
 
-  #main {
-    width: 75%;
+  header > div {
+    width: auto;
   }
 
-  #meta {
-    width: 25%;
-  }
+  /* .meta-titles {
+    flex-direction: column;
+  } */
 }

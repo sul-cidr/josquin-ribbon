@@ -1,8 +1,10 @@
-var margin = { top: 20, right: 20, bottom: 20, left: 20 }
-  , divMeta = d3.select("#meta")
-  , notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
+/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver */
+/* exported voicesHaxisOffset */
+
+var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
-  , colorLegend = ColorLegend().div(divMeta.select("#legend"))
+  , colorLegend = ColorLegend().div(d3.select("#legend"))
+  , currentScore
   ;
 
   /*
@@ -101,7 +103,8 @@ function load_song(work) {
             history.pushState(null, null, '?id=' + work);
 
             // Parse the raw JSON and pass it to chartify.
-            chartify(parseJSON(proll));
+            currentScore = parseJSON(proll);
+            chartify();
           })
     ;
 
@@ -187,18 +190,17 @@ function connectSignalsToViz() {
 } // connectSignalsToViz()
 
 
-function chartify(data) {
+function chartify() {
+    if (!currentScore) return;
+    var data = currentScore;
 
     /*
     ** 1. Connect the appropriate data
     ** 2. Activate
     */
-    notesBook
-        .data(data)
-      ()
-    ;
-
     colorLegend.data(data.partnames)();
+    notesBook.data(data)();
+
     /*
     ** 1. Set scales and dimensions
     ** 2. Activate
@@ -211,7 +213,7 @@ function chartify(data) {
     ;
 
     // Titles and polish
-    var titles = divMeta.select(".meta-titles").selectAll("*")
+    var titles = d3.select(".meta-titles").selectAll("*")
         .data(data.filename.split(".krn")[0].split('-').reverse())
     ;
     titles.text(function(d) { return d.split('_').join(' '); });
@@ -252,3 +254,20 @@ function slugify(str) {
         .replace(/^-+|-+$/g, '') // remove leading and trailing hyphens
     ;
 } // slugify()
+
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+window.addEventListener("resize", debounce(chartify, 250));

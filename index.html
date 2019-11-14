@@ -25,14 +25,22 @@
 <body>
   <header class="page-header text-center">
     <h1>Josquin Research Project</h1>
+    <div>
+      <div class="meta-titles">
+        <h3></h3>
+        <h4></h4>
+      </div>
+      <div>
+        <input title="Delete the text to see an autocomplete list." id="josquin_catalog" name="josquin_catalog" type="text" list="catalog">
+        </input><button id="load_song">Load</button>
+        <datalist id="catalog"></datalist>
+      </div>    
+    </div>
   </header>
   <article>
-    <div class="container-fluid">
-      <div class="row">
-        <div id="main" class="notes">
-            <div id="notesbook" class="well">
-              <svg>
-                <defs>
+    <div id="notesbook" class="well">
+      <svg>
+        <defs>
 
 
 {% comment %}
@@ -55,90 +63,61 @@
 {% endcomment %}
 {% include mensuration/mensuration.symbols %}
 
-                </defs>
-              </svg>
-            </div><!--/#viewer-->
-        </div><!--.notes-->
-        <div id="meta">
-          <div class="panel panel-default">
-            <div class="panel-heading text-center">
-              <div class="meta-titles">
-                <h3></h3>
-                <h4></h4>
-              </div>
-              <div>
-                <input title="Delete the text to see an autocomplete list." id="josquin_catalog" name="josquin_catalog" type="text" list="catalog">
-                </input><button id="load_song">Load</button>
-                <datalist id="catalog"></datalist>
-              </div>
-            </div><!--.panel-heading-->
-            <div class="panel-body">
-              <div id="legend"></div>
-            </div><!--.panel-body-->
-            <div class="panel-footer">
-              <div class="list-group">
-                <div id="ribbons-ui">
-                  <label for="show-ribbon">
-                    <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
-                  </label>
-                  <select id="select-ribbon">
-                    <optgroup label="Select a Ribbon">
-                      <option value="standard_deviation">Melodic Contour</option>
-                      <option value="attack_density" selected>Rhythmic Activity</option>
-                    </optgroup>
-                  </select>
-                </div><!--/#ribbons-ui-->
-              </div><!--.list-group-->
-              <div class="list-group">
-                <div id="notes-ui">
-                  <label for="show-notes">
-                    <input id="show-notes" type="checkbox" autocomplete="off"> Show Notes
-                  </label>
-                  <label for="show-extremes" style="display: none">
-                    <input id="show-extremes" type="checkbox" autocomplete="off"> Hide Extreme Notes
-                  </label>
-                </div><!--.btn-group#notes-ui-->
-              </div><!--.list-group-->
-              <div class="list-group">
-                <div id="combine-ui" style="display: none">
-                  <label for="combine-voices">
-                    <input id="combine-voices" type="checkbox" autocomplete="off"> Combine Voices
-                  </label>
-                </div>
-              </div><!--.list-group#combine-ui-->
-              <div class="list-group">
-                <button id="export-svg-button">Export SVG</button>
-              </div><!--.list-group-->
-              <div class="list-group">
-                <span id="zoomed-duration-indicator"></span>
-              </div><!--.list-group-->
-            </div><!--.panel-footer-->
-          </div><!--.panel-->
-        </div><!--.col-xs-12.col-lg-2-->
-      </div><!--.row-->
-      <div class="row">
-        <div id="navigator" class="well">
-          <svg></svg>
-        </div><!--.well#navigator-->
-      </div><!--.row-->
-    </div><!--.container-->
+        </defs>
+      </svg>
+      <div id="legend">
+        <span id="zoomed-duration-indicator"></span>
+      </div>
+    </div><!--/#viewer-->
+    <div id="meta" class="well">
+      <div>
+        <div id="ribbons-ui">
+          <label for="show-ribbon">
+            <input id="show-ribbon" type="checkbox" value="all" checked> Show Ribbon: 
+          </label>
+          <select id="select-ribbon">
+            <optgroup label="Select a Ribbon">
+              <option value="standard_deviation">Melodic Contour</option>
+              <option value="attack_density" selected>Rhythmic Activity</option>
+            </optgroup>
+          </select>
+        </div><!--/#ribbons-ui-->
+        <div id="combine-ui" style="display: none">
+          <label for="combine-voices">
+            <input id="combine-voices" type="checkbox" autocomplete="off"> Combine Voices
+          </label>
+        </div>
+        <div id="notes-ui">
+          <label for="show-notes">
+            <input id="show-notes" type="checkbox" autocomplete="off"> Show Notes
+          </label>
+          <label for="show-extremes" style="display: none">
+            <input id="show-extremes" type="checkbox" autocomplete="off"> Hide Extreme Notes
+          </label>
+        </div><!--.btn-group#notes-ui-->
+      </div>
+      <div>
+        <button id="export-svg-button">Export SVG</button>
+      </div>
+    </div><!--.col-xs-12.col-lg-2-->
+    <div id="navigator" class="well">
+      <svg></svg>
+    </div><!--.well#navigator-->
   </article>
 
-{% if site.debugging == 'true' %}
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js">
-  </script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js">
-  </script>
+{% if site.debugging %}
+  <script src="js/vendor/d3.min.js"></script>
+  <script src="js/vendor/d3-tip.min.js"></script>
+  <script src="js/vendor/svgsaver.min.js"></script>
+
+  <script src="js/dev/getTime.js"></script>
   <script src="js/dev/legend.js"></script>
-  <script src="js/dev/reflines.js"></script>
   <script src="js/dev/ribbon.js"></script>
   <script src="js/dev/score.js"></script>
+  <script src="js/dev/markings.js"></script>
   <script src="js/dev/notescanvas.js"></script>
   <script src="js/dev/notesbook.js"></script>
   <script src="js/dev/notesnav.js"></script>
-  <script src="js/dev/askus.js"></script>
   <script src="js/dev/baton.js"></script>
 {% else %}
   <script src="js/vendors.js"></script>

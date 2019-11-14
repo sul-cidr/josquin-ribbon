@@ -1,3 +1,6 @@
+/* global d3 */
+/* exported Markings */
+
 function Markings() {
   /*
   ** Private Variables
@@ -6,8 +9,6 @@ function Markings() {
     , data
     , x, y
     , width, height
-    , percents = { left: 5, top: 15, right: 5, bottom: 5}
-    , margin = { left: 5, top: 10, right: 5, bottom: 5}
     , reflines, voices = d3.scaleBand()
     , reflinesScale = d3.scaleOrdinal()
           .domain([32, 28, 24])
@@ -96,13 +97,8 @@ function Markings() {
   function resize() {
       width = svg.node().width.baseVal.value;
       height = svg.node().height.baseVal.value;
-      margin.top = (percents.top * height) / 100;
-      margin.right = (percents.right * width) / 100;
-      margin.bottom = (percents.bottom * height) / 100;
-      margin.left = (percents.left * width) / 100;
-
-      barlinesScale = x.range([margin.left, width - margin.right]);
-      y.range([height - margin.bottom, margin.top]);
+      barlinesScale = x.range([0, width]);
+      y.range([height, 0]);
       voices.range(y.range());
 
       // TODO move this block into the render function (my())
@@ -143,11 +139,11 @@ function Markings() {
               var label = data[i].label;
               return barLabels[label] ? label : "";
             })
-          .tickSize(height - margin.bottom - margin.top)
+          .tickSize(height)
       ;
       // Render the axis, which includes both lines and labels.
       selection
-          .attr("transform", "translate(0," + margin.top + ")")
+          .attr("transform", "translate(0,0)")
           .call(barlinesAxis)
         .selectAll(".tick")
           .classed("terminal", function(d) { return d.terminal; })
@@ -166,7 +162,6 @@ function Markings() {
           .tickFormat(mensurationsScale)
       ;
       selection
-          .attr("transform", "translate(0," + margin.top + ")")
           .call(mensurationsAxis)
       ;
       selection.selectAll(".tick").each(function() {
@@ -187,12 +182,12 @@ function Markings() {
               use = use.enter()
                 .append("use")
                   .attr("class", "mensuration")
+                  .attr("x", "-7.5px")
+                  .attr("y", "-15px")
                 .merge(use)
               ;
               use
                   .attr("xlink:href", "#" + code)
-                  .attr("x", -7)
-                  .attr("y", -24)
                   .attr("height", "30")
                   .attr("width", "30")
               ;
@@ -213,7 +208,7 @@ function Markings() {
           .tickFormat(sectionsScale)
       ;
       selection
-          .attr("transform", "translate(0," + (margin.top / 2) + ")")
+          .attr("transform", "translate(15,-6)")
           .call(sectionsAxis)
       ;
   } // renderSectionLabels()
@@ -230,7 +225,6 @@ function Markings() {
                   : y
             ;
             self
-                .attr("transform", "translate(" + margin.left + ",0)")
               .transition()
                 .call(reflinesAxis.scale(myscale))
             ;

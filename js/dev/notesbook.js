@@ -8,8 +8,6 @@ function NotesBook() {
     , height
     , viewbox
     , fullheight
-    , margin = { top: "10%", right: "5%", bottom: "5%", left: "5%" }
-    , percents = { left: 5, top: 15, right: 5, bottom: 5}
     , x = d3.scaleLinear()
     , y = d3.scaleBand().round(true)
     , score  = Score()
@@ -46,8 +44,6 @@ function NotesBook() {
       var sw = parseFloat(svg.style("width"))
         , sh = parseFloat(svg.style("height"))
         , w = 500, h = Math.round(w * sh / sw)
-        , fw = w + margin.left + margin.right
-        , fh = h + margin.top + margin.bottom
       ;
       markings
           .data(data.barlines)
@@ -59,15 +55,13 @@ function NotesBook() {
           .call(markings)
       ;
       reticle
-          .attr("viewBox", [0, 0, width, height].join(' '))
-        // Make room for the markings around
-          .attr("width", (100 - percents.left - percents.right) + "%")
-          .attr("height", (100 - percents.top - percents.bottom) + "%")
+          .attr("viewBox", [0, 0, width, sh].join(' '))
+          .attr("height", sh)
       ;
       voices
           .attr("width", width)
-          .attr("height", height)
-          .attr("viewBox", [0, 0, width, height].join(' '))
+          .attr("height", sh)
+          .attr("viewBox", [0, 0, width, sh].join(' '))
       ;
       var voice = voices.selectAll(".voice")
           .data(data.partdata, function(d) { return d.partindex; })
@@ -104,8 +98,6 @@ function NotesBook() {
       my.extremes(hideExtremes);
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
-
-      window.onresize = function(event) { markings.calibrate(); };
   } // my() - Main function object
 
   /*
@@ -119,8 +111,6 @@ function NotesBook() {
       //       the viewport, distorting the image if necessary.
       svg
           .attr("class", "notesbook")
-          .style("height", "100%")
-          .style("width", "100%")
       ;
       rulers = svg.append("svg")
         .attr("class", "markings")
@@ -129,8 +119,6 @@ function NotesBook() {
         .append("svg")
         .attr("class", "reticle music")
         .attr("preserveAspectRatio", "none")
-        .attr("x", percents.left + "%")
-        .attr("y", percents.top + "%" )
       ;
       voices = reticle
         .append("svg")
