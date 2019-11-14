@@ -21,6 +21,7 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
           , "select-ribbon"
           , "show-ribbon"
           , "show-notes"
+          , "pan"
         )
   ;
 
@@ -95,6 +96,7 @@ setupDispatcher();
 function load_song(work) {
     d3.queue()
         .defer(d3.json, jsonURL + work)
+        //.defer(d3.json, "http://127.0.0.1:7000/Jos2306.json")
         .await(function(error, proll) {
             if(error) {
                console.log("Problem downloading", jsonURL + work);
@@ -157,6 +159,7 @@ function createSignals() {
         .on("select-ribbon",   notesBook.ribbons)
         .on("combine-voices",  notesBook.combine)
         .on("zoom",            notesBook.zoom)
+        .on("pan",             notesNav.pan)
     ;
 
     // Update the duration indicator on zoom.

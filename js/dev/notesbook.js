@@ -16,12 +16,13 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , selectedWidth = 500
     , showNotes = false
     , combineVoices = false
     , showRibbon = true
     , selectedRibbon = "attack_density_centered"
     , hideExtremes = false
-    , zoom = d3.zoom().on("zoom", wheeled)
+    , zoom = d3.zoom().on("zoom", zoomed)
     , zoomG
   ;
 
@@ -51,7 +52,7 @@ function NotesBook() {
 
       var sw = parseFloat(svg.style("width"))
         , sh = parseFloat(svg.style("height"))
-        , w = 500, h = Math.round(w * sh / sw)
+        , w = selectedWidth, h = Math.round(w * sh / sw)
       ;
       markings
           .data(data.barlines)
@@ -109,7 +110,7 @@ function NotesBook() {
         .translateExtent([[0, 0], [width, fullheight]])
         .extent([[0, 0], [width, fullheight]])
       ;
-      zoomG.call(zoom);
+      zoomG.call(zoom).on("wheel.zoom",wheeled);
 
       my.notes(showNotes);
       my.extremes(hideExtremes);
@@ -152,14 +153,25 @@ function NotesBook() {
 
   } // initialize_SVG()
 
-  function wheeled() {
-    if (d3.event && d3.event.sourceEvent) {
-      console.log("wheel", d3.event.sourceEvent.type);
-    }
-    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+  function zoomed() {
+    console.log("zoomed",d3.event);
+    if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
     var t = d3.event.transform;
     console.log(t);
-  
+  }
+
+  function wheeled() {
+    console.log("wheeled",d3.event);
+    if (d3.event) {
+      let event = d3.event,
+        dx = Math.abs(event.deltaX),
+        dy = Math.abs(event.deltaY);
+      console.log("pan", dx, dy);
+      if (dx > dy) {
+        my.pan(parseInt(event.deltaX));
+      }
+      event.preventDefault && event.preventDefault();
+    } 
   }
 
   /*
@@ -212,7 +224,30 @@ function NotesBook() {
       hideExtremes = _;
     } // my.extremes()
   ;
+  my.pan = function(_) {
+    var vb = reticle.attr("viewBox").split(' ');
+    console.log("pan with viewbox " + vb.join(' '),"max width",width);
+    if(!arguments.length) return vb;
+    if ((parseInt(vb[2]) + _) >= width) {
+      //vb[2] = width;
+      vb[2] = selectedWidth;
+      vb[0] = width - selectedWidth;
+    } else if ((parseInt(vb[0]) + _) < 0) {
+      vb[0] = 0;
+      vb[2] = selectedWidth;
+    } else {
+      vb[0] = parseInt(vb[0]) + _;
+      //vb[2] = parseInt(vb[2]) + _;
+      vb[2] = selectedWidth;
+    }
+    markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
+    reticle.attr("viewBox", vb.join(' ') );
+    console.log("viewbox now" + vb.join(' '));
+    if(dispatch) { console.log("panning nav", vb); dispatch.call("pan", this, [vb[0], vb[0] + selectedWidth]); }
+    return my;
+  }
   my.zoom = function(_) {
+      console.log("zoom called with",_);
       var vb = reticle.attr("viewBox").split(' ');
       if(!arguments.length) return vb;
 
@@ -221,6 +256,7 @@ function NotesBook() {
       vb[2] = Math.abs(_[1] - _[0]);
       markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
       reticle.attr("viewBox", vb.join(' ') );
+      selectedWidth = vb[2] - vb[0];
 
       return my;
     } // my.zoom()
