@@ -22,6 +22,10 @@ var prettifyXml = function(sourceXml) {
   return resultXml;
 };
 
+var _roundValue = function(valueAsString) {
+  return parseFloat(valueAsString).toFixed(5).replace(/\.?0*$/,'');
+}
+
 var cleanSvg = function(svg) {
   // Export only visible elements
   svg.querySelectorAll("[style*='display: none']").forEach(function(elem) {
@@ -87,7 +91,15 @@ var cleanSvg = function(svg) {
   });   
   svg.querySelectorAll("[opacity='1']").forEach(function(elem) {
     elem.removeAttribute("opacity");
-  });  
+  });
+
+  // Limit `x` and `width` attributes to a maximum of 5 decimal places
+  svg.querySelectorAll("[x]").forEach(function(elem) {
+    elem.setAttribute("x", _roundValue(elem.getAttribute("x")));
+  });
+  svg.querySelectorAll("[width]").forEach(function(elem) {
+    elem.setAttribute("width", _roundValue(elem.getAttribute("width")));
+  });
 } 
 
 var addSvgPadding = function(svg, hPad=50, vPad=100) {
