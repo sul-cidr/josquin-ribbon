@@ -247,8 +247,8 @@ function chartify() {
             , filename = "josquin-export-" + currentWork + ".svg"
           ;
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
+            addSvgPadding(clonedSvg, 25, 50);
             cleanSvg(clonedSvg);
-            addSvgPadding(clonedSvg);
             return prettifyXml(clonedSvg.outerHTML);
           });
         });

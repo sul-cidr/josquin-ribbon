@@ -107,14 +107,24 @@ var cleanSvg = function(svg) {
   });
 } 
 
-var addSvgPadding = function(svg, hPad=50, vPad=100) {
-  // svg.querySelectorAll(':scope > svg') // ← no IE or Edge support :(
-  svg.querySelectorAll("[xmlns] > svg").forEach(function(elem) {
-    elem.setAttribute("overflow", "visible");
-    elem.setAttribute("x", "25");
-    elem.setAttribute("y", "50");
-    elem.setAttribute("width", svg.width.baseVal.value);
-  })
-  svg.setAttribute("width", svg.width.baseVal.value + hPad);
-  svg.setAttribute("height", svg.height.baseVal.value + vPad);
+var addSvgPadding = function(svg, hPad, vPad) {
+  var svgOrigHeight = svg.height.baseVal.value;
+  var svgOrigWidth = svg.width.baseVal.value;
+
+  var markings = svg.querySelector(".markings");
+  markings.setAttribute("preserveAspectRatio", "none");
+  markings.setAttribute("width", svgOrigWidth);
+  markings.setAttribute("viewBox", [
+    -hPad, -vPad,
+    svgOrigWidth + (hPad * 2), svgOrigHeight + (vPad * 2)
+  ].join(" "));
+
+  var reticle = svg.querySelector(".reticle");
+  var hOffset = (hPad / svgOrigWidth) * reticle.viewBox.baseVal.width;
+  reticle.setAttribute("height", svgOrigHeight);
+  reticle.setAttribute("width", svgOrigWidth - hPad);
+  reticle.setAttribute("viewBox", [
+    -hOffset, -vPad,
+    500 + hOffset, svgOrigHeight + (vPad * 2)
+  ].join(" "));  
 }
