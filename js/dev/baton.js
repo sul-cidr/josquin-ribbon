@@ -5,6 +5,7 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
   , notesNav = NotesNav().svg(d3.select("#navigator").select("svg"))
   , colorLegend = ColorLegend().div(d3.select("#legend"))
   , currentScore
+  , aggregateVoice
   ;
 
   /*
@@ -112,7 +113,27 @@ function load_song(work) {
         proll.partdata.forEach(function(part) {
             part.voice = proll.partnames[part.partindex];
           })
+
+        /* Build the "Aggregate" voice data */
+        var combinedData = Object();
+        combinedData['partindex'] = proll.partcount;
+        combinedData['voice'] = 'Aggregate';
+        combinedData['notedata'] = Array();
+        combinedNoteData = Array();
+        for (var v in proll.partdata) {
+          for (var n in proll.partdata[v].notedata) {
+            combinedNoteData.push(proll.partdata[v].notedata[n]);
+          }
+        }
+        combinedNoteData.sort(function(a,b) { return(a.starttimesec <= b.starttimesec ? -1 : 1)});
+        combinedData.notedata = combinedNoteData;
+
+        proll.partcount = proll.partcount + 1;
+        proll.partnames.push("Aggregate");
+        proll.partdata.push(combinedData);
+
         return proll;
+
     } // parseJSON()
 }
 

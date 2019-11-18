@@ -71,7 +71,7 @@ function NotesBook() {
       ;
       voice = voice.enter()
         .append("svg")
-          .attr("class", function(d) { return "voice voice" + d.partindex; })
+          .attr("class", function(d) { return "voice voice" + d.partindex + " " + d.voice; })
           .attr("preserveAspectRatio", "xMinYMid slice")
         .merge(voice)
       ;
