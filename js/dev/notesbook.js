@@ -30,9 +30,15 @@ function NotesBook() {
       if(!data) return;
 
       x.domain([0, getTime.scoreLength(data)]);
-      y.domain(d3.range(data.minpitch.b7, data.maxpitch.b7 + 1))
-          .padding(0.2)
-      ;
+
+      /* Center the Y domain around middle C, but if all of the notes are above
+       * or below middle C, limit the domain to that half
+       */
+      var maxRangeFromMC = Math.max(Math.max(0, data.maxpitch.b7 - 28), Math.max(0, 28 - data.minpitch.b7));
+      var minPitch = (data.minpitch.b7 <= 28) ? 28 - maxRangeFromMC : 28;
+      var maxPitch = (data.maxpitch.b7 >= 28) ? 28 + maxRangeFromMC + 1 : 29;
+      y.domain(d3.range(minPitch, maxPitch))
+
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
