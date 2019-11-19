@@ -53,10 +53,10 @@ function NotesBook() {
       ;
       rulers
           .call(markings)
+          .attr("viewBox", [0, 0, sw, sh].join(' '))
       ;
       reticle
           .attr("viewBox", [0, 0, width, sh].join(' '))
-          .attr("height", sh)
       ;
       voices
           .attr("width", width)
@@ -114,6 +114,7 @@ function NotesBook() {
       ;
       rulers = svg.append("svg")
         .attr("class", "markings")
+        .attr("preserveAspectRatio", "none")
       ;
       reticle = svg
         .append("svg")
