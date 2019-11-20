@@ -1,6 +1,6 @@
 /* exported prettifyXml, cleanSvg, addSvgPadding */
 var prettifyXml = function(sourceXml) {
-  if (!XSLTProcessor) return sourceXml;
+  if (!XSLTProcessor || !XSLTProcessor.importStylesheet) return sourceXml;
   var xmlDoc = new DOMParser().parseFromString(sourceXml, 'application/xml');
   var xsltDoc = new DOMParser().parseFromString([
     '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform">',
