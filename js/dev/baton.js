@@ -1,4 +1,5 @@
-/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver, prettifyXml, cleanSvg, addSvgPadding */
+/* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver */
+/* global prettifyXml, cleanSvg, addSvgPadding, safariNamespaceFix */
 /* exported voicesHaxisOffset */
 
 var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
@@ -249,7 +250,9 @@ function chartify() {
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
             addSvgPadding(clonedSvg, 25, 50);
             cleanSvg(clonedSvg);
-            return prettifyXml(clonedSvg.outerHTML);
+            var serializedSvg = prettifyXml(clonedSvg.outerHTML);
+            serializedSvg = safariNamespaceFix(serializedSvg);
+            return serializedSvg;
           });
         });
 } // chartify()

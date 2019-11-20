@@ -1,4 +1,4 @@
-/* exported prettifyXml, cleanSvg, addSvgPadding */
+/* exported prettifyXml, cleanSvg, addSvgPadding, safariNamespaceFix */
 var prettifyXml = function(sourceXml) {
   if (!XSLTProcessor || !XSLTProcessor.importStylesheet) return sourceXml;
   var xmlDoc = new DOMParser().parseFromString(sourceXml, 'application/xml');
@@ -128,3 +128,7 @@ var addSvgPadding = function(svg, hPad, vPad) {
     500 + hOffset, svgOrigHeight + (vPad * 2)
   ].join(" "));  
 }
+
+var safariNamespaceFix = function(serializedSvg) {
+  return serializedSvg.replace(/NS\d+:href/gi, 'xlink:href')
+};
