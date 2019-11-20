@@ -18,6 +18,7 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
           , "combine-voices"
           , "selected"
           , "show-extremes"
+          , "select-ribbon"
           , "show-ribbon"
           , "show-notes"
         )
@@ -151,7 +152,8 @@ function createSignals() {
         .on("show-notes",      notesBook.notes)
         .on("show-extremes",   notesBook.extremes)
         .on("hilite",          notesBook.hilite)
-        .on("show-ribbon",     notesBook.ribbons)
+        .on("show-ribbon",     notesBook.toggleRibbons)
+        .on("select-ribbon",   notesBook.ribbons)
         .on("combine-voices",  notesBook.combine)
         .on("zoom",            notesBook.zoom)
     ;
@@ -188,17 +190,15 @@ function connectSignalsToDOM() {
     d3.select("#ribbons-ui").each(function() {
       var check = d3.select(this).select("input")
         , choice = d3.select(this).select("select")
-        , callback = check.node().id // callback name == checkbox 'id'
       ;
 
       check.on("change", function(d) {
           choice.style("display", this.checked ? null : "none");
-          var value = choice.node().value;
-          signal.call(callback, this, this.checked ? value : this.value);
+          signal.call("show-ribbon", this, this.checked);
         })
       ;
       choice.on("change", function() {
-          signal.call(callback, this, this.value);
+          signal.call("select-ribbon", this, this.value);
         })
       ;
     });

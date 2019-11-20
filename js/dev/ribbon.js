@@ -121,23 +121,22 @@ function Ribbon() {
            });
     } // modes.STANDARD_DEVIATION()
 
-    modes.ATTACK_DENSITY = function(data) {
+    var densityGenerator = function(data, centered) {
 
       // Use the following fixed values for the attack density computation,
       // as these specific values were prescribed by Josquin project leads.
       var interval = 2 // Compute the density for a window of 2 seconds.
         , step = 1 // Compute values for each second.
-        , scaleFactor = 0.3 // Make the shape a bit thinner.
+        , scaleFactor = 0.4 // Make the shape a bit thinner.
       ;
 
-      // For steps in which there are no notes in the interval,
-      // An empty interval at the previous average is used.
-      var previousMean = data[0].pitch.b7;
-
       // Compute the mean pitch across all notes for this voice.
-      var overallMean = d3.mean(data.map(function (d) {
-        return d.pitch.b7;
-      }));
+      var overallMean = 28;
+      if (!centered) {
+        var overallMean = d3.mean(data.map(function (d) {
+          return d.pitch.b7;
+        }));
+      }
 
       return d3.range(x.domain()[0], x.domain()[1] + step, step)
         .map(function (x){
@@ -162,8 +161,6 @@ function Ribbon() {
             .map(function (d){ return d.pitch.b7; })
           ;
 
-          // At each iteration of this function,
-          // we'll compute the mean and standard deviation.
           var mean = overallMean
             , density;
 
@@ -194,12 +191,6 @@ function Ribbon() {
 
           density *= scaleFactor;
 
-
-          // Stash the previous average for next time around,
-          // whatever it may be, for use in the case that
-          // the set of notes in the window is empty.
-          //previousMean = mean;
-
           // Return an objects that represents this slice of the ribbon.
           return {
               x: x
@@ -207,7 +198,10 @@ function Ribbon() {
             , y0: mean - density
           };
         });
-    } // modes.ATTACK_DENSITY()
+    } // densityGenerator()
+
+    modes.ATTACK_DENSITY = function(data) { return densityGenerator(data, false); };
+    modes.ATTACK_DENSITY_CENTERED = function(data) { return densityGenerator(data, true); };
 
     /*
     ** Internal Helper Functions
