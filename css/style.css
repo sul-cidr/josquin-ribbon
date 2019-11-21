@@ -7,12 +7,6 @@
       url('fonts/BravuraText.svg') format('svg'); /* iOS */
 }
 
-.mensuration {
-    font-family: 'BravuraText';
-    font-size: xx-large;
-    text-anchor: start;
-}
-
 #legend li {
     cursor: pointer;
 }
@@ -29,8 +23,7 @@ svg {
     fill: currentColor;
     stroke: currentColor;
     fill-opacity: 0.5;
-    stroke-width: 1;
-    vector-effect: non-scaling-stroke;
+    stroke-width: 0.5;
 }
 .subdued {
     opacity: 0.1;
@@ -47,17 +40,6 @@ svg {
 }
 .brush .selection {
     stroke: darkgrey;
-}
-.tick line {
-    stroke: lightgray;
-}
-.tick text {
-    fill: gray;
-    font-size: 1.4em;
-    text-anchor: start;
-}
-.mensuration {
-  fill: gray;
 }
 path.domain {
     display: none;

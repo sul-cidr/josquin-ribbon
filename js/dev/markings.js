@@ -148,6 +148,8 @@ function Markings() {
         .selectAll(".tick")
           .classed("terminal", function(d) { return d.terminal; })
       ;
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderBarlines()
 
   function renderMensurations(selection) {
@@ -171,7 +173,7 @@ function Markings() {
           ;
           if(code) {
               // Hide the text
-              sym.style("visibility", "hidden")
+              sym.style("display", "none")
               // Show the SVG symbol
               var use = self.selectAll("use")
                   .data([code], function(d) { return d; })
@@ -182,18 +184,21 @@ function Markings() {
               use = use.enter()
                 .append("use")
                   .attr("class", "mensuration")
-                  .attr("x", "-7.5px")
-                  .attr("y", "-15px")
+                  .attr("x", "-7.5")
+                  .attr("y", "-15")
                 .merge(use)
               ;
               use
                   .attr("xlink:href", "#" + code)
                   .attr("height", "30")
                   .attr("width", "30")
+                  .attr("fill", "#808080")
               ;
           }
         })
       ;
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderMensurations()
 
   function renderSections(selection) {
@@ -211,6 +216,11 @@ function Markings() {
           .attr("transform", "translate(15,-6)")
           .call(sectionsAxis)
       ;
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
+      selection.selectAll("g")
+        .attr("font-size", "14")
+        .attr("text-anchor", "start");
   } // renderSectionLabels()
 
   function renderReflines(selection) {
@@ -238,6 +248,8 @@ function Markings() {
           })
       ;
       reflines.exit().remove();
+      selection.selectAll("line").attr("stroke", "#d3d3d3");
+      selection.selectAll("text").attr("fill", "#808080");
   } // renderReflines
 
   /*
