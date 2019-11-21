@@ -1,4 +1,4 @@
-/* exported prettifyXml, cleanSvg, addSvgPadding, safariNamespaceFix */
+/* exported prettifyXml, cleanSvg, addSvgPadding, processSymbols, safariNamespaceFix */
 var prettifyXml = function(sourceXml) {
   if (!XSLTProcessor || !XSLTProcessor.importStylesheet) return sourceXml;
   var xmlDoc = new DOMParser().parseFromString(sourceXml, 'application/xml');
@@ -36,21 +36,6 @@ var cleanSvg = function(svg) {
   svg.querySelectorAll('text').forEach(function(textElem) {
     if (!textElem.textContent) textElem.remove()
   });
-
-  // Remove unused symbols from `<defs/>`, and modify the viewBox for
-  //  those that *are* used
-  svg.querySelectorAll('defs > symbol').forEach(function(sym) {
-    if (!svg.querySelector("use[*|href='#" + sym.id + "']")) {
-      sym.remove();
-    } else {
-      sym.viewBox.baseVal.y = -500;
-      sym.removeAttribute("overflow");
-    }
-  });
-
-  svg.querySelectorAll("use").forEach(function(elem) {
-    elem.setAttribute("y", "-30");
-  });     
 
   // Remove `<title/>` elems from notes
   svg.querySelectorAll("rect > title").forEach(function(elem) {
@@ -127,6 +112,24 @@ var addSvgPadding = function(svg, hPad, vPad) {
     -hOffset, -vPad,
     500 + hOffset, svgOrigHeight + (vPad * 2)
   ].join(" "));  
+}
+
+var processSymbols = function(svg) {
+  // Remove unused symbols from `<defs/>`, and modify the viewBox for
+  //  those that *are* used
+  svg.querySelectorAll('symbol').forEach(function(sym) {
+    if (!svg.querySelector("use[*|href='#" + sym.id + "']")) {
+      sym.remove();
+    } else {
+      sym.viewBox.baseVal.y = -500;
+      sym.removeAttribute("overflow");
+      sym.removeAttribute("style");
+    }
+  });
+
+  svg.querySelectorAll("use").forEach(function(elem) {
+    elem.setAttribute("y", "-30");
+  });      
 }
 
 var safariNamespaceFix = function(serializedSvg) {

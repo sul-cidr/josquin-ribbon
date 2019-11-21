@@ -1,5 +1,5 @@
 /* global d3, NotesBook, NotesNav, ColorLegend, SvgSaver */
-/* global prettifyXml, cleanSvg, addSvgPadding, safariNamespaceFix */
+/* global prettifyXml, cleanSvg, addSvgPadding, processSymbols, safariNamespaceFix */
 /* exported voicesHaxisOffset */
 
 var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
@@ -249,6 +249,7 @@ function chartify() {
           ;
           new SvgSaver().asSvgAlt(node, filename, function(clonedSvg) {
             addSvgPadding(clonedSvg, 25, 50);
+            processSymbols(clonedSvg);
             cleanSvg(clonedSvg);
             var serializedSvg = prettifyXml(clonedSvg.outerHTML);
             serializedSvg = safariNamespaceFix(serializedSvg);
