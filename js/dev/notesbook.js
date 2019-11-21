@@ -244,9 +244,10 @@ function NotesBook() {
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
-        .selectAll(".voice")
+        .selectAll(_ ? ".voice:not(.Aggregate)" : ".voice")
           .attr("y", function(d, i) { return _ ? 0 : i * height; })
       ;
+      document.querySelector('#legend > ul > li:last-child').style.display = _ ? "none" : "inline-block";
       markings.separate(!_);
       combineVoices = _;
       return my;
