@@ -183,16 +183,9 @@ function NotesBook() {
     } // my.connect()
   ;
   my.hilite = function(_) {
-
       // TODO move this into render function, introduce variable.
-        if(!_[0])
-            voices.selectAll(".subdued")
-                .classed("subdued", false)
-        else
-            voices.selectAll("svg")
-                .classed("subdued", function(d, i) { return i !== _[1]; })
-            ;
-
+      var ribbon = voices.select("."+_[0]);
+      ribbon.classed("subdued", !ribbon.classed("subdued"));
       return my;
     } // my.hilite()
   ;

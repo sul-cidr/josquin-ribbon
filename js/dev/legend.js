@@ -47,14 +47,8 @@ function ColorLegend(){
                 ;
               })
           .on("click", function(c, i) {
-              hilite = hilite === c ? false : c;
-
-              legend.selectAll("li")
-                  .classed("subdued", function(d) {
-                      return hilite && d !== c;
-                    })
-              ;
-              dispatch.call("hilite", this, [hilite, i]);
+              d3.select(this).classed("subdued", !d3.select(this).classed("subdued"));
+              dispatch.call("hilite", this, [c, i]);
             })
         ;
         row.exit().remove();
