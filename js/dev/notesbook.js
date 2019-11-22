@@ -21,6 +21,7 @@ function NotesBook() {
     , showRibbon = true
     , selectedRibbon = "attack_density_centered"
     , hideExtremes = false
+    , panner
   ;
 
   /*
@@ -100,6 +101,13 @@ function NotesBook() {
             })
       ;
 
+      panner
+        .attr("height", "100%")
+        .attr("width", "100%")
+      ;
+
+      panner.on("wheel.zoom", wheeled);
+
       my.notes(showNotes);
       my.extremes(hideExtremes);
       my.combine(combineVoices);
@@ -132,7 +140,23 @@ function NotesBook() {
           .attr("id", "voices")
           .attr("preserveAspectRatio", "none")
       ;
+      panner = svg.append("rect")
+        .attr("class", "panner")
+        .attr("preserveAspectRatio", "none")
+      ;
   } // initialize_SVG()
+  
+  wheeled = function() {
+      if (d3.event) {
+        let event = d3.event,
+          dx = Math.abs(event.deltaX),
+          dy = Math.abs(event.deltaY);
+        if (dx > dy) {
+          my.pan(parseInt(event.deltaX));
+        }
+      } 
+    }
+  ;
 
   /*
   ** API (Getter/Setter) Functions
@@ -196,6 +220,23 @@ function NotesBook() {
 
       return my;
     } // my.zoom()
+  ;
+  my.pan = function(_) {
+      var vb = reticle.attr("viewBox").split(' ').map( Number );
+      if(!arguments.length) return vb;
+      if (vb[0] + vb[2] + _ >= width) {
+        vb[0] = width - selectedWidth;
+      } else if (vb[0] + _ < 0) {
+        vb[0] = 0;
+      } else {
+        vb[0] = vb[0] + _;
+      }
+      vb[2] = selectedWidth;
+      markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
+      reticle.attr("viewBox", vb.join(' ') );
+      if(dispatch) { dispatch.call("pan", this, [vb[0], vb[0] + selectedWidth]); }
+      return my;
+    }
   ;
   my.combine = function(_) {
       // Art-direct the various voice SVGs
