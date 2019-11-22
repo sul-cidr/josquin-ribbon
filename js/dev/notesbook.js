@@ -154,6 +154,7 @@ function NotesBook() {
           dy = Math.abs(event.deltaY);
         if (dx > dy) {
           my.pan(parseInt(event.deltaX));
+          event.preventDefault && event.preventDefault();
         }
       } 
     }
