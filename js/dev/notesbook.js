@@ -16,6 +16,7 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , selectedWidth = 500
     , showNotes = false
     , combineVoices = false
     , showRibbon = true
@@ -50,7 +51,7 @@ function NotesBook() {
 
       var sw = parseFloat(svg.style("width"))
         , sh = parseFloat(svg.style("height"))
-        , w = 500, h = Math.round(w * sh / sw)
+        , w = selectedWidth, h = Math.round(w * sh / sw)
       ;
       markings
           .data(data.barlines)
@@ -215,6 +216,7 @@ function NotesBook() {
       // TODO move this into render function.
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
+      selectedWidth = vb[2];
       markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
       reticle.attr("viewBox", vb.join(' ') );
 
@@ -222,21 +224,22 @@ function NotesBook() {
     } // my.zoom()
   ;
   my.pan = function(_) {
-      var vb = reticle.attr("viewBox").split(' ').map( Number );
+      var vb = reticle.attr("viewBox").split(' ').map( Number )
+        , leftEdge = vb[0]
+        , windowLength = vb[2]
+      ;
       if(!arguments.length) return vb;
-      if (vb[0] + vb[2] + _ >= width) {
-        vb[0] = width - selectedWidth;
-      } else if (vb[0] + _ < 0) {
-        vb[0] = 0;
+      if(leftEdge + windowLength + _ >= width) {
+        leftEdge = width - selectedWidth;
+      } else if(leftEdge + _ < 0) {
+        leftEdge = 0;
       } else {
-        vb[0] = vb[0] + _;
+        leftEdge += _;
       }
-      vb[2] = selectedWidth;
-      markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
-      reticle.attr("viewBox", vb.join(' ') );
-      if(dispatch) { dispatch.call("pan", this, [vb[0], vb[0] + selectedWidth]); }
+      my.zoom([leftEdge, leftEdge + selectedWidth]);
+      if(dispatch) { dispatch.call("pan", this, [leftEdge, leftEdge + selectedWidth]); }
       return my;
-    }
+    }  // my.pan()
   ;
   my.combine = function(_) {
       // Art-direct the various voice SVGs
