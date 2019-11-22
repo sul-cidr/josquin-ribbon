@@ -41,11 +41,6 @@ svg {
 .brush .selection {
     stroke: darkgrey;
 }
-.zoom {
-    cursor: move;
-    fill: none;
-    pointer-events: all;
-}
 .tick line {
     stroke: lightgray;
 }

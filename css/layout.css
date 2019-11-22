@@ -102,6 +102,12 @@ svg.markings {
   padding: 0 2em;
 }
 
+.panner {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
 @media (min-width: 992px) {
   header {
     flex-direction: row;
