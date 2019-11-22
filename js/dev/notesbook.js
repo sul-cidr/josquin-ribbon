@@ -166,7 +166,7 @@ function NotesBook() {
       let event = d3.event,
         dx = Math.abs(event.deltaX),
         dy = Math.abs(event.deltaY);
-      console.log("pan", dx, dy);
+      //console.log("pan", dx, dy);
       if (dx > dy) {
         my.pan(parseInt(event.deltaX));
       }
@@ -226,7 +226,7 @@ function NotesBook() {
   ;
   my.pan = function(_) {
     var vb = reticle.attr("viewBox").split(' ');
-    console.log("pan with viewbox " + vb.join(' '),"max width",width);
+    console.log("pan",_,"viewbox",vb.join(' '),"max width",width);
     if(!arguments.length) return vb;
     if ((parseInt(vb[2]) + _) >= width) {
       //vb[2] = width;
@@ -242,7 +242,7 @@ function NotesBook() {
     }
     markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
     reticle.attr("viewBox", vb.join(' ') );
-    console.log("viewbox now" + vb.join(' '));
+    //console.log("viewbox now" + vb.join(' '));
     if(dispatch) { console.log("panning nav", vb); dispatch.call("pan", this, [vb[0], vb[0] + selectedWidth]); }
     return my;
   }

@@ -77,7 +77,8 @@ function NotesNav() {
         if (d3.event) {
           console.log("brush", d3.event);
         }
-        if (d3.event.sourceEvent && d3.event.sourceEvent.type === "wheel") { console.log("wheel event, skipping zoom"); return; }
+        if (d3.event.sourceEvent && d3.event.sourceEvent.type === "wheel")
+          { return; }
         var extent = (!d3.event || !d3.event.selection)
               ? x.range()
               : d3.event.selection.map(Math.round)
@@ -96,9 +97,13 @@ function NotesNav() {
     ** API - Getters/Setters
     */
     my.pan = function(_) {
-      console.log("notesnav pan", _);
+      console.log("notesnav pan", _, "width", width);
       //var selectedWidth = _[1] - _[0];
+      //if ((_[0] >= 0) && (_[1] <= width)) {
       brushG.call(brush.move, _);
+      //} else {
+      //  return;
+      //}
       /*svg.select(".brush")
         .transition().duration(0)
           .call(brush.move, _);*/
