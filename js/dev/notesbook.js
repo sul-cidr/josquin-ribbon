@@ -183,16 +183,9 @@ function NotesBook() {
     } // my.connect()
   ;
   my.hilite = function(_) {
-
       // TODO move this into render function, introduce variable.
-        if(!_[0])
-            voices.selectAll(".subdued")
-                .classed("subdued", false)
-        else
-            voices.selectAll("svg")
-                .classed("subdued", function(d, i) { return i !== _[1]; })
-            ;
-
+      var ribbon = voices.select("."+_[0]);
+      ribbon.classed("subdued", !ribbon.classed("subdued"));
       return my;
     } // my.hilite()
   ;
@@ -248,12 +241,14 @@ function NotesBook() {
       vb[3] = _ ? height : fullheight;
 
       // TODO move this into render function.
+      if (_) voices.select(".Aggregate").attr("y", fullheight);
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
-        .selectAll(".voice")
+        .selectAll(_ ? ".voice:not(.Aggregate)" : ".voice")
           .attr("y", function(d, i) { return _ ? 0 : i * height; })
       ;
+      document.querySelector('#legend > ul > li:last-child').style.display = _ ? "none" : "inline-block";
       markings.separate(!_);
       combineVoices = _;
       return my;
