@@ -91,6 +91,11 @@ function NotesNav() {
     /*
     ** API - Getters/Setters
     */
+    my.pan = function(_) {
+        brushG.call(brush.move, _);
+        return my;
+      }
+    ;
     my.connect = function(_) {
         if(!arguments.length) return dispatch;
 
