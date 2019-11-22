@@ -16,11 +16,13 @@ function NotesBook() {
     , lifeSize = 10 // default height and width of notes
     , scaleup = function(d) { return d * lifeSize; }
     , dispatch
+    , selectedWidth = 500
     , showNotes = false
     , combineVoices = false
     , showRibbon = true
     , selectedRibbon = "attack_density_centered"
     , hideExtremes = false
+    , panner
   ;
 
   /*
@@ -49,7 +51,7 @@ function NotesBook() {
 
       var sw = parseFloat(svg.style("width"))
         , sh = parseFloat(svg.style("height"))
-        , w = 500, h = Math.round(w * sh / sw)
+        , w = selectedWidth, h = Math.round(w * sh / sw)
       ;
       markings
           .data(data.barlines)
@@ -100,6 +102,13 @@ function NotesBook() {
             })
       ;
 
+      panner
+        .attr("height", "100%")
+        .attr("width", "100%")
+      ;
+
+      panner.on("wheel.zoom", wheeled);
+
       my.notes(showNotes);
       my.extremes(hideExtremes);
       my.combine(combineVoices);
@@ -132,7 +141,24 @@ function NotesBook() {
           .attr("id", "voices")
           .attr("preserveAspectRatio", "none")
       ;
+      panner = svg.append("rect")
+        .attr("class", "panner")
+        .attr("preserveAspectRatio", "none")
+      ;
   } // initialize_SVG()
+  
+  wheeled = function() {
+      if (d3.event) {
+        let event = d3.event,
+          dx = Math.abs(event.deltaX),
+          dy = Math.abs(event.deltaY);
+        if (dx > dy) {
+          my.pan(parseInt(event.deltaX));
+          event.preventDefault && event.preventDefault();
+        }
+      } 
+    }
+  ;
 
   /*
   ** API (Getter/Setter) Functions
@@ -191,11 +217,30 @@ function NotesBook() {
       // TODO move this into render function.
       vb[0] = _[0];
       vb[2] = Math.abs(_[1] - _[0]);
+      selectedWidth = vb[2];
       markings.xDomain([vb[0], vb[0] + vb[2]].map(x.invert));
       reticle.attr("viewBox", vb.join(' ') );
 
       return my;
     } // my.zoom()
+  ;
+  my.pan = function(_) {
+      var vb = reticle.attr("viewBox").split(' ').map( Number )
+        , leftEdge = vb[0]
+        , windowLength = vb[2]
+      ;
+      if(!arguments.length) return vb;
+      if(leftEdge + windowLength + _ >= width) {
+        leftEdge = width - selectedWidth;
+      } else if(leftEdge + _ < 0) {
+        leftEdge = 0;
+      } else {
+        leftEdge += _;
+      }
+      my.zoom([leftEdge, leftEdge + selectedWidth]);
+      if(dispatch) { dispatch.call("pan", this, [leftEdge, leftEdge + selectedWidth]); }
+      return my;
+    }  // my.pan()
   ;
   my.combine = function(_) {
       // Art-direct the various voice SVGs

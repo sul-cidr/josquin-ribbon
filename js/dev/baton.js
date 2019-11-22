@@ -23,6 +23,7 @@ var notesBook = NotesBook().svg(d3.select("#notesbook").select("svg"))
           , "select-ribbon"
           , "show-ribbon"
           , "show-notes"
+          , "pan"
         )
   ;
 
@@ -163,6 +164,7 @@ function createSignals() {
         .on("select-ribbon",   notesBook.ribbons)
         .on("combine-voices",  notesBook.combine)
         .on("zoom",            notesBook.zoom)
+        .on("pan",             notesNav.pan)
     ;
 
     // Update the duration indicator on zoom.
