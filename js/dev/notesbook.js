@@ -241,6 +241,7 @@ function NotesBook() {
       vb[3] = _ ? height : fullheight;
 
       // TODO move this into render function.
+      if (_) voices.select(".Aggregate").attr("y", fullheight);
       voices
         .transition(d3.transition())
           .attr("viewBox", vb.join(' '))
