@@ -109,6 +109,10 @@ function load_song(work) {
 
             // Parse the raw JSON and pass it to chartify.
             currentScore = parseJSON(proll);
+
+            document.querySelector("#voices").innerHTML = "";
+            document.querySelector("#legend").innerHTML = "";
+
             chartify();
           })
     ;
