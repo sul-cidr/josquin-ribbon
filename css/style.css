@@ -29,8 +29,10 @@ svg {
     opacity: 0.1;
 }
 .extreme {
-  stroke: red;
-  stroke-width: 2;
+  fill: #ff2f00;
+  stroke: #ff2f00;
+  fill-opacity: 0.75;
+  stroke-width: 1;
 }
 .brush .extent {
     stroke: black;
