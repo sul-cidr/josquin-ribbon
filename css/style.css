@@ -130,3 +130,20 @@ select[disabled] {
 .refline--C4 line {
     stroke-dasharray: 4 4;
 }
+
+label.disabled {
+    color: grey;
+    cursor: not-allowed;
+}
+
+#ribbons-ui {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#ribbons-ui label,
+#ribbons-ui select {
+    margin-bottom: 0;
+    margin-right: 10px;
+}
