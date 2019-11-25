@@ -185,7 +185,7 @@ function connectSignalsToDOM() {
         })
     ;
 
-    // Show/Hide Notes and Extreme Notes
+    // Show/Hide Notes and Extreme Highlights
     d3.select("#notes-ui").selectAll("input")
         .on("change", function(d) {
             d3.select(this.parentNode.nextElementSibling)

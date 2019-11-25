@@ -21,7 +21,7 @@ function NotesBook() {
     , combineVoices = false
     , showRibbon = true
     , selectedRibbon = "attack_density_centered"
-    , hideExtremes = false
+    , highlightExtremes = true
     , panner
   ;
 
@@ -110,7 +110,7 @@ function NotesBook() {
       panner.on("wheel.zoom", wheeled);
 
       my.notes(showNotes);
-      my.extremes(hideExtremes);
+      my.extremes(highlightExtremes);
       my.combine(combineVoices);
       my.ribbons(selectedRibbon);
   } // my() - Main function object
@@ -190,17 +190,13 @@ function NotesBook() {
     } // my.hilite()
   ;
   my.extremes = function(_) {
-      var music = voices.selectAll(".extreme-plain")
-        , vis = music.style("display")
-      ;
-
       // Argument can be null if menu was previously disabled
       if (_ === null) {
-        _ = !hideExtremes;
+        _ = !highlightExtremes;
       }
-
-      music.style("display", _ ? "none" : "inline");
-      hideExtremes = _;
+      voices.selectAll(".extreme-plain")
+          .classed("extreme", !_);
+      highlightExtremes = _;
     } // my.extremes()
   ;
   my.zoom = function(_) {
@@ -269,7 +265,7 @@ function NotesBook() {
       document.getElementById("show-notes").checked = _;
 
       music.style("display", _ ? "inline" : "none");
-      // Only display "Hide Extreme Notes" when "Show Notes" is selected
+      // Only display "Highlight Extreme Notes" when "Show Notes" is selected
       d3.select(document.getElementById("show-notes").parentNode.nextElementSibling).style("display", _ ? "inline" : "none");
 
       // Toggle staff lines/labels with notes if rhythmic activity ribbon is
