@@ -32,6 +32,9 @@ var cleanSvg = function(svg) {
     elem.remove();
   });
 
+  // Remove the "panner" element
+  svg.querySelector("rect.panner").remove();
+
   // Remove empty `<text/>` nodes
   svg.querySelectorAll('text').forEach(function(textElem) {
     if (!textElem.textContent) textElem.remove()
