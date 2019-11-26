@@ -300,7 +300,10 @@ function NotesBook() {
 
       showRibbon = _;
       document.getElementById("show-ribbon").checked = showRibbon;
-      document.getElementById("select-ribbon").setAttribute("style", "display: " + (showRibbon ? "inline" : "none"));
+      document.getElementById("select-ribbon").disabled = !showRibbon;
+
+      var combineVoicesCheckbox = document.getElementById("combine-voices");
+
       if (showRibbon) {
         my.ribbons(selectedRibbon);
       } else {
@@ -308,12 +311,15 @@ function NotesBook() {
           .style("display", "none");
         // Always show notes if ribbons are hidden
         my.notes(true);
+        combineVoicesCheckbox.disabled = false;
+        combineVoicesCheckbox.parentElement.classList.remove("disabled");
       }
 
     } // my.toggleRibbons()
   ;
   my.ribbons = function(arg) {
 
+      var combineVoicesCheckbox = document.getElementById("combine-voices");
       if ((arg == "attack_density") || (arg == "attack_density_centered")) {
         // Don't show staves for rhythmic density ribbon if notes are off
         if (!showNotes) {
@@ -328,15 +334,17 @@ function NotesBook() {
           arg = "attack_density";
         }
         // Disable Combine Voices option for rhythmic density ribbon
-        document.getElementById("combine-voices").checked = false;
-        document.getElementById("combine-ui").setAttribute("style", "display: none");
+        combineVoicesCheckbox.checked = false;
+        combineVoicesCheckbox.disabled = true;
+        combineVoicesCheckbox.parentElement.classList.add("disabled");
         my.combine(false);
       } else {
         // Always show staves for melodic ribbon, enable Combine Voices opt
         d3.selectAll(".refline")
           .style("display", "inline")
         ;
-        document.getElementById("combine-ui").setAttribute("style", "display: inline");
+        combineVoicesCheckbox.disabled = false;
+        combineVoicesCheckbox.parentElement.classList.remove("disabled");
       }
 
       // TODO move this into render function, introduce variable.

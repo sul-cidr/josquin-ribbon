@@ -179,7 +179,7 @@ function createSignals() {
 function connectSignalsToDOM() {
 
     // Combine/Separate Voices
-    d3.select("#combine-ui").selectAll("input")
+    d3.select("input#combine-voices")
         .on("change", function(d) {
             signal.call(this.id, this, this.checked)
         })
@@ -202,7 +202,7 @@ function connectSignalsToDOM() {
       ;
 
       check.on("change", function(d) {
-          choice.style("display", this.checked ? null : "none");
+          // choice.style("display", this.checked ? null : "none");
           signal.call("show-ribbon", this, this.checked);
         })
       ;
