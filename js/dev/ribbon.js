@@ -2,9 +2,10 @@ function Ribbon() {
     /* Private Variables */
     var datum
       , x, y
-      , interval = 12 // Interval size for the sliding window, in units of beats
-      , step = 1 // How much to slide the window for each iteration.
-      , bandwidth = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
+      , interval = .25 // Interval size for the sliding window, in units of beats
+      , step = .25 // How much to slide the window for each iteration.
+      , minMelodicHeight = .5
+      , verticalStretch = 1 // Scaling factor * std.dev. before +ing/-ing from mean.
       , area = function(data) {
             return d3.area()
                 .x(function (d){ return x(d.x); })
@@ -80,7 +81,7 @@ function Ribbon() {
 
             // At each iteration of this function,
             // we'll compute the mean and standard deviation.
-            var mean, deviation;
+            var mean, deviation, highestNote, lowestNote;
 
             // The mean and standard deviation values will be computed
             // differently depending on how many notes are in our window.
@@ -90,6 +91,8 @@ function Ribbon() {
               // then use the previous mean and a deviation of 0.
               case 0:
                 mean = previousMean;
+                highestNote = mean;
+                lowestNote = mean;
                 deviation = 0;
                 break;
 
@@ -97,13 +100,17 @@ function Ribbon() {
               // then use its pitch as the mean, and a deviation of 0.
               case 1:
                 mean = notesInWindow[0];
-                deviation = 0;
+                highestNote = mean;
+                lowestNote = mean;
+                deviation = minMelodicHeight;
                 break;
 
               // If there's more than 1 note in our window,
               // then compute the mean and standard deviation in earnest.
               default:
-                deviation = d3.deviation(notesInWindow);
+                highestNote = d3.max(notesInWindow) + 1;
+                lowestNote = d3.min(notesInWindow) - 1;
+                deviation = Math.max(minMelodicHeight, d3.deviation(notesInWindow) * verticalStretch);
                 mean = d3.mean(notesInWindow);
             }
 
@@ -115,8 +122,8 @@ function Ribbon() {
             // Return an objects that represents this slice of the ribbon.
             return {
                 x: x
-              , y1: mean + deviation
-              , y0: mean - deviation
+              , y1: Math.min(d3.max(y.domain()) - 1, Math.max(mean + deviation, highestNote))
+              , y0: Math.max(d3.min(y.domain()) + 1, Math.min(mean - deviation, lowestNote))
             };
            });
     } // modes.STANDARD_DEVIATION()
@@ -227,12 +234,12 @@ function Ribbon() {
         return my;
       } // my.step()
     ;
-    my.bandwidth = function(value) {
+    my.verticalStretch = function(value) {
         if(!arguments.length)
-            return bandwidth;
-        bandwidth = value;
+            return verticalStretch;
+        verticalStrecth = value;
         return my;
-      } // my.bandwidth()
+      } // my.verticalStretch()
     ;
     my.modes = function() {
         return d3.keys(modes)
