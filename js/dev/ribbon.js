@@ -36,7 +36,7 @@ function Ribbon() {
           .merge(ribbon)
           .each(function(m) {
               var path = d3.select(this).selectAll("path")
-                  .data([modes[m](datum.notedata)]) // call the mode function
+                  .data([modes[m](datum.notedata, datum.voice)]) // call the mode function
               ;
               path.exit().remove();
               path.enter()
@@ -128,13 +128,13 @@ function Ribbon() {
            });
     } // modes.STANDARD_DEVIATION()
 
-    var densityGenerator = function(data, centered) {
+    var densityGenerator = function(data, voiceName, centered) {
 
       // Use the following fixed values for the attack density computation,
       // as these specific values were prescribed by Josquin project leads.
       var interval = 2 // Compute the density for a window of 2 seconds.
         , step = 1 // Compute values for each second.
-        , scaleFactor = 0.4 // Make the shape a bit thinner.
+        , scaleFactor = (voiceName == "Aggregate") ? 0.4 : 1 // Make the shape a bit thinner.
       ;
 
       // Compute the mean pitch across all notes for this voice.
@@ -207,8 +207,8 @@ function Ribbon() {
         });
     } // densityGenerator()
 
-    modes.ATTACK_DENSITY = function(data) { return densityGenerator(data, false); };
-    modes.ATTACK_DENSITY_CENTERED = function(data) { return densityGenerator(data, true); };
+    modes.ATTACK_DENSITY = function(data, voiceName) { return densityGenerator(data, voiceName, false); };
+    modes.ATTACK_DENSITY_CENTERED = function(data, voiceName) { return densityGenerator(data, voiceName, true); };
 
     /*
     ** Internal Helper Functions
