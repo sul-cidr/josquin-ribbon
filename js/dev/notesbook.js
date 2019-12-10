@@ -92,6 +92,7 @@ function NotesBook() {
       voice
           .attr("width", width)
           .attr("height", height)
+          .style("overflow", "visible")
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
 
