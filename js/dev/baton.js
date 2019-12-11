@@ -199,6 +199,7 @@ function connectSignalsToDOM() {
     d3.select("#ribbons-ui").each(function() {
       var check = d3.select(this).select("input")
         , choice = d3.select(this).select("select")
+        , center = d3.select(this).select("input#center-ribbons")
       ;
 
       check.on("change", function(d) {
@@ -208,6 +209,10 @@ function connectSignalsToDOM() {
       ;
       choice.on("change", function() {
           signal.call("select-ribbon", this, this.value);
+        })
+      ;
+      center.on("change", function() {
+          signal.call("select-ribbon", this, "attack_density");
         })
       ;
     });
