@@ -92,6 +92,7 @@ function NotesBook() {
       voice
           .attr("width", width)
           .attr("height", height)
+          .style("overflow", "visible")
           .attr("viewBox", viewbox.join(' '))
           .each(function() {
 
@@ -274,6 +275,15 @@ function NotesBook() {
 
       showNotes = _;
 
+      var ribbonSelect = document.getElementById("select-ribbon"),
+          centerRibbonsCheckbox = document.getElementById("center-ribbons");
+      centerRibbonsCheckbox.disabled = (
+        !showRibbon || 
+        ribbonSelect.value != 'attack_density' || 
+        !showNotes
+      );
+      centerRibbonsCheckbox.parentElement.classList.toggle("disabled", centerRibbonsCheckbox.disabled)
+
       // Notes are always enabled when ribbon is not, so make sure the
       // staves are also displayed.
       if (!showRibbon) {
@@ -297,12 +307,19 @@ function NotesBook() {
     } // my.notes()
   ;
   my.toggleRibbons = function(_) {
-
+      var combineVoicesCheckbox = document.getElementById("combine-voices"),
+          ribbonSelect = document.getElementById("select-ribbon"),
+          centerRibbonsCheckbox = document.getElementById("center-ribbons");
       showRibbon = _;
       document.getElementById("show-ribbon").checked = showRibbon;
-      document.getElementById("select-ribbon").disabled = !showRibbon;
-
-      var combineVoicesCheckbox = document.getElementById("combine-voices");
+      ribbonSelect.disabled = !showRibbon;
+      centerRibbonsCheckbox.disabled = (
+        !showRibbon || 
+        ribbonSelect.value != 'attack_density' || 
+        !showNotes || 
+        combineVoicesCheckbox.checked
+      );
+      centerRibbonsCheckbox.parentElement.classList.toggle("disabled", centerRibbonsCheckbox.disabled)
 
       if (showRibbon) {
         my.ribbons(selectedRibbon);
@@ -320,6 +337,7 @@ function NotesBook() {
   my.ribbons = function(arg) {
 
       var combineVoicesCheckbox = document.getElementById("combine-voices");
+      var centerRibbonsCheckbox = document.getElementById("center-ribbons");
       if ((arg == "attack_density") || (arg == "attack_density_centered")) {
         // Don't show staves for rhythmic density ribbon if notes are off
         if (!showNotes) {
@@ -331,12 +349,16 @@ function NotesBook() {
           d3.selectAll(".refline")
             .style("display", "inline")
           ;
-          arg = "attack_density";
+          arg = (document.getElementById("center-ribbons").checked) ? "attack_density" : "attack_density_centered";
         }
         // Disable Combine Voices option for rhythmic density ribbon
         combineVoicesCheckbox.checked = false;
         combineVoicesCheckbox.disabled = true;
         combineVoicesCheckbox.parentElement.classList.add("disabled");
+
+        centerRibbonsCheckbox.disabled = !showNotes;
+        centerRibbonsCheckbox.parentElement.classList.toggle("disabled", centerRibbonsCheckbox.disabled) 
+
         my.combine(false);
       } else {
         // Always show staves for melodic ribbon, enable Combine Voices opt
@@ -345,7 +367,9 @@ function NotesBook() {
         ;
         combineVoicesCheckbox.disabled = false;
         combineVoicesCheckbox.parentElement.classList.remove("disabled");
-      }
+        centerRibbonsCheckbox.disabled = true;
+        centerRibbonsCheckbox.parentElement.classList.toggle("disabled", centerRibbonsCheckbox.disabled) 
+      }    
 
       // TODO move this into render function, introduce variable.
       voices.selectAll(".ribbon")
