@@ -108,12 +108,13 @@ var addSvgPadding = function(svg, hPad, vPad) {
   ].join(" "));
 
   var reticle = svg.querySelector(".reticle");
-  var hOffset = (hPad / svgOrigWidth) * reticle.viewBox.baseVal.width;
   reticle.setAttribute("height", svgOrigHeight);
-  reticle.setAttribute("width", svgOrigWidth - hPad);
+  reticle.setAttribute("width", svgOrigWidth - (hPad * 2));
+  reticle.setAttribute("x", hPad);
+
   reticle.setAttribute("viewBox", [
-    -hOffset, -vPad,
-    500 + hOffset, svgOrigHeight + (vPad * 2)
+    reticle.viewBox.baseVal.x, -vPad,
+    reticle.viewBox.baseVal.width, svgOrigHeight + (vPad * 2)
   ].join(" "));  
 }
 
