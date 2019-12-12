@@ -60,6 +60,16 @@ var cleanSvg = function(svg) {
     elem.setAttribute("stroke-width", firstNote.style.strokeWidth);
   });   
 
+  svg.querySelectorAll("rect.extreme").forEach(function(elem) {
+    elem.setAttribute("fill", elem.style.fill);
+    elem.setAttribute("fill-opacity", elem.style.fillOpacity);
+    elem.setAttribute("stroke", elem.style.stroke);
+  });
+
+  svg.querySelectorAll("svg.subdued > g").forEach(function(elem) {
+    elem.setAttribute("opacity", 0.1);
+  });
+
   // Remove all style attributes
   svg.removeAttribute("style");
   svg.querySelectorAll("[style]").forEach(function(elem) {
