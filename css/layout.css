@@ -67,6 +67,7 @@ article {
                      as flex-grow ensure it will be larger 
                      than this if screen real-estate is 
                      available */
+  overflow: hidden;
 }
 
 svg.notesbook {

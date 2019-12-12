@@ -53,12 +53,22 @@ var cleanSvg = function(svg) {
   });   
 
   svg.querySelectorAll("g.notes").forEach(function(elem) {
-    var firstNote = elem.querySelector("rect.note");
+    var firstNote = elem.querySelector("rect.note:not(.extreme)");
     elem.setAttribute("fill", firstNote.style.fill);
     elem.setAttribute("fill-opacity", firstNote.style.fillOpacity);
     elem.setAttribute("stroke", firstNote.style.stroke);
     elem.setAttribute("stroke-width", firstNote.style.strokeWidth);
   });   
+
+  svg.querySelectorAll("rect.extreme").forEach(function(elem) {
+    elem.setAttribute("fill", elem.style.fill);
+    elem.setAttribute("fill-opacity", elem.style.fillOpacity);
+    elem.setAttribute("stroke", elem.style.stroke);
+  });
+
+  svg.querySelectorAll("svg.subdued > g").forEach(function(elem) {
+    elem.setAttribute("opacity", 0.1);
+  });
 
   // Remove all style attributes
   svg.removeAttribute("style");
