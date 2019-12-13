@@ -275,6 +275,10 @@ function NotesBook() {
 
       showNotes = _;
 
+      d3.selectAll(".refline")
+        .style("display", _ ? "inline" : "none")
+      ;
+
       var ribbonSelect = document.getElementById("select-ribbon"),
           centerRibbonsCheckbox = document.getElementById("center-ribbons");
       centerRibbonsCheckbox.disabled = (
@@ -284,9 +288,9 @@ function NotesBook() {
       );
       centerRibbonsCheckbox.parentElement.classList.toggle("disabled", centerRibbonsCheckbox.disabled)
 
-      // Notes are always enabled when ribbon is not, so make sure the
-      // staves are also displayed.
-      if (!showRibbon) {
+      // Notes are always enabled when ribbon is hidden or when the melodic
+      // ribbon is shown, so make sure the staves are also displayed.
+      if (!showRibbon || selectedRibbon == "standard_deviation") {
         d3.selectAll(".refline")
           .style("display", "inline")
         ;
