@@ -203,7 +203,6 @@ function connectSignalsToDOM() {
       ;
 
       check.on("change", function(d) {
-          // choice.style("display", this.checked ? null : "none");
           signal.call("show-ribbon", this, this.checked);
         })
       ;
