@@ -88,6 +88,10 @@ document.querySelector("#josquin_catalog").addEventListener("input", function() 
 })
 
 
+document.querySelector("#grayscale").addEventListener("change", function() {
+  document.body.classList.toggle("grayscale");
+});
+
 
 /*
 ** Setup the domain

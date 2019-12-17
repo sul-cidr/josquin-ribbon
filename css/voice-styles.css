@@ -1,0 +1,25 @@
+
+.grayscale .note,
+.grayscale .ribbon {
+  stroke: #222;
+}
+
+.grayscale .voice0 .ribbon,
+.grayscale .voice0 .note {
+  fill: url(#diagonal-stripe-6);
+}
+
+.grayscale .voice1 .ribbon, 
+.grayscale .voice1 .note {
+  fill: url(#circles-1);
+}
+
+.grayscale .voice2 .ribbon, 
+.grayscale .voice2 .note {
+  fill: url(#vertical-stripe-7);
+}
+
+.grayscale .voice3 .ribbon, 
+.grayscale .voice3 .note {
+  fill: url(#crosshatch);
+}
