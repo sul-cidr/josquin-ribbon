@@ -97,8 +97,8 @@ function NotesBook() {
           .each(function() {
 
               d3.select(this)
-                  .call(score)
                   .call(ribbon.x(x).y(y))
+                  .call(score)
               ;
             })
       ;
