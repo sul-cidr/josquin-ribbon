@@ -64,6 +64,7 @@ var cleanSvg = function(svg) {
     elem.setAttribute("fill", elem.style.fill);
     elem.setAttribute("fill-opacity", elem.style.fillOpacity);
     elem.setAttribute("stroke", elem.style.stroke);
+    elem.setAttribute("stroke-width", 1);
   });
 
   svg.querySelectorAll("svg.subdued > g").forEach(function(elem) {
