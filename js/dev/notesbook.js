@@ -201,6 +201,9 @@ function NotesBook() {
           // And hide the staff lines unless the melodic ribbon is shown
           d3.selectAll(".refline").style("display", "none");
         }
+        // Enable the selected ribbon if all notes are hidden
+        my.toggleRibbons(true);
+        my.ribbons(selectedRibbon);
       } else {
         d3.selectAll(".refline").style("display", "inline");
         if (highlightExtremes) {
@@ -307,7 +310,7 @@ function NotesBook() {
       }
 
       // Show the ribbon if notes are being hidden
-      if (!_ && !showRibbon) {
+      if (!_ && !showRibbon && !highlightExtremes) {
         my.toggleRibbons(true);
         my.ribbons(selectedRibbon);
       // Attack density ribbon is "centered" on middle C when notes are hidden
@@ -341,7 +344,10 @@ function NotesBook() {
         voices.selectAll(".ribbon")
           .style("display", "none");
         // Always show notes if ribbons are hidden
-        my.notes(true);
+        // but don't bother if extreme notes are already shown
+        if (!highlightExtremes) {
+          my.notes(true);
+        }
         combineVoicesCheckbox.disabled = false;
         combineVoicesCheckbox.parentElement.classList.remove("disabled");
       }
