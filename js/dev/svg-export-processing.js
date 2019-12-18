@@ -63,9 +63,9 @@ var cleanSvg = function(svg) {
 
   svg.querySelectorAll("rect.extreme").forEach(function(elem) {
     elem.setAttribute("fill", elem.style.fill);
-    elem.setAttribute("fill-opacity", elem.style.fillOpacity);
+    elem.setAttribute("fill-opacity", elem.style.fillOpacity || 1);
     elem.setAttribute("stroke", elem.style.stroke);
-    elem.setAttribute("stroke-width", 1);
+    elem.setAttribute("stroke-width", elem.style.strokeWidth || 1);
   });
 
   svg.querySelectorAll("svg.subdued > g").forEach(function(elem) {
