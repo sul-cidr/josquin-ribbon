@@ -21,7 +21,7 @@ function NotesBook() {
     , combineVoices = false
     , showRibbon = true
     , selectedRibbon = "attack_density_centered"
-    , highlightExtremes = true
+    , highlightExtremes = false
     , panner
   ;
 
@@ -191,13 +191,25 @@ function NotesBook() {
     } // my.hilite()
   ;
   my.extremes = function(_) {
-      // Argument can be null if menu was previously disabled
-      if (_ === null) {
-        _ = !highlightExtremes;
-      }
-      voices.selectAll(".extreme-plain")
-          .classed("extreme", !_);
+      voices.selectAll(".extreme-plain").classed("extreme", _);
       highlightExtremes = _;
+
+      // If all notes are hidden, then hide extreme-plain notes as well
+      if (!showNotes && !highlightExtremes) {
+        voices.selectAll(".note").style("display", "none");
+        if (selectedRibbon != "standard_deviation") {
+          // And hide the staff lines unless the melodic ribbon is shown
+          d3.selectAll(".refline").style("display", "none");
+        }
+        // Enable the selected ribbon if all notes are hidden
+        my.toggleRibbons(true);
+        my.ribbons(selectedRibbon);
+      } else {
+        d3.selectAll(".refline").style("display", "inline");
+        if (highlightExtremes) {
+          voices.selectAll(".extreme-plain").style("display", "inline");
+        }
+      }
     } // my.extremes()
   ;
   my.zoom = function(_) {
@@ -254,7 +266,8 @@ function NotesBook() {
   my.notes = function(_) { // toggles the notes on/off
 
       // TODO move this into render function, introduce variable.
-      var music = voices.selectAll(".notes")
+      var music = voices.selectAll(".note")
+        , extremes = voices.selectAll(".extreme-plain")
         , vis = music.style("display")
       ;
 
@@ -266,9 +279,9 @@ function NotesBook() {
       document.getElementById("show-notes").checked = _;
 
       music.style("display", _ ? "inline" : "none");
-      // Only display "Highlight Extreme Notes" when "Show Notes" is selected
-      d3.select(document.getElementById("show-notes").parentNode.nextElementSibling).style("display", _ ? "inline" : "none");
 
+      extremes.style("display", (_ || highlightExtremes) ? "inline" : "none");
+      
       // Toggle staff lines/labels with notes if rhythmic activity ribbon is
       // selected. Also, if no ribbon is selected, notes (and therefore)
       // staff lines/labels will be enabled.
@@ -276,7 +289,7 @@ function NotesBook() {
       showNotes = _;
 
       d3.selectAll(".refline")
-        .style("display", _ ? "inline" : "none")
+        .style("display", (showNotes || highlightExtremes) ? "inline" : "none")
       ;
 
       var ribbonSelect = document.getElementById("select-ribbon"),
@@ -284,7 +297,7 @@ function NotesBook() {
       centerRibbonsCheckbox.disabled = (
         !showRibbon || 
         ribbonSelect.value != 'attack_density' || 
-        !showNotes
+        (!showNotes && !highlightExtremes)
       );
       centerRibbonsCheckbox.parentElement.classList.toggle("disabled", centerRibbonsCheckbox.disabled)
 
@@ -297,7 +310,7 @@ function NotesBook() {
       }
 
       // Show the ribbon if notes are being hidden
-      if (!_ && !showRibbon) {
+      if (!_ && !showRibbon && !highlightExtremes) {
         my.toggleRibbons(true);
         my.ribbons(selectedRibbon);
       // Attack density ribbon is "centered" on middle C when notes are hidden
@@ -331,7 +344,10 @@ function NotesBook() {
         voices.selectAll(".ribbon")
           .style("display", "none");
         // Always show notes if ribbons are hidden
-        my.notes(true);
+        // but don't bother if extreme notes are already shown
+        if (!highlightExtremes) {
+          my.notes(true);
+        }
         combineVoicesCheckbox.disabled = false;
         combineVoicesCheckbox.parentElement.classList.remove("disabled");
       }

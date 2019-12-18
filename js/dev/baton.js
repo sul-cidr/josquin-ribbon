@@ -186,13 +186,16 @@ function connectSignalsToDOM() {
     ;
 
     // Show/Hide Notes and Extreme Highlights
-    d3.select("#notes-ui").selectAll("input")
+    d3.select("input#show-notes")
         .on("change", function(d) {
-            d3.select(this.parentNode.nextElementSibling)
-                .style("display", this.checked ? null : "none")
-            ;
-            signal.call(this.id, this, null);
-          })
+          signal.call(this.id, this, this.checked)
+        })
+    ;
+
+    d3.select("input#show-extremes")
+        .on("change", function(d) {
+          signal.call(this.id, this, this.checked)
+        })
     ;
 
     // Show/Hide ribbons

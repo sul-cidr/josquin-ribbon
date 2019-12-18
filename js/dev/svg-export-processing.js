@@ -54,6 +54,7 @@ var cleanSvg = function(svg) {
 
   svg.querySelectorAll("g.notes").forEach(function(elem) {
     var firstNote = elem.querySelector("rect.note:not(.extreme)");
+    if (!firstNote) return; // For when only extreme notes are shown
     elem.setAttribute("fill", firstNote.style.fill);
     elem.setAttribute("fill-opacity", firstNote.style.fillOpacity);
     elem.setAttribute("stroke", firstNote.style.stroke);
@@ -62,9 +63,9 @@ var cleanSvg = function(svg) {
 
   svg.querySelectorAll("rect.extreme").forEach(function(elem) {
     elem.setAttribute("fill", elem.style.fill);
-    elem.setAttribute("fill-opacity", elem.style.fillOpacity);
+    elem.setAttribute("fill-opacity", elem.style.fillOpacity || 1);
     elem.setAttribute("stroke", elem.style.stroke);
-    elem.setAttribute("stroke-width", 1);
+    elem.setAttribute("stroke-width", elem.style.strokeWidth || 1);
   });
 
   svg.querySelectorAll("svg.subdued > g").forEach(function(elem) {
