@@ -34,13 +34,28 @@ function NotesBook() {
       x.domain([0, getTime.scoreLength(data)]);
 
       /* Center the Y domain around middle C, but if all of the notes are above
-       * or below middle C, limit the domain to that half
+       * or below middle C, or if there's only one voice in the score (as with
+       * the fragment Jos1802 or the single-voice chant Duf2027), center the 
+       * Y domain around the middle of the full note range.
        */
-      var maxRangeFromMC = Math.max(Math.max(0, data.maxpitch.b7 - 28), Math.max(0, 28 - data.minpitch.b7));
-      var minPitch = (data.minpitch.b7 <= 28) ? 28 - maxRangeFromMC : 28;
-      var maxPitch = (data.maxpitch.b7 >= 28) ? 28 + maxRangeFromMC + 1 : 29;
-      y.domain(d3.range(minPitch, maxPitch))
+      var minPitch = data.minpitch.b7;
+      var maxPitch = data.maxpitch.b7;
+      var middlePitch = 28;
 
+      if ((data.partcount == 1) || (maxPitch > 28 && minPitch >= 28) || (maxPitch <= 28 && minPitch < 28)) {
+        middlePitch = Math.round((maxPitch + minPitch) / 2);
+      }
+      var maxRangeFromMiddle = Math.max(maxPitch - middlePitch, middlePitch - minPitch);
+      maxPitch = middlePitch + maxRangeFromMiddle;
+      minPitch = middlePitch - maxRangeFromMiddle;
+
+      // This amount of extra padding seems to work for the single-voice case
+      if (data.partcount == 1) {
+        maxPitch += 4;
+        minPitch -= 2;
+      }
+
+      y.domain(d3.range(minPitch, maxPitch));
       x.range(x.domain().map(scaleup));
       y.range(d3.extent(y.domain()).reverse().map(scaleup));
 
@@ -365,11 +380,14 @@ function NotesBook() {
             .style("display", "none")
           ;
           arg = "attack_density_centered";
+          if (data.partcount == 1) {
+            arg = "attack_density";
+          }
         } else {
           d3.selectAll(".refline")
             .style("display", "inline")
           ;
-          arg = (document.getElementById("center-ribbons").checked) ? "attack_density" : "attack_density_centered";
+          arg = (document.getElementById("center-ribbons").checked || data.partcount == 1) ? "attack_density" : "attack_density_centered";
         }
         // Disable Combine Voices option for rhythmic density ribbon
         combineVoicesCheckbox.checked = false;
